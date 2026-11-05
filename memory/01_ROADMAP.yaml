@@ -8,7 +8,7 @@ priorities:
   - id: RM-007
     title: Adversarial independent evaluation of Eschede/Franke decoding claims
     status: ACTIVE
-    next: First reconcile 2v Currier C cheopchor vs claimed pchor, and zero qokedy occurrences vs asserted 2x and 3x chains; compare a pinned independent EVA witness and inspect source glyphs; then examine folios 33v,78r,71r and freeze semantic rules
+    next: Inspect Franke P-01..P-20 rule precedence/multi-output behavior, pin parser version and exact raw-to-output f2v trace; reproduce claimed 2x/3x qokedy outputs on holdout source words; do not mistake derived system tokens for raw EVA
   - id: RM-001
     title: Build and independently spot-check canvas/folio concordance from canonical supplied manifest
     status: ACTIVE
@@ -29,3 +29,4 @@ priorities:
     title: Independent live manifest attestation
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
+
