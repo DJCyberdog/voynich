@@ -2,7 +2,7 @@ schema_version: 1
 questions:
   - id: Q-001
     priority: high
-    question: What are the stable Yale IIIF canvas identifiers and their folio mappings?
+    question: What are stable Yale IIIF canvas IDs, image order and explicit physical leaf/surface/folio mappings, especially for foldouts and missing leaves?
     status: ACTIVE
   - id: Q-002
     priority: high

@@ -2,9 +2,9 @@ schema_version: 1
 updated: '2026-11-05'
 priorities:
   - id: RM-001
-    title: Verify official MS408 IIIF manifest and folio/canvas map
+    title: Verify official MS408 IIIF manifest and independent folio/canvas concordance
     status: ACTIVE
-    next: Fetch official Yale IIIF manifest, pin identifiers, validate physical folios versus canvases and usage terms
+    next: Read official Yale manifest via authorized route; pin canvas identifiers and order; compare Yale physical catalog folds, unnumbered and missing leaves before equating IDs
   - id: RM-002
     title: Inventory transcription variants and usage rights
     status: ACTIVE
