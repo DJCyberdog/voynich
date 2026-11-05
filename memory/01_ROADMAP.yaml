@@ -4,7 +4,7 @@ priorities:
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
-    next: EXP-0017 reproduced uploaded baseline and audited six existing permutation-output arrays; independently rerun and inspect null-generator implementation, audit origin byte provenance/rights, then test position-preserving nulls and alternate witnesses; keep EXP-0014 separate
+    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. Preregister line-position/length/section-conditioned nulls, test independent transcription witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
