@@ -11,5 +11,20 @@ This initial README is the single authorized empty-repository bootstrap commit. 
 ## Primary source
 Yale Beinecke Rare Book & Manuscript Library, MS 408: https://collections.library.yale.edu/catalog/2002046 ; manuscript collection explanation: https://beinecke.library.yale.edu/beinecke/collections/beinecke-cipher-voynich-manuscript . Source metadata, transcription versions and rights must be verified before data ingestion.
 
+## Current research status (2026-11-05; based on integrated main `8179d1a3c6d6d78572ed7e5326f8707408ee8c92`)
+
+These are **work-package completion ratios**, not an estimated percentage of decipherment. The numerators and denominators are explicitly scoped; a completed inventory is not an authenticated image-to-folio concordance.
+
+| Work package / denominator | Verified or recorded completion | Progress |
+|---|---:|---|
+| Unique canvas identifiers inventoried in owner-canonical SRC-0007: 213 expected IDs | 213/213 = **100%** (snapshot parsing only) | `██████████` |
+| Full decipherment acceptance gates demonstrably satisfied under `docs/DECIPHERMENT_CRITERIA.md`: 5 gates | 0/5 = **0%** (no gate documented as passed) | `░░░░░░░░░░` |
+
+**Evidence and workflow:** Canvas inventory VERIFIED only for the supplied SHA-256-pinned snapshot; user-designated canonical status is **not** independent live Yale authentication (**UNKNOWN**). Physical folio/canvas correspondence, visible glyphs, transcription conventions, language, semantics and historical dating are distinct layers. Decipherment remains **UNKNOWN**. Folio/canvas concordance and transcription provenance **ACTIVE**; independent live-manifest retry **SATURATED** by owner decision D-0005; corpus-wide confirmatory statistics **BLOCKED** pending independently audited rights, inputs and parser.
+
+**Research integrated:** EXP-0001 through EXP-0010 (with gaps in canonical register), and EXP-0013 registered retrospectively. PR #20 integrates EXP-0014 f3r tokenization sensitivity, but canonical memory has not yet been reconciled. **Open at this snapshot:** [PR #21](https://github.com/DJCyberdog/voynich/pull/21), EXP-0015 owner-reported full-transcription scores and *preregistered but unexecuted* permutation controls; results are not independent manuscript or semantic verification. Never count open PRs as integrated results.
+
+**Next:** Review PR #21 for collision and evidence scope; reconcile integrated EXP-0014 in canonical memory; pin/audit ZL3b-n v3b source bytes, line parser and rights; run prespecified within-folio and within-line permutation nulls; independently spot-check canvas-to-physical-folio mapping. Do not infer a probability of decipherment from these work-package percentages.
+
 ## Resumption
-If the research files are absent, create them through a dedicated bootstrap-follow-up branch and PR; do not edit main directly again.
+Read this status together with the canonical memory registers, governance and open PRs. On a material integrated delta, update this README's dated status and denominator-defined progress bars via branch/PR only; do not manufacture commits on NO_CHANGE.
