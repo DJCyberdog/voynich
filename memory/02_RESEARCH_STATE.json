@@ -3,7 +3,7 @@
   "updated": "2026-11-05",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0015",
+  "cycle": "EXP-0016",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Independently pin ZL3b-n v3b and parser; reproduce owner-reported EXP-0015, then execute preregistered within-folio and within-line permutation controls",
+  "next": "Independently audit EXP-0016 implied 116/79/76 zero-token line counts against source/parser, reproduce EXP-0015, then execute null controls",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -33,7 +33,8 @@
     "EXP-0010: synthetic P-06 before P-09/P-14 changes aiin classification; no author decoder execution.",
     "EXP-0013: retrospective registration of PR #18 synthetic R1 odd-run grouping ambiguity; implementation and manuscript effect UNKNOWN",
     "EXP-0014 merged: 20-line f3r pilot, negative Markov gain across three comma policies and nonsignificant within-line shuffle controls; not full-corpus inference.",
-    "EXP-0015 merged: owner-reported full-file positive held-out gains for three comma policies; script/source bytes and permutation nulls not independently verified/executed."
+    "EXP-0015 merged: owner-reported full-file positive held-out gains for three comma policies; script/source bytes and permutation nulls not independently verified/executed.",
+    "EXP-0016: algebraic count compatibility VERIFIED from owner-reported aggregates; implied empty-token lines 116/79/76; no independent parser or permutation execution."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
