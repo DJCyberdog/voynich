@@ -1,23 +1,31 @@
 schema_version: 1
 updated: '2026-11-05'
 priorities:
+  - id: RM-006
+    title: Inventory multilingual Voynich hypotheses and primary evidence
+    status: ACTIVE
+    next: Extract distinct claims and origin references from DE/EN/FR/ES/IT Wikipedia, Voynich.net, Bowern-Lindemann and contemporary papers; deduplicate claims across languages, pin original sources
+  - id: RM-007
+    title: Adversarial independent evaluation of Eschede/Franke decoding claims
+    status: ACTIVE
+    next: Freeze published mappings and exemplars on folios 2v,33v,78r,71r; verify literal EVA strings and repetition counts on independent transcription before semantic testing; design held-out blind test with strongest controls
   - id: RM-001
     title: Build and independently spot-check canvas/folio concordance from canonical supplied manifest
     status: ACTIVE
-    next: Use SHA-pinned SRC-0007 as canonical working snapshot; build 213-record ID/label/part concordance, compare foldouts with SRC-0006 and inspect anomalies; do not retry manifest URL by default
+    next: Use SHA-pinned SRC-0007 as canonical working snapshot; map 213 IDs and labels for selected test folios and exceptional part labels without repeating Yale URL authentication
   - id: RM-002
     title: Inventory transcription variants and usage rights
     status: ACTIVE
-    next: Obtain original IVTFF/EVA source descriptions, checksums, versioning and permissions without merging transcription systems
+    next: Secure version-pinned rights-reviewed EVA/IVTFF for literal validation of published claims, keeping transliteration systems distinct
   - id: RM-003
-    title: Preregister first script-position null-model study
+    title: Preregister script-position null-model study
     status: WATCHING
-    next: Define exploratory and held-out folios using canonical map and separately reviewed transcription corpus
+    next: Define exploratory and held-out folios after corpus review
   - id: RM-004
     title: Codicology and chronology separation
     status: WATCHING
-    next: Retrieve primary dating report and distinguish support age from inscription date
+    next: Retrieve primary dating report and distinguish parchment age from inscription date
   - id: RM-005
     title: Independent live manifest attestation
     status: SATURATED
-    next: Reopen ONLY for concrete source discrepancy, owner instruction or materially new official access; not a blocker for mapping
+    next: Reopen only for concrete discrepancy or user request; not blocker
