@@ -54,3 +54,6 @@ After PRs #20 and #21 were merged, canonical memory remained at EXP-0013. Record
 
 ## 2026-11-05 D-0017 — limited aggregate-count audit
 EXP-0016 checks the necessary line-local adjacency identity on already merged EXP-0015 aggregates. Preserve distinction between VERIFIED arithmetic and DOCUMENTED owner-reported input. No new glyph, parser reproduction, permutation significance or semantic result. No changes to D-0005 or automations.
+
+## 2026-11-05 D-0018 — EXP-0017 audit and evidence boundary
+Owner-uploaded full corpus and evaluator permit exact local baseline reproduction; stored 6,000 null draws audited but generator not independently rerun. Register a single bounded finding, do not claim language or decipherment. README denominator bars remain 213/213 inventoried and 0/5 decipherment gates; EXP-0017 remains proposed until merged. No automation prompt or schedule changed; prior README instruction already documented under D-0015.
