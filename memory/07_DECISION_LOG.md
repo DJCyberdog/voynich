@@ -57,3 +57,6 @@ EXP-0016 checks the necessary line-local adjacency identity on already merged EX
 
 ## 2026-11-05 D-0018 — EXP-0017 audit and evidence boundary
 Owner-uploaded full corpus and evaluator permit exact local baseline reproduction; stored 6,000 null draws audited but generator not independently rerun. Register a single bounded finding, do not claim language or decipherment. README denominator bars remain 213/213 inventoried and 0/5 decipherment gates; EXP-0017 remains proposed until merged. No automation prompt or schedule changed; prior README instruction already documented under D-0015.
+
+## 2026-11-05 D-0019 — consolidate independently rerun EXP-0017 into existing draft PR #25
+An overlapping research branch independently executed the actual EXP-0015-registered permutation generator after PR #25 had already opened as a draft audit of stored arrays. Avoid a duplicate EXP ID or competing PR: integrate verifiable code, baseline summary, independently executed null results and scoped HYP-0017/SRC-0021–0024 into the existing draft PR #25; preserve its original audit history and append the more rigorous follow-up. Confirmed six separate 1000-draw null families with 0 exceedances each (p=1/1001); preserve rights and position-effect caveats. The existing draft remains **unmerged pending owner review**; neither D-0005 nor hourly automations changed.
