@@ -8,7 +8,7 @@ priorities:
   - id: RM-007
     title: Adversarial independent evaluation of Eschede/Franke decoding claims
     status: ACTIVE
-    next: Use directly located origin ZL3b-n v3b SRC-0016 after independent byte pinning; establish exact IVTFF segmentation and P-parser priority/multi-output semantics; test f2v derived outputs separately from raw pchor
+    next: Use directly located origin ZL3b-n v3b SRC-0016 after independent byte pinning; test both uncertain-comma tokenization branches and P-parser priority/multi-output semantics; test f2v derived outputs separately from raw pchor
   - id: RM-001
     title: Build and independently spot-check canvas/folio concordance from canonical supplied manifest
     status: ACTIVE
@@ -16,7 +16,7 @@ priorities:
   - id: RM-002
     title: Inventory transcription variants and usage rights
     status: ACTIVE
-    next: Origin ZL3b-n v3b located (SRC-0016), f2v.1 comma-delimited pchor observed; independently hash complete bytes and inspect IVTFF comma/dot/<-> rules and original-site attribution rights; reconcile VIB cheopchor before claiming a manuscript word boundary
+    next: Origin ZL3b-n v3b located (SRC-0016), f2v.1 comma-delimited pchor observed; independently hash complete bytes and apply verified IVTFF comma=uncertain, dot=certain rules and original-site attribution rights; reconcile VIB cheopchor before claiming a manuscript word boundary
   - id: RM-003
     title: Preregister script-position null-model study
     status: WATCHING
