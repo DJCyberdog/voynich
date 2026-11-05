@@ -2,7 +2,7 @@ schema_version: 1
 questions:
   - id: Q-001
     priority: high
-    question: What are stable Yale IIIF canvas IDs, image order and explicit physical leaf/surface/folio mappings, especially for foldouts and missing leaves?
+    question: Can Yale's live manifest be authenticated against the user-supplied 213-canvas snapshot, including compound/repeated labels?
     status: ACTIVE
   - id: Q-002
     priority: high
@@ -16,4 +16,4 @@ questions:
     priority: medium
     question: Which text statistics survive independent transcriptions and held-out folios?
     status: BLOCKED
-    blocker: No pinned, rights-reviewed corpus and folio mapping yet
+    blocker: No independently authenticated image concordance and pinned, rights-reviewed transcription corpus yet
