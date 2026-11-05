@@ -3,15 +3,18 @@
   "updated": "2026-11-05",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0001",
+  "cycle": "EXP-0002",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
   "source_rights_verified": false,
-  "active_question": "What precisely does the radiocarbon date prove?",
-  "next": "Verify Yale original IIIF manifest and explicit canvas-to-folio mapping; rights audit before ingest",
+  "verified_primary_source": "SRC-0006",
+  "active_question": "Can Yale manuscript physical foliation be treated as a digital canvas index?",
+  "result": "Universal direct identity contradicted in physical foliation scope; mapping and manifest content still UNKNOWN",
+  "next": "Verify Yale official IIIF manifest and distinguish leaves, historical foliation, sides, surfaces, captures and canvases; rights audit before ingestion",
   "notes": [
-    "No manuscript-based statistical experiment run",
-    "Secondary sources disagree on digital canvas counts; do not infer physical extent"
+    "No Yale IIIF manifest retrieved",
+    "No manuscript statistics or translations produced",
+    "EXPERIMENT EXP-0002 is a documentary falsification of a universal mapping assumption, not a quantitative test"
   ]
 }
