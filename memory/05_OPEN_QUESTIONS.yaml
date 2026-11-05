@@ -6,7 +6,7 @@ questions:
     status: ACTIVE
   - id: Q-002
     priority: high
-    question: What is the exact rights provenance of each candidate EVA/IVTFF transcription?
+    question: Where is an exact checksum-pinned, rights-reviewed ZL3b-n v3b (2025-05-13) source, and which other EVA/IVTFF witnesses permit independent f2v comparison?
     status: ACTIVE
   - id: Q-003
     priority: high
@@ -19,6 +19,6 @@ questions:
     blocker: Version-pinned rights-reviewed transcription corpus and preregistered test split not yet available; NOT blocked by reauthentication of canonical manifest
   - id: Q-005
     priority: high
-    question: Can the author reproduce derived f2v pchor and 2x/3x qokedy from versioned raw EVA via frozen rules and explain P-12/P-17 overlaps?
+    question: Can the author reproduce derived f2v output from ZL3b-n v3b using explicit archived P-rule collision precedence or multi-output policy, separate from G1.7 class priority?
     status: ACTIVE
 

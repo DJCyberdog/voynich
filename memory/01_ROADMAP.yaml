@@ -8,7 +8,7 @@ priorities:
   - id: RM-007
     title: Adversarial independent evaluation of Eschede/Franke decoding claims
     status: ACTIVE
-    next: Inspect Franke P-01..P-20 rule precedence/multi-output behavior, pin parser version and exact raw-to-output f2v trace; reproduce claimed 2x/3x qokedy outputs on holdout source words; do not mistake derived system tokens for raw EVA
+    next: Obtain frozen P-01..P-20 conflict priority/multi-output semantics independently of G1.7 suffix-class precedence; reconstruct f2v raw→normalized→functional trace using author's pinned ZL3b-n v3b corpus (SRC-0013) and preregister held-out test
   - id: RM-001
     title: Build and independently spot-check canvas/folio concordance from canonical supplied manifest
     status: ACTIVE
@@ -16,7 +16,7 @@ priorities:
   - id: RM-002
     title: Inventory transcription variants and usage rights
     status: ACTIVE
-    next: Secure version-pinned rights-reviewed EVA/IVTFF for literal validation of published claims, keeping transliteration systems distinct
+    next: Locate and rights-audit exact ZL3b-n version 3b dated 2025-05-13 named by SRC-0013; record stable checksum and line/folio ID mapping; separately compare named alternative transcripts
   - id: RM-003
     title: Preregister script-position null-model study
     status: WATCHING
