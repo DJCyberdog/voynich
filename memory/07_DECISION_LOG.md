@@ -38,3 +38,6 @@ The owner requested integration of earlier Voynich chats. Retrieved September 16
 
 ## 2026-11-05 D-0013 — EXP-0010
 Synthetic P-06 ordering probe shows aiin lookup sensitivity; not proof of author decoder error. Owner manifest and automation unchanged. EXP-0009 remains prior overlap exploration.
+
+## 2026-11-05 D-0014 — retrospective EXP-0013 register integrity
+Audit of main 791023a71b17a01ba6969db9d9f8e8d591fcd5ac found EXP-0013 report integrated in PR #18 but absent from canonical hypothesis/experiment registers and project state. Register existing evidence without promoting it to manuscript observation or inventing a new experiment. Synthetic odd-run underdetermination remains scoped to published R1 prose; author implementation UNKNOWN. Canonical user-supplied SRC-0007 unchanged; independent live Yale authentication not performed; automation unchanged.
