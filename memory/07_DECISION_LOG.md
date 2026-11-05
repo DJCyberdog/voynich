@@ -51,3 +51,6 @@ Previous prompt = original full research prompt including D-0005 and **without**
 
 ## 2026-11-05 D-0016 — reconcile already merged EXP-0014 and EXP-0015
 After PRs #20 and #21 were merged, canonical memory remained at EXP-0013. Record their existing reports in experiment register, project state and roadmap, and update README without presenting an independent new corpus experiment. EXP-0014's f3r-only shuffled controls were nonsignificant; EXP-0015's full-file positive gains were owner-reported, with permutation nulls not yet executed. No new source authentication, translation, or manuscript image observation. D-0005 owner-canonical manifest policy unchanged.
+
+## 2026-11-05 D-0017 — limited aggregate-count audit
+EXP-0016 checks the necessary line-local adjacency identity on already merged EXP-0015 aggregates. Preserve distinction between VERIFIED arithmetic and DOCUMENTED owner-reported input. No new glyph, parser reproduction, permutation significance or semantic result. No changes to D-0005 or automations.
