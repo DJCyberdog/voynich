@@ -8,7 +8,7 @@ priorities:
   - id: RM-007
     title: Adversarial independent evaluation of Eschede/Franke decoding claims
     status: ACTIVE
-    next: Freeze published mappings and exemplars on folios 2v,33v,78r,71r; verify literal EVA strings and repetition counts on independent transcription before semantic testing; design held-out blind test with strongest controls
+    next: First reconcile 2v Currier C cheopchor vs claimed pchor, and zero qokedy occurrences vs asserted 2x and 3x chains; compare a pinned independent EVA witness and inspect source glyphs; then examine folios 33v,78r,71r and freeze semantic rules
   - id: RM-001
     title: Build and independently spot-check canvas/folio concordance from canonical supplied manifest
     status: ACTIVE
