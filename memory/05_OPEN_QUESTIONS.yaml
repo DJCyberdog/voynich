@@ -17,3 +17,7 @@ questions:
     question: Which text statistics survive independent transcriptions and held-out folios?
     status: BLOCKED
     blocker: Version-pinned rights-reviewed transcription corpus and preregistered test split not yet available; NOT blocked by reauthentication of canonical manifest
+  - id: Q-005
+    priority: high
+    question: Can any well-provenanced EVA witness or source image confirm standalone pchor and 2x/3x adjacent qokedy on f2v, contra Currier C witness?
+    status: ACTIVE
