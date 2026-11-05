@@ -54,3 +54,6 @@ After PRs #20 and #21 were merged, canonical memory remained at EXP-0013. Record
 
 ## 2026-11-05 D-0017 — limited aggregate-count audit
 EXP-0016 checks the necessary line-local adjacency identity on already merged EXP-0015 aggregates. Preserve distinction between VERIFIED arithmetic and DOCUMENTED owner-reported input. No new glyph, parser reproduction, permutation significance or semantic result. No changes to D-0005 or automations.
+
+## 2026-11-05 D-0018 — process owner-uploaded full transcription for EXP-0017, preserve rights boundary
+Owner supplied source ZL3b-n v3b, original EXP-0015 evaluator and JSON output. Source SHA256 and original parser results were independently checked locally. EXP-0015-registered within-folio and within-line permutation controls executed 1000 times each for three uncertain-comma policies; all original gains exceeded all null draws. Source text itself remains outside repository until specific redistribution rights are checked; commit owner parser, derived baseline, permutation runner and summary/report only. Preserve evidence limits (no manuscript glyph/semantic proof), 0/5 decipherment gates, and D-0005 SATURATED Yale policy. No automation changes.
