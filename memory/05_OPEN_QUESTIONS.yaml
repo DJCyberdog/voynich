@@ -6,7 +6,7 @@ questions:
     status: ACTIVE
   - id: Q-002
     priority: high
-    question: Where is an exact checksum-pinned, rights-reviewed ZL3b-n v3b (2025-05-13) source, and which other EVA/IVTFF witnesses permit independent f2v comparison?
+    question: Can the directly located ZL3b-n v3b origin file be independently SHA-256 pinned, and does IVTFF comma in f2v.1 encode a certain word break or editorial uncertainty relative to VIB cheopchor?
     status: ACTIVE
   - id: Q-003
     priority: high
