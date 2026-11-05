@@ -19,9 +19,16 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Authenticate submitted Yale manifest independently, then validate full canvas/folio concordance; rights audit before image or text corpus ingestion",
+  "next": "Build working 213-entry canvas/folio/part concordance from owner-designated canonical SRC-0007; then transcription rights and script-position study",
   "notes": [
-    "213 is a parsed count within user-supplied file, not independently authenticated Yale server output",
+    "Owner-designated canonical working manifest is distinct from independent live provenance verification",
+    "Repeated direct URL authentication SATURATED and not a research blocker",
     "No manuscript glyphs, text corpus, or language statistics analyzed"
-  ]
+  ],
+  "owner_manifest_policy": {
+    "decision_id": "D-0005",
+    "canonical_working_source": "SRC-0007",
+    "live_reauthentication": "SATURATED",
+    "reactivation": "Concrete mismatch, owner request or materially new official source"
+  }
 }
