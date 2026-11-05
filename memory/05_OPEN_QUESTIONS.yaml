@@ -2,7 +2,7 @@ schema_version: 1
 questions:
   - id: Q-001
     priority: high
-    question: Can Yale's live manifest be authenticated against the user-supplied 213-canvas snapshot, including compound/repeated labels?
+    question: How do 213 canvas IDs/labels in canonical working SRC-0007 map to physical folios, surfaces and foldout parts, including duplicates?
     status: ACTIVE
   - id: Q-002
     priority: high
@@ -16,4 +16,4 @@ questions:
     priority: medium
     question: Which text statistics survive independent transcriptions and held-out folios?
     status: BLOCKED
-    blocker: No independently authenticated image concordance and pinned, rights-reviewed transcription corpus yet
+    blocker: Version-pinned rights-reviewed transcription corpus and preregistered test split not yet available; NOT blocked by reauthentication of canonical manifest

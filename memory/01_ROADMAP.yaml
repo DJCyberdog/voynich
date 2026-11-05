@@ -2,18 +2,22 @@ schema_version: 1
 updated: '2026-11-05'
 priorities:
   - id: RM-001
-    title: Authenticate submitted Yale IIIF manifest and validate canvas/folio concordance
+    title: Build and independently spot-check canvas/folio concordance from canonical supplied manifest
     status: ACTIVE
-    next: Obtain independently official bytes/ETag or server checksum; compare with user-supplied SHA-pinned snapshot; produce and spot-check 213-entry canvas/label concordance especially partial labels
+    next: Use SHA-pinned SRC-0007 as canonical working snapshot; build 213-record ID/label/part concordance, compare foldouts with SRC-0006 and inspect anomalies; do not retry manifest URL by default
   - id: RM-002
     title: Inventory transcription variants and usage rights
     status: ACTIVE
-    next: Obtain original IVTFF/EVA source descriptions and checksum/version without merging alphabets
+    next: Obtain original IVTFF/EVA source descriptions, checksums, versioning and permissions without merging transcription systems
   - id: RM-003
     title: Preregister first script-position null-model study
     status: WATCHING
-    next: Select exploratory and held-out folios after independently authenticated image concordance
+    next: Define exploratory and held-out folios using canonical map and separately reviewed transcription corpus
   - id: RM-004
     title: Codicology and chronology separation
     status: WATCHING
     next: Retrieve primary dating report and distinguish support age from inscription date
+  - id: RM-005
+    title: Independent live manifest attestation
+    status: SATURATED
+    next: Reopen ONLY for concrete source discrepancy, owner instruction or materially new official access; not a blocker for mapping
