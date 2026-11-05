@@ -20,3 +20,6 @@ Owner asks to survey German/English/other Wikipedias, Voynich.net and to attack 
 
 ## 2026-11-05 D-0007 — distinguish reading validation from semantic criticism
 EXP-0004 compares Franke 2v literal-word claims with the Currier C f2v.P.1–P.8 VIB witness. Source-level literal mismatch is documented, but not elevated to universal disproof without raw transcription/image and other witnesses. Next effort should seek best rescue interpretation (e.g., different EVA witness or segmentation), without overriding evidence. Prioritize literal image-linked provenance above speculative medical meaning.
+
+## 2026-11-05 D-0008 — correct layer confusion in EXP-0004; refocus on parser reproducibility
+Franke's published Oct 4 method correction (SRC-0010) says his parameter chains are **derived parser outputs**, not raw EVA. The previously observed Currier C mismatch remains a correct witness-level observation, but cannot be promoted to a refutation of generated system tokens. Worked f1r example SRC-0012 maps raw shol to qokedy. Parser table SRC-0011 has at least one overlapping match, shol triggering P-12 and P-17, for which precedence was not visible in the inspected table. EXP-0005 records this constrained concern, not an assertion of no solution. Ask for deterministic full trace then blind test. Owner's canonical manifest status unchanged; task unchanged.

@@ -19,5 +19,6 @@ questions:
     blocker: Version-pinned rights-reviewed transcription corpus and preregistered test split not yet available; NOT blocked by reauthentication of canonical manifest
   - id: Q-005
     priority: high
-    question: Can any well-provenanced EVA witness or source image confirm standalone pchor and 2x/3x adjacent qokedy on f2v, contra Currier C witness?
+    question: Can the author reproduce derived f2v pchor and 2x/3x qokedy from versioned raw EVA via frozen rules and explain P-12/P-17 overlaps?
     status: ACTIVE
+

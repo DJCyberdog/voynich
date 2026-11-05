@@ -3,7 +3,7 @@
   "updated": "2026-11-05",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0004",
+  "cycle": "EXP-0005",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,12 +19,14 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Obtain pinned full Currier/TT/ZL sources and reconcile folio 2v glyphs with image, then test source's literal and section claims; no automatic rejection of all medical hypotheses",
+  "next": "Request/source frozen parser precedence and raw-to-output trace on f2v; compare P-12/P-17 rule overlaps and prospective blind outputs before any semantic conclusion",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
     "No manuscript glyphs, text corpus, or language statistics analyzed",
-    "EXP-0004: independent VIB Currier C f2v lines P1-P8 display cheopchor but no stand-alone pchor or qokedy; applies only to this witness and tokenization, original image not visually checked"
+    "EXP-0004: independent VIB Currier C f2v lines P1-P8 display cheopchor but no stand-alone pchor or qokedy; applies only to this witness and tokenization, original image not visually checked",
+    "EXP-0005: Franke October 4 addendum explicitly classifies system tokens such as qokedy as parser outputs. EXP-0004 raw token mismatch does not falsify derived outputs.",
+    "P-12 and P-17 both match raw shol in published rule table; full conflict resolution not observed"
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
