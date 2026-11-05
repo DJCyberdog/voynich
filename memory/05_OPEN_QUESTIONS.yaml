@@ -6,7 +6,7 @@ questions:
     status: ACTIVE
   - id: Q-002
     priority: high
-    question: Can the directly located ZL3b-n v3b origin file be independently SHA-256 pinned, and does IVTFF comma in f2v.1 encode a certain word break or editorial uncertainty relative to VIB cheopchor?
+    question: Can the directly located ZL3b-n v3b origin file be independently SHA-256 pinned, and how does the documented uncertain IVTFF comma in f2v.1 affect split/join parser results relative to VIB cheopchor?
     status: ACTIVE
   - id: Q-003
     priority: high
