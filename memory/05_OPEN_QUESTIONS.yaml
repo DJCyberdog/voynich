@@ -1,0 +1,19 @@
+schema_version: 1
+questions:
+  - id: Q-001
+    priority: high
+    question: What are the stable Yale IIIF canvas identifiers and their folio mappings?
+    status: ACTIVE
+  - id: Q-002
+    priority: high
+    question: What is the exact rights provenance of each candidate EVA/IVTFF transcription?
+    status: ACTIVE
+  - id: Q-003
+    priority: high
+    question: Can the primary radiocarbon report be checked and what exactly was sampled?
+    status: ACTIVE
+  - id: Q-004
+    priority: medium
+    question: Which text statistics survive independent transcriptions and held-out folios?
+    status: BLOCKED
+    blocker: No pinned, rights-reviewed corpus and folio mapping yet

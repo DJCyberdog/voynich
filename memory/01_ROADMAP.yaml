@@ -1,0 +1,19 @@
+schema_version: 1
+updated: '2026-11-05'
+priorities:
+  - id: RM-001
+    title: Verify official MS408 IIIF manifest and folio/canvas map
+    status: ACTIVE
+    next: Fetch official Yale IIIF manifest, pin identifiers, validate physical folios versus canvases and usage terms
+  - id: RM-002
+    title: Inventory transcription variants and usage rights
+    status: ACTIVE
+    next: Obtain original IVTFF/EVA source descriptions and checksum/version without merging alphabets
+  - id: RM-003
+    title: Preregister first script-position null-model study
+    status: WATCHING
+    next: Select mutually exclusive exploratory and held-out folios after validated mapping
+  - id: RM-004
+    title: Codicology and chronology separation
+    status: WATCHING
+    next: Retrieve primary dating report and clearly separate parchment age from inscription date
