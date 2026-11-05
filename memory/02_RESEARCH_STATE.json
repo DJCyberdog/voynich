@@ -3,7 +3,7 @@
   "updated": "2026-11-05",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0016",
+  "cycle": "EXP-0017",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,11 +19,11 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Independently audit EXP-0016 implied 116/79/76 zero-token line counts against source/parser, reproduce EXP-0015, then execute null controls",
+  "next": "Preregister position-preserving and length/section-aware null models; test alternate transcription witness and IVTFF parser losses; verify rights before source sharing",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
-    "No manuscript glyphs, text corpus, or language statistics analyzed",
+    "No original manuscript glyphs verified; EXP-0017 now analyzed the uploaded full IVTFF transcript statistically under four suffix classes (without manuscript semantics)",
     "EXP-0004: independent VIB Currier C f2v lines P1-P8 display cheopchor but no stand-alone pchor or qokedy; applies only to this witness and tokenization, original image not visually checked",
     "EXP-0005: Franke October 4 addendum explicitly classifies system tokens such as qokedy as parser outputs. EXP-0004 raw token mismatch does not falsify derived outputs.",
     "P-12 and P-17 both match raw shol in published rule table; full conflict resolution not observed",
@@ -34,12 +34,15 @@
     "EXP-0013: retrospective registration of PR #18 synthetic R1 odd-run grouping ambiguity; implementation and manuscript effect UNKNOWN",
     "EXP-0014 merged: 20-line f3r pilot, negative Markov gain across three comma policies and nonsignificant within-line shuffle controls; not full-corpus inference.",
     "EXP-0015 merged: owner-reported full-file positive held-out gains for three comma policies; script/source bytes and permutation nulls not independently verified/executed.",
-    "EXP-0016: algebraic count compatibility VERIFIED from owner-reported aggregates; implied empty-token lines 116/79/76; no independent parser or permutation execution."
+    "EXP-0016: algebraic count compatibility VERIFIED from owner-reported aggregates; implied empty-token lines 116/79/76; no independent parser or permutation execution.",
+    "EXP-0017: original owner CV code/JSON output reproduced exactly from SHA-256 matched uploaded 403KB ZL3b-n v3b; all six 1000-permutation null cells had zero exceedances (empirical p=0.000999 each), only for frozen pipeline.",
+    "Full corpus was processed locally, not committed to repository (rights remain incomplete); author decoder, manuscript glyphs, independent witness and position-preserving nulls remain unverified."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
     "canonical_working_source": "SRC-0007",
     "live_reauthentication": "SATURATED",
     "reactivation": "Concrete mismatch, owner request or materially new official source"
-  }
+  },
+  "local_transcription_analyzed": true
 }
