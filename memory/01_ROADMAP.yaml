@@ -4,7 +4,7 @@ priorities:
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
-    next: Freeze source bytes and parser; audit rights and IVTFF line/token policy; check EXP-0016 per-line accounting invariants against actual parsed lines; reproduce all reported folds before within-folio and within-line 1000-permutation tests; keep f3r pilot EXP-0014 separate
+    next: EXP-0017 reproduced the exact owner script on SHA-pinned uploaded text and rejected 1000-draw within-folio and within-line exchangeability nulls for three comma policies; preregister position- and line-length-conditioned alternatives and cross-section/independent-witness tests; audit rights and IVTFF parser omissions before generalizing
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
@@ -24,7 +24,7 @@ priorities:
   - id: RM-002
     title: Inventory transcription variants and usage rights
     status: ACTIVE
-    next: Origin ZL3b-n v3b located (SRC-0016), f2v.1 comma-delimited pchor observed; independently hash complete bytes and apply verified IVTFF comma=uncertain, dot=certain rules and original-site attribution rights; reconcile VIB cheopchor before claiming a manuscript word boundary
+    next: Owner-supplied complete ZL3b-n v3b SHA256 computed and matches EXP-0015 claim (SRC-0021); independent live origin identity and exact redistribution rights still unverified. Audit alternate VIB witness, uncertain comma, manuscript image boundary and glyph uncertainty before making manuscript-level claims
   - id: RM-003
     title: Preregister script-position null-model study
     status: WATCHING
