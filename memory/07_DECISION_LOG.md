@@ -32,3 +32,6 @@ EXP-0007 directly observes `cheo,pchor` in ZL3b-n v3b f2v.1 (SRC-0016), contrary
 
 ## 2026-11-05 D-0011 — EXP-0008 referential-integrity review
 Before merging PR #10, register HYP-0008 and SRC-0019/SRC-0020 explicitly. Certain-boundary inference contradicted by IVTFF 2.x normative comma definition; physical gap remains unknown. This is a documentation repair of EXP-0008, not an independent second manuscript experiment. No Yale live authentication or automation change.
+
+## 2026-11-05 D-0012 — retrospective chat leads imported without evidence promotion
+The owner requested integration of earlier Voynich chats. Retrieved September 16–17 and October 5 conversation summaries were archived in research/history/2026-11-05_prior-chat-voynich-inventory.md as CLAIMED historical leads, not primary manuscript observations or new preregistered experiments. The reported Burchard 200-window/3,703-token comparison and Nürnberg blocked control lack recovered original artifacts; q/qo word-initial and label distribution is a testable hypothesis, not an established frequency. Added RM-008; no new HYP/EXP/SRC identifiers or decoding claims. No Yale live authentication or automation change.
