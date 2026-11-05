@@ -2,9 +2,9 @@ schema_version: 1
 updated: '2026-11-05'
 priorities:
   - id: RM-001
-    title: Verify official MS408 IIIF manifest and independent folio/canvas concordance
+    title: Authenticate submitted Yale IIIF manifest and validate canvas/folio concordance
     status: ACTIVE
-    next: Read official Yale manifest via authorized route; pin canvas identifiers and order; compare Yale physical catalog folds, unnumbered and missing leaves before equating IDs
+    next: Obtain independently official bytes/ETag or server checksum; compare with user-supplied SHA-pinned snapshot; produce and spot-check 213-entry canvas/label concordance especially partial labels
   - id: RM-002
     title: Inventory transcription variants and usage rights
     status: ACTIVE
@@ -12,8 +12,8 @@ priorities:
   - id: RM-003
     title: Preregister first script-position null-model study
     status: WATCHING
-    next: Select mutually exclusive exploratory and held-out folios after validated mapping
+    next: Select exploratory and held-out folios after independently authenticated image concordance
   - id: RM-004
     title: Codicology and chronology separation
     status: WATCHING
-    next: Retrieve primary dating report and clearly separate parchment age from inscription date
+    next: Retrieve primary dating report and distinguish support age from inscription date

@@ -3,18 +3,25 @@
   "updated": "2026-11-05",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0002",
+  "cycle": "EXP-0003",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
   "source_rights_verified": false,
-  "verified_primary_source": "SRC-0006",
-  "active_question": "Can Yale manuscript physical foliation be treated as a digital canvas index?",
-  "result": "Universal direct identity contradicted in physical foliation scope; mapping and manifest content still UNKNOWN",
-  "next": "Verify Yale official IIIF manifest and distinguish leaves, historical foliation, sides, surfaces, captures and canvases; rights audit before ingestion",
+  "user_supplied_manifest": {
+    "sha256": "4aa05eb43637b15ce68ba3fa15eb2d2e69dccd65cc46a31e84f80e89cd1e155e",
+    "origin_claim": "https://collections.library.yale.edu/manifests/2002046",
+    "authenticity": "UNKNOWN",
+    "canvases": 213,
+    "unique_canvas_ids": 213,
+    "simple_labels": 183,
+    "compound_labels": 21,
+    "descriptive_labels": 9,
+    "distinct_labels": 210
+  },
+  "next": "Authenticate submitted Yale manifest independently, then validate full canvas/folio concordance; rights audit before image or text corpus ingestion",
   "notes": [
-    "No Yale IIIF manifest retrieved",
-    "No manuscript statistics or translations produced",
-    "EXPERIMENT EXP-0002 is a documentary falsification of a universal mapping assumption, not a quantitative test"
+    "213 is a parsed count within user-supplied file, not independently authenticated Yale server output",
+    "No manuscript glyphs, text corpus, or language statistics analyzed"
   ]
 }
