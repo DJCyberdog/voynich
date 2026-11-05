@@ -1,0 +1,5 @@
+# Initial source leads (2026-11-05)
+- Primary custody: Yale Beinecke MS 408 collection overview https://beinecke.library.yale.edu/beinecke/collections/beinecke-cipher-voynich-manuscript ; catalog https://collections.library.yale.edu/catalog/2002046 ; IIIF manifest lead https://collections.library.yale.edu/manifests/2002046 . Official manifest bytes, number of canvases, metadata and reuse terms NOT independently checked.
+- Radiocarbon: https://voynich.nu/extra/carbon.html secondary exposition reports parchment range 1404–1438 (95%) and discusses primary report. The technical report must be directly checked before elevating sampling specifics.
+- Transcription candidates: Zandbergen–Landini, Takahashi, Currier/D'Imperio, Friedman group, Claston. Third-party provenance/rights matrix https://github.com/noah-chelednik/voynich-data/blob/main/docs/SOURCES_LICENSE.md is a lead, not binding permission. No corpus copied.
+- Digital-image counts reported by derivative websites vary by included covers, physical leaves, canvas versions and filters: no count is accepted before official manifest mapping. No folio transcription has been verified.
