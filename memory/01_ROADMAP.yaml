@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-05'
 priorities:
+  - id: RM-009
+    title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
+    status: ACTIVE
+    next: Freeze source bytes and parser; audit rights and IVTFF line/token policy; reproduce all reported folds before within-folio and within-line 1000-permutation tests; keep f3r pilot EXP-0014 separate
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING

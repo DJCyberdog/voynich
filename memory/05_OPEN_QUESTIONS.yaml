@@ -22,3 +22,7 @@ questions:
     question: Can the author reproduce derived f2v output from ZL3b-n v3b using explicit archived P-rule collision precedence or multi-output policy, separate from G1.7 class priority?
     status: ACTIVE
 
+  - id: Q-006
+    priority: high
+    question: Do EXP-0015 owner-reported full-file gains reproduce from independently pinned ZL3b-n v3b and frozen parser, and exceed both preregistered within-folio and within-line permutation nulls?
+    status: ACTIVE
