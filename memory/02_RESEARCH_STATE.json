@@ -3,7 +3,7 @@
   "updated": "2026-11-05",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0007",
+  "cycle": "EXP-0008",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Independently hash full origin ZL3b-n v3b; establish IVTFF comma semantics and f2v image concordance, then frozen P parser trace",
+  "next": "Pin ZL3b-n full bytes, compare both f2v.1 uncertain-comma tokenizations with frozen parser; image concordance pending",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -28,7 +28,8 @@
     "EXP-0005: Franke October 4 addendum explicitly classifies system tokens such as qokedy as parser outputs. EXP-0004 raw token mismatch does not falsify derived outputs.",
     "P-12 and P-17 both match raw shol in published rule table; full conflict resolution not observed",
     "EXP-0006: G1.7 suffix priority does not determine archived P-12 vs P-17 functional output; ZL3b-n v3b author-named reference corpus newly pinned in research inventory.",
-    "EXP-0007: ZL3b-n origin f2v.1 shows cheo,pchor, contrasting VIB cheopchor; comma editorial boundary, manuscript boundary UNKNOWN; no semantic validation."
+    "EXP-0007: ZL3b-n origin f2v.1 shows cheo,pchor, contrasting VIB cheopchor; comma editorial boundary, manuscript boundary UNKNOWN; no semantic validation.",
+    "EXP-0008: normative IVTFF 2.x comma means uncertain word space; treating f2v.1 cheo,pchor as a certain two-word boundary is contradicted; physical gap UNKNOWN."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
