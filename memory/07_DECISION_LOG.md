@@ -29,3 +29,6 @@ EXP-0006 verifies that G1.7's ORY>EDY>OL>OTHER priority classifies orthographic 
 
 ## 2026-11-05 D-0010 — Correct f2v source-witness scope using the designated origin transcription
 EXP-0007 directly observes `cheo,pchor` in ZL3b-n v3b f2v.1 (SRC-0016), contrary to generalizing the older VIB contiguous `cheopchor` witness. Treat comma as editorial notation pending primary IVTFF punctuation and image check; neither raw literal presence nor a medical interpretation is thereby proven at manuscript level. Origin rights statement SRC-0017 permits use with attribution but is not an image/font license; no corpus copied. Independent source-byte hash still pending, registry SHA is CLAIMED. Owner manifest and task unchanged.
+
+## 2026-11-05 D-0011 — EXP-0008 referential-integrity review
+Before merging PR #10, register HYP-0008 and SRC-0019/SRC-0020 explicitly. Certain-boundary inference contradicted by IVTFF 2.x normative comma definition; physical gap remains unknown. This is a documentation repair of EXP-0008, not an independent second manuscript experiment. No Yale live authentication or automation change.
