@@ -35,3 +35,8 @@ questions:
     priority: high
     question: Can the residual EXP-0018 suffix-class predictive gain survive nulls jointly fixing each line's class counts and folio-specific length/position class marginals, and independent transcription witnesses or section-held-out evaluation?
     status: ACTIVE
+  - id: Q-009
+    priority: high
+    question: Which exact 176 folio IDs and VGM356 line/token filters were frozen before Franke VGM371/377 evaluation, and can original CSV and run377.py reproduce metrics without post-selection?
+    status: BLOCKED
+    blocker: Source CSV, code, ID manifest and provenance/history not located as downloadable authentic artifacts; local proxy counts alone underdetermine selection
