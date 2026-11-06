@@ -1,0 +1,109 @@
+{
+  "experiment": "EXP-0018",
+  "date": "2026-11-06",
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "original_script_sha256": "7acf5cb70b6197549d71cd2f1b91bda3a72d1c7885d63db76522454083017e89",
+  "previous_scorer_sha256": "24bebe12f1e214636122f0bf90351bcaa36584b1d86e9ba8f04c7d34acea97d3",
+  "full_null_output_sha256": "b73b77861c5a2f5d7acbc22a87862ea1c4046a4a09f89becc1ad250ec9100fcd",
+  "original_run_script_sha256": "0b3abea7a06a7c65c746d95f679a0c35a7243af452e1637810363cfa5c6a860b",
+  "secondary_output_sha256": "9c9f02b635f50d55ef30469198d391e148f64fc98876caba47d5cd0adb1e084f",
+  "primary_null": "Folio ID x exact accepted-token line length x exact token offset",
+  "secondary_null": "Folio ID x exact token offset",
+  "null_permutations": 1000,
+  "null_seed": 180377,
+  "fold_seed": 377,
+  "primary_status": "VERIFIED scoped permutation result; exploratory under fixed source/model",
+  "position_aware_secondary_status": "EXPLORATORY (separate held-out comparison, no independent p)",
+  "policies": {
+    "exclude": {
+      "observed": 0.01844083716460898,
+      "strict": {
+        "mean": 0.009988438101971957,
+        "lo": 0.008575206,
+        "hi": 0.0116157494,
+        "max": 0.0129163072,
+        "exceed": 0,
+        "p": 0.000999000999000999,
+        "movable_tokens": 27196,
+        "total_tokens": 32147,
+        "movable_edges_both": 22708,
+        "edges": 27038
+      },
+      "position_only": {
+        "mean": 0.0072064624,
+        "max": 0.0095251858,
+        "exceed": 0,
+        "p": 0.000999000999000999
+      },
+      "held_out_position_cv": {
+        "base_loss": 0.6726569315665242,
+        "with_prev_loss": 0.6613052962913614,
+        "extra_gain": 0.011351635275162796,
+        "other_beta_extra_gains": {
+          "5": 0.007965595043581313,
+          "100": 0.009462824143280995
+        }
+      }
+    },
+    "join": {
+      "observed": 0.018268024834445118,
+      "strict": {
+        "mean": 0.009687892,
+        "lo": 0.0083805824,
+        "hi": 0.0112034088,
+        "max": 0.012288883,
+        "exceed": 0,
+        "p": 0.000999000999000999,
+        "movable_tokens": 29294,
+        "total_tokens": 34415,
+        "movable_edges_both": 24743,
+        "edges": 29269
+      },
+      "position_only": {
+        "mean": 0.0069997585,
+        "max": 0.0091126018,
+        "exceed": 0,
+        "p": 0.000999000999000999
+      },
+      "held_out_position_cv": {
+        "base_loss": 0.6658549278151533,
+        "with_prev_loss": 0.6553486657753352,
+        "extra_gain": 0.01050626203981809,
+        "other_beta_extra_gains": {
+          "5": 0.0061683660818001255,
+          "100": 0.009306226364918738
+        }
+      }
+    },
+    "split": {
+      "observed": 0.016846419832565962,
+      "strict": {
+        "mean": 0.0095498234,
+        "lo": 0.0082881531,
+        "hi": 0.0109196736,
+        "max": 0.0117086208,
+        "exceed": 0,
+        "p": 0.000999000999000999,
+        "movable_tokens": 31000,
+        "total_tokens": 37105,
+        "movable_edges_both": 26512,
+        "edges": 31956
+      },
+      "position_only": {
+        "mean": 0.0061739458,
+        "max": 0.0088683498,
+        "exceed": 0,
+        "p": 0.000999000999000999
+      },
+      "held_out_position_cv": {
+        "base_loss": 0.6575330122854011,
+        "with_prev_loss": 0.6479428443772992,
+        "extra_gain": 0.009590167908101774,
+        "other_beta_extra_gains": {
+          "5": 0.0060392637409350984,
+          "100": 0.008035612497322426
+        }
+      }
+    }
+  }
+}
