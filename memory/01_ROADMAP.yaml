@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-05'
 priorities:
+  - id: RM-011
+    title: Independently audit Franke VGM356/371/377 corpus selection provenance and prespecified filters
+    status: BLOCKED
+    next: Obtain authentic source VGM356/interlinear_all.csv with hash/version, VGM377/run377.py, VGM371 frozen config, exact 176-ID manifest and pre-analysis selection history. EXP-0019 found aggregate nonidentifiability and P-only-split count witnesses but cannot determine author selection or intent
   - id: RM-010
     title: Test joint position-and-line-composition confounding after EXP-0018
     status: ACTIVE
