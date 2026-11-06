@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-05'
 priorities:
+  - id: RM-010
+    title: Test joint position-and-line-composition confounding after EXP-0018
+    status: ACTIVE
+    next: Following independent EXP-0018 strict folio x exact length x exact token offset null rejection, design and preregister margins-preserving swaps that also retain each individual line class multiset; evaluate held-out sections and alternate transcripts before any semantic inference
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
