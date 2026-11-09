@@ -46,3 +46,5 @@ priorities:
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
 
+
+# Draft-only 2026-11-10 A-17 source audit in PR #35: author R4 direct days/hours NOT CONFIRMED; R4b visual-externalization is a distinct prospective prediction. SOURCE_REVIEWED, not tested or integrated. Do not count as a new canonical experiment. Next: rights-reviewed f68r3 text/image witnesses, stratified heldout controls; reconcile stacked #25-#27.
