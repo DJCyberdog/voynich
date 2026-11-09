@@ -58,3 +58,7 @@ EXP-0016 checks the necessary line-local adjacency identity on already merged EX
 
 ## 2026-11-09 D-0011 — EXP-0020 synthetic sampler preflight (draft)
 On main c639d6ea52c784ce2f60c9e5143dde580c96fa17, a bounded independent enumeration found 12 three-class 3x3 Latin squares, all isolated under elementary 2x2 checkerboard moves, with a positive 2x2 AB/BA control. Universal irreducibility of this move family is false. Do not treat this as a real four-class corpus experiment or infer any manuscript meaning. Reconcile stacked PRs #25–#27 before merge; no automation change. The 2026-11-05 README-progress owner instruction remains in force; full historical automation prompt diff remains to be recorded when a verified old prompt is available, not invented here.
+
+
+## 2026-11-09 D-0018 — EXP-0020 exploratory alternative move graph (draft)
+Within existing PR #28, test longer margin-preserving whole-row/whole-column transpositions against the 3x3 Latin-square counterexample. Exact enumeration gives components 6+6 for either family separately and 12 connected when combined; this is a scoped synthetic constructive result, not evidence of four-class corpus irreducibility or decipherment. Keep EXP-0020 inferential BLOCKED, reconcile overlapping #25–#27 before any authorized merge, do not change automations, and do not promote unintegrated draft status to main.
