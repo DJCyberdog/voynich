@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-09'
 priorities:
+  - id: RM-012
+    title: Audit bizarre and sexological Voynich image interpretations without belief promotion
+    status: WATCHING
+    next: See research/hypotheses/2026-11-09_weird_erotic_20_audit.md for 20 dependent individual claims, primary/secondary source tiers, and falsifying iconographic comparisons; defer any experiment until independent source and heldout sampling gates
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
