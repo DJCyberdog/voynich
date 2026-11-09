@@ -97,3 +97,8 @@ One bounded author-source audit: Greshko 2025-11-26, DOI 10.1080/01611194.2025.2
 ## 2026-11-10 — A-17 source-review delta (Draft PR #35; no new owner decision)
 
 Delta-first: actual main `eee6721615098918cce02bf76e4fdda26db60176`, ten open Draft PRs (#25–#31, #33–#35), 14 required main files read. Rechecked #33 source audit and #27 Franke proxy overlap. Author-origin Franke report v1.0 (2026-10-05) explicitly says R4 direct astronomical days/hours NOT CONFIRMED; R4b visual-externalization is a distinct weaker prediction without one-to-one textual numeric assignment. Report: `research/hypotheses/2026-11-10_A17_franke_R4_R4b_source_discrimination.md`. No new manuscript measurement, parser execution, image rights grant, canonical HYP/EXP/SRC ID, automation change or merge authorization. Queue A-17 SOURCE_REVIEWED; 8/40 source reviewed, 0/40 synthesized; integrated state EXP-0016 and 0/5 gates unchanged. Existing automation schedule/prompt unchanged.
+
+
+## 2026-11-10 — A-04 original-paper source audit (Draft PR #35; no new owner decision)
+
+Delta-first checked actual main `eee6721615098918cce02bf76e4fdda26db60176`, all 14 required main files, ten open PRs (#25–#31, #33–#35), #33 A-04 source and #35 queue. Original Montemurro/Zanette 2013 PLOS ONE article (DOI 10.1371/journal.pone.0066344) read; global shuffle is not a section-conditioned generator null. Authors' statistical organization CLAIMED pending reproduction; semantic interpretation UNKNOWN. Report `research/hypotheses/2026-11-10_A04_montemurro_primary_source_review.md`. A-04 SOURCE_REVIEWED; 9/40 source reviewed, 0/40 completed; no manuscript test, source-data copying, new HYP/EXP/SRC ID, task modification or merge. Integrated main remains EXP-0016; schedule unchanged.
