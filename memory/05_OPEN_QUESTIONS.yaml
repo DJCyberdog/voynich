@@ -26,3 +26,9 @@ questions:
     priority: high
     question: Do EXP-0015 owner-reported full-file gains reproduce from independently pinned ZL3b-n v3b and frozen parser, and exceed both preregistered within-folio and within-line permutation nulls?
     status: ACTIVE
+
+  - id: Q-009
+    priority: high
+    question: Do longer alternating-cycle moves connect the feasible state space of an actual pinned Voynich four-class line/position table when both row multisets and absolute-position counts are fixed?
+    status: BLOCKED
+    blocker: Real rights-reviewed input and verified parser/selection required; order-4 Latin-square row/column moves have four synthetic disconnected orbits
