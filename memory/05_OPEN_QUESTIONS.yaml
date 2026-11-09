@@ -31,3 +31,8 @@ questions:
     priority: high
     question: Which distinct Voynich explanatory claims in DE/EN/FR/ES/IT Wikipedia and their original cited papers remain unregistered or untested after deduplication?
     status: ACTIVE
+
+  - id: Q-009
+    priority: medium
+    question: Do the nine Rosettes satisfy preregistered, independent anatomical predictions better than medieval cosmology, map, balneology and architectural comparators?
+    status: WATCHING
