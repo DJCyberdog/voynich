@@ -69,3 +69,6 @@ A separately reproduced exhaustive order-4 Latin-square enumeration (576 states)
 
 ## 2026-11-09 — EXP-0020 combined move-family preflight (draft)
 Independently enumerated 576 synthetic four-class 4x4 Latin squares. Three-row cycles alone: 48 components; combined with legal pairwise subset swaps: one component. Documented in a stacked Draft PR based on #29; no main merge, no corpus inference. Owner README-progress instruction retained without changing the hourly automation; prior prompt unchanged and no other automation touched.
+
+## 2026-11-09 D-0020 — require reciprocal EXP-0020 moves and stationary-kernel audit (draft)
+Independent exhaustive rerun of PR #30 exposes 2,304 nonreciprocal directed edges among 9,216, despite the claim that inverse rotations are included. Do not deploy the move graph as a uniform sampler without explicit reverse orientations, reciprocal-edge tests and stationary/aperiodicity validation. This is a synthetic method correction, not manuscript inference. Preserve owner-canonical SRC-0007, 213/213 and 0/5 package denominators, hourly automation, and stacked PR review; no merges or automation changes.
