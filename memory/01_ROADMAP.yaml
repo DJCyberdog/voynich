@@ -4,7 +4,7 @@ priorities:
   - id: RM-013
     title: Owner-authorized systematic evaluation of all 40 audited Voynich claims
     status: ACTIVE
-    next: Follow research/hypotheses/2026-11-09_40_claims_queue.jsonl and 2026-11-09_40_claims_protocol.md; 40/40 claims inventoried from unmerged #33/#34, 0/40 programme closeouts and 2/40 source reviews (A-01/A-02), prioritize P0 then P1/P2; cluster shared source/tests and publish one materially new bounded result each cycle; holdout and rights first; prevent PR backlog
+    next: Follow research/hypotheses/2026-11-09_40_claims_queue.jsonl and 2026-11-09_40_claims_protocol.md; 40/40 claims inventoried from unmerged #33/#34, 0/40 programme closeouts and 3/40 source reviews (A-01/A-02/A-03), prioritize P0 then P1/P2; cluster shared source/tests and publish one materially new bounded result each cycle; holdout and rights first; prevent PR backlog
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
