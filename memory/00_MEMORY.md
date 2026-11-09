@@ -40,3 +40,5 @@ EXP-0020 four-class synthetic addendum (2026-11-09; DRAFT NOT INTEGRATED): exhau
 
 
 EXP-0020 follow-up (2026-11-09; draft only): exhaustive synthetic four-symbol 4x4 Latin-square enumeration (576 states) finds 48 components of size 12 for legal three-row subset cycles alone; adding legal two-row column-subset exchanges yields one component (9,216 directed edges). This does NOT validate real corpus connectivity, mixing, or semantic hypotheses. See new research report; no integrated research-state promotion.
+
+EXP-0020 directed-edge audit (2026-11-09; DRAFT NOT INTEGRATED): independent execution of PR #30 synthetic graph code reproduces 576 states/9,216 directed edges but detects 2,304 nonreciprocal edges and two out-degree classes (14 for 432 states; 22 for 144). This contradicts the claim that inverse rotations are directly included; no uniform stationary Markov kernel has been established. No real manuscript data or source rights altered. Report `research/experiments/2026-11-09_EXP-0020_directed-graph-audit.md`; stacked on PR #30.
