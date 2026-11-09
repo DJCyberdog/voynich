@@ -65,3 +65,7 @@ Within existing PR #28, test longer margin-preserving whole-row/whole-column tra
 
 ## 2026-11-09 D-0019 — EXP-0020 four-class synthetic orbit falsification (draft)
 A separately reproduced exhaustive order-4 Latin-square enumeration (576 states) has four 144-state connected components under whole-row/whole-column swaps. Order-3 positive control remains connected (12 states). Therefore do not infer universal irreducibility from the order-3 case or use the restricted sampler for corpus significance without a real-table connectivity audit. No manuscript, rights or decipherment claim; no changes to automations or owner-canonical SRC-0007. This draft is stacked on PR #28 and is not integrated. Report: research/experiments/2026-11-09_EXP-0020_fourclass-orbits.md.
+
+
+## 2026-11-09 — EXP-0020 combined move-family preflight (draft)
+Independently enumerated 576 synthetic four-class 4x4 Latin squares. Three-row cycles alone: 48 components; combined with legal pairwise subset swaps: one component. Documented in a stacked Draft PR based on #29; no main merge, no corpus inference. Owner README-progress instruction retained without changing the hourly automation; prior prompt unchanged and no other automation touched.
