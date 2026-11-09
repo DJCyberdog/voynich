@@ -28,3 +28,6 @@ These are **work-package completion ratios**, not an estimated percentage of dec
 
 ## Resumption
 Read this status together with the canonical memory registers, governance and open PRs. On a material integrated delta, update this README's dated status and denominator-defined progress bars via branch/PR only; do not manufacture commits on NO_CHANGE.
+
+## Methodological preflight — 2026-11-09 (draft, NOT integrated)
+EXP-0020 synthetic 3×3 three-class enumeration finds 12 admissible Latin-square states and zero elementary 2×2 checkerboard moves between them; this falsifies universal irreducibility of that move family, **not** a manuscript hypothesis. Real four-class source-table reachability and convergence remain BLOCKED. Work-package denominators remain 213/213 canvas IDs inventoried (100% of snapshot inventory) and 0/5 decipherment acceptance gates (0%); no global decipherment percentage. This draft is separate from integrated main EXP-0016 and stacked PRs #25–#27; reconcile before merge. Owner-canonical Yale manifest has no independent live authentication.
