@@ -54,3 +54,7 @@ After PRs #20 and #21 were merged, canonical memory remained at EXP-0013. Record
 
 ## 2026-11-05 D-0017 — limited aggregate-count audit
 EXP-0016 checks the necessary line-local adjacency identity on already merged EXP-0015 aggregates. Preserve distinction between VERIFIED arithmetic and DOCUMENTED owner-reported input. No new glyph, parser reproduction, permutation significance or semantic result. No changes to D-0005 or automations.
+
+
+## 2026-11-09 D-0011 — EXP-0020 synthetic sampler preflight (draft)
+On main c639d6ea52c784ce2f60c9e5143dde580c96fa17, a bounded independent enumeration found 12 three-class 3x3 Latin squares, all isolated under elementary 2x2 checkerboard moves, with a positive 2x2 AB/BA control. Universal irreducibility of this move family is false. Do not treat this as a real four-class corpus experiment or infer any manuscript meaning. Reconcile stacked PRs #25–#27 before merge; no automation change. The 2026-11-05 README-progress owner instruction remains in force; full historical automation prompt diff remains to be recorded when a verified old prompt is available, not invented here.
