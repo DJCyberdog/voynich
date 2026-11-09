@@ -1,6 +1,10 @@
 schema_version: 1
-updated: '2026-11-05'
+updated: '2026-11-09'
 priorities:
+  - id: RM-010
+    title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
+    status: ACTIVE
+    next: DE/EN candidate families inventoried in research/hypotheses/2026-11-09_multilingual_landscape_audit.md; check FR/ES/IT, trace original papers, deduplicate HYP/EXP/SRC and open PRs, preregister discriminating blind tests before new HYP IDs
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
