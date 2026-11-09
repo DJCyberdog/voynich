@@ -41,9 +41,4 @@ priorities:
   - id: RM-011
     title: EXP-0020 verify four-class fixed-margin null sampler irreducibility
     status: BLOCKED
-    next: Reproduce real four-class source-pinned table; enumerate feasible small state spaces, test source-admissible row/column transpositions and longer alternating cycles beyond 2x2 checkerboards (synthetic union connects 12 Latin squares, not proof for corpus), and only then assess mixing and held-out folio-CV gain; synthetic 3x3 Latin-square counterexample invalidates universal 2x2 connectivity
-
-  - id: RM-011
-    title: EXP-0020 real four-class margin-preserving cycle validation
-    status: BLOCKED
-    next: Reconcile stacked drafts; independently pin and rights-review a real ZL3b-n line/position class table, enumerate small subspaces, test longer alternating cycles and convergence; synthetic order-4 row/column swaps have four disconnected orbits
+    next: Reproduce real four-class source-pinned table; enumerate feasible small state spaces, test source-admissible row/column transpositions and longer alternating cycles beyond 2x2 checkerboards (synthetic union connects 12 order-3 Latin squares but splits 576 order-4 Latin squares into four 144-state components; not proof for corpus), and only then assess mixing and held-out folio-CV gain; synthetic 3x3 Latin-square counterexample invalidates universal 2x2 connectivity
