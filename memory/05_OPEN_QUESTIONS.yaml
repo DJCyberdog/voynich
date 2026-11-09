@@ -31,3 +31,8 @@ questions:
     priority: high
     question: Which distinct Voynich explanatory claims in DE/EN/FR/ES/IT Wikipedia and their original cited papers remain unregistered or untested after deduplication?
     status: ACTIVE
+
+  - id: Q-008
+    priority: high
+    question: Which of 20 source-traced explanations makes a uniquely predictive, transcription-stable, held-out manuscript claim after controlling for scribe, section, line position and flexible decoding?
+    status: ACTIVE
