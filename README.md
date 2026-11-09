@@ -28,3 +28,7 @@ These are **work-package completion ratios**, not an estimated percentage of dec
 
 ## Resumption
 Read this status together with the canonical memory registers, governance and open PRs. On a material integrated delta, update this README's dated status and denominator-defined progress bars via branch/PR only; do not manufacture commits on NO_CHANGE.
+
+## Proposed research-direction delta (2026-11-09; **not yet integrated**)
+
+A scoped DE/EN Wikipedia-led hypothesis-family inventory and source trail is proposed in the dedicated hypothesis-audit PR. It is discovery, not manuscript evidence or a decipherment result; FR/ES/IT and original-paper audits remain open. Integrated status above stays EXP-0016 until owner-authorized merge. Progress denominators unchanged: **213/213 canvas IDs inventoried** (owner-canonical snapshot only), **0/5 decipherment gates passed**. No overall decipherment percentage exists. Seven older open draft PRs (#25–#31) overlap README/memory and require reconciliation. Next: audit original hypothesis papers, source rights, blind tests and PR backlog.
