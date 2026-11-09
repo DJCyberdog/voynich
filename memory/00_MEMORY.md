@@ -32,3 +32,6 @@ EXP-0016 (2026-11-05): Deterministic necessary-condition audit of already report
 
 
 2026-11-09 EXP-0020 **draft synthetic preflight only**: exhaustive 3×3 Latin-square fixed-margin enumeration yields 12 feasible states, all with zero admissible elementary checkerboard moves. 2×2 AB/BA positive control has one move. Universal irreducibility of this move family CONTRADICTED in synthetic scope; actual four-class corpus-table reachability UNKNOWN/BLOCKED. See research/experiments/2026-11-09_EXP-0020_checkerboard-connectivity-preflight.md. This is not an integrated result until PR merge.
+
+
+2026-11-09 EXP-0020 **draft exploratory extension, PR #28**: exact synthetic 3x3 Latin-square graph enumeration: whole-row swaps alone yield two components of six, whole-column swaps alone two components of six, their union one component of twelve (18/18/36 undirected edges respectively). This does not prove connectivity for real four-class tables: row/column swaps are only admissible when corresponding margins agree. No source corpus or image examined; no independent Yale live authentication; no manuscript inference. Report in research/experiments/2026-11-09_EXP-0020_checkerboard-connectivity-preflight.md.
