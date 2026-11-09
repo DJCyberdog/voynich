@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-09'
 priorities:
+  - id: RM-011
+    title: Critically audit and triage the 20 most testable Voynich explanatory claims
+    status: ACTIVE
+    next: See research/hypotheses/2026-11-09_top20_critical_audit.md; verify original source details for priority-A alternatives; then run ONE preregistered image-/corpus-grounded heldout comparison only after pin/rights controls; no gratuitous null-model variants or duplicate PR work
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
