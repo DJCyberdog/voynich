@@ -31,3 +31,8 @@ questions:
     priority: high
     question: Which distinct Voynich explanatory claims in DE/EN/FR/ES/IT Wikipedia and their original cited papers remain unregistered or untested after deduplication?
     status: ACTIVE
+
+  - id: Q-010
+    priority: high
+    question: Which of the 40 owner-selected Voynich claims can withstand their own source-traced, preregistered, controlled tests without double-counting shared experiments, and which must remain unresolved or blocked?
+    status: ACTIVE
