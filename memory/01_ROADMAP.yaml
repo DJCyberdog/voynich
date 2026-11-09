@@ -1,6 +1,7 @@
 schema_version: 1
 updated: '2026-11-09'
 priorities:
+  # 2026-11-10 A-04: Montemurro/Zanette primary source reviewed; global-shuffle null insufficient to distinguish semantic topics from section-conditioned generation. 9/40 source reviewed; no test run or integration.
   - id: RM-013
     title: Owner-authorized systematic evaluation of all 40 audited Voynich claims
     status: ACTIVE
