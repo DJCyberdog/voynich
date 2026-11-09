@@ -16,3 +16,18 @@ Pin a real four-class table and line/position strata from the authorized source;
 
 ## Repository provenance
 Based on verified main c639d6ea52c784ce2f60c9e5143dde580c96fa17. PR #25→#26→#27 are stacked and overlap README/memory; this branch is independent and must not merge before reconciliation. Owner-canonical SRC-0007 is not independently live-Yale authenticated. No third-party code or raw corpus copied.
+
+
+## Follow-up within EXP-0020: exploratory longer-move connectivity (2026-11-09)
+Question: can margin-preserving moves beyond elementary 2x2 checkerboards connect the 12-state counterexample? This is an **exploratory post-hoc extension**, not a preregistered manuscript test. Fixed 3x3 Latin-square margins imply each row and each column contains each of three classes once. Therefore exchanging two entire rows, or two entire columns, preserves both margin families. Exhaustive state enumeration and undirected neighbor graph traversal yielded:
+
+| Allowed moves | Connected-component sizes | Undirected edges |
+|---|---|---:|
+| Whole-row transpositions only | 6, 6 | 18 |
+| Whole-column transpositions only | 6, 6 | 18 |
+| Union of whole-row and whole-column transpositions | 12 | 36 |
+| Elementary 2x2 checkerboards only (prior control) | 1 repeated 12 times | 0 |
+
+Reproduction with Python standard library: enumerate all 6^3 ordered triples of permutations of (0,1,2), retain triples with each column sorted equal to (0,1,2); map each retained tuple to an integer vertex. For every vertex, enumerate all three pairwise row swaps and all three pairwise column swaps; retain only neighbors in the enumerated set; count connected components by breadth-first search and edges as half the sum of distinct neighbor degrees. Positive control: row/column swap maps every Latin square to another admissible Latin square. Negative control: 2x2 checkerboard-only graph remains edgeless. The two single-family graphs each split into two components; their union connects all twelve. These counts were calculated locally, not inferred from Voynich data.
+
+**VERIFIED (synthetic, bounded):** combined whole-row and whole-column transpositions connect this particular 3x3 fixed-margin state space, despite failure of elementary checkerboards. **UNKNOWN:** whether such moves are admissible or sufficient on any actual four-class table. In general whole-row swaps require the two rows to have identical class multisets, and whole-column swaps require identical position-frequency vectors; arbitrary source rows/positions cannot be swapped. The result does not establish universal irreducibility, unbiased stationary sampling, mixing time, or any manuscript interpretation. Next: source-pinned real four-class slice, exact margins, complete feasible-state enumeration where tractable, and graph connectivity under genuinely admissible longer cycles. Do not promote this exploratory synthetic result to confirmatory evidence.
