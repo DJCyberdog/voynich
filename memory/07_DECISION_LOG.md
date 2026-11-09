@@ -62,3 +62,6 @@ On main c639d6ea52c784ce2f60c9e5143dde580c96fa17, a bounded independent enumerat
 
 ## 2026-11-09 D-0018 — EXP-0020 exploratory alternative move graph (draft)
 Within existing PR #28, test longer margin-preserving whole-row/whole-column transpositions against the 3x3 Latin-square counterexample. Exact enumeration gives components 6+6 for either family separately and 12 connected when combined; this is a scoped synthetic constructive result, not evidence of four-class corpus irreducibility or decipherment. Keep EXP-0020 inferential BLOCKED, reconcile overlapping #25–#27 before any authorized merge, do not change automations, and do not promote unintegrated draft status to main.
+
+## 2026-11-09 D-0018 — EXP-0020 four-class synthetic orbit falsification (draft)
+A separately reproduced exhaustive order-4 Latin-square enumeration (576 states) has four 144-state connected components under whole-row/whole-column swaps. Order-3 positive control remains connected (12 states). Therefore do not infer universal irreducibility from the order-3 case or use the restricted sampler for corpus significance without a real-table connectivity audit. No manuscript, rights or decipherment claim; no changes to automations or owner-canonical SRC-0007. This draft is stacked on PR #28 and is not integrated. Report: research/experiments/2026-11-09_EXP-0020_fourclass-orbits.md.
