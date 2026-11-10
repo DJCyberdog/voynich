@@ -52,3 +52,32 @@ Additional **sensitivity** results, not new tests of independent hypotheses:
 **Reproduction:** `python research/scripts/a05_line_start_q_exact.py /path/to/ZL3b-n.txt` (source file to be fetched by the investigator under origin usage terms). Script embeds **no** manuscript transcription. Compare full input's computed SHA256 to the owner-reported reference if available; only then consider source-byte provenance independently verified. No raw manuscript image or corpus copied.
 
 **Next discriminating step:** obtain and locally hash the original full IVTFF bytes, cross-check f3r/f8r positions against independent EVA/IVTFF witnesses and image-linked folio regions, then preregister substantially larger, hand/section/word-length/paragraph-controlled folio-held-out edge tests. Do not repeat q-first on these same two folios as a new discovery.
+
+
+## Independent source-line reproduction 2026-11-10 (bounded audit, NOT a new discovery test)
+
+**Question / pre-existing falsification target:** Do the earlier EXP-0021 line-selection counts, q-initial proportions, and Poisson-binomial left-tail probabilities survive an independent re-extraction of the *same original ZL3b-n v3b transcription witness* and an independently programmed exact enumeration? The already recorded figures, parser scope and exclusion policy above were immutable targets before this check. This is a reproduction of previous results, not an independently new held-out or preregistered test.
+
+**Original transcription source:** https://www.voynich.nu/data/ZL3b-n.txt, header IVTFF Eva- 2.0 M 5, Version 3b of 2025-05-13. Its original-site rights notice https://www.voynich.nu/roadmap.html#cop identifies transliterations under CC0. No transcript bytes, manuscript images or fonts are copied into the repository. Original full-file SHA256 **NOT** computed (direct container-network download failed); the owner/registry complete-file hash remains CLAIMED. Manual transcription of sampled visible web lines is not an independent second witness or an independent digital full-file hash.
+
+**Sample:** f3r.1–20 and f8r.1–21 (41 original records examined); remove the three f8r right-aligned =Pt entries 8,13,21 and the two rows 12,14 with ambiguous first token. Use the previously frozen EXP-0021 comma policy, paragraph handling and ASCII token acceptance. Eligible 20 f3r and 16 f8r lines. The original-source header describes both as Currier A, hand 1; this is edition metadata, not independent physical-script verification.
+
+**Independent per-line counts (line: accepted token count: accepted q-initial token count; no text bytes):**
+
+- f3r: 1:5:1; 2:5:1; 3:5:1; 4:6:0; 5:5:1; 6:4:0; 7:5:1; 8:5:0; 9:5:0; 10:2:0; 11:5:0; 12:3:1; 13:4:3; 14:4:2; 15:8:0; 16:9:2; 17:5:1; 18:5:2; 19:7:3; 20:7:0.
+- f8r: 1:8:0; 2:7:0; 3:7:0; 4:9:1; 5:8:0; 6:6:0; 7:4:0; 9:8:0; 10:8:0; 11:7:0; 15:7:0; 16:4:0; 17:8:1; 18:7:0; 19:8:0; 20:5:0.
+
+**Execution and independent control:** One fresh standard-library-only parser calculated per-line p_i = q_i/n_i. The exact lower tail was recomputed both by iterative Poisson-binomial convolution and by exhaustive enumeration of binary events among lines with p_i>0. The latter involves 2^12 = 4096 binary outcomes for f3r, and 2^2 = 4 for f8r. Negative toy control: fair two-event distribution [0.25, 0.5, 0.25]. No third-party executable, new source corpus or model tuning. This duplicate calculation is an arithmetic control, not independent author/folio validation.
+
+| Folio | Eligible lines | Tokens | Observed q-initial starts | Null expected | Exact p, convolution | Exact p, enumeration |
+|---|---:|---:|---:|---:|---:|---:|
+| f3r | 20 | 104 | 2 | 3.8341269841269843 | 0.18937823492063505 | 0.1893782349206353 |
+| f8r | 16 | 111 | 1 | 0.2361111111111111 | 0.9861111111111109 | 0.9861111111111110 |
+
+**Result: REPRODUCTION PASS** for all listed sample sizes, totals, observed counts, null expectations and one-sided probabilities within floating-point tolerance. Independently recalculated word-length-matched sensitivities also agree: f3r null expectation 1.8666666667 and p=0.75; f8r expectation 0.3333333333 and p=1.0. This is a **material numerical provenance/implementation check**, not a new independent significant manuscript observation.
+
+**Evidence / workflow:** VERIFIED arithmetic conditional on manually extracted original-site lines; DOCUMENTED source header, line loci, IVTFF/editing and original-site rights notice; CLAIMED full origin file SHA-256; UNKNOWN byte-identity of full file, independent transcription witness, visible glyph mapping, global line-edge generator and meaning. A-05 stays ACTIVE, audit stage TESTED for this narrow subclaim only, completed=false. All five decipherment gates remain unpassed.
+
+**Strongest counterhypothesis:** The conditional within-line exchangeability null ignores word length, paragraph starts, line filling and scribal/section/layout confounds. A natural-language model, cipher, nonsemantic generator or hybrid may reproduce this same small-sample result. f8r was used already in EXP-0021 and MUST NOT be claimed as a fresh heldout in this audit.
+
+**Next:** Independently obtain and hash exact original full-file bytes (if available), check a separate transcription edition and region-to-glyph correspondence, then preregister genuinely unused larger folio-heldout, hand/section/length/paragraph-controlled tests. Do not rerun this sample as a new discovery.
