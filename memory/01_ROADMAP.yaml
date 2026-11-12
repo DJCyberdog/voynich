@@ -42,3 +42,8 @@ priorities:
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
 
+
+  - id: RM-012
+    title: Review proposed EXP-0022 C-1A/C-1B constructed-language surface baseline
+    status: WATCHING
+    next: Reconcile review PR with existing draft backlog; preregister length-, alphabet-, and vocabulary-matched folio-heldout baselines on alternate transcription witness; keep semantic claims UNKNOWN and full-source redistribution rights open
