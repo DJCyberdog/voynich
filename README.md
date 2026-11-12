@@ -32,3 +32,12 @@ Read this status together with the canonical memory registers, governance and op
 ## Proposed research-direction delta (2026-11-09; **not yet integrated**)
 
 A scoped DE/EN Wikipedia-led hypothesis-family inventory and source trail is proposed in the dedicated hypothesis-audit PR. It is discovery, not manuscript evidence or a decipherment result; FR/ES/IT and original-paper audits remain open. Integrated status above stays EXP-0016 until owner-authorized merge. Progress denominators unchanged: **213/213 canvas IDs inventoried** (owner-canonical snapshot only), **0/5 decipherment gates passed**. No overall decipherment percentage exists. Seven older open draft PRs (#25–#31) overlap README/memory and require reconciliation. Next: audit original hypothesis papers, source rights, blind tests and PR backlog.
+
+
+## Proposed EXP-0022 — C-1 context model (2026-11-12; DRAFT, NOT INTEGRATED)
+
+**Status:** Experimental code and an independently rerun transcription-source SHA-256 check exist only in a review branch. C-1A clarity (79/135 artificial sense markers) and C-1B economy (34/135) passed their synthetic reader controls; both have gross word-length/ending-frequency mismatches versus the ZL3b-n f4r witness. This is not a Voynich translation, an A-13 self-copy reproduction, or an integrated new decipherment gate.
+
+**Source:** The user's previously supplied ZL3b-n v3b file was hashed independently in the local computation (SHA-256 bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc); external origin-file identity and per-artifact redistribution rights remain unverified. The source file was not committed. Primary f4r: 13 nonempty lines / 54 conservative tokens. An exploratory post-protocol full-file pass covered 226 folio identifiers / 5,039 nonempty lines / 31,531 tokens under this distinct parser; not the EXP-0015 parser. Within-line permutation p-values are exploratory, not predeclared confirmation.
+
+**Progress denominators unchanged for integrated research:** owner-canonical SRC-0007 canvas IDs inventoried **213/213 = 100%** `██████████`, independently accepted decipherment gates **0/5 = 0%** `░░░░░░░░░░`. None of these percentages estimates decipherment probability. **Workflow:** proposed EXP-0022 WATCHING for review; hypothesis validity UNKNOWN. **Blockers:** independent alternate transcription, generation-model calibration without data leakage, source redistribution rights, PR collision reconciliation. **Next:** independently preregister matched baselines and owner-review the branch; no merge implied.
