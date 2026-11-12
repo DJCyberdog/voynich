@@ -52,7 +52,9 @@
       "scope": "C1 synthetic and orthographic f4r/full-ZL exploratory diagnostics; no semantics",
       "evidence_status": "DOCUMENTED",
       "operational_status": "WATCHING",
-      "report": "research/experiments/2026-11-12_EXP-0022_C1_context_model_pilot.md"
+      "report": "research/experiments/2026-11-12_EXP-0022_C1_context_model_pilot.md",
+      "followup": "2026-11-13: prefix/length/line-position controlled two-sided suffix context predictive gain 0.01294245 nats over B1 on 26611 eligible targets; five positive folio-heldout folds and 199 context-shuffle p=0.005. No semantic attribution; PR #36 pending.",
+      "followup_report": "research/experiments/2026-11-13_EXP-0022_C1_suffix_context_result.md"
     }
   ]
 }
