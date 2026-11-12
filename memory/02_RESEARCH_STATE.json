@@ -41,5 +41,18 @@
     "canonical_working_source": "SRC-0007",
     "live_reauthentication": "SATURATED",
     "reactivation": "Concrete mismatch, owner request or materially new official source"
-  }
+  },
+  "pending_unmerged_findings": [
+    {
+      "id": "EXP-0022",
+      "date": "2026-11-12",
+      "branch": "research/c1-context-20261112",
+      "stage": "DRAFT_REVIEW_ONLY",
+      "source_local_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+      "scope": "C1 synthetic and orthographic f4r/full-ZL exploratory diagnostics; no semantics",
+      "evidence_status": "DOCUMENTED",
+      "operational_status": "WATCHING",
+      "report": "research/experiments/2026-11-12_EXP-0022_C1_context_model_pilot.md"
+    }
+  ]
 }
