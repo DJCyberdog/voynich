@@ -46,4 +46,4 @@ priorities:
   - id: RM-012
     title: Review proposed EXP-0022 C-1A/C-1B constructed-language surface baseline
     status: WATCHING
-    next: Reconcile review PR with existing draft backlog; preregister length-, alphabet-, and vocabulary-matched folio-heldout baselines on alternate transcription witness; keep semantic claims UNKNOWN and full-source redistribution rights open
+    next: Review EXP-0022 prefix-controlled heldout suffix-context result: 26611 targets, gain +0.01294 nats, 5/5 positive folds, permutation p=0.005 conditional on user-held ZL3b-n witness. Distinguish from unmerged EXP-0018; next independent witness and matched line-composition/section null, rights and owner merge gate.
