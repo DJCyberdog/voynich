@@ -1,0 +1,95 @@
+{
+  "version": "EXP-0023C-2026-11-13",
+  "status": "RETROSPECTIVE_EXPLORATORY",
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "source_location": "<f57v.3,+Cc>",
+  "ring_units": 68,
+  "cycles": 4,
+  "slots_per_cycle": 17,
+  "variable_slots": [
+    {
+      "slot": 3,
+      "values": [
+        "[d:j]",
+        "d",
+        "d",
+        "d"
+      ]
+    },
+    {
+      "slot": 9,
+      "values": [
+        "f",
+        "f",
+        "p",
+        "p"
+      ]
+    },
+    {
+      "slot": 16,
+      "values": [
+        "I",
+        "c",
+        "c",
+        "c"
+      ]
+    }
+  ],
+  "adjacent_cycle_matches": {
+    "1-2": 15,
+    "2-3": 16,
+    "3-4": 17
+  },
+  "test": "Unchanged original owner-supplied IVTFF P0 segments excluding special folios f57v/f49v/f66r; comma-uncertain and nonalphabetic segments excluded",
+  "running_text": {
+    "tokens": 27727,
+    "eligible_folios": 195,
+    "f_p_instances": 1594,
+    "f": 326,
+    "p": 1268,
+    "folios_with_both_f_and_p": 128,
+    "f_p_single_substitution_word_type_pairs": 90,
+    "pair_context_cosine": {
+      "f/p": 0.9521103857506649,
+      "k/t": 0.9384440823237961,
+      "f/k": 0.41881834457674044,
+      "p/t": 0.5892956216709448
+    }
+  },
+  "folio_heldout_model": {
+    "folds": 5,
+    "model": "Pair-neighbor conditional glyph predictor with fixed 20-count smoothing through word-position prior (also strength 20)",
+    "weighted_gain_context_vs_global_nats_per_occurrence": 0.004385973418181863,
+    "weighted_gain_context_vs_position": 0.0022939384993477443,
+    "weighted_gain_position_vs_global": 0.0020920349188341186,
+    "folio_bootstrap_n": 2000,
+    "seed": 57009,
+    "bootstrap_95_context_vs_global": [
+      -0.0044089977941724,
+      0.012885353585402834
+    ],
+    "bootstrap_95_context_vs_position": [
+      -0.004520400917093443,
+      0.008919418057284573
+    ],
+    "five_folds_context_vs_global": [
+      0.01737070651715005,
+      -0.002392722250184517,
+      -0.004771008379603097,
+      0.00414860163445873,
+      0.013394800237414487
+    ]
+  },
+  "tested_conclusions": {
+    "no_observed_other_slot_consequence_of_f_to_p_in_ring": true,
+    "functional_relatedness": "SUPPORTED_DESCRIPTIVELY",
+    "decoder_mode_control": "NOT_IDENTIFIABLE_FROM_AVAILABLE_OUTPUT",
+    "same_plaintext_glyph_value": "UNKNOWN",
+    "physical_glyph_layer": "NOT_INDEPENDENTLY_VERIFIED",
+    "decipherment_gates": "0/5"
+  },
+  "transparency": {
+    "other_work": "Mary E. D'Imperio 1978 already suggested f/p functional equivalence and noted distinct glyph loop shapes. Voynich Studies October 2026 separately reported approx 0.948 context cosine. This is a different reproduction/parsing.",
+    "exploratory_not_blind": true
+  }
+}
