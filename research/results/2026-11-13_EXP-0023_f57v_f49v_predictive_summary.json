@@ -1,0 +1,94 @@
+{
+  "experiment": "EXP-0023",
+  "date": "2026-11-13",
+  "scope": "RETROSPECTIVE_MASKED_IVTFF_ONLY",
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "source_locators": [
+    "f57v.3,+Cc",
+    "f49v.@L0,*L0"
+  ],
+  "f57v": {
+    "units": 68,
+    "cycles": 4,
+    "units_per_cycle": 17,
+    "train_n": 34,
+    "test_n": 34,
+    "training_lag_range": [
+      2,
+      20
+    ],
+    "learned_period": 17,
+    "training_hits": 15,
+    "training_pairs": 17,
+    "test_hits": 32,
+    "test_cycles": [
+      16,
+      16
+    ],
+    "errors_global_1based": [
+      43,
+      60
+    ],
+    "shuffled_test_multiset": {
+      "n_draws": 10000,
+      "seed": 57049,
+      "mean_matches": 2.1485,
+      "max_matches": 10,
+      "exceedances": 0,
+      "upper_tail_monte_carlo_p": 0.00009999000099990002
+    }
+  },
+  "f49v": {
+    "units": 26,
+    "train_n": 14,
+    "test_n": 12,
+    "training_lag_range": [
+      2,
+      9
+    ],
+    "learned_period": 8,
+    "training_hits": 4,
+    "training_pairs": 6,
+    "test_hits": 0,
+    "motif": {
+      "length": 5,
+      "train_anchors_1based": [
+        2,
+        10
+      ],
+      "train_pair_mismatches": 1,
+      "holdout_anchor_1based": 17,
+      "forecast_positions_1based": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "forecast_hits": 4,
+      "forecast_n": 4,
+      "coverage": 0.3333333333333333,
+      "anchor_preobserved": true,
+      "conditional_shuffle": {
+        "n_draws": 10000,
+        "seed": 57050,
+        "mean_matches": 0.6334,
+        "max_matches": 4,
+        "exceedances": 3,
+        "upper_tail_monte_carlo_p": 0.00039996000399960006
+      }
+    },
+    "one_step_baseline": {
+      "hits": 6,
+      "n": 12,
+      "uses_true_previous_target_value": true
+    }
+  },
+  "limitations": [
+    "Retrospective algorithmic holdout, not prospective blind",
+    "Single transcription witness",
+    "No direct high-resolution image glyph audit",
+    "Model-selection look elsewhere not corrected",
+    "Copy-and-edit alternative remains",
+    "No reversible code or semantic inference"
+  ]
+}
