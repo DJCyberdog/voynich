@@ -44,7 +44,8 @@
     "EXP-0021 A-05 narrow q-initial depletion test on manually copied f3r/f8r did not confirm held-out f8r depletion; independent glyph and source transcript verification absent.",
     "EXP-0020: four linked synthetic audits #28-31 independently reproduced; 576 states, 9216 directed edges, 2304 nonreciprocal. Directed connectivity is not stationary uniformity. Reports include #30 erratum from #31; no manuscript test.",
     "A-03 source-audit SRC-0054 (2026-11-13) directly reviewed Gaskell/Bowern 2022 human gibberish control; original authors' 38/42 and 41/42 overlap does NOT prove manuscript gibberish nor establish long-range text structure; no project experiment. Report research/hypotheses/2026-11-13_A03_gaskell_bowern_human_gibberish_control.md.",
-    "D-0206 owner closure A-03 as SCOPED_RETIRED methodological umbrella, NOT a rejection of natural language. 3/40 audit claims scoped complete; 0/5 decipherment gates. Specific frozen linguistic models remain open under Q-004/Q-010."
+    "D-0206 owner closure A-03 as SCOPED_RETIRED methodological umbrella, NOT a rejection of natural language. 3/40 audit claims scoped complete; 0/5 decipherment gates. Specific frozen linguistic models remain open under Q-004/Q-010.",
+    "2026-11-13 O-01 owner source/material deep-audit D-0210: 12/12 selected online correction excerpts inspected, 16 structured loci including two negatives, no X->Y independently demonstrated. McCrone f1r Sample20 actually Latin marginal a, not `daiin` so chemical extrapolation impossible; original 2009 PDF/Yale and Fagin Davis 2024 MSI first-person source reviewed. No blind experiment; O-01 ACTIVE with imaging BLOCKED; 0/5 decipherment, A/W count unchanged."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
@@ -62,5 +63,20 @@
       "research/hypotheses/2026-11-09_top20_critical_audit.md",
       "research/hypotheses/2026-11-09_weird_erotic_20_audit.md"
     ]
+  },
+  "owner_leads": {
+    "O-01": {
+      "origin": "Owner idea 2026-11-13",
+      "source_audit": "SOURCE_REVIEWED",
+      "operational": "ACTIVE",
+      "confirmatory_image_test": "BLOCKED",
+      "result": "NO VERIFIED X_TO_Y; SOURCE-PROVENANCE T0 CONTRADICTED (McCrone f1r Sample20 Latin marginal a, not line2 Voynich daiin)",
+      "inventory": "research/owner/O-01_candidate_loci.jsonl",
+      "inventory_rows": 16,
+      "author_selected_clips_reviewed": 12,
+      "canvas_id_and_raw_msi_crosswalk": "NOT_DONE",
+      "report": "research/owner/O-01_correction_traces.md",
+      "owner_aw_priority_unmodified": true
+    }
   }
 }

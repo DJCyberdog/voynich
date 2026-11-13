@@ -68,4 +68,4 @@ priorities:
   - id: RM-024
     title: O-01 Owner hypothesis — distinguish scribal corrections from retouching in MS408
     status: WATCHING
-    next: Begin with a rights-reviewed f1r pixel/region concordance from owner-canonical SRC-0007; separate ink refill, retracing X->X, correction X->Y, erasure and later marginal additions; freeze blinded annotations, positive historical controls and heldout folios before drawing script-level conclusions. Does not supersede individual W-01..W-20 owner priority
+    next: O-01 D-0210 source-provenance audit completed: 12 source-selected Zandbergen clips inspected, 16 metadata loci inventoried, 2009 McCrone Sample20 on f1r is marginal Latin a (NOT f1r main text), Davis 2024 MSI f70v1 showthrough as documented negative control. No X->Y verified. Next acquire rights-cleared owner-canonical canvas-specific f1r/f24v/f50v/f79r raw/processed bands and historical positive erasure controls, then freeze independent blind annotations and truly unused folio holdout; preserve W-01..20 priority
