@@ -1,10 +1,18 @@
 schema_version: 1
-updated: '2026-11-05'
+updated: '2026-11-13'
 priorities:
+  - id: RM-010
+    title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
+    status: ACTIVE
+    next: DE/EN candidate families inventoried in research/hypotheses/2026-11-09_multilingual_landscape_audit.md; check FR/ES/IT, trace original papers, deduplicate HYP/EXP/SRC and open PRs, preregister discriminating blind tests before new HYP IDs
+  - id: RM-020
+    title: Test joint position-and-line-composition confounding after EXP-0018
+    status: ACTIVE
+    next: Following independent EXP-0018 strict folio x exact length x exact token offset null rejection, design and preregister margins-preserving swaps that also retain each individual line class multiset; evaluate held-out sections and alternate transcripts before any semantic inference
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
-    next: Freeze source bytes and parser; audit rights and IVTFF line/token policy; check EXP-0016 per-line accounting invariants against actual parsed lines; reproduce all reported folds before within-folio and within-line 1000-permutation tests; keep f3r pilot EXP-0014 separate
+    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. EXP-0018 verified position/length controls; now test joint per-line class composition and position margins and independent witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
@@ -37,8 +45,23 @@ priorities:
     title: Independent live manifest attestation
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
-
+  - id: RM-012
+    title: Examine contextual suffix predictability under independent witnesses and jointly controlled line composition
+    status: WATCHING
+    next: EXP-0022 independent rerun confirms 0.01294245 nats per eligible target on user-supplied single witness; compare independent transcription sources, actual glyph layers and jointly matched line/section composition before semantic claims
   - id: RM-011
-    title: EXP-0020 verify four-class fixed-margin null sampler irreducibility
+    title: Deduplicated original source review of 20 high-utility Voynich audit claims
+    status: WATCHING
+    next: Original report from #33 preserved in #35; prioritize falsifiable source- and locus-pinned predictions over inventory inflation
+  - id: RM-022
+    title: Consolidated bizarre and sexological claim source criticism
+    status: WATCHING
+    next: Preserve #34 documentary/folklore labels, no conflation with historical or semantic manuscript evidence; reuse shared Brewer/Tucker/microscopy source controls
+  - id: RM-013
+    title: Execute 40 deduplicated source claims with actual falsification gates
+    status: ACTIVE
+    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence
+  - id: RM-023
+    title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
-    next: Reproduce real four-class source-pinned table; enumerate feasible small state spaces, test source-admissible row/column transpositions and longer alternating cycles beyond 2x2 checkerboards (synthetic union connects 12 order-3 Latin squares but splits 576 order-4 Latin squares into four 144-state components; not proof for corpus), and only then assess mixing and held-out folio-CV gain; synthetic 3x3 Latin-square counterexample invalidates universal 2x2 connectivity
+    next: Explicitly add inverse three-row moves, define a reciprocal or Metropolis-Hastings kernel, prove stationary target and mixing on finite exact synthetic spaces; only then propose a rights-cleared real manuscript slice and preregistered held-out contrasts

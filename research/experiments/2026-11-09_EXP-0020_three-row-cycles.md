@@ -1,12 +1,14 @@
 # EXP-0020 preflight: three-row cyclic moves on four-symbol Latin squares (2026-11-09)
 
+**ERRATUM (integrated 2026-11-13; see EXP-0020 directed-graph audit):** The code below enumerates only one orientation of each ascending three-row triple. Its graph is directed and includes **2,304 nonreciprocal edges**; the earlier prose's blanket assertion of directly available inverse rotations is CONTRADICTED. Connectivity and edge counts below reproduce but do **not** establish a reversible or uniform-stationary sampler.
+
 **Scope:** Exact finite synthetic enumeration only; no Voynich tokens, image readings, or EVA corpus execution. Exploratory methodological result, not a confirmatory statistical test. Parent: EXP-0020 four-class-orbit preflight (PR #29). Evidence **VERIFIED** by locally executed Python standard-library enumeration; operational **ACTIVE** for sampler design, **BLOCKED** for manuscript inference.
 
 ## Question and prospective discriminating prediction
 Can three-row cyclic reassignment together with legal two-row subset exchanges connect the four components of the four-class 4×4 Latin-square space left disconnected by whole-row and whole-column permutations? Prediction under H1: the combined move graph has one connected component. Strong H0: it remains disconnected. Rejection: exhaustive breadth-first enumeration identifies >1 component. Positive control: the previous 576-state enumeration and its four row/column orbits. Negative control: the previously established 2×2 checkerboard-only move restriction fails on the 3×3 Latin-square example.
 
 ## Exact method
-Enumerate all ordered four-tuples of permutations of 0,1,2,3; keep only tables with four distinct entries in every column. For every state, test all two-row swaps on column subsets of size 2–4 and all three-row cyclic rotations on nonempty column subsets; retain a move only if the resulting table is in the enumerated state set. Include the two orientations through directed graph traversal (inverse rotations are themselves allowed). Count connected components by graph search. No randomness or external code.
+Enumerate all ordered four-tuples of permutations of 0,1,2,3; keep only tables with four distinct entries in every column. For every state, test all two-row swaps on column subsets of size 2–4 and all three-row cyclic rotations on nonempty column subsets; retain a move only if the resulting table is in the enumerated state set. The present code includes one orientation for ascending 3-row combinations, so its inverse rotations are **not** all included. See ERRATUM; both orientations must be explicitly added before designing a symmetric proposal kernel. Count connected components by graph search. No randomness or external code.
 
 Reproduction (Python 3 standard library only):
 ```python
