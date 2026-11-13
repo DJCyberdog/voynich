@@ -16,7 +16,7 @@ priorities:
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
-    next: Preregister source-pinned q/qo positional and running-text-vs-label comparison with matched nulls and held-out folios; retrieve original September Burchard artifacts before treating reported 200-window result as verified
+    next: Preregister source-pinned q/qo positional and running-text-vs-label comparison with matched nulls and held-out folios; retrieve original September Burchard artifacts before treating reported 200-window result as verified; also source-review SRC-0053 ligature candidates with historical Latin abbreviation/cipher controls and image-level folio heldout, WITHOUT treating A-07 Gibbs as unblocked
   - id: RM-006
     title: Inventory multilingual Voynich hypotheses and primary evidence
     status: ACTIVE
