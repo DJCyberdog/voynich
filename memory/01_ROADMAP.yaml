@@ -1,21 +1,18 @@
 schema_version: 1
-updated: '2026-11-10'
+updated: '2026-11-13'
 priorities:
-  # 2026-11-10 A-04: Montemurro/Zanette primary source reviewed; global-shuffle null insufficient to distinguish semantic topics from section-conditioned generation. 9/40 source reviewed; no test run or integration.
-  - id: RM-013
-    title: Owner-authorized systematic evaluation of all 40 audited Voynich claims
-    status: ACTIVE
-    next: "Eight owner-prioritized P0 claims reviewed at gate/source level 2026-11-10, but NOT eight experiments. A-14 source-only necessary meaninglessness attribution SCOPED_RETIRED; 1/40 scoped closed, 7 P0 substantive claims open. A-01/A-02 eight-header IVTFF check proves $H Davis vs $C Currier label-field nonidentity and shows no A/B-within-hand overlap in sample; source-level only. New Timm 2026 v5 one-hand counterpaper source-located, CLAIMED without glyph reproduction. Do not count A-13 self-copy author as independent A-02 proof. Next: independently pin complete ZL3b-n source bytes, second transcription witness, independent hand/section image labels and preregister unseen folio control; design equal-capacity language/cipher/nonlanguage/hybrid generator benchmarks before new EXP. No merge until PR collisions and Owner authorization."
-
-    a08_primary_audit_2026_11_13: Greshko 2025 original publisher article checked; six-table Naibbe affix assignments fitted to Voynich B, so naive B heldout invalid; WATCHING, no new manuscript test. See research/hypotheses/2026-11-13_A08_naibbe_primary_source_audit.md
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
-    next: A-07 Gibbs abbreviation original TLS source and MS408 glyph-to-expansion mapping blocked as of 2026-11-13 in unmerged PR35; choose independent P0 claim with accessible primary evidence; DE/EN candidate families inventoried in research/hypotheses/2026-11-09_multilingual_landscape_audit.md; check FR/ES/IT, trace original papers, deduplicate HYP/EXP/SRC and open PRs, preregister discriminating blind tests before new HYP IDs
+    next: DE/EN candidate families inventoried in research/hypotheses/2026-11-09_multilingual_landscape_audit.md; check FR/ES/IT, trace original papers, deduplicate HYP/EXP/SRC and open PRs, preregister discriminating blind tests before new HYP IDs
+  - id: RM-020
+    title: Test joint position-and-line-composition confounding after EXP-0018
+    status: ACTIVE
+    next: Following independent EXP-0018 strict folio x exact length x exact token offset null rejection, design and preregister margins-preserving swaps that also retain each individual line class multiset; evaluate held-out sections and alternate transcripts before any semantic inference
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
-    next: Freeze source bytes and parser; audit rights and IVTFF line/token policy; check EXP-0016 per-line accounting invariants against actual parsed lines; reproduce all reported folds before within-folio and within-line 1000-permutation tests; keep f3r pilot EXP-0014 separate
+    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. EXP-0018 verified position/length controls; now test joint per-line class composition and position margins and independent witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
@@ -38,8 +35,8 @@ priorities:
     next: Origin ZL3b-n v3b located (SRC-0016), f2v.1 comma-delimited pchor observed; independently hash complete bytes and apply verified IVTFF comma=uncertain, dot=certain rules and original-site attribution rights; reconcile VIB cheopchor before claiming a manuscript word boundary
   - id: RM-003
     title: Preregister script-position null-model study
-    status: ACTIVE
-    next: EXP-0021 draft A-05 narrow q-first exact test f3r/f8r was executed without confirmed depletion; independently pin entire ZL3b-n bytes, check manual extract with alternate witness and image, and preregister hand/section/length/paragraph-controlled broader folio-heldout edge model before further claims
+    status: WATCHING
+    next: Define exploratory and held-out folios after corpus review
   - id: RM-004
     title: Codicology and chronology separation
     status: WATCHING
@@ -48,39 +45,19 @@ priorities:
     title: Independent live manifest attestation
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
-
-
-# Draft-only 2026-11-10 A-17 source audit in PR #35: author R4 direct days/hours NOT CONFIRMED; R4b visual-externalization is a distinct prospective prediction. SOURCE_REVIEWED, not tested or integrated. Do not count as a new canonical experiment. Next: rights-reviewed f68r3 text/image witnesses, stratified heldout controls; reconcile stacked #25-#27.
-
-# Draft PR #35 A-16 source review (2026-11-10): 10/40 source-reviewed, 0/40 adjudicated, 0 new confirmatory tests; author Bax PDF v1 checked, blind heldout and source rights pending; NOT INTEGRATED. See research/hypotheses/2026-11-10_A16_bax_source_review.md
-
-# Draft-only EXP-0021 A-05 (2026-11-10): scoped q-initial line-start null on f3r/f8r executed; p=0.189378/0.986111; neither confirms depletion, f8r reverses sign. One narrow test, NOT a closed claim, NOT integrated main, 0/40 finally adjudicated, 0/5 decipherment gates; source file full hash and multi-witness controls pending; source/PR rights and explicit owner merge authorization remain gates.
-
-# Same-witness reproduction 2026-11-10 of EXP-0021: fresh original-site manual f3r/f8r read plus independent Poisson-binomial enumeration reproduces 20/16 lines, 104/111 tokens and p=0.189378/0.986111 (conditional VERIFIED). This is not new heldout or a second independent source witness; full input SHA still pending. A-05 broad claim ACTIVE, 0/40 fully adjudicated, 0/5 gates. Next: independently pin source bytes, alternate witness, genuinely unused folios and better paragraph/length/section controls. No PR merge.
-
-# Eight P0 gate decisions 2026-11-10 in research/hypotheses/2026-11-10_P0_eight_claim_gate_audit.md; 1 scoped source-only closeout, no new EXP. No YAML total-decipherment percentage.
-
-# A-17 2026-11-10 current decoder v0.2.5 attempted semantic blind gate: f9r.1–3 locally preregistered, 25 certain EVA tokens/2 uncertain segments, 12 schematic suffix matches under researcher-defined policy. No full published executable current semantic decoder or complete word register in inspected page; source plant-ID metadata leaked, so no truly blind medical scoring. BLOCKED for semantic test; A-17 remains WATCHING/OPEN, 0/5 criteria; see research/hypotheses/2026-11-10_A17_v025_semantic_blind_gate.md. Next: obtain frozen decoder+lexicon and truly unseen material; do not repeatedly same-page pseudo-blind testing.
-
-# 2026-11-10 A-10 original-paper source audit in Draft PR #35: Hauer/Kondrak TACL 2016 synthetic 97.1% language-ID / 93.8% anagram-word accuracy NOT Voynich; manuscript 43 Currier-B pages and no grammatical/semantic output. A-10 SOURCE_REVIEWED/WATCHING/CLAIMED, 11/40 source-reviewed/tested, 1/40 narrowly closed, 0/5 gates, no new EXP. Next A-10 only with source-pinned 43-folio witness, Currier↔EVA mapping, equal-budget controls and untouched heldout. Integrated main unchanged.
-
-# 2026-11-11 A-15 source review (Draft PR #35 only): original 2025 Caspari/Faccini preprint documents Italian shorthand/substitution CLAIM and 400+ provisional words, author rejects EVA mapping and admits ambiguous contractions. A-15 SOURCE_REVIEWED / WATCHING, no independent blind test. Draft queue 12/40 reviewed/tested, 1/40 narrowly closed; 0/5 decipherment criteria; integrated main EXP-0016 unchanged. Next candidate should be distinct unless author-faithful glyph parser, rights-cleared alternate witnesses and frozen heldout controls become available. Report research/hypotheses/2026-11-11_A15_caspari_faccini_primary_source_audit.md.
-
-# A-18 (2026-11-11): Cheshire 2019 original publisher abstract source-reviewed in Draft PR #35. No-double-consonants claim operationalized as a future author-grapheme invariant test, NOT executed (no frozen original glyph mapping / rights-cleared heldout). A-18 SOURCE_REVIEWED/WATCHING, 13/40 source-reviewed/tested draft, 1/40 narrow closed, 0/5 decipherment gates. See research/hypotheses/2026-11-11_A18_cheshire_original_source_audit.md. Next: move to a different independently testable claim unless missing inputs become available.
-
-# A-19 draft-only 2026-11-11: Brewer/Lewis publisher abstract DOI 10.1093/shm/hkad099 checked. Proposed Rosettes interpretation CLAIMED, Hartlieb secrecy contextual; no independent Voynich meaning demonstrated. Shared W-01..W-09 family, no double counting. Source report research/hypotheses/2026-11-11_A19_brewer_lewis_primary_abstract_scope.md. Queue 13/40 source-reviewed/tested plus 1/40 narrowly retired; 0/5 decipherment gates. Next: independent historical diagram controls with image rights, otherwise move to another executable queue candidate. Draft PR #35 only; integrated main EXP-0016 unchanged.
-
-# 2026-11-11 A-20 Tucker/Talbert original publisher paper directly source-reviewed in Draft PR #35: 37/303 selected botanical matches CLAIMED, f1v/f100r/f99r/f102r specified; older parchment reuse explicitly unanswered by authors. No independent blind plant or glyph test, no Nahuatl confirmation. A-20 SOURCE_REVIEWED/WATCHING, not complete; 15/40 draft source-reviewed/tested, 1/40 narrowly closed, 0/5 decipherment gates; main EXP-0016 unchanged. Report research/hypotheses/2026-11-11_A20_tucker_talbert_original_paper_audit.md. Next: freeze original species/loci and blind rights-cleared Old/New World/composite image comparisons with heldout.
-
-# 2026-11-11 A-01 source delta: publisher-original Layfield/Davis singulion/physical bifolium model (DOI 10.4000/16k0a) inspected, adds bifolium/quire/page adjacency as required control for Currier A/B vs scribal/section attribution. Shared A-02 cross-reference, not independent replication. No numerical experiment, no semantic claim, no HYP/EXP, A-01 SOURCE_REVIEWED/ACTIVE; see research/hypotheses/2026-11-11_A01_layfield_davis_singulion_confound_audit.md. Next: source-pinned SRC-0007 physical folio/bifolium concordance and IVTFF strata overlap audit; if no within-stratum A/B overlap, causal separation BLOCKED. Main EXP-0016 and 0/5 gates unchanged.
-
-# 2026-11-11 Draft PR #35 A-06 Parmentier 2021 original label study SOURCE_REVIEWED: 48 pages, 729 labels, 569 distinct tested strings, 249/569 hapax author-reported (NOT independently verified). Label-to-object naive universal uniqueness only questioned; all semantics UNKNOWN. 16/40 source-reviewed/tested, 1/40 narrow closeout, 0/5 decipherment gates; integrated main EXP-0016 unchanged. Next: rights-cleared independent glyph/image/label concordance with frozen heldout; do not repeat same source audit. See research/hypotheses/2026-11-11_A06_parmentier_label_source_audit.md.
-
-# 2026-11-11 A-12 source audit: Tiltman 1967 NSA-released original directly read, Friedman's constructed-language idea only reported by Tiltman; Tiltman favored mixed substitutions and acknowledged tentative glyph segmentation. A-12 SOURCE_REVIEWED/WATCHING, no independent manuscript test, no new HYP/EXP. 17/40 source-reviewed/tested, 1/40 narrowly closed, 0/5 gates. Next: Friedman original memo and frozen rights-reviewed corpus for semantic heldout against nonlanguage and cipher controls. research/hypotheses/2026-11-11_A12_tiltman_friedman_primary_source_audit.md
-
-  - id: RM-013
-    title: A-11 hybrid comparator scoped, no independent historical hypothesis
+  - id: RM-012
+    title: Examine contextual suffix predictability under independent witnesses and jointly controlled line composition
     status: WATCHING
-    next: Reuse A-11 only as fixed complexity-matched alternative in a source-pinned heldout test of a concrete author model; see 2026-11-13 A11 scope audit in draft PR 35; no independent hypothesis or experiment ID
-
-# 2026-11-13 W-19 source review (draft PR #35, not integrated): Manly 1931 publisher primary metadata and Tiltman historical report checked; original Newbold 1928 plates, full critique, rights-cleared image regions, blind crack controls and heldout are needed. W-19 SOURCE_REVIEWED/WATCHING, distinct from W-12–15. No manuscript experiment or decipherment gate; main EXP-0016 unchanged. See research/hypotheses/2026-11-13_W19_newbold_manly_primary_source_gate.md
+    next: EXP-0022 independent rerun confirms 0.01294245 nats per eligible target on user-supplied single witness; compare independent transcription sources, actual glyph layers and jointly matched line/section composition before semantic claims
+  - id: RM-011
+    title: Deduplicated original source review of 20 high-utility Voynich audit claims
+    status: WATCHING
+    next: Original report from #33 preserved in #35; prioritize falsifiable source- and locus-pinned predictions over inventory inflation
+  - id: RM-022
+    title: Consolidated bizarre and sexological claim source criticism
+    status: WATCHING
+    next: Preserve #34 documentary/folklore labels, no conflation with historical or semantic manuscript evidence; reuse shared Brewer/Tucker/microscopy source controls
+  - id: RM-013
+    title: Execute 40 deduplicated source claims with actual falsification gates
+    status: ACTIVE
+    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence

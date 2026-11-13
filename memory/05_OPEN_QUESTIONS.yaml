@@ -32,7 +32,23 @@ questions:
     question: Which distinct Voynich explanatory claims in DE/EN/FR/ES/IT Wikipedia and their original cited papers remain unregistered or untested after deduplication?
     status: ACTIVE
 
+  - id: Q-020
+    priority: high
+    question: Does the EXP-0017 order-sensitive suffix-class gain remain after line-length, position, section and Currier/hand structure are preserved in stronger null models and across independent transcription witnesses?
+    status: ACTIVE
+  - id: Q-021
+    priority: high
+    question: Can the residual EXP-0018 suffix-class predictive gain survive nulls jointly fixing each line's class counts and folio-specific length/position class marginals, and independent transcription witnesses or section-held-out evaluation?
+    status: ACTIVE
+  - id: Q-008
+    priority: high
+    question: Which source-traced proposed decipherments offer falsifiable, transcription-stable, heldout manuscript predictions after section/scribe controls?
+    status: ACTIVE
+  - id: Q-009
+    priority: medium
+    question: Do the nine Rosettes support preregistered anatomical features better than cosmological, geographical and architectural reference controls?
+    status: WATCHING
   - id: Q-010
     priority: high
-    question: Which of the 40 owner-selected Voynich claims can withstand their own source-traced, preregistered, controlled tests without double-counting shared experiments, and which must remain unresolved or blocked?
+    question: Which of 40 source-audited claims can survive independent source-pinned tests without counting shared papers or experiments multiple times?
     status: ACTIVE
