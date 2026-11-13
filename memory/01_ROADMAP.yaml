@@ -65,3 +65,7 @@ priorities:
     title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
     next: Explicitly add inverse three-row moves, define a reciprocal or Metropolis-Hastings kernel, prove stationary target and mixing on finite exact synthetic spaces; only then propose a rights-cleared real manuscript slice and preregistered held-out contrasts
+  - id: RM-024
+    title: O-01 Owner hypothesis — distinguish scribal corrections from retouching in MS408
+    status: WATCHING
+    next: Begin with a rights-reviewed f1r pixel/region concordance from owner-canonical SRC-0007; separate ink refill, retracing X->X, correction X->Y, erasure and later marginal additions; freeze blinded annotations, positive historical controls and heldout folios before drawing script-level conclusions. Does not supersede individual W-01..W-20 owner priority
