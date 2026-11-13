@@ -68,4 +68,4 @@ priorities:
   - id: RM-024
     title: Verify transferability of key-like marginal and circular glyph sequences
     status: WATCHING
-    next: EXP-0023 retrospective test predicts f57v 32/34 using 17-period but f49v fixed-8 period fails 0/12; anchor-conditional 5-motif predicts 4/4 with 4/12 coverage. Prospectively preregister untouched f66r or independent image-linked glyph witness and compare equal-budget copy-edit model before any decoding claims
+    next: EXP-0023B f66r transfer negative: ring period17 1/45 IVTFF L0 units and anchored M5 0/16; mixed word/glyph data layer discovered. Next independent image-linked source, separate single-glyph segmentation and matched copy null; do not reuse f66r as blind holdout

@@ -70,7 +70,18 @@
       "evidence_status": "VERIFIED",
       "operational_status": "WATCHING",
       "scope": "Transcription-only retrospective list prediction, not independent glyphs or semantics",
-      "report": "research/experiments/2026-11-13_EXP-0023_f57v_f49v_keylike_prediction.md"
+      "report": "research/experiments/2026-11-13_EXP-0023_f57v_f49v_keylike_prediction.md",
+      "followup": {
+        "id": "EXP-0023B",
+        "status": "RESEARCH_COMPLETED_DRAFT",
+        "evidence_status": "VERIFIED_SCOPED_EDITORIAL_SEQUENCE",
+        "operational_status": "WATCHING",
+        "preregistration": "research/experiments/2026-11-13_EXP-0023B_f66r_transfer_prereg.md",
+        "report": "research/experiments/2026-11-13_EXP-0023B_f66r_transfer_result.md",
+        "result": "research/results/2026-11-13_EXP-0023B_f66r_transfer_summary.json",
+        "finding": "f66r 45 mixed L0 editorial units: 17-cycle 1/45 p=0.8044 and M5 0/16 p=1; posthoc 32 closer glyph/ligature units 2/32 and 0/16; no semantic code demonstrated",
+        "caveat": "The prereg [a-z]+ matcher grouped words and individual glyphs: target is not 45 comparable single-glyph tokens."
+      }
     }
   ]
 }
