@@ -59,3 +59,7 @@ After Owner-approved A-03 PR #40 merged as verified main fc266f263a755aae643e9f1
 
 ## 2026-11-13 D-0208 — Owner rejects premature W closings
 Owner explicitly requires W-01..W-20 each to be examined as rigorously as an A claim. All ten proposed W SCOPED_RETIRED calls in D-0207 are revoked in Draft PR #41: W completed 0/20; only A-03/A-11/A-14 = 3/40 audit scope complete; 37/40 open and 0/5 decipherment criteria. Existing source reviews and the editorial fRos f85v/f86r folio location for W-01 may be reused as inputs, never automatic closures. W-01 SOURCE_REVIEWED, no new original image test. Owner-canonical SRC-0007 not independently live Yale-verified. No other automation changed.
+
+## 2026-11-13 — W-02 claim-scope source audit (draft, not integrated)
+The Brewer/Lewis 2024 original publisher abstract and Brewer's own 2024 explanatory article were checked: the historical contraception/abortifacient concealment context is not evidence of a deciphered Voynich contraceptive recipe. Their Rosettes proposal is coitus/conception imagery. W-02 is CLAIMED/WATCHING/SOURCE_REVIEWED, completed=false; manuscript imagery, full article, Hartlieb primary text and blind controls NOT_RUN. Shared with W-01/A-19; 3/40 scoped completions and 0/5 decipherment gates unchanged. See research/hypotheses/2026-11-13_W02_contraception_scope_audit.md. This note is historically written in the draft before integration.
+

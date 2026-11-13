@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-13'
 priorities:
+  - id: RM-026
+    title: W-02 distinguish historical contraceptive secrecy from manuscript recipe claim
+    status: WATCHING
+    next: Publisher abstract and author essay checked, but W-02 remains unproven; inspect full original paper/Hartlieb passage and prepare rights-cleared blinded iconographic controls jointly with W-01/A-19, no Voynich recipe decoding claim
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
