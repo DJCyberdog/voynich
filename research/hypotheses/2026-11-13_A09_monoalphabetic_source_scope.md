@@ -1,0 +1,32 @@
+# A-09 — Simple monoalphabetic substitution: source and falsifiability scope (2026-11-13)
+
+**Cycle:** one bounded original-source/attribution check. **Status:** DOCUMENTED (source contents) / WATCHING (hypothesis). No new manuscript measurements, no decryption, no independent image or live Yale manifest check. The user-pinned SRC-0007 is canonical for project mapping, **not** independently live-Yale authenticated. Main verified at start: `eee6721615098918cce02bf76e4fdda26db60176`; campaign PR #35 open at `7ba38cc6c8e01de624125ce52a891c244b7fd67a`. Other open PRs #25–31, #33–34, #36; README/memory overlap. No merge authorization.
+
+## Question
+Does the A-09 audit source actually offer a specific, fixed, one-to-one character substitution of a named plaintext language, and can the whole *simple-substitution* family be falsified merely by unmatched EVA letter frequencies?
+
+## Source / attribution finding
+- **Primary article for the cited authors' actual words:** Sravana Reddy and Kevin Knight (2011), *What We Know About The Voynich Manuscript*, ACL-HLT workshop proceedings, pp. 78–86, original proceedings PDF `https://aclanthology.org/anthology-files/anthology-files/pdf/W/W11/W11-15.pdf`. Direct public search result inspected 2026-11-13. This is an **overview/linguistic-properties study**, not a published Voynich one-to-one substitution key or a successful decoding. It is therefore **not** an origin publication for a specific A-09 key.
+- A-09 in PR #33 cites both Reddy/Knight (2011) and `https://aclanthology.org/Q16-1006/` (Hauer/Kondrak 2016). The latter is also separately listed for **A-10**, which includes Hebrew and intra-word anagramming; that is a **different model class** from fixed one-to-one substitution and cannot be counted as independent support for A-09.
+- Public Wikipedia's letter-cipher section (discovery only, not primary evidence) asserts ordinary substitution is excluded because observed letter frequencies fail to match a known language. This is **not a universal proof**: the argument depends on (a) whether EVA units are plaintext letters, (b) what languages, periods and orthographies are compared, (c) segmentation, (d) glyph/allograph uncertainty, and (e) whether transformations such as nulls, homophones or abbreviations are forbidden.
+- Additional contemporary research lead, **not independently reproduced or registered as evidence:** Rozanova & Temerev, `https://arxiv.org/abs/2608.17096` (2026-08-17), directly raises the glyph/letter/token/space identification problem; no numerical results from this lead are imported as project measurements.
+
+## Narrow model and potential decisive falsification (NOT EXECUTED)
+**H_simple:** one fixed injective substitution between a specified finite source-script character inventory and independently transcribed MS408 glyph types, with no deletions, insertions, nulls, homophones, transposition, abbreviations or key changes; punctuation/word spaces handled by a prespecified policy. An injective monoalphabetic substitution **preserves** equality pattern, frequency multiset, sequence entropies and repeated-character patterns of the underlying source character stream (modulo any explicitly specified normalization). Therefore an incompatible invariant could falsify a *named* source-language/orthography/simple-substitution combination. A negative result cannot exclude arbitrary unknown languages, more flexible ciphers or different physical grapheme readings.
+
+**Strongest alternatives:** multi-glyph units / uncertain EVA segmentation; homophonic/verbose, anagram or abbreviation cipher; natural script with non-phonemic graphemes; nonsemantic template/self-copy generation; mixtures of these. Source language and grapheme units must be precommitted, not selected by matching the target.
+
+**Pre-execution requirements:** independent manuscript image-region/glyph witness and a second uncertainty-aware transcription; rights-cleared and version-pinned historical plaintext corpora; explicit named language/script/normalization; line/folio grouping and section labels; no reuse of the same folios for key fitting and final test. All five decipherment gates remain open.
+
+**Proposed prospective test:** freeze a small candidate set of languages/orthographies and an injective key model, training folios and whole held-out folios **before** looking at target scores. Compare invariants (glyph-frequency rank multiset, repeated-symbol motifs and sequence statistics) with 1:1 enciphered reference controls and matched length/line/section resampling; use permuted reference text and nonsemantic matched-alphabet generators as negative controls; score heldout cross-entropy under fixed fitting budget, with multiple-comparison correction. Positive control is a genuinely one-to-one enciphered historical reference passage with a hidden key, which must pass. Falsify only the specific named language+normalization+glyph segmentation combination if heldout rejection criterion fixed before execution fails; do not claim all simple substitutions impossible.
+
+**No test executed** because no source-language key or independent physical glyph witness is specified. No new HYP/EXP/SRC ID and no manuscript counts. This is a bounded **attribution and falsifiability clarification**, not confirmation of any model. No third-party code, downloads, installs, or unlicensed copies.
+
+## Classification and next gate
+- Reddy/Knight (2011) source existence and overview scope: **DOCUMENTED**.
+- A-09 claim that a named fixed substitution explains MS408: **CLAIMED / WATCHING**; concrete key, language and manuscript-level validation **UNKNOWN**.
+- Claim that a generic EVA-frequency mismatch alone rules out *all* fixed substitutions: **CONTRADICTED as a universal inference**, not as a measured refutation of any named plaintext model.
+- **Audit stage:** SOURCE_REVIEWED, **completed=false** (prospective test unexecuted).
+- Next: choose a historically justified named language/orthography and independently checked glyph witness, or mark the unspecified generic class as SCOPED_BLOCKED after a second unsuccessful sourcing cycle. Avoid duplication with A-10 Hebrew/anagram and A-08 verbose cipher.
+
+**Sources:** `https://aclanthology.org/anthology-files/anthology-files/pdf/W/W11/W11-15.pdf`; `https://aclanthology.org/Q16-1006/` (A-10 attribution only); `https://en.wikipedia.org/wiki/Voynich_manuscript` (discovery only); `https://arxiv.org/abs/2608.17096` (unverified lead). No image or transcription text copied.
