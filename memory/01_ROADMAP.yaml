@@ -45,4 +45,7 @@ priorities:
     title: Independent live manifest attestation
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
-
+  - id: RM-012
+    title: Examine contextual suffix predictability under independent witnesses and jointly controlled line composition
+    status: WATCHING
+    next: EXP-0022 independent rerun confirms 0.01294245 nats per eligible target on user-supplied single witness; compare independent transcription sources, actual glyph layers and jointly matched line/section composition before semantic claims
