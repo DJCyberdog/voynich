@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Review Franke EXP-0019 source-integrity branch #27 against merged #25/#26 and then standalone method #37; EXP-0020 synthetic sampler remains BLOCKED for actual manuscript inference pending reciprocal/stationary transitions.",
+  "next": "D-0208 Owner: all W-01..W-20 must be examined INDIVIDUALLY to A-level evidentiary standards; no W completed; W-01 source + f85v/f86r Rosettes location verified, blind image/folio experiment not run.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -44,7 +44,9 @@
     "EXP-0021 A-05 narrow q-initial depletion test on manually copied f3r/f8r did not confirm held-out f8r depletion; independent glyph and source transcript verification absent.",
     "EXP-0020: four linked synthetic audits #28-31 independently reproduced; 576 states, 9216 directed edges, 2304 nonreciprocal. Directed connectivity is not stationary uniformity. Reports include #30 erratum from #31; no manuscript test.",
     "A-03 source-audit SRC-0054 (2026-11-13) directly reviewed Gaskell/Bowern 2022 human gibberish control; original authors' 38/42 and 41/42 overlap does NOT prove manuscript gibberish nor establish long-range text structure; no project experiment. Report research/hypotheses/2026-11-13_A03_gaskell_bowern_human_gibberish_control.md.",
-    "D-0206 owner closure A-03 as SCOPED_RETIRED methodological umbrella, NOT a rejection of natural language. 3/40 audit claims scoped complete; 0/5 decipherment gates. Specific frozen linguistic models remain open under Q-004/Q-010."
+    "D-0206 owner closure A-03 as SCOPED_RETIRED methodological umbrella, NOT a rejection of natural language. 3/40 audit claims scoped complete; 0/5 decipherment gates. Specific frozen linguistic models remain open under Q-004/Q-010.",
+    "2026-11-13 source-scope audit W-01..W-20: 10/20 closed SCOPED_RETIRED on explicit attribution, shared-evidence, logical necessity or folklore grounds; 10/20 still SOURCE_REVIEWED/WATCHING or ACTIVE and unresolved pending blind image comparison. No new manuscript tests. Total queue now 13/40 scoped closed and 27 open, 0/5 decipherment; detailed research/hypotheses/2026-11-13_W01_W20_grouped_primary_scope_audit.md",
+    "D-0208 explicit Owner correction: reverse all 10 prematurely SCOPED_RETIRED W closures proposed by D-0207. All 20 W items completed=false; shared sources do not make a subclaim complete. A-only completions 3/40; 37/40 open, 0/5 decipherment. W-01 now author-source/locus-reviewed only."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
