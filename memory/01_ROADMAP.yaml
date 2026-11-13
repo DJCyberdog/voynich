@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-13'
 priorities:
+  - id: RM-026
+    title: W-02 distinguish historical contraceptive secrecy from manuscript recipe claim
+    status: WATCHING
+    next: Publisher abstract and author essay checked, but W-02 remains unproven; inspect full original paper/Hartlieb passage and prepare rights-cleared blinded iconographic controls jointly with W-01/A-19, no Voynich recipe decoding claim
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
@@ -56,16 +60,20 @@ priorities:
   - id: RM-022
     title: Consolidated bizarre and sexological claim source criticism
     status: WATCHING
-    next: Preserve #34 documentary/folklore labels, no conflation with historical or semantic manuscript evidence; reuse shared Brewer/Tucker/microscopy source controls
+    next: D-0208 Owner revokes premature retirement of 10 W audit points. ALL W-01..W-20 remain individually OPEN and require same A-level work (dated original, exact image/folio locus, preregistered distinguishing prediction, strongest alternative, positive/negative controls and heldout). W-01 Brewer/Lewis original author and fRos (f85v/f86r) editorial locus checked, NOT_TESTED; progress one W at a time, shared sources alone never close any W.
   - id: RM-013
     title: Execute 40 deduplicated source claims with actual falsification gates
     status: ACTIVE
-    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence; A-03 scoped umbrella now completed/retired (D-0206, NOT language falsification); owner next prioritizes W-01..W-20 one by one, shared-original-source groups once, then preregister specific language/nonlanguage/cipher models for independent heldout
+    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence; A-03 scoped umbrella now completed/retired (D-0206, NOT language falsification); owner now requires W-01..W-20 INDIVIDUAL deep evaluations regardless of shared-source grouping, then preregister specific language/nonlanguage/cipher models for independent heldout
   - id: RM-023
     title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
     next: Explicitly add inverse three-row moves, define a reciprocal or Metropolis-Hastings kernel, prove stationary target and mixing on finite exact synthetic spaces; only then propose a rights-cleared real manuscript slice and preregistered held-out contrasts
-  - id: RM-026
+  - id: RM-024
+    title: O-01 Owner hypothesis — distinguish scribal corrections from retouching in MS408
+    status: WATCHING
+    next: O-01 D-0210 source-provenance audit completed: 12 source-selected Zandbergen clips inspected, 16 metadata loci inventoried, 2009 McCrone Sample20 on f1r is marginal Latin a (NOT f1r main text), Davis 2024 MSI f70v1 showthrough as documented negative control. No X->Y verified. Next acquire rights-cleared owner-canonical canvas-specific f1r/f24v/f50v/f79r raw/processed bands and historical positive erasure controls, then freeze independent blind annotations and truly unused folio holdout; preserve W-01..20 priority
+  - id: RM-027
     title: Independently validate EXP-0025 internal-EVA bridge grammar on physical leaves and new source witnesses
     status: ACTIVE
-    next: Execute byte-identical GitHub-frozen EXP-0025 scorer; split by physical leaf rather than IVTFF side ID; acquire rights-cleared independent transcription and aligned image glyph segmentation, compare to strong copy/edit and encrypted/control generators with group-heldout; no semantic/language identification from first-witness result
+    next: Byte-identical frozen script has now reproduced original results; split by physical leaf rather than IVTFF side ID; acquire rights-cleared independent transcription and aligned image glyph segmentation, compare to strong copy/edit and encrypted/control generators with group-heldout; no semantic/language identification from first-witness result

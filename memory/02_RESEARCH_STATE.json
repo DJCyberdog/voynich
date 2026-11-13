@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "EXP-0025: run frozen repo script byte-identically on pinned user bytes and group both sides of same physical leaf; secure distinct rights-cleared transcript and primary images; adversarial matched nonlanguage copy/encode text baseline. Existing A/W owner priorities preserved; O-01 and other draft PRs remain isolated.",
+  "next": "EXP-0025 exact frozen GitHub script execution succeeded on SHA-verified owner ZL3b-n v3b; next strengthen physical-leaf grouping, independent witness and image-layer glyph segmentation; maintain all K-0001, W-01..20 and O-01 owner priorities.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -45,7 +45,10 @@
     "EXP-0020: four linked synthetic audits #28-31 independently reproduced; 576 states, 9216 directed edges, 2304 nonreciprocal. Directed connectivity is not stationary uniformity. Reports include #30 erratum from #31; no manuscript test.",
     "A-03 source-audit SRC-0054 (2026-11-13) directly reviewed Gaskell/Bowern 2022 human gibberish control; original authors' 38/42 and 41/42 overlap does NOT prove manuscript gibberish nor establish long-range text structure; no project experiment. Report research/hypotheses/2026-11-13_A03_gaskell_bowern_human_gibberish_control.md.",
     "D-0206 owner closure A-03 as SCOPED_RETIRED methodological umbrella, NOT a rejection of natural language. 3/40 audit claims scoped complete; 0/5 decipherment gates. Specific frozen linguistic models remain open under Q-004/Q-010.",
-    "2026-11-13 EXP-0025 frozen pre-registration 1ab87e8 and pre-result GitHub script commit 9d1bb16: whole-folio-ID heldout OOV masked internal EVA character, N=991 on 43 folio IDs, M2 P(char|L,R) 63.0676% vs B1 P(char|L) 43.2896%, log gain +0.6594583 nats, 400-folio bootstrap [0.6044,0.7245], 199 matched right shuffles p=0.005; all prespecified gates MET. Locally executed independent stdlib implementation, not byte-identical GitHub script; second spot-check exact. Single editor witness and physical glyph/semantic inference UNKNOWN; 0/5 decipherment gates. PR DRAFT, not integrated."
+    "2026-11-13 source-scope audit W-01..W-20: 10/20 closed SCOPED_RETIRED on explicit attribution, shared-evidence, logical necessity or folklore grounds; 10/20 still SOURCE_REVIEWED/WATCHING or ACTIVE and unresolved pending blind image comparison. No new manuscript tests. Total queue now 13/40 scoped closed and 27 open, 0/5 decipherment; detailed research/hypotheses/2026-11-13_W01_W20_grouped_primary_scope_audit.md",
+    "D-0208 explicit Owner correction: reverse all 10 prematurely SCOPED_RETIRED W closures proposed by D-0207. All 20 W items completed=false; shared sources do not make a subclaim complete. A-only completions 3/40; 37/40 open, 0/5 decipherment. W-01 now author-source/locus-reviewed only.",
+    "2026-11-13 O-01 owner source/material deep-audit D-0210: 12/12 selected online correction excerpts inspected, 16 structured loci including two negatives, no X->Y independently demonstrated. McCrone f1r Sample20 actually Latin marginal a, not `daiin` so chemical extrapolation impossible; original 2009 PDF/Yale and Fagin Davis 2024 MSI first-person source reviewed. No blind experiment; O-01 ACTIVE with imaging BLOCKED; 0/5 decipherment, A/W count unchanged.",
+    "2026-11-13 EXP-0025 frozen pre-registration 1ab87e8 and pre-result GitHub script commit 9d1bb16: whole-folio-ID heldout OOV masked internal EVA character, N=991 on 43 folio IDs, M2 P(char|L,R) 63.0676% vs B1 P(char|L) 43.2896%, log gain +0.6594583 nats, 400-folio bootstrap [0.6044,0.7245], 199 matched right shuffles p=0.005; all prespecified gates MET. Locally executed independent stdlib implementation, new byte-identical GitHub script execution independently reproduced core results; second spot-check exact. Single editor witness and physical glyph/semantic inference UNKNOWN; 0/5 decipherment gates. merged into main after owner authorization."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
@@ -63,5 +66,20 @@
       "research/hypotheses/2026-11-09_top20_critical_audit.md",
       "research/hypotheses/2026-11-09_weird_erotic_20_audit.md"
     ]
+  },
+  "owner_leads": {
+    "O-01": {
+      "origin": "Owner idea 2026-11-13",
+      "source_audit": "SOURCE_REVIEWED",
+      "operational": "ACTIVE",
+      "confirmatory_image_test": "BLOCKED",
+      "result": "NO VERIFIED X_TO_Y; SOURCE-PROVENANCE T0 CONTRADICTED (McCrone f1r Sample20 Latin marginal a, not line2 Voynich daiin)",
+      "inventory": "research/owner/O-01_candidate_loci.jsonl",
+      "inventory_rows": 16,
+      "author_selected_clips_reviewed": 12,
+      "canvas_id_and_raw_msi_crosswalk": "NOT_DONE",
+      "report": "research/owner/O-01_correction_traces.md",
+      "owner_aw_priority_unmodified": true
+    }
   }
 }
