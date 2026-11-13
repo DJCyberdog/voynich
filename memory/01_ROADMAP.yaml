@@ -69,3 +69,7 @@ priorities:
     title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
     next: Explicitly add inverse three-row moves, define a reciprocal or Metropolis-Hastings kernel, prove stationary target and mixing on finite exact synthetic spaces; only then propose a rights-cleared real manuscript slice and preregistered held-out contrasts
+  - id: RM-024
+    title: O-01 Owner hypothesis — distinguish scribal corrections from retouching in MS408
+    status: WATCHING
+    next: O-01 D-0210 source-provenance audit completed: 12 source-selected Zandbergen clips inspected, 16 metadata loci inventoried, 2009 McCrone Sample20 on f1r is marginal Latin a (NOT f1r main text), Davis 2024 MSI f70v1 showthrough as documented negative control. No X->Y verified. Next acquire rights-cleared owner-canonical canvas-specific f1r/f24v/f50v/f79r raw/processed bands and historical positive erasure controls, then freeze independent blind annotations and truly unused folio holdout; preserve W-01..20 priority

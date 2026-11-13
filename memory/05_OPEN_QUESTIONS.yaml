@@ -57,3 +57,10 @@ questions:
     question: Can a reversible or Metropolis-Hastings fixed-margin sampler be shown irreducible and stationary for actual four-class Voynich line-position tables while preserving both line and position constraints?
     status: BLOCKED
     blocker: Verified reciprocal transition design and real-table margin feasibility/convergence not yet established; synthetic Latin-square connectivity does not suffice
+  - id: Q-023
+    priority: high
+    question: "O-01 Owner hypothesis: can true original manuscript glyph corrections X->Y be separated from same-form retracing, ink/scan effects, later hands, offset/show-through and layout insertions on independent folio-heldout raw/processed imaging?"
+    status: ACTIVE
+    blocker: "Original image pixels/MSI raw bands and spatially pinned folio-region concordances not yet independently imported under rights; no blinded duplicate annotation or positive historical erasure controls. The McCrone f1r Sample 20 is a later Latin marginal a, not the Voynich text on f1r line 2."
+    report: research/owner/O-01_correction_traces.md
+
