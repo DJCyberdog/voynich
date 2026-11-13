@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-13'
 priorities:
+  - id: RM-027
+    title: K-0001 VY001 triad crop coordinate reproducibility and blind validation
+    status: BLOCKED
+    next: Pin deterministic rendering recipe, page-specific raster dimensions and hashes for f24r/f20r B/C; confirm rights, independent image witness and predeclared blinded annotation before any physical grapheme identity claim
   - id: RM-026
     title: W-02 distinguish historical contraceptive secrecy from manuscript recipe claim
     status: WATCHING
