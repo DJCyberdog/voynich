@@ -60,7 +60,7 @@ priorities:
   - id: RM-013
     title: Execute 40 deduplicated source claims with actual falsification gates
     status: ACTIVE
-    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence
+    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence; A-03 scoped umbrella now completed/retired (D-0206, NOT language falsification); owner next prioritizes W-01..W-20 one by one, shared-original-source groups once, then preregister specific language/nonlanguage/cipher models for independent heldout
   - id: RM-023
     title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
