@@ -56,7 +56,7 @@ priorities:
   - id: RM-022
     title: Consolidated bizarre and sexological claim source criticism
     status: WATCHING
-    next: Preserve #34 documentary/folklore labels, no conflation with historical or semantic manuscript evidence; reuse shared Brewer/Tucker/microscopy source controls
+    next: W-01..W-20 owner triage: 10 scoped-retired after direct original-author/publisher source checks, 10 remain SOURCE_REVIEWED unresolved. Prioritize ONE shared Rosettes image-control for W-01/W-04 (Q-009), W-10 zodiac figure controls, W-12..14 microscopy blind regions, then W-16..19 existing gates; never count retired shared subclaims as falsified manuscript content
   - id: RM-013
     title: Execute 40 deduplicated source claims with actual falsification gates
     status: ACTIVE
