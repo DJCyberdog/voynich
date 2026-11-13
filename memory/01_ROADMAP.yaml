@@ -6,6 +6,8 @@ priorities:
     title: Owner-authorized systematic evaluation of all 40 audited Voynich claims
     status: ACTIVE
     next: "Eight owner-prioritized P0 claims reviewed at gate/source level 2026-11-10, but NOT eight experiments. A-14 source-only necessary meaninglessness attribution SCOPED_RETIRED; 1/40 scoped closed, 7 P0 substantive claims open. A-01/A-02 eight-header IVTFF check proves $H Davis vs $C Currier label-field nonidentity and shows no A/B-within-hand overlap in sample; source-level only. New Timm 2026 v5 one-hand counterpaper source-located, CLAIMED without glyph reproduction. Do not count A-13 self-copy author as independent A-02 proof. Next: independently pin complete ZL3b-n source bytes, second transcription witness, independent hand/section image labels and preregister unseen folio control; design equal-capacity language/cipher/nonlanguage/hybrid generator benchmarks before new EXP. No merge until PR collisions and Owner authorization."
+
+    a08_primary_audit_2026_11_13: Greshko 2025 original publisher article checked; six-table Naibbe affix assignments fitted to Voynich B, so naive B heldout invalid; WATCHING, no new manuscript test. See research/hypotheses/2026-11-13_A08_naibbe_primary_source_audit.md
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
@@ -75,8 +77,3 @@ priorities:
 # 2026-11-11 Draft PR #35 A-06 Parmentier 2021 original label study SOURCE_REVIEWED: 48 pages, 729 labels, 569 distinct tested strings, 249/569 hapax author-reported (NOT independently verified). Label-to-object naive universal uniqueness only questioned; all semantics UNKNOWN. 16/40 source-reviewed/tested, 1/40 narrow closeout, 0/5 decipherment gates; integrated main EXP-0016 unchanged. Next: rights-cleared independent glyph/image/label concordance with frozen heldout; do not repeat same source audit. See research/hypotheses/2026-11-11_A06_parmentier_label_source_audit.md.
 
 # 2026-11-11 A-12 source audit: Tiltman 1967 NSA-released original directly read, Friedman's constructed-language idea only reported by Tiltman; Tiltman favored mixed substitutions and acknowledged tentative glyph segmentation. A-12 SOURCE_REVIEWED/WATCHING, no independent manuscript test, no new HYP/EXP. 17/40 source-reviewed/tested, 1/40 narrowly closed, 0/5 gates. Next: Friedman original memo and frozen rights-reviewed corpus for semantic heldout against nonlanguage and cipher controls. research/hypotheses/2026-11-11_A12_tiltman_friedman_primary_source_audit.md
-
-  - id: RM-013
-    title: A-08 Naibbe original-source audit and leakage-safe comparison gate
-    status: WATCHING
-    next: Review rights for Greshko 2025 supplemental tables and author implementation; verify exact Voynich B calibration corpus before selecting any truly untouched heldout material; use matched nonsemantic and language/cipher baselines, no third-party code execution without approval
