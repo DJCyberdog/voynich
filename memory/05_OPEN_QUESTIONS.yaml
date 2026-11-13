@@ -57,3 +57,8 @@ questions:
     question: Can a reversible or Metropolis-Hastings fixed-margin sampler be shown irreducible and stationary for actual four-class Voynich line-position tables while preserving both line and position constraints?
     status: BLOCKED
     blocker: Verified reciprocal transition design and real-table margin feasibility/convergence not yet established; synthetic Latin-square connectivity does not suffice
+  - id: Q-026
+    priority: high
+    question: "Will preregistered EXP-0025 P(masked EVA char|L,R) improve over P(char|L) when ENTIRE physical leaves and independent transcription witnesses/glyph segmentations are heldout, and against matched-complexity human-gibberish, cipher and nonlanguage copy/edit generators?"
+    status: ACTIVE
+    blocker: "Current success is conditional on editor EVA 3b and one folio-ID split; frozen GitHub script needs byte-identical external execution, physical leaf pairing, independent rights-reviewed witness/image glyph mapping and comparator generators."

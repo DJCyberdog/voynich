@@ -65,3 +65,7 @@ priorities:
     title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
     next: Explicitly add inverse three-row moves, define a reciprocal or Metropolis-Hastings kernel, prove stationary target and mixing on finite exact synthetic spaces; only then propose a rights-cleared real manuscript slice and preregistered held-out contrasts
+  - id: RM-026
+    title: Independently validate EXP-0025 internal-EVA bridge grammar on physical leaves and new source witnesses
+    status: ACTIVE
+    next: Execute byte-identical GitHub-frozen EXP-0025 scorer; split by physical leaf rather than IVTFF side ID; acquire rights-cleared independent transcription and aligned image glyph segmentation, compare to strong copy/edit and encrypted/control generators with group-heldout; no semantic/language identification from first-witness result
