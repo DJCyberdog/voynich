@@ -73,3 +73,7 @@ priorities:
     title: O-01 Owner hypothesis — distinguish scribal corrections from retouching in MS408
     status: WATCHING
     next: O-01 D-0210 source-provenance audit completed: 12 source-selected Zandbergen clips inspected, 16 metadata loci inventoried, 2009 McCrone Sample20 on f1r is marginal Latin a (NOT f1r main text), Davis 2024 MSI f70v1 showthrough as documented negative control. No X->Y verified. Next acquire rights-cleared owner-canonical canvas-specific f1r/f24v/f50v/f79r raw/processed bands and historical positive erasure controls, then freeze independent blind annotations and truly unused folio holdout; preserve W-01..20 priority
+  - id: RM-027
+    title: Independently validate EXP-0025 internal-EVA bridge grammar on physical leaves and new source witnesses
+    status: ACTIVE
+    next: Byte-identical frozen script has now reproduced original results; split by physical leaf rather than IVTFF side ID; acquire rights-cleared independent transcription and aligned image glyph segmentation, compare to strong copy/edit and encrypted/control generators with group-heldout; no semantic/language identification from first-witness result

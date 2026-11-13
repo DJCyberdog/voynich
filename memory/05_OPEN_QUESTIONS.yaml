@@ -63,4 +63,8 @@ questions:
     status: ACTIVE
     blocker: "Original image pixels/MSI raw bands and spatially pinned folio-region concordances not yet independently imported under rights; no blinded duplicate annotation or positive historical erasure controls. The McCrone f1r Sample 20 is a later Latin marginal a, not the Voynich text on f1r line 2."
     report: research/owner/O-01_correction_traces.md
-
+  - id: Q-026
+    priority: high
+    question: "Will preregistered EXP-0025 P(masked EVA char|L,R) improve over P(char|L) when ENTIRE physical leaves and independent transcription witnesses/glyph segmentations are heldout, and against matched-complexity human-gibberish, cipher and nonlanguage copy/edit generators?"
+    status: ACTIVE
+    blocker: "Current success is conditional on editor EVA 3b and one folio-ID split; GitHub source blob was now executed byte-identically and agrees in core metrics; remaining gates: physical leaf pairing, independent rights-reviewed witness/image glyph mapping and comparator generators."
