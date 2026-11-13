@@ -81,6 +81,11 @@
         "result": "research/results/2026-11-13_EXP-0023B_f66r_transfer_summary.json",
         "finding": "f66r 45 mixed L0 editorial units: 17-cycle 1/45 p=0.8044 and M5 0/16 p=1; posthoc 32 closer glyph/ligature units 2/32 and 0/16; no semantic code demonstrated",
         "caveat": "The prereg [a-z]+ matcher grouped words and individual glyphs: target is not 45 comparable single-glyph tokens."
+      },
+      "position9_audit": {
+        "id": "EXP-0023C",
+        "report": "research/experiments/2026-11-13_EXP-0023C_f57v_position9_control_vs_equivalence.md",
+        "evidence": "Scanned textual witness and heldout context evidence only; no decipherment; see D-0203"
       }
     }
   ]

@@ -68,4 +68,4 @@ priorities:
   - id: RM-024
     title: Verify transferability of key-like marginal and circular glyph sequences
     status: WATCHING
-    next: EXP-0023B f66r transfer negative: ring period17 1/45 IVTFF L0 units and anchored M5 0/16; mixed word/glyph data layer discovered. Next independent image-linked source, separate single-glyph segmentation and matched copy null; do not reuse f66r as blind holdout
+    next: EXP-0023C position9 f/f/p/p; D'Imperio 1978 already proposed functional-equivalence; ZL3b-n reproducible f/p pair-context cosine 0.9521, 90 one-substitution types, very weak heldout context predictability (CI crosses 0). Keep mode-bit key UNKNOWN. Require independent glyph-level witnesses, exact f/p allograph mapping and a predeclared external decoding consequence; no reuse of f57v/f66r as novel blind.

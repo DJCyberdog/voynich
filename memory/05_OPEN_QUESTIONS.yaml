@@ -61,3 +61,7 @@ questions:
     priority: high
     question: Can a pre-frozen fixed glyph code transfer between genuinely comparable independently image-verified single-glyph lists on previously unseen folios, beyond matched copy-edit/scribe alternatives? f66r broad transcription-unit attempt failed; do not treat it as future blind heldout.
     status: WATCHING
+  - id: Q-024
+    priority: high
+    question: Can an explicit f/p ninth-slot control-bit hypothesis predict independently unseen plaintext or glyph-level consequences over a matched allograph/copy-edit explanation, with an independently checked 17-versus-18 segmentation?
+    status: WATCHING
