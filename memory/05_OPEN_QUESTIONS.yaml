@@ -80,3 +80,9 @@ questions:
     priority: high
     question: Do the high immediate-context-cosine EVA pairs remain similar after conditioning on word position, physical hand/Currier section and independent glyph/token witnesses, and does any pair yield new heldout decoding predictions beyond copy or constrained-language models?
     status: WATCHING
+  - id: Q-030
+    priority: high
+    question: Which exact 176 folio IDs and VGM356 line/token filters were frozen before Franke VGM371/377 evaluation, and can original CSV and run377.py reproduce metrics without post-selection?
+    status: BLOCKED
+    blocker: Source CSV, code, ID manifest and provenance/history not located as downloadable authentic artifacts; local proxy counts alone underdetermine selection
+

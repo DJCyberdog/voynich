@@ -85,3 +85,7 @@ priorities:
     title: Controlled comparison of EVA glyph-context equivalence classes
     status: WATCHING
     next: EXP-0024 exploratory all-pair cosine (25 ASCII / 31 compound units): ch/sh 0.9732, k/t 0.9570, f/p 0.9541, cph/cth 0.9135, l/r 0.9043. Next freeze matched-frequency, hand-conditioned, alternative-witness and heldout copy-vs-control comparisons. Distinguish glyphs from ASCII/ligatures.
+  - id: RM-030
+    title: Independently audit Franke VGM356/371/377 corpus selection provenance and prespecified filters
+    status: BLOCKED
+    next: Obtain authentic source VGM356/interlinear_all.csv with hash/version, VGM377/run377.py, VGM371 frozen config, exact 176-ID manifest and pre-analysis selection history. EXP-0019 found aggregate nonidentifiability and P-only-split count witnesses but cannot determine author selection or intent
