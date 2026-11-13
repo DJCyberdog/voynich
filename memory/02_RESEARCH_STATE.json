@@ -41,5 +41,14 @@
     "canonical_working_source": "SRC-0007",
     "live_reauthentication": "SATURATED",
     "reactivation": "Concrete mismatch, owner request or materially new official source"
-  }
+  },
+  "pending_unmerged_findings": [
+    {
+      "id": "A-08",
+      "status": "WATCHING",
+      "evidence": "CLAIMED",
+      "report": "research/hypotheses/2026-11-13_A08_naibbe_primary_source_audit.md",
+      "note": "Original Naibbe six-table cipher publisher source audited; prefit Voynich B affixes invalidate naive independent holdout; no new manuscript test."
+    }
+  ]
 }
