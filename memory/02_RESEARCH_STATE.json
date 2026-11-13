@@ -48,7 +48,8 @@
     "2026-11-13 source-scope audit W-01..W-20: 10/20 closed SCOPED_RETIRED on explicit attribution, shared-evidence, logical necessity or folklore grounds; 10/20 still SOURCE_REVIEWED/WATCHING or ACTIVE and unresolved pending blind image comparison. No new manuscript tests. Total queue now 13/40 scoped closed and 27 open, 0/5 decipherment; detailed research/hypotheses/2026-11-13_W01_W20_grouped_primary_scope_audit.md",
     "D-0208 explicit Owner correction: reverse all 10 prematurely SCOPED_RETIRED W closures proposed by D-0207. All 20 W items completed=false; shared sources do not make a subclaim complete. A-only completions 3/40; 37/40 open, 0/5 decipherment. W-01 now author-source/locus-reviewed only.",
     "2026-11-13 O-01 owner source/material deep-audit D-0210: 12/12 selected online correction excerpts inspected, 16 structured loci including two negatives, no X->Y independently demonstrated. McCrone f1r Sample20 actually Latin marginal a, not `daiin` so chemical extrapolation impossible; original 2009 PDF/Yale and Fagin Davis 2024 MSI first-person source reviewed. No blind experiment; O-01 ACTIVE with imaging BLOCKED; 0/5 decipherment, A/W count unchanged.",
-    "2026-11-13 EXP-0025 frozen pre-registration 1ab87e8 and pre-result GitHub script commit 9d1bb16: whole-folio-ID heldout OOV masked internal EVA character, N=991 on 43 folio IDs, M2 P(char|L,R) 63.0676% vs B1 P(char|L) 43.2896%, log gain +0.6594583 nats, 400-folio bootstrap [0.6044,0.7245], 199 matched right shuffles p=0.005; all prespecified gates MET. Locally executed independent stdlib implementation, new byte-identical GitHub script execution independently reproduced core results; second spot-check exact. Single editor witness and physical glyph/semantic inference UNKNOWN; 0/5 decipherment gates. merged into main after owner authorization."
+    "2026-11-13 EXP-0025 frozen pre-registration 1ab87e8 and pre-result GitHub script commit 9d1bb16: whole-folio-ID heldout OOV masked internal EVA character, N=991 on 43 folio IDs, M2 P(char|L,R) 63.0676% vs B1 P(char|L) 43.2896%, log gain +0.6594583 nats, 400-folio bootstrap [0.6044,0.7245], 199 matched right shuffles p=0.005; all prespecified gates MET. Locally executed independent stdlib implementation, new byte-identical GitHub script execution independently reproduced core results; second spot-check exact. Single editor witness and physical glyph/semantic inference UNKNOWN; 0/5 decipherment gates. merged into main after owner authorization.",
+    "EXP-0023B f66r first predeclared transfer failed on 45 heterogeneous editorial units, 1/45 p=.80442 and motif 0/16; later glyph-column sensitivity 2/32; EXP-0023C f/p ninth-slot predicted visual co-change absent and heldout context CI overlaps zero; EXP-0024 full EVA immediate context pairs descriptive. All single-editor transcription, no manuscript image validation or semantic evidence; 0/5."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
@@ -81,5 +82,46 @@
       "report": "research/owner/O-01_correction_traces.md",
       "owner_aw_priority_unmodified": true
     }
-  }
+  },
+  "research_findings": [
+    {
+      "id": "EXP-0023",
+      "branch": "research/exp0023-f57v-f49v-holdout-20261113",
+      "date": "2026-11-13",
+      "stage": "INTEGRATED_SCOPED",
+      "evidence_status": "VERIFIED",
+      "operational_status": "WATCHING",
+      "scope": "Transcription-only retrospective list prediction, not independent glyphs or semantics",
+      "report": "research/experiments/2026-11-13_EXP-0023_f57v_f49v_keylike_prediction.md",
+      "followup": {
+        "id": "EXP-0023B",
+        "status": "RESEARCH_COMPLETED_DRAFT",
+        "evidence_status": "VERIFIED_SCOPED_EDITORIAL_SEQUENCE",
+        "operational_status": "WATCHING",
+        "preregistration": "research/experiments/2026-11-13_EXP-0023B_f66r_transfer_prereg.md",
+        "report": "research/experiments/2026-11-13_EXP-0023B_f66r_transfer_result.md",
+        "result": "research/results/2026-11-13_EXP-0023B_f66r_transfer_summary.json",
+        "finding": "f66r 45 mixed L0 editorial units: 17-cycle 1/45 p=0.8044 and M5 0/16 p=1; posthoc 32 closer glyph/ligature units 2/32 and 0/16; no semantic code demonstrated",
+        "caveat": "The prereg [a-z]+ matcher grouped words and individual glyphs: target is not 45 comparable single-glyph tokens."
+      },
+      "position9_audit": {
+        "id": "EXP-0023C",
+        "report": "research/experiments/2026-11-13_EXP-0023C_f57v_position9_control_vs_equivalence.md",
+        "evidence": "Scanned textual witness and heldout context evidence only; no decipherment; see D-0203"
+      },
+      "integration": "PR-38 merged",
+      "branch_origin": "research/exp0023-f57v-f49v-holdout-20261113"
+    },
+    {
+      "id": "EXP-0024",
+      "branch": "research/exp0023-f57v-f49v-holdout-20261113",
+      "operational_status": "WATCHING",
+      "evidence_status": "VERIFIED",
+      "scope": "Descriptive full EVA pair context similarity 300 ASCII plus 465 composite-glyph pairs on pinned owner corpus; no semantic key",
+      "report": "research/experiments/2026-11-13_EXP-0024_full_eva_context_cosine.md",
+      "stage": "INTEGRATED_SCOPED",
+      "integration": "PR-38 merged",
+      "branch_origin": "research/exp0023-f57v-f49v-holdout-20261113"
+    }
+  ]
 }
