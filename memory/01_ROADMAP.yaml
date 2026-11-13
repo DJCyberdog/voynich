@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-13'
 priorities:
+  - id: RM-031
+    title: W-04 Brewer/Lewis nine Rosettes positional anatomy falsification
+    status: WATCHING
+    next: Owner PDF f85v/f86r page 159 and Brewer first-person source now independently located; positional claims (center external, upper-left internal, 7 remaining chambers) source-reviewed, meaning UNKNOWN. Freeze blind nine-region coding, positive historical labeled medieval seven-chamber image controls, negative matched cartographic/cosmological/architectural nine-node diagrams and independent holdout before any semantic test. Reuse W-01/W-02/A-19 source, no double counting
   - id: RM-026
     title: W-02 distinguish historical contraceptive secrecy from manuscript recipe claim
     status: WATCHING
