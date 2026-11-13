@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Consolidate claims #35 with #33/#34 and exclude redundant findings; plan independent witness/joint-composition null",
+  "next": "Evaluate independent source and parser test for prioritized runnable claim from 40-claim queue; first reconcile EXP-0020 synthetic chain #28-31 before #27/#37",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -39,7 +39,9 @@
     "EXP-0017 null generator independently executed in same research cycle, raw draws SHA256 81c5fc9997f7429a71cee772194c966b4ba4d335c8cf98a912ef74f05c3abd68; repository contains code, baseline and summary, not original full text.",
     "EXP-0018 (draft stacked on EXP-0017 PR #25): within (folio, exact accepted-token line length, exact position) strict 1000-permutation null rejected for all 3 comma policies (0 exceedances each), as did 3 folio-position nulls; positional-only explanation rejected in this model.",
     "EXP-0018 complementary exploratory fold-held-out position-aware baseline vs plus previous class also positive in all 15 folds-policy cells. Line-specific class composition remains an alternate explanation, semantics/glyphs UNKNOWN.",
-    "EXP-0022: independent recomputation of 26,611 prefix-controlled contextual suffix predictions and 199 context shuffle nulls matched original held-out results; this is not an independent source witness nor a decipherment."
+    "EXP-0022: independent recomputation of 26,611 prefix-controlled contextual suffix predictions and 199 context shuffle nulls matched original held-out results; this is not an independent source witness nor a decipherment.",
+    "Consolidated A-01..A-20 and W-01..W-20 are 40 audit claim IDs, not independent evidence. 2/40 completed as of queue integration (18 source-reviewed, 1 tested, 1 blocked, 2 scoped-retired, 18 queued).",
+    "EXP-0021 A-05 narrow q-initial depletion test on manually copied f3r/f8r did not confirm held-out f8r depletion; independent glyph and source transcript verification absent."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
@@ -47,5 +49,15 @@
     "live_reauthentication": "SATURATED",
     "reactivation": "Concrete mismatch, owner request or materially new official source"
   },
-  "local_transcription_analyzed": true
+  "local_transcription_analyzed": true,
+  "claim_queue": {
+    "path": "research/hypotheses/2026-11-09_40_claims_queue.jsonl",
+    "total": 40,
+    "completed": 2,
+    "distinct_claims_not_independent_hypotheses": true,
+    "integrated_source_audits": [
+      "research/hypotheses/2026-11-09_top20_critical_audit.md",
+      "research/hypotheses/2026-11-09_weird_erotic_20_audit.md"
+    ]
+  }
 }

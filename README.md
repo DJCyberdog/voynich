@@ -11,7 +11,7 @@ This initial README is the single authorized empty-repository bootstrap commit. 
 ## Primary source
 Yale Beinecke Rare Book & Manuscript Library, MS 408: https://collections.library.yale.edu/catalog/2002046 ; manuscript collection explanation: https://beinecke.library.yale.edu/beinecke/collections/beinecke-cipher-voynich-manuscript . Source metadata, transcription versions and rights must be verified before data ingestion.
 
-## Current research status (2026-11-13; through EXP-0022)
+## Current research status (2026-11-13; through EXP-0022 and EXP-0021 historical audit)
 
 These are **work-package completion ratios**, not an estimated percentage of decipherment. The numerators and denominators are explicitly scoped; a completed inventory is not an authenticated image-to-folio concordance.
 
@@ -30,6 +30,8 @@ These are **work-package completion ratios**, not an estimated percentage of dec
 
 **EXP-0022 — independent recomputation (2026-11-13):** A five-fold folio-held-out target-suffix model with prefix3, token-length bin and line-position controls gains **+0.01294245145 nats per eligible token** from two-sided neighboring suffix classes, across 26,611 target words and 225 eligible IVTFF folio IDs. Five folds positive; 500-folio-bootstrap 95% [+0.0103165657,+0.0154591861], and 199 contextual shuffles p=0.005 (zero exceedances), independently reproduced on the owner-pinned same ZL3b-n v3b witness; positive artificial control also passed. Unlike EXP-0018 this analysis conditions on target-prefix proxy and both neighbors, but it is **not** independent manuscript replication or evidence of lexical semantics. The deliberately unfitted C1A/B synthetic semantic models failed to match broad word-length/ending distributions; artificial self-decoding does not decipher MS 408. Five decipherment gates remain 0/5. **Next:** Consolidate PR #35 with #33/#34 before any new claims, then reconcile synthetic nulls #28–31 and separate Franke/method audits.
 
+
+**40-claim audit integrated as a deduplicated queue (consolidated from PRs #33/#34/#35):** 40/40 distinct audit *claims* indexed across A-01..A-20 and W-01..W-20, **not** independent hypotheses; 2/40 explicitly completed, 38/40 not completed. Audit stages at consolidation: 18 SOURCE_REVIEWED, 1 TESTED (A-05/EXP-0021), 1 SCOPED_BLOCKED, 2 SCOPED_RETIRED and 18 QUEUED. Original top-20 and bizarre-20 desk reports are preserved as source documents alongside the queue; 22 new documentary source-index records SRC-0025..0046 imported with unique IDs, not independent manuscript confirmations. EXP-0021's limited q-initial f3r/f8r line-position held-out test did **not** support the narrow depletion prediction (f8r p=0.98611 under a manual-source extract). Next prioritize executable, manuscript-linked falsification instead of repetitive desk reviews; main decipherment gates remain 0/5, owner-canonical IIIF live authentication unchanged (UNKNOWN).
 
 ## Resumption
 Read this status together with the canonical memory registers, governance and open PRs. On a material integrated delta, update this README's dated status and denominator-defined progress bars via branch/PR only; do not manufacture commits on NO_CHANGE.
