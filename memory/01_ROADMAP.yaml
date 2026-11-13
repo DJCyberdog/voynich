@@ -77,3 +77,8 @@ priorities:
 # 2026-11-11 Draft PR #35 A-06 Parmentier 2021 original label study SOURCE_REVIEWED: 48 pages, 729 labels, 569 distinct tested strings, 249/569 hapax author-reported (NOT independently verified). Label-to-object naive universal uniqueness only questioned; all semantics UNKNOWN. 16/40 source-reviewed/tested, 1/40 narrow closeout, 0/5 decipherment gates; integrated main EXP-0016 unchanged. Next: rights-cleared independent glyph/image/label concordance with frozen heldout; do not repeat same source audit. See research/hypotheses/2026-11-11_A06_parmentier_label_source_audit.md.
 
 # 2026-11-11 A-12 source audit: Tiltman 1967 NSA-released original directly read, Friedman's constructed-language idea only reported by Tiltman; Tiltman favored mixed substitutions and acknowledged tentative glyph segmentation. A-12 SOURCE_REVIEWED/WATCHING, no independent manuscript test, no new HYP/EXP. 17/40 source-reviewed/tested, 1/40 narrowly closed, 0/5 gates. Next: Friedman original memo and frozen rights-reviewed corpus for semantic heldout against nonlanguage and cipher controls. research/hypotheses/2026-11-11_A12_tiltman_friedman_primary_source_audit.md
+
+  - id: RM-013
+    title: A-11 hybrid comparator scoped, no independent historical hypothesis
+    status: WATCHING
+    next: Reuse A-11 only as fixed complexity-matched alternative in a source-pinned heldout test of a concrete author model; see 2026-11-13 A11 scope audit in draft PR 35; no independent hypothesis or experiment ID
