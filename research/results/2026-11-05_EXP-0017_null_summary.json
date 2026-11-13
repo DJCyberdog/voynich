@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "experiment_id": "EXP-0017",
+  "date": "2026-11-05",
+  "sha256_input": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "sha256_owner_evaluator": "7acf5cb70b6197549d71cd2f1b91bda3a72d1c7885d63db76522454083017e89",
+  "sha256_owner_baseline_raw": "f80136b043747f526fc34cde45504e16114529a0f2e99f02ff65f247a8958776",
+  "sha256_raw_permutation_draws": "81c5fc9997f7429a71cee772194c966b4ba4d335c8cf98a912ef74f05c3abd68",
+  "fold_seed": 377,
+  "shuffle_seed": 150377,
+  "permutations_per_cell": 1000,
+  "shuffle_rng": "SplitMix64 Fisher-Yates",
+  "evidence_status": "VERIFIED scoped computational calculation",
+  "significance": "exploratory exchangeability null tests, not semantics",
+  "policies": {
+    "exclude": {
+      "observed": 0.01844083716460898,
+      "folio": {
+        "mean": 0.005770780313039663,
+        "lo": 0.00444055357373066,
+        "hi": 0.00728520636892378,
+        "max": 0.008624822308528124,
+        "exceedances": 0,
+        "p": 0.000999000999000999
+      },
+      "line": {
+        "mean": 0.01107899543590898,
+        "lo": 0.009503107190825807,
+        "hi": 0.012828676900275851,
+        "max": 0.01369402021214794,
+        "exceedances": 0,
+        "p": 0.000999000999000999
+      }
+    },
+    "join": {
+      "observed": 0.018268024834445118,
+      "folio": {
+        "mean": 0.005653852622942411,
+        "lo": 0.004391297755673903,
+        "hi": 0.007053525883295605,
+        "max": 0.00846986248312187,
+        "exceedances": 0,
+        "p": 0.000999000999000999
+      },
+      "line": {
+        "mean": 0.010390421506917488,
+        "lo": 0.00890964988639975,
+        "hi": 0.011951812394447394,
+        "max": 0.013454337240310199,
+        "exceedances": 0,
+        "p": 0.000999000999000999
+      }
+    },
+    "split": {
+      "observed": 0.016846419832565962,
+      "folio": {
+        "mean": 0.004936300441056501,
+        "lo": 0.0038370771694410553,
+        "hi": 0.006070487937417267,
+        "max": 0.006680862499490403,
+        "exceedances": 0,
+        "p": 0.000999000999000999
+      },
+      "line": {
+        "mean": 0.009328955810705442,
+        "lo": 0.007963114664741386,
+        "hi": 0.010657756667026915,
+        "max": 0.011904774448946331,
+        "exceedances": 0,
+        "p": 0.000999000999000999
+      }
+    }
+  }
+}

@@ -1,14 +1,18 @@
 schema_version: 1
-updated: '2026-11-09'
+updated: '2026-11-13'
 priorities:
   - id: RM-010
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
     next: DE/EN candidate families inventoried in research/hypotheses/2026-11-09_multilingual_landscape_audit.md; check FR/ES/IT, trace original papers, deduplicate HYP/EXP/SRC and open PRs, preregister discriminating blind tests before new HYP IDs
+  - id: RM-020
+    title: Test joint position-and-line-composition confounding after EXP-0018
+    status: ACTIVE
+    next: Following independent EXP-0018 strict folio x exact length x exact token offset null rejection, design and preregister margins-preserving swaps that also retain each individual line class multiset; evaluate held-out sections and alternate transcripts before any semantic inference
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
-    next: Freeze source bytes and parser; audit rights and IVTFF line/token policy; check EXP-0016 per-line accounting invariants against actual parsed lines; reproduce all reported folds before within-folio and within-line 1000-permutation tests; keep f3r pilot EXP-0014 separate
+    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. EXP-0018 verified position/length controls; now test joint per-line class composition and position margins and independent witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
@@ -41,9 +45,7 @@ priorities:
     title: Independent live manifest attestation
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
-
-
   - id: RM-012
-    title: Review proposed EXP-0022 C-1A/C-1B constructed-language surface baseline
+    title: Examine contextual suffix predictability under independent witnesses and jointly controlled line composition
     status: WATCHING
-    next: Review EXP-0022 prefix-controlled heldout suffix-context result with 26611 targets, gain +0.01294 nats, 5/5 positive folds, permutation p=0.005 conditional on user-held ZL3b-n witness. Distinguish from unmerged EXP-0018; next independent witness and matched line-composition/section null, rights and owner merge gate.
+    next: EXP-0022 independent rerun confirms 0.01294245 nats per eligible target on user-supplied single witness; compare independent transcription sources, actual glyph layers and jointly matched line/section composition before semantic claims

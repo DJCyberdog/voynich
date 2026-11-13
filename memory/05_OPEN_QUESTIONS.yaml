@@ -31,3 +31,12 @@ questions:
     priority: high
     question: Which distinct Voynich explanatory claims in DE/EN/FR/ES/IT Wikipedia and their original cited papers remain unregistered or untested after deduplication?
     status: ACTIVE
+
+  - id: Q-020
+    priority: high
+    question: Does the EXP-0017 order-sensitive suffix-class gain remain after line-length, position, section and Currier/hand structure are preserved in stronger null models and across independent transcription witnesses?
+    status: ACTIVE
+  - id: Q-021
+    priority: high
+    question: Can the residual EXP-0018 suffix-class predictive gain survive nulls jointly fixing each line's class counts and folio-specific length/position class marginals, and independent transcription witnesses or section-held-out evaluation?
+    status: ACTIVE

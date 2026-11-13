@@ -1,0 +1,173 @@
+{
+  "source": "https://www.voynich.nu/data/ZL3b-n.txt",
+  "sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "version_header": [
+    "#=IVTFF Eva- 2.0 M 5",
+    "# ZL transliteration file, updated from EVMT project",
+    "# Version 3b of 13/05/2025"
+  ],
+  "seed": 377,
+  "alpha": 0.5,
+  "folds": 5,
+  "policy_results": {
+    "exclude": {
+      "matched_transcription_lines": 5225,
+      "lines_with_no_accepted_tokens": 116,
+      "folios": 226,
+      "lines": 5225,
+      "tokens": 32147,
+      "transitions": 27038.0,
+      "unigram_loss": 0.6793626773265719,
+      "markov_loss": 0.6609218401619633,
+      "markov_advantage_nats": 0.018440837164608537,
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_folios": 46,
+          "transitions": 4895.0,
+          "unigram_loss": 0.6843925075861019,
+          "markov_loss": 0.6619883246295525,
+          "markov_advantage_nats": 0.022404182956549435
+        },
+        {
+          "fold": 2,
+          "held_out_folios": 45,
+          "transitions": 5852.0,
+          "unigram_loss": 0.6573208071468526,
+          "markov_loss": 0.6528055643697168,
+          "markov_advantage_nats": 0.004515242777135802
+        },
+        {
+          "fold": 3,
+          "held_out_folios": 45,
+          "transitions": 6108.0,
+          "unigram_loss": 0.6494807251906028,
+          "markov_loss": 0.6324313529199531,
+          "markov_advantage_nats": 0.017049372270649732
+        },
+        {
+          "fold": 4,
+          "held_out_folios": 45,
+          "transitions": 4859.0,
+          "unigram_loss": 0.7133969470465268,
+          "markov_loss": 0.6884304887881566,
+          "markov_advantage_nats": 0.02496645825837016
+        },
+        {
+          "fold": 5,
+          "held_out_folios": 45,
+          "transitions": 5324.0,
+          "unigram_loss": 0.7021865789510182,
+          "markov_loss": 0.6764423842767082,
+          "markov_advantage_nats": 0.025744194674309894
+        }
+      ]
+    },
+    "join": {
+      "matched_transcription_lines": 5225,
+      "lines_with_no_accepted_tokens": 79,
+      "folios": 226,
+      "lines": 5225,
+      "tokens": 34415,
+      "transitions": 29269.0,
+      "unigram_loss": 0.6735264210821906,
+      "markov_loss": 0.6552583962477457,
+      "markov_advantage_nats": 0.018268024834444896,
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_folios": 46,
+          "transitions": 5281.0,
+          "unigram_loss": 0.6813894615679982,
+          "markov_loss": 0.659198610216845,
+          "markov_advantage_nats": 0.022190851351153194
+        },
+        {
+          "fold": 2,
+          "held_out_folios": 45,
+          "transitions": 6305.0,
+          "unigram_loss": 0.6513269064630816,
+          "markov_loss": 0.6459773477513627,
+          "markov_advantage_nats": 0.005349558711718813
+        },
+        {
+          "fold": 3,
+          "held_out_folios": 45,
+          "transitions": 6603.0,
+          "unigram_loss": 0.6434433949305778,
+          "markov_loss": 0.6257619602293253,
+          "markov_advantage_nats": 0.0176814347012525
+        },
+        {
+          "fold": 4,
+          "held_out_folios": 45,
+          "transitions": 5294.0,
+          "unigram_loss": 0.7093476553747202,
+          "markov_loss": 0.6859448672374283,
+          "markov_advantage_nats": 0.02340278813729188
+        },
+        {
+          "fold": 5,
+          "held_out_folios": 45,
+          "transitions": 5786.0,
+          "unigram_loss": 0.6920960426173408,
+          "markov_loss": 0.6673599396990301,
+          "markov_advantage_nats": 0.024736102918310725
+        }
+      ]
+    },
+    "split": {
+      "matched_transcription_lines": 5225,
+      "lines_with_no_accepted_tokens": 76,
+      "folios": 226,
+      "lines": 5225,
+      "tokens": 37105,
+      "transitions": 31956.0,
+      "unigram_loss": 0.6646246319239559,
+      "markov_loss": 0.6477782120913895,
+      "markov_advantage_nats": 0.016846419832566406,
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_folios": 46,
+          "transitions": 5744.0,
+          "unigram_loss": 0.6718461775274986,
+          "markov_loss": 0.6511088450133544,
+          "markov_advantage_nats": 0.02073733251414423
+        },
+        {
+          "fold": 2,
+          "held_out_folios": 45,
+          "transitions": 6865.0,
+          "unigram_loss": 0.6415574143304646,
+          "markov_loss": 0.6360856426573462,
+          "markov_advantage_nats": 0.005471771673118438
+        },
+        {
+          "fold": 3,
+          "held_out_folios": 45,
+          "transitions": 7202.0,
+          "unigram_loss": 0.6372038650635273,
+          "markov_loss": 0.6206961045783215,
+          "markov_advantage_nats": 0.01650776048520583
+        },
+        {
+          "fold": 4,
+          "held_out_folios": 45,
+          "transitions": 5806.0,
+          "unigram_loss": 0.7029603853166387,
+          "markov_loss": 0.6839985170694652,
+          "markov_advantage_nats": 0.01896186824717355
+        },
+        {
+          "fold": 5,
+          "held_out_folios": 45,
+          "transitions": 6339.0,
+          "unigram_loss": 0.679103708996595,
+          "markov_loss": 0.6550173004755748,
+          "markov_advantage_nats": 0.024086408521020203
+        }
+      ]
+    }
+  }
+}
