@@ -82,3 +82,5 @@ priorities:
     title: A-11 hybrid comparator scoped, no independent historical hypothesis
     status: WATCHING
     next: Reuse A-11 only as fixed complexity-matched alternative in a source-pinned heldout test of a concrete author model; see 2026-11-13 A11 scope audit in draft PR 35; no independent hypothesis or experiment ID
+
+# 2026-11-13 W-19 source review (draft PR #35, not integrated): Manly 1931 publisher primary metadata and Tiltman historical report checked; original Newbold 1928 plates, full critique, rights-cleared image regions, blind crack controls and heldout are needed. W-19 SOURCE_REVIEWED/WATCHING, distinct from W-12–15. No manuscript experiment or decipherment gate; main EXP-0016 unchanged. See research/hypotheses/2026-11-13_W19_newbold_manly_primary_source_gate.md
