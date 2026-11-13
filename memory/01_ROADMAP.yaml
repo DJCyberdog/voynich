@@ -2,9 +2,9 @@ schema_version: 1
 updated: '2026-11-13'
 priorities:
   - id: RM-027
-    title: K-0001 VY001 triad crop coordinate reproducibility and blind validation
+    title: K-0001 VY001 glyph variants and K-0001b minimum-three-scribes challenge
     status: BLOCKED
-    next: Pin deterministic rendering recipe, page-specific raster dimensions and hashes for f24r/f20r B/C; confirm rights, independent image witness and predeclared blinded annotation before any physical grapheme identity claim
+    next: Source PDF now LFS-pinned and A/B/C page raster recipe documented in existing PR #46; owner hypothesizes at least THREE different scribal hands across f16r/f20r/f24r, all three pairwise comparisons required. Freeze multi-feature blind handwriting controls (VY0001 top-left triangle, o-shaped and c-shaped marks), contextual stroke models, Davis source comparators and sealed folio holdout; distinct scribal identities UNKNOWN, confirmation BLOCKED
   - id: RM-026
     title: W-02 distinguish historical contraceptive secrecy from manuscript recipe claim
     status: WATCHING
