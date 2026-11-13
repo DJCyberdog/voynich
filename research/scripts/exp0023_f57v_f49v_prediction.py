@@ -19,14 +19,14 @@ def parse(path):
         raise ValueError("ZL3b-n v3b source SHA256 mismatch")
     text = raw.decode("utf-8-sig")
     line = next(s for s in text.splitlines() if s.startswith("<f57v.3,+Cc>"))
-    body = re.sub(r"^<f57v\\.3,\\+Cc>\\s*<![^>]*>", "", line).strip()
+    body = re.sub(r"^<f57v\.3,\+Cc>\s*<![^>]*>", "", line).strip()
     ring = body.split(".")
     if ring[-1] == "":
         ring.pop()
     assert len(ring) == 68 and all(ring[i] == "o" for i in (0, 17, 34, 51))
     margin = []
     for line in text.splitlines():
-        match = re.match(r"^<f49v\\.\\d+,[*@]L0>\\s+(\\S+)\\s*$", line)
+        match = re.match(r"^<f49v\.\d+,[*@]L0>\s+(\S+)\s*$", line)
         if match:
             margin.append(match.group(1))
     assert len(margin) == 26
