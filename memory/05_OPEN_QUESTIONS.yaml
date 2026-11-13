@@ -57,3 +57,7 @@ questions:
     question: Can a reversible or Metropolis-Hastings fixed-margin sampler be shown irreducible and stationary for actual four-class Voynich line-position tables while preserving both line and position constraints?
     status: BLOCKED
     blocker: Verified reciprocal transition design and real-table margin feasibility/convergence not yet established; synthetic Latin-square connectivity does not suffice
+  - id: Q-023
+    priority: high
+    question: Does any pre-frozen list rule from f57v or f49v predict truly unseen glyph positions on f66r or an independent image-linked witness better than a simple copy-edit null without seeing the anchor positions?
+    status: WATCHING

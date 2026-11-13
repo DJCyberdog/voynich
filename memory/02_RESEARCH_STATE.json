@@ -60,5 +60,17 @@
       "research/hypotheses/2026-11-09_top20_critical_audit.md",
       "research/hypotheses/2026-11-09_weird_erotic_20_audit.md"
     ]
-  }
+  },
+  "pending_unmerged_findings": [
+    {
+      "id": "EXP-0023",
+      "branch": "research/exp0023-f57v-f49v-holdout-20261113",
+      "date": "2026-11-13",
+      "stage": "DRAFT_NOT_INTEGRATED",
+      "evidence_status": "VERIFIED",
+      "operational_status": "WATCHING",
+      "scope": "Transcription-only retrospective list prediction, not independent glyphs or semantics",
+      "report": "research/experiments/2026-11-13_EXP-0023_f57v_f49v_keylike_prediction.md"
+    }
+  ]
 }
