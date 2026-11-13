@@ -42,7 +42,8 @@
     "EXP-0022: independent recomputation of 26,611 prefix-controlled contextual suffix predictions and 199 context shuffle nulls matched original held-out results; this is not an independent source witness nor a decipherment.",
     "Consolidated A-01..A-20 and W-01..W-20 are 40 audit claim IDs, not independent evidence. 2/40 completed as of queue integration (18 source-reviewed, 1 tested, 1 blocked, 2 scoped-retired, 18 queued).",
     "EXP-0021 A-05 narrow q-initial depletion test on manually copied f3r/f8r did not confirm held-out f8r depletion; independent glyph and source transcript verification absent.",
-    "EXP-0020: four linked synthetic audits #28-31 independently reproduced; 576 states, 9216 directed edges, 2304 nonreciprocal. Directed connectivity is not stationary uniformity. Reports include #30 erratum from #31; no manuscript test."
+    "EXP-0020: four linked synthetic audits #28-31 independently reproduced; 576 states, 9216 directed edges, 2304 nonreciprocal. Directed connectivity is not stationary uniformity. Reports include #30 erratum from #31; no manuscript test.",
+    "A-03 source-audit SRC-0054 (2026-11-13) directly reviewed Gaskell/Bowern 2022 human gibberish control; original authors' 38/42 and 41/42 overlap does NOT prove manuscript gibberish nor establish long-range text structure; no project experiment. Report research/hypotheses/2026-11-13_A03_gaskell_bowern_human_gibberish_control.md."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
