@@ -5,10 +5,14 @@ priorities:
     title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
     status: ACTIVE
     next: DE/EN candidate families inventoried in research/hypotheses/2026-11-09_multilingual_landscape_audit.md; check FR/ES/IT, trace original papers, deduplicate HYP/EXP/SRC and open PRs, preregister discriminating blind tests before new HYP IDs
+  - id: RM-020
+    title: Test joint position-and-line-composition confounding after EXP-0018
+    status: ACTIVE
+    next: Following independent EXP-0018 strict folio x exact length x exact token offset null rejection, design and preregister margins-preserving swaps that also retain each individual line class multiset; evaluate held-out sections and alternate transcripts before any semantic inference
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
-    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. Preregister line-position/length/section-conditioned nulls, test independent transcription witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
+    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. EXP-0018 verified position/length controls; now test joint per-line class composition and position margins and independent witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
