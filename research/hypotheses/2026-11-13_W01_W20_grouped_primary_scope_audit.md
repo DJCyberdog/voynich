@@ -1,0 +1,36 @@
+# W-01–W-20 — Quelleninventar und offene Einzelprüfung (D-0208 korrigiert D-0207)
+
+**Stand: 2026-11-13.** Dies ist eine **vorläufige Quellenlandkarte**, kein abgeschlossener wissenschaftlicher Audit von zwanzig Hypothesen. Die in der ursprünglichen Draft-Fassung enthaltene Behauptung „10/20 W SCOPED_RETIRED“ wurde auf ausdrückliche Owner-Anweisung **widerrufen**. Diese historische Fehlentscheidung bleibt über den Git-Verlauf und das Decision Log D-0207/D-0208 nachvollziehbar. **0/20 W completed; 20 W offen.** Die drei bereits abgeschlossenen A-Auditpunkte A-03, A-11, A-14 bleiben von dieser Korrektur unberührt (**3/40 Gesamtqueue**). **0/5 Entzifferungsgates**.
+
+## A-Maßstab für jedes einzelne W
+
+Für jede einzelne W-ID: Originalautor/Urquelle mit Zugangs- und Datierungshinweis; konkrete vom Urheber behauptete Vorhersage; eindeutig bestimmter MS408-Bild-/Textlokus; getrennte Ebenen (Originalscan / Strichverlauf / Transkriptionszeuge / Tokenisierung / statistische Interpretation); Rechte und Dokumentversion; stärkste Alternativerklärung; positive und negative historische Kontrollen; vorab festgelegtes Nullmodell; beabsichtigter echter Holdout und Präregistrierung; durchgeführter oder ehrlich als **NOT_RUN** markierter Test; anschließend eng begrenzte Evidenzklasse und Entscheidung. **Geteilte Quellen nicht als unabhängige Beweise zählen, aber auch keine Einzelhypothese wegen gemeinsamer Quelle automatisch schließen.** Bei fehlender Primärliteratur oder Bildern den einzelnen W-Fall offen lassen und den Blocker dokumentieren.
+
+D-0005 bleibt unverändert: SHA-256-gepinnter Nutzer-IIIF-Snapshot SRC-0007 gilt als owner-kanonische Arbeitsbasis, nicht als unabhängig live Yale-authentifizierter Scandatensatz. Keine unzulässige Kopie von Bildern, paywall-Quellen, Schriften, vollständigen Transkriptionen oder fremdem Code.
+
+## Quelleninventar nach Urheberfamilien (keine Abschlusssortierung)
+
+| W-IDs | Vorliegende Quellen | Nächster Einzelschritt |
+|---|---|---|
+| **W-01–W-09** | Brewer & Lewis 2024: SRC-0037 Original-Verlagsartikel (zugänglich war Abstract), SRC-0040 Keagan Brewers selbst veröffentlichte Erläuterung. Ihre ausdrücklich erwähnte entschlüsselte 21-Zeilen-Chiffre stammt **nicht** aus MS408. | Für jedes W die konkrete, eigenständige Aussage und ihre Bildmerkmale isolieren; blind mit datierten anatomischen, kosmologischen, architektonischen und kartografischen Kontrollen vergleichen |
+| **W-10/W-11** | Edith Sherwood: SRC-0043 Autorenseite nur indexiert, Live-Zugriff eingeschränkt. SRC-0055 René Zandbergen q10: 15 Figuren wiederholen sich auf beiden Widder- und Stierhälften (Quellenkatalog, kein Pixelnachweis). | Sherwood-Original-Regeln für Wannen- und Geburtsdatumsthese sichern und unabhängig auf f70v1, f71r, f71v, f72r1 mit Kontrollbildern testen |
+| **W-12–W-15** | Baron, Schulsinger, Sheynkin 2014: SRC-0041 Original-Konferenzabstract, Volltext über Publisher nicht zugänglich. | Jede biologische Bildidentifikation und die Instrumentenhypothese mit eigenen historisch datierten Bild- und Optikkontrollen prüfen |
+| **W-16** | Stephen Skinner im direkten Guardian-Interview; vorhandener individueller W-16-Quellenbericht in main | Historische Mikwen-Merkmale gegen weltliche/medizinische Bäder und Originalmanuskriptbilder blind prüfen |
+| **W-17/W-18** | Janick/Tucker 2018: SRC-0042 Springer-Original-Kapitelabstract; Vollkapitel nicht abgerufen | Aztekische Ritualbad-Ikonografie und zwei angebliche spanische Strafgeräte getrennt mit historischen Originalrealia und Folio-Lokussen konfrontieren |
+| **W-19** | Original Manly 1931 (bibliographisch), Tiltman Gegenbericht; individueller W-19-Quellenbericht in main | Original-Newbold-Tafeln, echte mikrographische Zeichen, Riss-/Ink-Pigmentkontrollen mit unabhängigen Annotatoren |
+| **W-20** | Populäre Alien-Spekulation im früheren Quellen-Audit (SRC-0046), bisher kein fixierter Originalautor-Modelltest | Suche nach datiertem Autor-Original und konkret überprüfbarer physischer/linguistischer Vorhersage; ohne diese kein experimenteller Erfolg oder Widerlegung behaupten |
+
+## W-01 — erster individueller Schritt: Originalbehauptung, Folio, Alternativen
+
+**Forschungsfrage:** Enthält das Voynich-Manuskript ein Thema zu Sexualität und Empfängnis? Keagan Brewer formuliert die Erstperson-Hypothese ausdrücklich in https://phys.org/news/2024-04-years-voynich-manuscript-mystery-sex.html (2024-04-16, direkt gelesen am 2026-11-13), mit Michelle L. Lewis als Mitautorin der Originalstudie DOI https://doi.org/10.1093/shm/hkad099. Die beiden behaupten *eines der möglichen Themen* und eine ikonografische Darstellung von Koitus/Empfängnis, **keine** Entzifferung der Voynich-Schrift. Die aus historischen Vergleichsdokumenten entschlüsselte 21-Zeilen-Chiffre wurde von den Forschenden ausdrücklich als **nicht aus MS408** bezeichnet.
+
+**Manuskript-Lokus:** Das Rosetten-Faltblatt ist das Einzelblatt der **Lage 14, f85v + f86r**, in IVTFF als `fRos` bezeichnet: https://voynich.nu/q14/ (Zandbergens editorische Folio-/Illustrationsbeschreibung). Der großen Zentralrosette sind acht weitere Kreise zugeordnet. Lokus **DOCUMENTED auf Katalogebene**, kein neuer eigenständiger Yale-Pixelbefund, keine vom Projekt produzierte Beschreibung unerkannter Glyphen.
+
+**Stärkste Gegenhypothese:** Eine mittelalterliche kosmologische, geografische, architektonische oder balneologische Darstellung führt zu demselben Netz aus Kreisen, Röhren und Türmen; moderne Betrachter können anatomische Metaphern hineinlesen. Auch ein möglicher medizinischer Bildbezug übersetzt keine unbekannte Textpassage.
+
+**Prospektiver falsifizierender Test, DESIGN ONLY:** Vor Einsicht in unberührte Zielbilder Hypothesenkern, ausschlaggebende gegenüber kosmologischen Karten diagnostische Merkmale und ihre zulässigen Variationen einfrieren. Positive Kontrollen = datierte Reproduktions-/Geburtsikonografie; negative = zeit-/regions-/stil-/bilddichtegematchte Kosmogramme, Städtepläne, Wassertechnik, Bäder. Nullmodell = visuelle Übereinstimmung gewöhnlicher geometrischer Merkmale ohne semantischen Bezug. Mindestens zwei verblindete annotierende Personen und strikter Folio-/Bildholdout außerhalb des illustrierten Entwicklungsbeispiels fRos. Gleiche Anzahl von Merkmalsentscheidungen, vorher festgelegte Erfolgsgrenze, Dokumentation von Unsicherheit und fehlender Vergleichbarkeit. **Tatsächliches Ergebnis: NOT_RUN; W-01 SOURCE_REVIEWED / ACTIVE / completed=false, Voynich-Semantik UNKNOWN.**
+
+**Nach W-01 folgt W-02 als eigener Kandidat** mit Hartlieb-Urquellen und vorab festgelegten Voynich-Passage-/Rezeptbedingungen, nicht automatischem Abschluss wegen des anderswo entzifferten Vergleichstexts. Keine W-Wissenschaft wegen ihrer Exotik aussondern.
+
+## Forschungsintegrität
+Bisherige Quellensuche und abgrenzende Überlegungen sind nützlich, aber **kein** physikalisch kontrollierter Manuskriptbildtest. `completed=true` nur nach einem spezifischen, individuell begründeten Forschungsabschluss – nicht nach Verweis auf anderes W oder fehlenden Quellenzugriff. Dieser Branch ist ein noch offener Draft-PR, kein integrierter W-Fortschritt, solange keine Owner-autorisierte Mergeprüfung erfolgte. Keine anderen Automationen verändert.

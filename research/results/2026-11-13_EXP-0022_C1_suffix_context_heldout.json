@@ -1,0 +1,77 @@
+{
+  "version": "C1suffix-v1",
+  "source": {
+    "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+    "folio_identifiers": 226,
+    "parsed_nonempty_lines": 5039,
+    "eligible_tokens": 26611,
+    "fold_eligible_counts": [
+      6347,
+      5172,
+      4579,
+      5463,
+      5050
+    ]
+  },
+  "self_test": {
+    "self_test": "PASS"
+  },
+  "positive_control": {
+    "rows": 5500,
+    "gain_nats_per_token": 0.10074829314427432,
+    "all_5_folds_positive": true
+  },
+  "real": {
+    "n": 26611,
+    "folios": 225,
+    "heldout_gain_nats_per_token": 0.012942451451195939,
+    "folds": [
+      {
+        "fold": 0,
+        "train_n": 20264,
+        "heldout_n": 6347,
+        "gain_nats_token": 0.011561795507535572
+      },
+      {
+        "fold": 1,
+        "train_n": 21439,
+        "heldout_n": 5172,
+        "gain_nats_token": 0.009330949088270174
+      },
+      {
+        "fold": 2,
+        "train_n": 22032,
+        "heldout_n": 4579,
+        "gain_nats_token": 0.013040510565140393
+      },
+      {
+        "fold": 3,
+        "train_n": 21148,
+        "heldout_n": 5463,
+        "gain_nats_token": 0.01672763402381075
+      },
+      {
+        "fold": 4,
+        "train_n": 21561,
+        "heldout_n": 5050,
+        "gain_nats_token": 0.014192797672684675
+      }
+    ],
+    "bootstrap_95pct": [
+      0.010316565731651274,
+      0.015459186048122835
+    ],
+    "bootstrap_n": 500,
+    "negative_null": {
+      "seed": 131126,
+      "num_shuffles": 199,
+      "mobile_context_targets": 26433,
+      "mobile_fraction": 0.9933110367892977,
+      "mean": 0.0032152455982042186,
+      "p95": 0.004649839710139758,
+      "max": 0.005234972650966164,
+      "empirical_upper_tail_p": 0.005
+    },
+    "prespecified_threshold_pass": true
+  }
+}

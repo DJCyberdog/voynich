@@ -1,22 +1,26 @@
 schema_version: 1
-updated: '2026-11-05'
+updated: '2026-11-13'
 priorities:
-  - id: RM-011
-    title: Independently audit Franke VGM356/371/377 corpus selection provenance and prespecified filters
-    status: BLOCKED
-    next: Obtain authentic source VGM356/interlinear_all.csv with hash/version, VGM377/run377.py, VGM371 frozen config, exact 176-ID manifest and pre-analysis selection history. EXP-0019 found aggregate nonidentifiability and P-only-split count witnesses but cannot determine author selection or intent
+  - id: RM-026
+    title: W-02 distinguish historical contraceptive secrecy from manuscript recipe claim
+    status: WATCHING
+    next: Publisher abstract and author essay checked, but W-02 remains unproven; inspect full original paper/Hartlieb passage and prepare rights-cleared blinded iconographic controls jointly with W-01/A-19, no Voynich recipe decoding claim
   - id: RM-010
+    title: Owner-prioritized multilingual Voynich hypothesis audit and falsifiable claim inventory
+    status: ACTIVE
+    next: DE/EN candidate families inventoried in research/hypotheses/2026-11-09_multilingual_landscape_audit.md; check FR/ES/IT, trace original papers, deduplicate HYP/EXP/SRC and open PRs, preregister discriminating blind tests before new HYP IDs
+  - id: RM-020
     title: Test joint position-and-line-composition confounding after EXP-0018
     status: ACTIVE
     next: Following independent EXP-0018 strict folio x exact length x exact token offset null rejection, design and preregister margins-preserving swaps that also retain each individual line class multiset; evaluate held-out sections and alternate transcripts before any semantic inference
   - id: RM-009
     title: Independently reproduce EXP-0015 and execute frequency-preserving permutation controls
     status: ACTIVE
-    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. Preregister line-position/length/section-conditioned nulls, test independent transcription witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
+    next: EXP-0017 now reran exact owner baseline and independently executed 1000-draw within-folio and within-line controls for exclude/join/split; 0 exceedances each. EXP-0018 verified position/length controls; now test joint per-line class composition and position margins and independent witnesses, audit origin rights and IVTFF parser omissions; keep EXP-0014 separate
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
-    next: Preregister source-pinned q/qo positional and running-text-vs-label comparison with matched nulls and held-out folios; retrieve original September Burchard artifacts before treating reported 200-window result as verified
+    next: Preregister source-pinned q/qo positional and running-text-vs-label comparison with matched nulls and held-out folios; retrieve original September Burchard artifacts before treating reported 200-window result as verified; also source-review SRC-0053 ligature candidates with historical Latin abbreviation/cipher controls and image-level folio heldout, WITHOUT treating A-07 Gibbs as unblocked
   - id: RM-006
     title: Inventory multilingual Voynich hypotheses and primary evidence
     status: ACTIVE
@@ -45,4 +49,43 @@ priorities:
     title: Independent live manifest attestation
     status: SATURATED
     next: Reopen only for concrete discrepancy or user request; not blocker
-
+  - id: RM-012
+    title: Examine contextual suffix predictability under independent witnesses and jointly controlled line composition
+    status: WATCHING
+    next: EXP-0022 independent rerun confirms 0.01294245 nats per eligible target on user-supplied single witness; compare independent transcription sources, actual glyph layers and jointly matched line/section composition before semantic claims
+  - id: RM-011
+    title: Deduplicated original source review of 20 high-utility Voynich audit claims
+    status: WATCHING
+    next: Original report from #33 preserved in #35; prioritize falsifiable source- and locus-pinned predictions over inventory inflation
+  - id: RM-022
+    title: Consolidated bizarre and sexological claim source criticism
+    status: WATCHING
+    next: D-0208 Owner revokes premature retirement of 10 W audit points. ALL W-01..W-20 remain individually OPEN and require same A-level work (dated original, exact image/folio locus, preregistered distinguishing prediction, strongest alternative, positive/negative controls and heldout). W-01 Brewer/Lewis original author and fRos (f85v/f86r) editorial locus checked, NOT_TESTED; progress one W at a time, shared sources alone never close any W.
+  - id: RM-013
+    title: Execute 40 deduplicated source claims with actual falsification gates
+    status: ACTIVE
+    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence; A-03 scoped umbrella now completed/retired (D-0206, NOT language falsification); owner now requires W-01..W-20 INDIVIDUAL deep evaluations regardless of shared-source grouping, then preregister specific language/nonlanguage/cipher models for independent heldout
+  - id: RM-023
+    title: Repair directed synthetic EXP-0020 null sampler before real-data inference
+    status: BLOCKED
+    next: Explicitly add inverse three-row moves, define a reciprocal or Metropolis-Hastings kernel, prove stationary target and mixing on finite exact synthetic spaces; only then propose a rights-cleared real manuscript slice and preregistered held-out contrasts
+  - id: RM-024
+    title: O-01 Owner hypothesis — distinguish scribal corrections from retouching in MS408
+    status: WATCHING
+    next: O-01 D-0210 source-provenance audit completed: 12 source-selected Zandbergen clips inspected, 16 metadata loci inventoried, 2009 McCrone Sample20 on f1r is marginal Latin a (NOT f1r main text), Davis 2024 MSI f70v1 showthrough as documented negative control. No X->Y verified. Next acquire rights-cleared owner-canonical canvas-specific f1r/f24v/f50v/f79r raw/processed bands and historical positive erasure controls, then freeze independent blind annotations and truly unused folio holdout; preserve W-01..20 priority
+  - id: RM-027
+    title: Independently validate EXP-0025 internal-EVA bridge grammar on physical leaves and new source witnesses
+    status: ACTIVE
+    next: Byte-identical frozen script has now reproduced original results; split by physical leaf rather than IVTFF side ID; acquire rights-cleared independent transcription and aligned image glyph segmentation, compare to strong copy/edit and encrypted/control generators with group-heldout; no semantic/language identification from first-witness result
+  - id: RM-028
+    title: Verify transferability of key-like marginal and circular glyph sequences
+    status: WATCHING
+    next: EXP-0023C position9 f/f/p/p; D'Imperio 1978 already proposed functional-equivalence; ZL3b-n reproducible f/p pair-context cosine 0.9521, 90 one-substitution types, very weak heldout context predictability (CI crosses 0). Keep mode-bit key UNKNOWN. Require independent glyph-level witnesses, exact f/p allograph mapping and a predeclared external decoding consequence; no reuse of f57v/f66r as novel blind.
+  - id: RM-029
+    title: Controlled comparison of EVA glyph-context equivalence classes
+    status: WATCHING
+    next: EXP-0024 exploratory all-pair cosine (25 ASCII / 31 compound units): ch/sh 0.9732, k/t 0.9570, f/p 0.9541, cph/cth 0.9135, l/r 0.9043. Next freeze matched-frequency, hand-conditioned, alternative-witness and heldout copy-vs-control comparisons. Distinguish glyphs from ASCII/ligatures.
+  - id: RM-030
+    title: Independently audit Franke VGM356/371/377 corpus selection provenance and prespecified filters
+    status: BLOCKED
+    next: Obtain authentic source VGM356/interlinear_all.csv with hash/version, VGM377/run377.py, VGM371 frozen config, exact 176-ID manifest and pre-analysis selection history. EXP-0019 found aggregate nonidentifiability and P-only-split count witnesses but cannot determine author selection or intent

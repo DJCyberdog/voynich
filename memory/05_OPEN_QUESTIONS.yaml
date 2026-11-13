@@ -25,18 +25,64 @@ questions:
   - id: Q-006
     priority: high
     question: Do EXP-0015 owner-reported full-file gains reproduce from independently pinned ZL3b-n v3b and frozen parser, and exceed both preregistered within-folio and within-line permutation nulls?
-    status: WATCHING
-    note: Answered yes for locally supplied, hash-pinned data and original parser by EXP-0017; independent live origin and alternate witnesses remain unverified.
+    status: ACTIVE
+
   - id: Q-007
+    priority: high
+    question: Which distinct Voynich explanatory claims in DE/EN/FR/ES/IT Wikipedia and their original cited papers remain unregistered or untested after deduplication?
+    status: ACTIVE
+
+  - id: Q-020
     priority: high
     question: Does the EXP-0017 order-sensitive suffix-class gain remain after line-length, position, section and Currier/hand structure are preserved in stronger null models and across independent transcription witnesses?
     status: ACTIVE
-  - id: Q-008
+  - id: Q-021
     priority: high
     question: Can the residual EXP-0018 suffix-class predictive gain survive nulls jointly fixing each line's class counts and folio-specific length/position class marginals, and independent transcription witnesses or section-held-out evaluation?
     status: ACTIVE
+  - id: Q-008
+    priority: high
+    question: Which source-traced proposed decipherments offer falsifiable, transcription-stable, heldout manuscript predictions after section/scribe controls?
+    status: ACTIVE
   - id: Q-009
+    priority: medium
+    question: Do the nine Rosettes support preregistered anatomical features better than cosmological, geographical and architectural reference controls?
+    status: WATCHING
+  - id: Q-010
+    priority: high
+    question: Which of 40 source-audited claims can survive independent source-pinned tests without counting shared papers or experiments multiple times?
+    status: ACTIVE
+  - id: Q-022
+    priority: medium
+    question: Can a reversible or Metropolis-Hastings fixed-margin sampler be shown irreducible and stationary for actual four-class Voynich line-position tables while preserving both line and position constraints?
+    status: BLOCKED
+    blocker: Verified reciprocal transition design and real-table margin feasibility/convergence not yet established; synthetic Latin-square connectivity does not suffice
+  - id: Q-023
+    priority: high
+    question: "O-01 Owner hypothesis: can true original manuscript glyph corrections X->Y be separated from same-form retracing, ink/scan effects, later hands, offset/show-through and layout insertions on independent folio-heldout raw/processed imaging?"
+    status: ACTIVE
+    blocker: "Original image pixels/MSI raw bands and spatially pinned folio-region concordances not yet independently imported under rights; no blinded duplicate annotation or positive historical erasure controls. The McCrone f1r Sample 20 is a later Latin marginal a, not the Voynich text on f1r line 2."
+    report: research/owner/O-01_correction_traces.md
+  - id: Q-026
+    priority: high
+    question: "Will preregistered EXP-0025 P(masked EVA char|L,R) improve over P(char|L) when ENTIRE physical leaves and independent transcription witnesses/glyph segmentations are heldout, and against matched-complexity human-gibberish, cipher and nonlanguage copy/edit generators?"
+    status: ACTIVE
+    blocker: "Current success is conditional on editor EVA 3b and one folio-ID split; GitHub source blob was now executed byte-identically and agrees in core metrics; remaining gates: physical leaf pairing, independent rights-reviewed witness/image glyph mapping and comparator generators."
+  - id: Q-027
+    priority: high
+    question: Can a pre-frozen fixed glyph code transfer between genuinely comparable independently image-verified single-glyph lists on previously unseen folios, beyond matched copy-edit/scribe alternatives? f66r broad transcription-unit attempt failed; do not treat it as future blind heldout.
+    status: WATCHING
+  - id: Q-024
+    priority: high
+    question: Can an explicit f/p ninth-slot control-bit hypothesis predict independently unseen plaintext or glyph-level consequences over a matched allograph/copy-edit explanation, with an independently checked 17-versus-18 segmentation?
+    status: WATCHING
+  - id: Q-025
+    priority: high
+    question: Do the high immediate-context-cosine EVA pairs remain similar after conditioning on word position, physical hand/Currier section and independent glyph/token witnesses, and does any pair yield new heldout decoding predictions beyond copy or constrained-language models?
+    status: WATCHING
+  - id: Q-030
     priority: high
     question: Which exact 176 folio IDs and VGM356 line/token filters were frozen before Franke VGM371/377 evaluation, and can original CSV and run377.py reproduce metrics without post-selection?
     status: BLOCKED
     blocker: Source CSV, code, ID manifest and provenance/history not located as downloadable authentic artifacts; local proxy counts alone underdetermine selection
+

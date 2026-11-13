@@ -1,0 +1,242 @@
+{
+  "experiment": "EXP-0025",
+  "status": "VERIFIED_SCOPED_LOCAL_SOURCE_AND_INDEPENDENT_ARITHMETIC_SPOTCHECK",
+  "executed_on": "2026-11-13",
+  "source": {
+    "name": "ZL3b-n.txt",
+    "version": "3b of 2025-05-13",
+    "sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+    "source_type": "editorial_ivtff_eva_ascii_not_manuscript_glyphs",
+    "bytes": 411671
+  },
+  "freeze": {
+    "prereg_commit": "1ab87e82cc13408ff8dca68c2370954e89f1da4f",
+    "github_script_commit": "9d1bb16c1a2e5c2b80730ab5ce37eda6085e0637",
+    "github_script_blob": "67e6a9d222c3a3930d0a6ad8994cda889d3b3d98",
+    "executed_local_implementation_sha256": "023b7b2fae106c4c2e6b96663c5c20c7c1d01de3d6630057761bdbb52aae6f28",
+    "independent_local_spotcheck_sha256": "7748657f70d6abc4c05e719b4f5e664dde9c35f20c2dbde9faed39e9926f724c",
+    "script_byte_identical_execution": "NOT_VERIFIED_OFFLINE_GITHUB_RAW_TRANSFER_UNAVAILABLE"
+  },
+  "parser_counts": {
+    "p0_loci": 3885,
+    "candidate_segments": 31588,
+    "accepted_tokens": 24351,
+    "rejected_segments": 7237
+  },
+  "n_train_interior_positions": 69448,
+  "train_wordtypes": 4799,
+  "train_folios": 160,
+  "heldout_folios": 43,
+  "test_accepted_words": 5369,
+  "test_folio_ids": [
+    "f100r",
+    "f102v2",
+    "f103r",
+    "f104v",
+    "f105v",
+    "f106r",
+    "f106v",
+    "f107v",
+    "f10r",
+    "f114r",
+    "f116r",
+    "f16v",
+    "f17r",
+    "f18v",
+    "f1r",
+    "f21r",
+    "f25r",
+    "f25v",
+    "f29r",
+    "f30v",
+    "f32r",
+    "f33v",
+    "f35v",
+    "f36r",
+    "f37r",
+    "f41r",
+    "f42r",
+    "f44r",
+    "f47v",
+    "f49r",
+    "f50v",
+    "f51v",
+    "f54r",
+    "f54v",
+    "f57r",
+    "f5v",
+    "f6v",
+    "f78r",
+    "f82v",
+    "f89r1",
+    "f89v2",
+    "f8r",
+    "f95v2"
+  ],
+  "model_order": [
+    "P0",
+    "B1_LEFT",
+    "M2_BRIDGE",
+    "M3_SLOT",
+    "B4_COPY"
+  ],
+  "oov_test": {
+    "n": 991,
+    "folios": 43,
+    "mean_loglikelihood": {
+      "P0": -2.551898059108698,
+      "B1_LEFT": -1.7267831519846486,
+      "M2_BRIDGE": -1.0673248433055236,
+      "M3_SLOT": -1.0750533274300706,
+      "B4_COPY": -1.8236698814361836
+    },
+    "top1_accuracy": {
+      "P0": 0.1170534813319879,
+      "B1_LEFT": 0.4328960645812311,
+      "M2_BRIDGE": 0.6306760847628657,
+      "M3_SLOT": 0.6387487386478304,
+      "B4_COPY": 0.41977800201816345
+    },
+    "bridge_gain_over_left_nats": 0.659458308679125,
+    "bridge_gain_over_copy_nats": 0.75634503813066,
+    "bridge_top1_lift_pp": 19.778002018163466
+  },
+  "all_test": {
+    "n": 5369,
+    "folios": 43,
+    "mean_loglikelihood": {
+      "P0": -2.3133535268039207,
+      "B1_LEFT": -1.169922099192814,
+      "M2_BRIDGE": -0.5935733997024712,
+      "M3_SLOT": -0.5791071030747109,
+      "B4_COPY": -0.7279720088419717
+    },
+    "top1_accuracy": {
+      "P0": 0.1480722667163345,
+      "B1_LEFT": 0.5727323523933694,
+      "M2_BRIDGE": 0.7738871298193332,
+      "M3_SLOT": 0.7802197802197802,
+      "B4_COPY": 0.7526541255354815
+    },
+    "bridge_gain_over_left_nats": 0.5763486994903428,
+    "bridge_gain_over_copy_nats": 0.1343986091395004,
+    "bridge_top1_lift_pp": 20.115477742596376
+  },
+  "oov_bootstrap_95_percentile": [
+    0.604368341635463,
+    0.7244655104626426
+  ],
+  "oov_null": {
+    "n_draws": 199,
+    "movable_fraction": 0.6326942482341069,
+    "mean": -0.010559746458662127,
+    "max": 0.14036729077540971,
+    "n_exceed": 0,
+    "p_one_sided": 0.005
+  },
+  "prespecified_gates": {
+    "at_least_100_OOV_and_5_folios_and_half_contexts_movable": true,
+    "observed_gain_ge_0p020": true,
+    "folio_bootstrap_lower_95_gt_zero": true,
+    "permutation_p_le_0p01": true
+  },
+  "passes_all": true,
+  "synthetic_controls": {
+    "positive_bridge_gain_nats": 1.0311579806695188,
+    "negative_independent_gain_nats": -0.00021052543579885028,
+    "passed": true
+  },
+  "train_only_rules": [
+    {
+      "rule": "e_ y -> d",
+      "train_count": 4330,
+      "train_majority_share": 0.6752886836027714,
+      "heldout_oov_count": 21,
+      "heldout_oov_precision": 0.38095238095238093,
+      "left_model_top1_precision_on_same_rows": 0.38095238095238093
+    },
+    {
+      "rule": "k_ e -> e",
+      "train_count": 1630,
+      "train_majority_share": 0.8858895705521472,
+      "heldout_oov_count": 13,
+      "heldout_oov_precision": 0.6923076923076923,
+      "left_model_top1_precision_on_same_rows": 0.6923076923076923
+    },
+    {
+      "rule": "k_ i -> a",
+      "train_count": 1076,
+      "train_majority_share": 0.9776951672862454,
+      "heldout_oov_count": 13,
+      "heldout_oov_precision": 1,
+      "left_model_top1_precision_on_same_rows": 0
+    },
+    {
+      "rule": "o_ e -> k",
+      "train_count": 2632,
+      "train_majority_share": 0.6618541033434651,
+      "heldout_oov_count": 15,
+      "heldout_oov_precision": 0.3333333333333333,
+      "left_model_top1_precision_on_same_rows": 0.3333333333333333
+    },
+    {
+      "rule": "k_ h -> c",
+      "train_count": 779,
+      "train_majority_share": 0.8241335044929397,
+      "heldout_oov_count": 11,
+      "heldout_oov_precision": 0.7272727272727273,
+      "left_model_top1_precision_on_same_rows": 0
+    },
+    {
+      "rule": "h_ l -> o",
+      "train_count": 897,
+      "train_majority_share": 0.8617614269788183,
+      "heldout_oov_count": 13,
+      "heldout_oov_precision": 0.8461538461538461,
+      "left_model_top1_precision_on_same_rows": 0
+    },
+    {
+      "rule": "c_ e -> h",
+      "train_count": 3160,
+      "train_majority_share": 0.9996835443037975,
+      "heldout_oov_count": 46,
+      "heldout_oov_precision": 1,
+      "left_model_top1_precision_on_same_rows": 1
+    },
+    {
+      "rule": "h_ d -> e",
+      "train_count": 2028,
+      "train_majority_share": 0.8121301775147929,
+      "heldout_oov_count": 19,
+      "heldout_oov_precision": 0.5789473684210527,
+      "left_model_top1_precision_on_same_rows": 0.5789473684210527
+    }
+  ],
+  "posthoc_ablation": {
+    "not_confirmatory": true,
+    "exclude_ch_sh_touch_mask": {
+      "n": 775,
+      "folio_count": 43,
+      "gain_nats": 0.630699,
+      "acc_m2": 0.5574,
+      "acc_b1": 0.3587
+    },
+    "exclude_all_c_s_h_in_masked_triple": {
+      "n": 539,
+      "folio_count": 43,
+      "gain_nats": 0.631416,
+      "acc_m2": 0.6011,
+      "acc_b1": 0.3952
+    }
+  },
+  "limitations": [
+    "SINGLE_EVA_IVTFF_EDITORIAL_WITNESS",
+    "FOLIO_ID_IS_SURFACE_NOT_PHYSICAL_LEAF",
+    "SAME_SOURCE_PREVIOUSLY_ANALYZED_BY_RESEARCHER",
+    "COMPOUND_EVA_GLYPHS_NOT_ADJUDICATED",
+    "NO_INDEPENDENT_YALE_IMAGE_GLYPH_OBSERVATION",
+    "COPY_MODEL_NOT_STRONG_NONLINGUISTIC_GENERATOR",
+    "NO_SEMANTIC_LANGUAGE_CIPHER_FINDING",
+    "NO_BYTE_IDENTICAL_GITHUB_SCRIPT_EXECUTION"
+  ]
+}

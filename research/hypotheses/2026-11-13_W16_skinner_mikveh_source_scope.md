@@ -1,0 +1,16 @@
+# W-16 — Stephen Skinner mikveh interpretation: author-statement source gate (2026-11-13)
+
+**Question:** Does the original attributable statement specify a falsifiable claim linking Voynich bathing imagery to Jewish ritual baths, rather than merely a secondary summary? **Priority:** P1; distinct SKINNER_MIKVEH family; avoid counting as independent corroboration of other image-based Voynich interpretations.
+
+## Evidence and provenance
+- Danuta Kean, *The Guardian*, 2017-07-05, direct interview with Stephen Skinner: https://www.theguardian.com/books/2017/jul/05/author-of-mysterious-voynich-manuscript-was-italian-jew-says-scholar (accessed 2026-11-13).
+- Interview reports Skinner's claim that female bathing figures, green pools and conduit-like shapes depict **mikvaot**, and that lack of Christian iconography plus a northern-Italian fortification suggest a Jewish physician/herbalist in northern Italy. These are **CLAIMED**, not verified historical identity, manuscript semantics or independent folio reading.
+- Skinner's actual facsimile-edition foreword was **not independently read**. The interview is primary testimony for **what Skinner said**, not primary proof for his interpretation. Yale manuscript photos, region mapping, visible strokes, EVA and IVTFF were **not inspected in this cycle**. No images/transcription copied. Owner-canonical SRC-0007 remains a working manifest, not independent live Yale authentication.
+
+## Discriminating prospective test (design only, not preregistered/executed)
+**Prediction to freeze:** a blinded iconography classifier, using historically authenticated medieval mikveh depictions and matched non-mikveh bathing/alchemical/medical imagery, should discriminate the predeclared Voynich bathing-region features at a prespecified error threshold beyond matched alternatives. **Strongest counterhypothesis:** generic bathing or humoral/alchemical/imagined diagrams produce the same women/pools/pipes configuration. **Positive controls:** independently authenticated medieval mikveh representations where available; **negative controls:** dated non-Jewish bathing, medical and alchemical illustrations with matched figures and water conduits; **null:** labels permuted within matched century/region/style strata; **heldout:** preselected uninspected Voynich bathing folios/regions and independent external iconography. Freeze region IDs, feature coding and thresholds *before* any manuscript-image scoring. If authentic mikveh illustration controls cannot be found, claim is not discriminable by this protocol; do not fabricate them.
+
+## Outcome
+**DOCUMENTED:** published 2017 direct interview contains the attribution. **CLAIMED:** mikveh/Jewish authorship thesis. **UNKNOWN:** physical iconographic uniqueness, historic origin, semantic interpretation. **WATCHING / SOURCE_REVIEWED**, not TESTED; no falsification executed. This does **not** resolve W-16 or any decipherment gate (0/5). No new HYP/EXP/SRC ID; report is linked only from W-16 queue row. No independent evidence duplication.
+
+**Next:** if rights and matched original iconography can be established, preregister a blind comparison; otherwise mark SCOPED_BLOCKED and move to an executable P0. No repeated unsourced author-identity inference.
