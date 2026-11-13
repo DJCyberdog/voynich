@@ -87,6 +87,14 @@
         "report": "research/experiments/2026-11-13_EXP-0023C_f57v_position9_control_vs_equivalence.md",
         "evidence": "Scanned textual witness and heldout context evidence only; no decipherment; see D-0203"
       }
+    },
+    {
+      "id": "EXP-0024",
+      "branch": "research/exp0023-f57v-f49v-holdout-20261113",
+      "operational_status": "WATCHING",
+      "evidence_status": "VERIFIED",
+      "scope": "Descriptive full EVA pair context similarity 300 ASCII plus 465 composite-glyph pairs on pinned owner corpus; no semantic key",
+      "report": "research/experiments/2026-11-13_EXP-0024_full_eva_context_cosine.md"
     }
   ]
 }

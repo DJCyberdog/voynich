@@ -69,3 +69,7 @@ priorities:
     title: Verify transferability of key-like marginal and circular glyph sequences
     status: WATCHING
     next: EXP-0023C position9 f/f/p/p; D'Imperio 1978 already proposed functional-equivalence; ZL3b-n reproducible f/p pair-context cosine 0.9521, 90 one-substitution types, very weak heldout context predictability (CI crosses 0). Keep mode-bit key UNKNOWN. Require independent glyph-level witnesses, exact f/p allograph mapping and a predeclared external decoding consequence; no reuse of f57v/f66r as novel blind.
+  - id: RM-025
+    title: Controlled comparison of EVA glyph-context equivalence classes
+    status: WATCHING
+    next: EXP-0024 exploratory all-pair cosine (25 ASCII / 31 compound units): ch/sh 0.9732, k/t 0.9570, f/p 0.9541, cph/cth 0.9135, l/r 0.9043. Next freeze matched-frequency, hand-conditioned, alternative-witness and heldout copy-vs-control comparisons. Distinguish glyphs from ASCII/ligatures.

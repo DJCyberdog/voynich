@@ -65,3 +65,7 @@ questions:
     priority: high
     question: Can an explicit f/p ninth-slot control-bit hypothesis predict independently unseen plaintext or glyph-level consequences over a matched allograph/copy-edit explanation, with an independently checked 17-versus-18 segmentation?
     status: WATCHING
+  - id: Q-025
+    priority: high
+    question: Do the high immediate-context-cosine EVA pairs remain similar after conditioning on word position, physical hand/Currier section and independent glyph/token witnesses, and does any pair yield new heldout decoding predictions beyond copy or constrained-language models?
+    status: WATCHING
