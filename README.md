@@ -11,7 +11,7 @@ This initial README is the single authorized empty-repository bootstrap commit. 
 ## Primary source
 Yale Beinecke Rare Book & Manuscript Library, MS 408: https://collections.library.yale.edu/catalog/2002046 ; manuscript collection explanation: https://beinecke.library.yale.edu/beinecke/collections/beinecke-cipher-voynich-manuscript . Source metadata, transcription versions and rights must be verified before data ingestion.
 
-## Current research status (2026-11-13; through EXP-0022 and EXP-0021 historical audit)
+## Current research status (2026-11-13; through EXP-0022, EXP-0021 and synthetic EXP-0020)
 
 These are **work-package completion ratios**, not an estimated percentage of decipherment. The numerators and denominators are explicitly scoped; a completed inventory is not an authenticated image-to-folio concordance.
 
@@ -32,6 +32,9 @@ These are **work-package completion ratios**, not an estimated percentage of dec
 
 
 **40-claim audit integrated as a deduplicated queue (consolidated from PRs #33/#34/#35):** 40/40 distinct audit *claims* indexed across A-01..A-20 and W-01..W-20, **not** independent hypotheses; 2/40 explicitly completed, 38/40 not completed. Audit stages at consolidation: 18 SOURCE_REVIEWED, 1 TESTED (A-05/EXP-0021), 1 SCOPED_BLOCKED, 2 SCOPED_RETIRED and 18 QUEUED. Original top-20 and bizarre-20 desk reports are preserved as source documents alongside the queue; 22 new documentary source-index records SRC-0025..0046 imported with unique IDs, not independent manuscript confirmations. EXP-0021's limited q-initial f3r/f8r line-position held-out test did **not** support the narrow depletion prediction (f8r p=0.98611 under a manual-source extract). Next prioritize executable, manuscript-linked falsification instead of repetitive desk reviews; main decipherment gates remain 0/5, owner-canonical IIIF live authentication unchanged (UNKNOWN).
+
+**EXP-0020 — synthetic sampler preflight, independently reproduced 2026-11-13:** 3×3 Latin-square checkerboards have 12 isolated states; 4×4 row/column swaps have 576 states split into four 144-state components. Combining legal two-row subset swaps with *single-orientation* three-row cycles connects all 576 states in a **directed graph with 9,216 edges, of which 2,304 lack direct inverses** (degree counts 432×14, 144×22). Thus simple irreducibility claims fail for restricted moves, and the reciprocal-inverse assertion in the original #30 is CONTRADICTED as corrected by #31. Connectivity alone neither ensures uniform stationary sampling nor validates any real Voynich null. Four reports #28–31 integrated together as one corrected methodological preflight, no manuscript statistical inference and 0/5 decipherment gates.
+
 
 ## Resumption
 Read this status together with the canonical memory registers, governance and open PRs. On a material integrated delta, update this README's dated status and denominator-defined progress bars via branch/PR only; do not manufacture commits on NO_CHANGE.

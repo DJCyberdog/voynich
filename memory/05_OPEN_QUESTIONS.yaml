@@ -52,3 +52,8 @@ questions:
     priority: high
     question: Which of 40 source-audited claims can survive independent source-pinned tests without counting shared papers or experiments multiple times?
     status: ACTIVE
+  - id: Q-022
+    priority: medium
+    question: Can a reversible or Metropolis-Hastings fixed-margin sampler be shown irreducible and stationary for actual four-class Voynich line-position tables while preserving both line and position constraints?
+    status: BLOCKED
+    blocker: Verified reciprocal transition design and real-table margin feasibility/convergence not yet established; synthetic Latin-square connectivity does not suffice

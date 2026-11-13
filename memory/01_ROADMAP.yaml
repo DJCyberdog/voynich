@@ -61,3 +61,7 @@ priorities:
     title: Execute 40 deduplicated source claims with actual falsification gates
     status: ACTIVE
     next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence
+  - id: RM-023
+    title: Repair directed synthetic EXP-0020 null sampler before real-data inference
+    status: BLOCKED
+    next: Explicitly add inverse three-row moves, define a reciprocal or Metropolis-Hastings kernel, prove stationary target and mixing on finite exact synthetic spaces; only then propose a rights-cleared real manuscript slice and preregistered held-out contrasts
