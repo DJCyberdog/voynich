@@ -47,3 +47,16 @@ Wichtig: `A-19` und `W-01…W-09` teilen Brewer/Lewis als Quelle; `A-20` und `W-
 Nicht 40 neue PRs, sondern **40 transparente Einzelentscheidungen** (bestätigte eng begrenzte Vorhersage, widerlegte Vorhersage, ungeklärtes Modell, mangels Daten/Rechten blockierte oder wegen Unprüfbarkeit zurückgestellte Folklore), mit *geteilter* Evidenz nur dort, wo logische Ableitung tatsächlich trägt. Kein Entzifferungsanspruch ohne alle Kriterien aus `docs/DECIPHERMENT_CRITERIA.md`.
 
 **Vorliegendes Dokument richtet das Programm ein; es behauptet keine erfolgreich ausgeführten Tests.**
+
+## Owner decision 2026-11-13 — Option B: executable falsification first (draft, not integrated)
+
+Owner explicitly selects **B**, not A (finish all source reviews first) and not C (freeze the audit). This is a **priority-order amendment**, not a relaxation of the 40-item mandate, evidence standards, transcription rights, or merge gates.
+
+For each single bounded hourly cycle, after delta-first main/PR/mandatory-memory inspection:
+1. Deduplicate against integrated HYP/EXP/SRC and open draft findings. Prefer an untested P0 claim with **already accessible, rights-reviewed, version-pinned manuscript/transcription inputs**, a fixed folio/region locus and an immediately executable discriminating test. Otherwise P1/P2 with a runnable test may outrank P0 desk research; record why.
+2. Preregister the competing natural-language, cipher, nonlanguage or hybrid explanation **as applicable to the selected claim**, predicted separating observation, positive/negative controls, constrained null, nonleaking held-out folios, decision threshold, exact source/transformation chain and rights before running a confirmatory test. If prerequisites are absent, choose one bounded blocker-removal step that demonstrably enables an experiment, or another candidate; do not repeatedly relabel source summaries as experiments.
+3. Keep all A-01…A-20/W-01…W-20 entries in the same queue; preserve priorities as historical metadata and record selection overrides explicitly. Shared tests/sources count once; no artificial completion percentages. An executed negative result is valuable. No fabricated measurements, translations or gate passes.
+4. Do not turn this owner decision into an automatic permission to install software, copy restricted data, change other tasks, or merge PRs. D-0005 remains canonical working manifest without independent live Yale authentication. PR #25–31 and #33–36 collisions still require reconciliation and separate owner merge approval.
+5. Update the **Voynich hourly task only**, if needed, after recording exact old/new text or a reproducible prompt diff in the decision log; preserve hourly schedule. Do not assert an automation change unless its actual state was verified.
+
+Next candidate selection should favor a reproducible, already staged manuscript-level test (for example independent EXP-0017 permutation controls if its frozen corpus, rights, script and existing draft work can be audited without duplication), rather than a new A/W source-only brief. No test was executed by this governance amendment.
