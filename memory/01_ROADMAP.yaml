@@ -1,6 +1,10 @@
 schema_version: 1
-updated: '2026-11-13'
+updated: '2026-11-14'
 priorities:
+  - id: RM-033
+    title: EXP-0026 A-05 q-continuation line-onset effect against stronger folio-cluster and image/section nulls
+    status: ACTIVE
+    next: Preregister independently rights-cleared image-aligned witness, physical-leaf root/hand/Currier-stratified layout and line-fill controls plus cluster robust inference; do not reuse EXP-0026 heldout folios as fresh. p=3.96e-9 applies only to within-line same-length exchangeability and is not language or decipherment evidence
   - id: RM-032
     title: K-0001 VY001 glyph variants and owner minimum-three-scribes challenge
     status: BLOCKED

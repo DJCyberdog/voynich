@@ -1,0 +1,94 @@
+{
+  "controls": {
+    "negative_balanced": {
+      "decision": "NARROW_DEPLETION_NOT_SUPPORTED",
+      "depletion_absolute": 0.0,
+      "informative_lines": 40,
+      "lines": 40,
+      "null_expected_q_first": 20.0,
+      "null_expected_rate": 0.5,
+      "observed_q_first": 20,
+      "observed_rate": 0.5,
+      "one_sided_p_exact": 0.5626853438097896
+    },
+    "poisson_binomial_two_fair": [
+      0.25,
+      0.5,
+      0.25
+    ],
+    "positive_forced_nonq": {
+      "decision": "NARROW_DEPLETION_SUPPORTED",
+      "depletion_absolute": 0.5,
+      "informative_lines": 40,
+      "lines": 40,
+      "null_expected_q_first": 20.0,
+      "null_expected_rate": 0.5,
+      "observed_q_first": 0,
+      "observed_rate": 0.0,
+      "one_sided_p_exact": 9.094947017729282e-13
+    }
+  },
+  "excluded_line_counts": {
+    "ambiguous_first": 429,
+    "not_plus_P0": 1618,
+    "prior_f3_f8_roots": 63,
+    "single_word": 9
+  },
+  "experiment": "EXP-0026",
+  "exploratory_train": {
+    "decision": "NARROW_DEPLETION_SUPPORTED",
+    "depletion_absolute": 0.02695896802525045,
+    "informative_lines": 574,
+    "lines": 2429,
+    "null_expected_q_first": 437.48333333333335,
+    "null_expected_rate": 0.1801084122409771,
+    "observed_q_first": 372,
+    "observed_rate": 0.15314944421572663,
+    "one_sided_p_exact": 2.538878130583356e-09
+  },
+  "parse_policy": "only +P0; certain dot boundaries; ASCII a-z; first certain; >=2 tokens; same-length within-line null",
+  "predeclared_split": "EXP0026-A05-ROOT-v1|fNNN, sha256 first8 uint64 mod5 == 0 for TEST",
+  "primary_heldout_test": {
+    "decision": "NARROW_DEPLETION_SUPPORTED",
+    "depletion_absolute": 0.04547372863473308,
+    "informative_lines": 137,
+    "lines": 677,
+    "null_expected_q_first": 99.78571428571429,
+    "null_expected_rate": 0.147393964971513,
+    "observed_q_first": 69,
+    "observed_rate": 0.1019202363367799,
+    "one_sided_p_exact": 3.962959394918687e-09
+  },
+  "prior_folios_excluded": [
+    "f3*",
+    "f8*"
+  ],
+  "semantic_decipherment_claim": false,
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "test_folio_roots": 20,
+  "test_folio_side_ids": 40,
+  "test_root_ids": [
+    "f6",
+    "f9",
+    "f11",
+    "f20",
+    "f21",
+    "f22",
+    "f26",
+    "f34",
+    "f44",
+    "f45",
+    "f56",
+    "f58",
+    "f65",
+    "f69",
+    "f77",
+    "f95",
+    "f105",
+    "f113",
+    "f114",
+    "f115"
+  ],
+  "train_folio_roots": 76,
+  "train_folio_side_ids": 158
+}
