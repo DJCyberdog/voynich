@@ -11,7 +11,7 @@ This initial README is the single authorized empty-repository bootstrap commit. 
 ## Primary source
 Yale Beinecke Rare Book & Manuscript Library, MS 408: https://collections.library.yale.edu/catalog/2002046 ; manuscript collection explanation: https://beinecke.library.yale.edu/beinecke/collections/beinecke-cipher-voynich-manuscript . Source metadata, transcription versions and rights must be verified before data ingestion.
 
-## Current research status (2026-11-14; through EXP-0026)
+## Current research status (2026-11-15; through EXP-0026)
 
 These are **work-package completion ratios**, not an estimated percentage of decipherment. The numerators and denominators are explicitly scoped; a completed inventory is not an authenticated image-to-folio concordance.
 
@@ -22,6 +22,8 @@ These are **work-package completion ratios**, not an estimated percentage of dec
 | Owner-defined A/W audit claims with narrowly scoped completed adjudications: 40 claim IDs (NOT independent experiments) | 3/40 = **7.5%**, remaining 37 claims still open | `█░░░░░░░░░` |
 
 **Evidence and workflow:** Canvas inventory VERIFIED only for the supplied SHA-256-pinned snapshot; user-designated canonical status is **not** independent live Yale authentication (**UNKNOWN**). Physical folio/canvas correspondence, visible glyphs, transcription conventions, language, semantics and historical dating are distinct layers. Decipherment remains **UNKNOWN**. Folio/canvas concordance and transcription provenance **ACTIVE**; independent live-manifest retry **SATURATED** by owner decision D-0005; corpus-wide confirmatory statistics **BLOCKED** pending independently audited rights, inputs and parser.
+
+**A-08 rights delta (2026-11-15):** The Naibbe author's own GitHub README expressly licenses covered code/datasets under modified MIT terms requiring notice and citation, subject to file exceptions. Zenodo-specific material, Yale images, third-party transcriptions and permission to execute external code remain separate; no Naibbe experiment run. See `research/hypotheses/2026-11-15_A08_naibbe_author_license_scope.md`. Audit count stays 3/40 and decipherment gates 0/5. **PR status:** this source-rights delta is integrated only after the PR is verified merged.
 
 **Research integrated:** EXP-0016 verified only the arithmetic consistency of EXP-0015 owner-reported token/transition totals: inferred zero-token lines exclude/join/split = 116/79/76, with the exclude figure matching the independently reported 116. This is **not** parser reproduction or permutation significance.  EXP-0001 through EXP-0010 (with gaps in canonical register), and EXP-0013 registered retrospectively. PR #20 integrated EXP-0014 f3r tokenization sensitivity and within-line shuffles (not significant); PR #21 integrated EXP-0015 owner-reported full-transcription scores and *preregistered but unexecuted* full-corpus permutation controls. Both are now recorded in canonical memory. **PR status:** integrated work listed through EXP-0017 only; remaining open experimental and source-audit PRs require individual review. Neither result independently verifies manuscript semantics. Never count open PRs as integrated results.
 
