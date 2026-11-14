@@ -11,7 +11,7 @@ This initial README is the single authorized empty-repository bootstrap commit. 
 ## Primary source
 Yale Beinecke Rare Book & Manuscript Library, MS 408: https://collections.library.yale.edu/catalog/2002046 ; manuscript collection explanation: https://beinecke.library.yale.edu/beinecke/collections/beinecke-cipher-voynich-manuscript . Source metadata, transcription versions and rights must be verified before data ingestion.
 
-## Current research status (2026-11-13; through EXP-0022, EXP-0021 and synthetic EXP-0020)
+## Current research status (2026-11-14; through EXP-0026)
 
 These are **work-package completion ratios**, not an estimated percentage of decipherment. The numerators and denominators are explicitly scoped; a completed inventory is not an authenticated image-to-folio concordance.
 
@@ -19,6 +19,7 @@ These are **work-package completion ratios**, not an estimated percentage of dec
 |---|---:|---|
 | Unique canvas identifiers inventoried in owner-canonical SRC-0007: 213 expected IDs | 213/213 = **100%** (snapshot parsing only) | `██████████` |
 | Full decipherment acceptance gates demonstrably satisfied under `docs/DECIPHERMENT_CRITERIA.md`: 5 gates | 0/5 = **0%** (no gate documented as passed) | `░░░░░░░░░░` |
+| Owner-defined A/W audit claims with narrowly scoped completed adjudications: 40 claim IDs (NOT independent experiments) | 3/40 = **7.5%**, remaining 37 claims still open | `█░░░░░░░░░` |
 
 **Evidence and workflow:** Canvas inventory VERIFIED only for the supplied SHA-256-pinned snapshot; user-designated canonical status is **not** independent live Yale authentication (**UNKNOWN**). Physical folio/canvas correspondence, visible glyphs, transcription conventions, language, semantics and historical dating are distinct layers. Decipherment remains **UNKNOWN**. Folio/canvas concordance and transcription provenance **ACTIVE**; independent live-manifest retry **SATURATED** by owner decision D-0005; corpus-wide confirmatory statistics **BLOCKED** pending independently audited rights, inputs and parser.
 
@@ -68,3 +69,6 @@ Draft methodological register `research/methods/2026-11-13_K0001_K0005_kushan_tr
 
 
 **K-0001 VY001 coordinate/source audit (integrated via reviewed PR #46, 2026-11-14):** The original metadata-only A/B/C record lacked reproducible B/C page-raster provenance, subsequently narrowed by a 1042×1474 RGB three-page rendering recipe and hashes of the owner-uploaded SHA-pinned PDF; independently validated functional glyph identity remains **UNKNOWN**. A/B/C remain separate *provisional* classes, not confirmed graphemes. Owner's K-0001b hypothesis proposes **at least THREE scribal hands** on f16r, f20r, f24r within Davis's Scribe 1; this is **CLAIMED/ACTIVE**, with blinded, multi-form, all-three-pairwise held-out discrimination still **BLOCKED/NOT EXECUTED**. No new transcription, historic semantics or gates. Source report: `research/glyphs/2026-11-13_K0001_VY001_coordinate_provenance_audit.md`. Owner-canonical manifest remains not independently live-Yale-authenticated. Audit denominators unchanged: 213/213 inventory, 0/5 gates, 3/40 closed claims.
+
+
+**EXP-0026 — newly preregistered held-out A-05 test (2026-11-14; PR #50):** On owner-Library SHA-256-verified ZL3b-n v3b, after excluding prior f3/f8 and freezing a SHA-based folio-root split, **20 heldout roots, 677 certain continuation +P0 lines**, 69 EVA-`q` first-token events versus **99.785714** expected under the exact same-line, equal-token-length exchangeability null; one-sided exact `p=3.962959394918687e-9`, **4.5474 percentage-point** depletion. Prespecified alpha=.05 and minimum deficit 1.5 pp both met; 40-line positive/negative synthetic controls passed and unchanged stdlib evaluator reproduced byte-identical JSON. This is **VERIFIED conditional on specified editorial source and null**, **CONTRADICTED only for narrow H0**, language/physical glyph/semantics remain **UNKNOWN**; A-05 **ACTIVE** and **not complete**. Test not independent of prior witness, 137/677 lines informative, no leaf-cluster independence verified. Source-to-image concordance, independent transcription, scribe/section/layout and leaf-cluster controls **BLOCKED/PENDING**. [Preregistration](research/experiments/2026-11-14_EXP-0026_A05_prereg.md), [report](research/experiments/2026-11-14_EXP-0026_A05_report.md), [script](research/scripts/exp0026_a05_folio_root_q_test.py), [aggregates](research/results/2026-11-14_EXP-0026_A05_q_heldout.json). No plaintext or image redistribution, no other repository or automation change. Canonical owner-IIIF index **213/213 inventoried**, NOT 213 physical folio validations; acceptance gates **0/5**; claim audit **3/40**. Neither is a decipherment probability.
