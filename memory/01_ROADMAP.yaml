@@ -1,10 +1,14 @@
 schema_version: 1
 updated: '2026-11-13'
 priorities:
-  - id: RM-027
-    title: K-0001 VY001 glyph variants and K-0001b minimum-three-scribes challenge
+  - id: RM-032
+    title: K-0001 VY001 glyph variants and owner minimum-three-scribes challenge
     status: BLOCKED
-    next: Source PDF now LFS-pinned and A/B/C page raster recipe documented in existing PR #46; owner hypothesizes at least THREE different scribal hands across f16r/f20r/f24r, all three pairwise comparisons required. Freeze multi-feature blind handwriting controls (VY0001 top-left triangle, o-shaped and c-shaped marks), contextual stroke models, Davis source comparators and sealed folio holdout; distinct scribal identities UNKNOWN, confirmation BLOCKED
+    next: Frozen source-PDF render recipe exists for A/B/C; blind, context-matched multiple shape classes, all three pairwise f16r/f20r/f24r comparisons, independent witness and historically checked Davis comparators remain needed. Glyph-class and scribal identities UNKNOWN, Owner assertion CLAIMED
+  - id: RM-031
+    title: W-04 Brewer/Lewis nine Rosettes positional anatomy falsification
+    status: WATCHING
+    next: Owner PDF f85v/f86r page 159 and Brewer first-person source now independently located; positional claims (center external, upper-left internal, 7 remaining chambers) source-reviewed, meaning UNKNOWN. Freeze blind nine-region coding, positive historical labeled medieval seven-chamber image controls, negative matched cartographic/cosmological/architectural nine-node diagrams and independent holdout before any semantic test. Reuse W-01/W-02/A-19 source, no double counting
   - id: RM-026
     title: W-02 distinguish historical contraceptive secrecy from manuscript recipe claim
     status: WATCHING
@@ -24,7 +28,7 @@ priorities:
   - id: RM-008
     title: Reconcile historical q/qo prefix and medieval abbreviation hypotheses
     status: WATCHING
-    next: Preregister source-pinned q/qo positional and running-text-vs-label comparison with matched nulls and held-out folios; retrieve original September Burchard artifacts before treating reported 200-window result as verified
+    next: Preregister source-pinned q/qo positional and running-text-vs-label comparison with matched nulls and held-out folios; retrieve original September Burchard artifacts before treating reported 200-window result as verified; also source-review SRC-0053 ligature candidates with historical Latin abbreviation/cipher controls and image-level folio heldout, WITHOUT treating A-07 Gibbs as unblocked
   - id: RM-006
     title: Inventory multilingual Voynich hypotheses and primary evidence
     status: ACTIVE
@@ -77,3 +81,19 @@ priorities:
     title: O-01 Owner hypothesis — distinguish scribal corrections from retouching in MS408
     status: WATCHING
     next: O-01 D-0210 source-provenance audit completed: 12 source-selected Zandbergen clips inspected, 16 metadata loci inventoried, 2009 McCrone Sample20 on f1r is marginal Latin a (NOT f1r main text), Davis 2024 MSI f70v1 showthrough as documented negative control. No X->Y verified. Next acquire rights-cleared owner-canonical canvas-specific f1r/f24v/f50v/f79r raw/processed bands and historical positive erasure controls, then freeze independent blind annotations and truly unused folio holdout; preserve W-01..20 priority
+  - id: RM-027
+    title: Independently validate EXP-0025 internal-EVA bridge grammar on physical leaves and new source witnesses
+    status: ACTIVE
+    next: Byte-identical frozen script has now reproduced original results; split by physical leaf rather than IVTFF side ID; acquire rights-cleared independent transcription and aligned image glyph segmentation, compare to strong copy/edit and encrypted/control generators with group-heldout; no semantic/language identification from first-witness result
+  - id: RM-028
+    title: Verify transferability of key-like marginal and circular glyph sequences
+    status: WATCHING
+    next: EXP-0023C position9 f/f/p/p; D'Imperio 1978 already proposed functional-equivalence; ZL3b-n reproducible f/p pair-context cosine 0.9521, 90 one-substitution types, very weak heldout context predictability (CI crosses 0). Keep mode-bit key UNKNOWN. Require independent glyph-level witnesses, exact f/p allograph mapping and a predeclared external decoding consequence; no reuse of f57v/f66r as novel blind.
+  - id: RM-029
+    title: Controlled comparison of EVA glyph-context equivalence classes
+    status: WATCHING
+    next: EXP-0024 exploratory all-pair cosine (25 ASCII / 31 compound units): ch/sh 0.9732, k/t 0.9570, f/p 0.9541, cph/cth 0.9135, l/r 0.9043. Next freeze matched-frequency, hand-conditioned, alternative-witness and heldout copy-vs-control comparisons. Distinguish glyphs from ASCII/ligatures.
+  - id: RM-030
+    title: Independently audit Franke VGM356/371/377 corpus selection provenance and prespecified filters
+    status: BLOCKED
+    next: Obtain authentic source VGM356/interlinear_all.csv with hash/version, VGM377/run377.py, VGM371 frozen config, exact 176-ID manifest and pre-analysis selection history. EXP-0019 found aggregate nonidentifiability and P-only-split count witnesses but cannot determine author selection or intent

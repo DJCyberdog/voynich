@@ -63,4 +63,26 @@ questions:
     status: ACTIVE
     blocker: "Original image pixels/MSI raw bands and spatially pinned folio-region concordances not yet independently imported under rights; no blinded duplicate annotation or positive historical erasure controls. The McCrone f1r Sample 20 is a later Latin marginal a, not the Voynich text on f1r line 2."
     report: research/owner/O-01_correction_traces.md
+  - id: Q-026
+    priority: high
+    question: "Will preregistered EXP-0025 P(masked EVA char|L,R) improve over P(char|L) when ENTIRE physical leaves and independent transcription witnesses/glyph segmentations are heldout, and against matched-complexity human-gibberish, cipher and nonlanguage copy/edit generators?"
+    status: ACTIVE
+    blocker: "Current success is conditional on editor EVA 3b and one folio-ID split; GitHub source blob was now executed byte-identically and agrees in core metrics; remaining gates: physical leaf pairing, independent rights-reviewed witness/image glyph mapping and comparator generators."
+  - id: Q-027
+    priority: high
+    question: Can a pre-frozen fixed glyph code transfer between genuinely comparable independently image-verified single-glyph lists on previously unseen folios, beyond matched copy-edit/scribe alternatives? f66r broad transcription-unit attempt failed; do not treat it as future blind heldout.
+    status: WATCHING
+  - id: Q-024
+    priority: high
+    question: Can an explicit f/p ninth-slot control-bit hypothesis predict independently unseen plaintext or glyph-level consequences over a matched allograph/copy-edit explanation, with an independently checked 17-versus-18 segmentation?
+    status: WATCHING
+  - id: Q-025
+    priority: high
+    question: Do the high immediate-context-cosine EVA pairs remain similar after conditioning on word position, physical hand/Currier section and independent glyph/token witnesses, and does any pair yield new heldout decoding predictions beyond copy or constrained-language models?
+    status: WATCHING
+  - id: Q-030
+    priority: high
+    question: Which exact 176 folio IDs and VGM356 line/token filters were frozen before Franke VGM371/377 evaluation, and can original CSV and run377.py reproduce metrics without post-selection?
+    status: BLOCKED
+    blocker: Source CSV, code, ID manifest and provenance/history not located as downloadable authentic artifacts; local proxy counts alone underdetermine selection
 
