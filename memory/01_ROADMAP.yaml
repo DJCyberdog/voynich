@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-13'
 priorities:
+  - id: RM-032
+    title: K-0001 VY001 glyph variants and owner minimum-three-scribes challenge
+    status: BLOCKED
+    next: Frozen source-PDF render recipe exists for A/B/C; blind, context-matched multiple shape classes, all three pairwise f16r/f20r/f24r comparisons, independent witness and historically checked Davis comparators remain needed. Glyph-class and scribal identities UNKNOWN, Owner assertion CLAIMED
   - id: RM-031
     title: W-04 Brewer/Lewis nine Rosettes positional anatomy falsification
     status: WATCHING
