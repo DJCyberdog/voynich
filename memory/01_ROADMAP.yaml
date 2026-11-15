@@ -4,7 +4,7 @@ priorities:
   - id: RM-036
     title: 'S-TIER / P0-HIGHEST — K-0001 exhaustive image-grounded glyph occurrence inventory and EVA adequacy audit'
     status: ACTIVE
-    next: 'After f1r INV-003 image topology: S01 red mask 1 vs S02 4 connected components at fixed color rule, S02 closing 5px -> 2 and 15px -> 1; source ZL3b-n markers @252 versus @253 are editorial only. This proves a connected-pixel region is not a physical glyph count, NOT distinct graphemes. K-0001 still 0/20 first-ten sides fully audited, 0 validated classes or EVA mappings; next blind image-level individual stroke annotation for S01/S02 and f1r lines 1-6, second licensed witness and leaf-holdout, then f1v; do not run redundant mask sweeps.'
+    next: 'After INV-004 local image-only crop registration, f1r.1 ambiguous cluster mapped to frozen original raster [760,337,1050,414] with high exploratory normalized template correlation and flipped negative control; 17px vertical overlap between loose line1/line2 crops means line-band boundaries must not be treated as glyph assignments. No new physical grapheme or EVA validation. Next preregister independent ink-stroke polygon annotations at this region and adjacent context, blind to editorial alternatives, with second rights-cleared image witness, damage/ink controls and untouched folio-root holdout. Keep 0/20 sides, 0/28 lines fully glyph-adjudicated, 0 validated grapheme classes/EVA mappings; avoid more same-raster duplicate-crop confirmations.'
   - id: RM-035
     title: W-07 Brewer/Lewis two uterine horns: exact Rosettes region and blinded iconographic controls
     status: WATCHING
