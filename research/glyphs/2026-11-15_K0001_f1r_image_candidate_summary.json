@@ -1,0 +1,78 @@
+{
+  "report_date": "2026-11-15",
+  "source_pdf_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+  "pdf_page_1based": 4,
+  "folio": "f1r",
+  "render": {
+    "engine": "PyMuPDF",
+    "version": "1.26.7",
+    "matrix_zoom": 2.5,
+    "pixels": [
+      1489,
+      2105
+    ],
+    "rgb_sha256": "cbd95103a136471df3a27933f881fa4de7664c1d1075c4930c5e9e24234daf10"
+  },
+  "source_region_ledger": "research/glyphs/2026-11-15_K0001_f1r_image_regions.jsonl",
+  "total_region_records": 33,
+  "visual_provisional_line_bands": 28,
+  "extra_manually_inspected_regions": 5,
+  "confirmed_physical_glyph_classes": 0,
+  "confirmed_eva_mappings": 0,
+  "fully_segmented_physical_lines": 0,
+  "exploratory_mask_connected_ink_candidates_by_threshold": {
+    "14": 2227,
+    "18": 1980,
+    "22": 1826,
+    "26": 1742
+  },
+  "red_ink_controls": [
+    {
+      "id": "positive_1",
+      "bbox_xyxy": [
+        290,
+        585,
+        425,
+        674
+      ],
+      "pixels": 12015,
+      "red_hsv_pixels": 1713
+    },
+    {
+      "id": "negative_1",
+      "bbox_xyxy": [
+        380,
+        1660,
+        515,
+        1749
+      ],
+      "pixels": 12015,
+      "red_hsv_pixels": 0
+    },
+    {
+      "id": "positive_2",
+      "bbox_xyxy": [
+        285,
+        810,
+        370,
+        860
+      ],
+      "pixels": 4250,
+      "red_hsv_pixels": 470
+    },
+    {
+      "id": "negative_2",
+      "bbox_xyxy": [
+        1000,
+        1680,
+        1085,
+        1730
+      ],
+      "pixels": 4250,
+      "red_hsv_pixels": 0
+    }
+  ],
+  "limitations": "Image mark-components are not individual glyphs: threshold sensitivity, parchment noise, ink degradation, ligatures, detached strokes, hand-drawn region approximations. Pixel-to-EVA alignment, 2nd witness, blind validation and K-0001 A-G completion remain NOT_DONE. Mixed top and side marginalia unresolved.",
+  "evidence_status": "DOCUMENTED_SCOPED_AND_VERIFIED_LOCAL_RENDER",
+  "workflow_status": "ACTIVE"
+}
