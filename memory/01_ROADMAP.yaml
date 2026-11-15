@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-14'
 priorities:
+  - id: RM-035
+    title: W-07 Brewer/Lewis two uterine horns: exact Rosettes region and blinded iconographic controls
+    status: WATCHING
+    next: Author 2024-04-16 source fixes upper-right and lower-right Rosettes circles; map exact SRC-0007 canvas/crops and obtain rights-cleared labeled historical positive and architectural negative controls; no independent image test, reuse W-04/A-19 shared evidence
   - id: RM-034
     title: A-08 Naibbe author-code license scope and leakage-safe comparative test
     status: WATCHING
