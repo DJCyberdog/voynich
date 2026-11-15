@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "K-0001 S/P0: independently annotate each possible f1r stroke cluster (S01, S02, first six line regions) with spatial provenance, uncertainty and independent image witness. No recurring mask-only cycles; retain f11+ physical leaf heldout, existing A/W queue.",
+  "next": "K-0001 S/P0: independently mark physical ink stroke polygons at f1r.1 source raster [760,337,1050,414], plus adjacent context, blinded to editorial alternatives; second imaging witness and preregistered positive/negative controls, f11+ heldout. Do not recycle derived-crop correlations as independent witness.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -211,5 +211,38 @@
     "evidence_status": "VERIFIED_SCOPED_PIXEL_COMPONENTS_AND_EDITOR_MARKER_STRINGS",
     "operational_status": "ACTIVE",
     "caveat": "Color connected-component counts are not glyph counts; color ROI source PDF single witness, closing is analyst intervention, no blinded independent grapheme classification."
+  },
+  "k0001_f1r1_crop_registration": {
+    "date": "2026-11-15",
+    "report": "research/glyphs/2026-11-15_K0001_f1r1_crop_registration.md",
+    "raster_sha256": "cbd95103a136471df3a27933f881fa4de7664c1d1075c4930c5e9e24234daf10",
+    "crop": "ambigf1r1.png",
+    "crop_source": "local derived image not independently sourced",
+    "scale": 0.3333333333333333,
+    "matched_original_raster_xyxy": [
+      760,
+      337,
+      1050,
+      414
+    ],
+    "template_correlation_exploratory": 0.9994169473648071,
+    "flipped_template_negative_max": 0.29070183634757996,
+    "line1_xyxy": [
+      280,
+      342,
+      1260,
+      414
+    ],
+    "line2_xyxy": [
+      280,
+      397,
+      1280,
+      485
+    ],
+    "line_crop_vertical_overlap_px": 17,
+    "evidence_status": "VERIFIED_LOCAL_IMAGE_REGISTRATION_NOT_GLYPH_IDENTITY",
+    "operational_status": "ACTIVE",
+    "independent_grapheme_classes": 0,
+    "verified_eva_maps": 0
   }
 }
