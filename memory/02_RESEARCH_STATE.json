@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-14",
+  "updated": "2026-11-15",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
   "cycle": "EXP-0026",
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "EXP-0026 q-onset exact heldout result supports specified narrow positional depletion vs same-line equal-length exchangeable null, NOT a decoding; independent rights-cleared image-witness, physical leaf/hand/section controls and cluster-robust preregistration needed before generalization; PR #50 scope review and merge validation.",
+  "next": "S-tier/P0 K-0001 INV-001 pilot: begin f1r full-resolution physical glyph/region occurrence ledger (including side notes and uncertain strokes), second-witness comparison, then other sides f1v-f10v; existing EXP-0026 stronger null and A/W audit remain open.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -128,5 +128,26 @@
       "integration": "PR-38 merged",
       "branch_origin": "research/exp0023-f57v-f49v-holdout-20261113"
     }
-  ]
+  ],
+  "top_priority": "S-tier/P0 K-0001 glyph inventory",
+  "k0001_f1r_f10v_pilot": {
+    "report": "research/glyphs/2026-11-15_K0001_first_ten_folios_census.md",
+    "ledger": "research/glyphs/2026-11-15_K0001_f1r-f10v_preliminary_coverage.jsonl",
+    "script": "research/glyphs/k0001_f1r-f10v_census.py",
+    "sample_scope": "f1r-f10v, 10 physical leaves, 20 sides",
+    "page_caption_pairs_verified": 20,
+    "page_caption_pairs_target": 20,
+    "overview_screened_sides": 20,
+    "individually_pixel_segmented_sides": 0,
+    "individually_pixel_segmented_sides_target": 20,
+    "editorial_lines_count": 268,
+    "unqualified_eva_ascii_occurrences": 8605,
+    "editorial_ascii_labels_distinct": 22,
+    "independently_validated_grapheme_classes": 0,
+    "independently_verified_eva_mappings": 0,
+    "status": "ACTIVE_NOT_DONE",
+    "pdf_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+    "ivtff_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+    "caveat": "Source-pinned exploratory editorial census and printed PDF labels ONLY; not an image-level occurrence inventory; no IIIF page-to-canvas mapping or second-witness test."
+  }
 }
