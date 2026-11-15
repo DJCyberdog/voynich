@@ -1,10 +1,10 @@
 schema_version: 1
-updated: '2026-11-14'
+updated: '2026-11-15'
 priorities:
   - id: RM-036
     title: 'S-TIER / P0-HIGHEST — K-0001 exhaustive image-grounded glyph occurrence inventory and EVA adequacy audit'
     status: ACTIVE
-    next: 'Owner decision 2026-11-15: K-0001 is the top research priority, ahead of A/W queue and EVA-only inference. Audit ALL manuscript glyph occurrences including marginalia, ligatures, allographs, corrections, diacritics and ambiguous marks; source-pinned region/folio ledger, blind independent classification, rights, second witness, leaf-heldout. Do not infer validated graphemes from EVA or claim K-0001 complete; retain A/W queue as open, not cancelled.'
+    next: 'After INV-001 scoped pilot: 20/20 f1r-f10v PDF captions source-pinned/overview-screened, 268 editorial lines and 8605 unqualified EVA ASCII codepoints inventoried but 0/20 sides individually pixel-segmented, 0 verified grapheme classes. Begin detailed full-resolution f1r occurrence/region ledger including marginalia and later hands, independent controls and f11+ physical-leaf holdout; carry forward each side and reconcile PDF with SRC-0007 canvas. Keep EVA evidence editorial-only, A/W queue still open.'
   - id: RM-035
     title: W-07 Brewer/Lewis two uterine horns: exact Rosettes region and blinded iconographic controls
     status: WATCHING
