@@ -44,6 +44,6 @@ With fixed color predicate `HSV hue <= 9, saturation >= 75, value <= 200` on the
 
 ## Next exact step
 
-**Manual region-to-ink-stroke adjudication on f1r**, beginning with S01/S02/S03 and source-visible text bands 1–6: independently record every uncertain mark and *stroke cluster* with pixel boxes, class alternatives, adjacent context and reviewer disagreement, never force one EMA/EVA symbol per component. Acquire a second independently licensed image witness and inspect blind duplicate crops before elevating class identity; reserve unseen physical leaves for heldout. Only then expand to f1v and further pages.
+**Manual region-to-ink-stroke adjudication on f1r**, beginning with S01/S02/S03 and source-visible text bands 1–6: independently record every uncertain mark and *stroke cluster* with pixel boxes, class alternatives, adjacent context and reviewer disagreement, never force one EVA symbol per component. Acquire a second independently licensed image witness and inspect blind duplicate crops before elevating class identity; reserve unseen physical leaves for heldout. Only then expand to f1v and further pages.
 
 No new HYP, EXP, or language/semantic claim was registered. Owner-authorized PR-only integration; hourly automation not changed. Prevent duplicate treatment of O-01 correction traces and earlier K-0001 VY001.
