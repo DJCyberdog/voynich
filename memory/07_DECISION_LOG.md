@@ -273,3 +273,6 @@ Owner ordered cleanup of three known draft PRs and one complete heldout test. PR
 
 ## 2026-11-15 — A-08 rights-scope evidence, not a new cipher result
 The author-controlled Naibbe GitHub README expressly licenses covered software/datasets under modified MIT terms with notice/citation; per-file exceptions, separate Zenodo artifacts, manuscript images and third-party transcriptions remain unverified. No third-party code executed, no Voynich measurements, no new HYP/EXP; A-08 remains WATCHING. Existing automation prompt and hourly schedule unchanged. See research/hypotheses/2026-11-15_A08_naibbe_author_license_scope.md.
+
+## 2026-11-15 — W-07 item-level original author-locus audit
+One bounded primary-claim review fixes Brewer's alleged paired uterine horns to upper-right and lower-right Rosettes circles. No independently inspected Yale glyphs or images, no semantics, no historical corroboration, no new experiment. W-07 advances QUEUED to SOURCE_REVIEWED, WATCHING, completed=false; shared W-04/A-19 source not double-counted. No automation prompt or schedule change. Scope exclusively DJCyberdog/voynich, branch/PR only.
