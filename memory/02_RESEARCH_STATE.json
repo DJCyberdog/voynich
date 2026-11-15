@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "K-0001 S/P0: manually adjudicate f1r line-band dark components plus special red initials/margins with exact boxes and uncertainty, obtain independent blind annotator and source witness; f1v follows. Never substitute editorial ASCII or raster CC counts for physical glyphs; A/W queue remains open.",
+  "next": "K-0001 S/P0: independently annotate each possible f1r stroke cluster (S01, S02, first six line regions) with spatial provenance, uncertainty and independent image witness. No recurring mask-only cycles; retain f11+ physical leaf heldout, existing A/W queue.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -187,5 +187,29 @@
     "evidence_status": "VERIFIED_LOCAL_RASTER_AND_DOCUMENTED_REGIONS__NO_GLYPH_CLASS",
     "operational_status": "ACTIVE_NOT_DONE",
     "caveat": "Nonblind and unregistered image-region pilot; component counts are not glyph counts, unknown marginalia/ligatures, independent witness/IIIF mapping not tested"
+  },
+  "k0001_f1r_red_topology": {
+    "report": "research/glyphs/2026-11-15_K0001_f1r_red_topology_audit.md",
+    "results": "research/glyphs/2026-11-15_K0001_f1r_red_topology_results.json",
+    "reproducibility_script": "research/glyphs/k0001_f1r_red_topology.py",
+    "phase": "EXPLORATORY_NOT_PREREGISTERED",
+    "source_pdf_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+    "source_transcription_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+    "source_rgb_sha256": "cbd95103a136471df3a27933f881fa4de7664c1d1075c4930c5e9e24234daf10",
+    "s01_color_pixels": 1713,
+    "s01_connected_components_at_raw_color_mask": 1,
+    "s02_color_pixels": 470,
+    "s02_connected_components_at_raw_color_mask": 4,
+    "s02_components_after_5px_closing": 2,
+    "s02_components_after_15px_closing": 1,
+    "transcript_editorial_tag_ids_s01_s02": [
+      "252",
+      "253"
+    ],
+    "independent_grapheme_classes_validated": 0,
+    "eva_glyph_mappings_verified": 0,
+    "evidence_status": "VERIFIED_SCOPED_PIXEL_COMPONENTS_AND_EDITOR_MARKER_STRINGS",
+    "operational_status": "ACTIVE",
+    "caveat": "Color connected-component counts are not glyph counts; color ROI source PDF single witness, closing is analyst intervention, no blinded independent grapheme classification."
   }
 }
