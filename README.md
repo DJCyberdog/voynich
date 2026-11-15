@@ -2,6 +2,10 @@
 
 Evidence-led, falsification-oriented investigation of Yale Beinecke MS 408. **No decipherment is assumed.**
 
+## Owner research priority — S-tier / highest P0 (2026-11-15)
+
+**K-0001 is now the single highest-priority research workstream.** Exhaustive manuscript-image-grounded identification of *all* potential glyph occurrences and testing EVA adequacy precede new EVA-dependent linguistic or statistical interpretation. This is a **priority change, not a validated glyph discovery**: zero independently validated grapheme classes and zero verified EVA mappings; K-0001 remains ACTIVE / NOT DONE. Existing A-01..A-20 and W-01..W-20 queue remains open, not discarded; other work may proceed when independent or required for K-0001. Completion gates and blind/held-out controls remain binding. See RM-036 and D-0219. **Progress denominators unchanged:** 213/213 canonical snapshot canvas IDs inventoried (not pixel/folio verification); 3/40 scoped audit items completed; 0/5 decipherment gates met. No percentage of decipherment can be calculated. No automation schedule changed.
+
 ## Research boundaries
 Distinguish diplomatic reading, script decipherment, language identification, semantic interpretation, and dating/provenance. Evidence classes: VERIFIED, DOCUMENTED, CLAIMED, INFERRED, UNKNOWN, CONTRADICTED. Operational classes: ACTIVE, WATCHING, BLOCKED, SATURATED, RETIRED. Reproducible negative results are first-class outcomes.
 
