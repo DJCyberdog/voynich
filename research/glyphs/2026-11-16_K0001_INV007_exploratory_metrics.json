@@ -1,0 +1,80 @@
+{
+  "id": "K-0001-INV-007",
+  "date": "2026-11-16",
+  "method_phase": "EXPLORATORY_NOT_CONFIRMATORY",
+  "source_pdf_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+  "raster_rgb_sha256": "cbd95103a136471df3a27933f881fa4de7664c1d1075c4930c5e9e24234daf10",
+  "owner_marked_png_sha256": "c980e9fa87520e29b276e468bfd49b68c2c8423061b72c65edd1ef534b6d4190",
+  "roi_xyxy": [
+    760,
+    337,
+    1050,
+    414
+  ],
+  "f1r2_exploratory_xyxy": [
+    280,
+    405,
+    740,
+    485
+  ],
+  "control_positive_rgb_sha256": "52741a707b175fef5629129d25168fa666d04445087c1dcaac67aec354f485a8",
+  "control_negative_rgb_sha256": "271190883ca64508bbd8f7e0d83fdfdfd8fb3a7e565ff3c7adf43b31f0a9685e",
+  "negative_hash_erratum": "Previous INV-006 negative hash had 62 hex digits; corrected from raw 70x40 RGB pixels.",
+  "human_areas_reported_by_owner": 8,
+  "machine_closed_partitions_ge100px": 4,
+  "overlay_line_components_8connected": 6,
+  "drawn_mask_pixels": 9966,
+  "thresholds_negative_control_percentiles_99_99p5_99p9": [
+    27,
+    33,
+    41
+  ],
+  "method": "f1r grayscale morphological close ellipse 23x23 minus source; 8-connected dark components area>=3; two other topological measures on owner overlay; no editorial text used",
+  "machine": {
+    "f1r1": {
+      "27": {
+        "dark_pixels": 2122,
+        "all_components": 78,
+        "components_ge3": 54,
+        "components_ge3_touching_border": 7
+      },
+      "33": {
+        "dark_pixels": 1554,
+        "all_components": 88,
+        "components_ge3": 56,
+        "components_ge3_touching_border": 6
+      },
+      "41": {
+        "dark_pixels": 860,
+        "all_components": 93,
+        "components_ge3": 54,
+        "components_ge3_touching_border": 5
+      }
+    },
+    "f1r2_left": {
+      "27": {
+        "dark_pixels": 3942,
+        "all_components": 129,
+        "components_ge3": 89,
+        "components_ge3_touching_border": 16
+      },
+      "33": {
+        "dark_pixels": 2761,
+        "all_components": 142,
+        "components_ge3": 95,
+        "components_ge3_touching_border": 9
+      },
+      "41": {
+        "dark_pixels": 1414,
+        "all_components": 158,
+        "components_ge3": 78,
+        "components_ge3_touching_border": 6
+      }
+    }
+  },
+  "conclusion": "human areas are not ink-stroke polygons or glyphs; no INV-005 IoU or second-reader agreement",
+  "validated_grapheme_classes": 0,
+  "verified_eva_mappings": 0,
+  "independent_second_annotator": false,
+  "image_witness_count": 1
+}
