@@ -85,4 +85,8 @@ questions:
     question: Which exact 176 folio IDs and VGM356 line/token filters were frozen before Franke VGM371/377 evaluation, and can original CSV and run377.py reproduce metrics without post-selection?
     status: BLOCKED
     blocker: Source CSV, code, ID manifest and provenance/history not located as downloadable authentic artifacts; local proxy counts alone underdetermine selection
-
+  - id: Q-031
+    priority: high
+    question: Can A-13 Copy-T and matched two-key cipher/language/nonlanguage alternatives be preregistered and compared on truly unseen physical-leaf heldout with a frozen independently image-aligned transcription, after source-code/data provenance is established?
+    status: BLOCKED
+    blocker: SRC-0107 arXiv v2 documents global-ZL-trained W and held-out statistics, not a manuscript-leaf-excluded test. Author-specific full code/data/seed hashes not located in checked sources; new rights-cleared independent glyph witness and leaf concordance absent. See research/hypotheses/2026-11-16_A13_zhang_sheng_v2_provenance_holdout_review.md.
