@@ -12,7 +12,7 @@ priorities:
   - id: RM-034
     title: A-08 Naibbe author-code license scope and leakage-safe comparative test
     status: ACTIVE
-    next: "B-tier A-08: code-source audit distinguishes baseline random Naibbe from CV default plus short-/long-distance reuse variant. Freeze immutable source and tables and compare separate arms against matched nonsemantic/language/hybrid baselines; third-party execution not authorized. If blocked, choose another A/W claim."
+    next: "2026-11-16 SRC-0109 author code/tree and glyph-table blobs pinned. Source-level synthetic counterexample proves SR_MAX_LAG=9 is only a lag-proposal limit, not a bound on realised plaintext-aligned reuse; normal CLI resets history for every input line. Next freeze exact paper-to-code version, then design/authorise leakage-safe multi-arm historical cipher vs nonsemantic/language/hybrid heldout comparison. No third-party execution; if blocked, select other B-tier A/W candidate."
   - id: RM-033
     title: EXP-0026 A-05 q-continuation line-onset effect against stronger folio-cluster and image/section nulls
     status: ACTIVE
