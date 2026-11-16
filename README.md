@@ -2,9 +2,13 @@
 
 Evidence-led, falsification-oriented investigation of Yale Beinecke MS 408. **No decipherment is assumed.**
 
-## Owner research priority — S-tier / highest P0 (2026-11-15)
+## Owner research priority update — B-tier A/W programme (2026-11-16)
 
-**K-0001 is now the single highest-priority research workstream.** Exhaustive manuscript-image-grounded identification of *all* potential glyph occurrences and testing EVA adequacy precede new EVA-dependent linguistic or statistical interpretation. This is a **priority change, not a validated glyph discovery**: zero independently validated grapheme classes and zero verified EVA mappings; K-0001 remains ACTIVE / NOT DONE. Existing A-01..A-20 and W-01..W-20 queue remains open, not discarded; other work may proceed when independent or required for K-0001. Completion gates and blind/held-out controls remain binding. See RM-036 and D-0219. **Progress denominators unchanged:** 213/213 canonical snapshot canvas IDs inventoried (not pixel/folio verification); 3/40 scoped audit items completed; 0/5 decipherment gates met. No percentage of decipherment can be calculated. No automation schedule changed.
+**Owner decision:** Defer exhaustive **K-0001 glyph analysis and EVA-adequacy review** to a later phase. EVA remains the **version-pinned working transcription convention**; material ambiguities must be noted but do not automatically block unrelated cipher, language, nonlanguage or hybrid tests. K-0001 remains **WATCHING / DEFERRED**, not completed or disproved. This supersedes the prior *priority order* in D-0219/RM-036, not its historical findings or the decipherment acceptance gates.
+
+**New active priority:** work through the established 40 A/W claim queue and falsifiable historical cipher/shorthand experiments (B-tier), choosing one bounded independent question per cycle and avoiding repeated blocked glyph/source loops. First new source-level result: A-08's [author code baseline/variant audit](research/hypotheses/2026-11-16_A08_naibbe_variant_default_source_audit.md). Different default respacing and explicit reuse mechanisms must be compared as separate models; no third-party code executed or manuscript hypothesis proven.
+
+**Defined work-package progress (unchanged):** A/W scoped closures **3/40 (7.5%)**; owner-canonical canvas IDs inventoried **213/213 (100% of IDs, NOT confirmed image-to-folio mapping)**; first-ten PDF-side labels indexed **20/20 (100% of indexing only)**; fully independently glyph-annotated pilot sides **0/20 (0%, deferred)**; decipherment acceptance gates **0/5 (0%)**. These are *not* a decipherment probability. SRC-0007 remains owner-canonical without independent live-Yale authentication. A-08 **DOCUMENTED** source-level differences, manuscript interpretation **UNKNOWN / WATCHING**. Source audit proposed by branch/PR only; no merge assumed. No automation changes in this research cycle.
 
 ## A-13 external source/reproduction boundary — 2026-11-16 (source audit only)
 
