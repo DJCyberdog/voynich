@@ -3,7 +3,7 @@
   "updated": "2026-11-16",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0026",
+  "cycle": "K-0001/INV-007",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -290,10 +290,48 @@
         790,
         315
       ],
-      "rgb_sha256": "271190883ca64508bbd8f7e0d83fdfd8fb3a7e565ff3c7adf43b31f0a9685e",
+      "rgb_sha256": "271190883ca64508bbd8f7e0d83fdfdfd8fb3a7e565ff3c7adf43b31f0a9685e",
       "classification": "COORDINATOR_VISUAL_EXPECTATION_NOT_INDEPENDENTLY_VERIFIED"
     },
     "blind_annotators_completed": 0,
     "physical_grapheme_classes_validated": 0
+  },
+  "k0001_inv007_owner_annotation": {
+    "date": "2026-11-16",
+    "report": "research/glyphs/2026-11-16_K0001_INV007_owner_annotation_exploratory_audit.md",
+    "script": "research/glyphs/k0001_inv007_owner_annotation_audit.py",
+    "metrics": "research/glyphs/2026-11-16_K0001_INV007_exploratory_metrics.json",
+    "source_id": "SRC-0108",
+    "evidence_status": "VERIFIED_SCOPED_SOURCE_HASH_AND_MACHINE_COMPONENTS__DOCUMENTED_OWNER_EIGHT_AREAS",
+    "operational_status": "ACTIVE_EXPLORATORY_FORMAL_SECOND_REVIEW_BLOCKED",
+    "source_pdf_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+    "raster_rgb_sha256": "cbd95103a136471df3a27933f881fa4de7664c1d1075c4930c5e9e24234daf10",
+    "marked_png_sha256": "c980e9fa87520e29b276e468bfd49b68c2c8423061b72c65edd1ef534b6d4190",
+    "human_intended_areas": 8,
+    "machine_closed_overlay_cavities": 4,
+    "source_only_component_thresholds": [
+      27,
+      33,
+      41
+    ],
+    "source_only_components_f1r1": [
+      54,
+      56,
+      54
+    ],
+    "source_only_components_f1r2_left": [
+      89,
+      95,
+      78
+    ],
+    "correction_old_negative_digest_hex_length": 62,
+    "negative_control_sha256_corrected": "271190883ca64508bbd8f7e0d83fdfdfd8fb3a7e565ff3c7adf43b31f0a9685e",
+    "independent_annotator_B_completed": false,
+    "second_image_witness_obtained": false,
+    "validated_grapheme_classes": 0,
+    "verified_eva_mappings": 0,
+    "fully_glyph_adjudicated_f1r_lines": 0,
+    "fully_glyph_adjudicated_pilot_sides": 0,
+    "notes": "Eight self-reported visual areas versus four mask-enclosed screen voids; not a comparable count, no polygon IoU or control-pass, no image pixels redistributed."
   }
 }
