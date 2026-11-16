@@ -3,7 +3,7 @@
   "updated": "2026-11-16",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "K-0001/INV-007",
+  "cycle": "A-08/B-tier author-source variant audit",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "INV-006 controls byte-frozen: independently verify positive/negative control crops, seal coordinator class labels, recruit two distinct EVA-blind reviewers and second licensed witness before scoring INV-005. No further red-mask threshold loops.",
+  "next": "K-0001 deferred by Owner; work A/W 40-point B-tier. For A-08 freeze exact author baseline vs CV+reuse variant code/table rights and independent data provenance before fair, heldout generator test; if blocked rotate to another claim. No unauthorized code execution.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -54,7 +54,8 @@
     "EXP-0019: 5000 unmatched random 176 subsets, 65.46% gain>=Franke's published value, but only 4/5000 reach his token count; test explicitly NONCOMPARABLE for selection-bias claims.",
     "Franke EXP-0019 original artifact/selection audit remains awaiting independent source CSV/code/list; original stacked PR #27 integrated after unique IDs and latest research state preserved; no misconduct claim.",
     "EXP-0026 (2026-11-14) frozen protocol commit 30f8236: original owner-held ZL3b-n v3b bytes SHA256 bf5b6d...c2b09beccafc; heldout SHA fNNN-root 20 groups/677 +P0 certain lines; EVA q first observed 69 vs equal-length within-line H0 E=99.7857, exact p_left 3.962959394918687e-9, positive and negative synthetic controls pass, NARROW DEPLETION SUPPORTED. Folio-root dependence, scribe/section/line-fill and independent image witness remain UNKNOWN; no semantics, no gate passed. A-05 remains open, 3/40 scoped closures.",
-    "2026-11-15 W-07: original coauthor first-person essay fixes alleged uterine horns at top-right and bottom-right Rosettes circles. Documentary source-locus advance only; image truth and historical semantics UNKNOWN; W-07 SOURCE_REVIEWED/WATCHING and completed=false; 3/40, 0/5 unchanged."
+    "2026-11-15 W-07: original coauthor first-person essay fixes alleged uterine horns at top-right and bottom-right Rosettes circles. Documentary source-locus advance only; image truth and historical semantics UNKNOWN; W-07 SOURCE_REVIEWED/WATCHING and completed=false; 3/40, 0/5 unchanged.",
+    "2026-11-16 owner reprioritizes to B-tier; glyph analysis K-0001 WATCHING/DEFERRED, EVA remains named/version-pinned working convention without claiming independent glyph validation. A-08 author code static source-audit: random-respacing baseline and CV with short/long reuse variant have different default production rules (DOCUMENTED), so not interchangeable controls. No code execution, no manuscript measurement, A/W 3/40 closed and decipherment 0/5."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
