@@ -4,7 +4,7 @@ priorities:
   - id: RM-036
     title: 'S-TIER / P0-HIGHEST — K-0001 exhaustive image-grounded glyph occurrence inventory and EVA adequacy audit'
     status: ACTIVE
-    next: 'INV-005 preregistration fixes f1r.1 ROI [760,337,1050,414], two EVA-blind independent polygon annotations, IoU>=0.50 matching, agreement>=0.80 operational threshold, ink/blank controls and f11+ holdout; no annotations yet. Next freeze control rectangles before enrollment, obtain independent A/B annotation and separately licensed second image witness, then evaluate locked files without editorial leakage. K-0001 ACTIVE, 0/20 sides, 0/28 f1r lines adjudicated, 0 grapheme classes/EVA maps; no more threshold-only reruns.'
+    next: 'INV-006 local RGB-raster control audit: prior red-negative [380,1660,515,1749] visibly contains dark illustration, so NOT blank for stroke task. Freeze coordinator-positive [465,340,495,395] and apparently unlettered negative [720,275,790,315], crop RGB SHA in INV-006 report. Before any blind A/B annotation verify hashes, conceal labels and independently check controls. Obtain two separate annotators and second rights-cleared image witness; then score prelocked IoU>=0.50/agreement>=0.80 without EVA leakage. 0/20 sides, 0 grapheme classes/maps; no further threshold-only cycles.'
   - id: RM-035
     title: W-07 Brewer/Lewis two uterine horns: exact Rosettes region and blinded iconographic controls
     status: WATCHING
