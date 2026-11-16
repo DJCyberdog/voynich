@@ -16,7 +16,7 @@ priorities:
   - id: RM-033
     title: EXP-0026 A-05 q-continuation line-onset effect against stronger folio-cluster and image/section nulls
     status: ACTIVE
-    next: Preregister independently rights-cleared image-aligned witness, physical-leaf root/hand/Currier-stratified layout and line-fill controls plus cluster robust inference; do not reuse EXP-0026 heldout folios as fresh. p=3.96e-9 applies only to within-line same-length exchangeability and is not language or decipherment evidence
+    next: "EXP-0026 frozen q-onset result stands conditionally on original parser. 2026-11-17 synthetic adversarial audit identified unknown-inline-markup/comment deletion can join ASCII fragments into a falsely certain token; real ZL3b-n v3b prevalence UNKNOWN. First check original SHA-pinned eligible rows for such patterns without changing frozen result; then only prospectively preregister independent-witness, new heldout fail-closed parser comparison. Do not reuse previous 20 roots as unseen; A-05 remains OPEN."
   - id: RM-032
     title: K-0001 VY001 glyph variants and owner minimum-three-scribes challenge
     status: BLOCKED
