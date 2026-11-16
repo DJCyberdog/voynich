@@ -88,7 +88,7 @@ priorities:
   - id: RM-013
     title: Execute 40 deduplicated source claims with actual falsification gates
     status: ACTIVE
-    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence; A-03 scoped umbrella now completed/retired (D-0206, NOT language falsification); owner now requires W-01..W-20 INDIVIDUAL deep evaluations regardless of shared-source grouping, then preregister specific language/nonlanguage/cipher models for independent heldout
+    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence; A-03 scoped umbrella now completed/retired (D-0206, NOT language falsification); owner now requires W-01..W-20 INDIVIDUAL deep evaluations regardless of shared-source grouping, then preregister specific language/nonlanguage/cipher models for independent heldout; A-13 SRC-0107 Zhang/Sheng v2 audit documents global-ZL W training and only statistic-holdout. Full replay and truly unseen leaf-level image-witness test BLOCKED pending author-code/source pin and independent glyph/folio controls. A-13 still open; no duplicate EXP/HYP.
   - id: RM-023
     title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
