@@ -3,7 +3,7 @@
   "updated": "2026-11-17",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "A-05/EXP-0026 synthetic markup-boundary invariant audit",
+  "cycle": "A-05/EXP-0026 original-source editorial markup presence audit",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "A-05: inspect pinned owner-held ZL3b-n v3b only for eligible inline editorial markup prevalence, no retrospective re-scoring of frozen heldout; if actual affected rows, design preregistered independent-witness conservative parser test. K-0001 remains Owner-deferred; draft PR #62 pending Owner approval.",
+  "next": "The SHA-pinned ZL3b-n.txt original was checked: 0 unrecognized alphabetic-adjacent inline tags/comments in EXP-0026 +P0 eligible rows (0/2767 TRAIN, 0/777 TEST); this specific synthetic concatenation flaw is non-impacting on the frozen witness. No rerun or new p-value. Next independent section/hand/layout matched null with new rights-cleared witness/untouched holdout, or another open B-tier claim; K-0001 deferred.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -58,7 +58,8 @@
     "2026-11-16 owner reprioritizes to B-tier; glyph analysis K-0001 WATCHING/DEFERRED, EVA remains named/version-pinned working convention without claiming independent glyph validation. A-08 author code static source-audit: random-respacing baseline and CV with short/long reuse variant have different default production rules (DOCUMENTED), so not interchangeable controls. No code execution, no manuscript measurement, A/W 3/40 closed and decipherment 0/5.",
     "2026-11-16 A-08 SRC-0109: primary-author public source repo commit 5145f526b52741a6dca14201147f687e62c7162e / Git blobs pinned. Source code matches plaintext signatures across full history even for short-range reuse proposals (synthetic lag=20 > SR_MAX_LAG=9); normal CLI resets history per input line. SOURCE-DOCUMENTED, synthetic branch-logic verified, not any MS408 test or semantic evidence; A/W 3/40 and gates 0/5 unchanged.",
     "2026-11-16 W-03 individual original-author source audit (SRC-0110, Brewer VOY2022): Hartlieb reproductive-cipher call and 26-line copied Breslau M1302 f142r comparator are NOT an MS408 abortion-recipe decoding. Earlier Sudhoff abortifacient attribution of comparator disputed in Brewer's original paper; independent historical MS manuscript unreviewed. W-03 QUEUED->SOURCE_REVIEWED/WATCHING/OPEN; broad Voynich content UNKNOWN; A/W completed 3/40 and 0/5 gates unchanged. K-0001 remains deferred.",
-    "2026-11-17 A-05 EXP-0026 conditional markup-boundary parser audit: regex-equivalent synthetic cases show unknown inline markup/comments can concatenate fragments into apparent certain ASCII EVA token; explicit separator controls pass. Original witness impact UNKNOWN, frozen result not changed. No new EXP/HYP, 3/40 claims closed, 0/5 decipherment gates."
+    "2026-11-17 A-05 EXP-0026 conditional markup-boundary parser audit: regex-equivalent synthetic cases show unknown inline markup/comments can concatenate fragments into apparent certain ASCII EVA token; explicit separator controls pass. Original witness impact UNKNOWN, frozen result not changed. No new EXP/HYP, 3/40 claims closed, 0/5 decipherment gates.",
+    "2026-11-17 A-05 original IVTFF SHA-pinned source census: 411671 bytes sha256 bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc, eligible +P0 records TRAIN 2767/TEST 777, scored TRAIN 2429/TEST 677; unrecognized alphabetic-adjacent inline markup joins 0/0. Synthetic parser counterexample remains a code-level weakness, but source-level null not rejected for this failure mode; no claim of general tokenization correctness. EXP-0026 A-05 still UNKNOWN/ACTIVE/OPEN; 3/40 and 0/5 unchanged; no new heldout significance test."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
