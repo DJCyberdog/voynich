@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "K-0001 INV-005 protocol frozen: preselect positive ink and negative parchment control rectangles before annotation; two independent EVA-blind reviewers, independently licensed second image witness, and locked data before any glyph interpretation.",
+  "next": "INV-006 controls byte-frozen: independently verify positive/negative control crops, seal coordinator class labels, recruit two distinct EVA-blind reviewers and second licensed witness before scoring INV-005. No further red-mask threshold loops.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -262,5 +262,38 @@
     "verified_eva_mappings": 0,
     "evidence_status": "DOCUMENTED_PROTOCOL_ONLY",
     "operational_status": "ACTIVE_BLOCKED_ON_INDEPENDENT_ANNOTATION_AND_SECOND_WITNESS"
+  },
+  "k0001_inv006_control_integrity": {
+    "report": "research/glyphs/2026-11-16_K0001_INV006_control_integrity.md",
+    "evidence_status": "VERIFIED_LOCAL_RASTER_HASH_DOCUMENTED_DARK_MARK_CONTRADICTED_BLANK_TRANSFER",
+    "operational_status": "ACTIVE_ANNOTATION_BLOCKED",
+    "original_raster_sha256": "cbd95103a136471df3a27933f881fa4de7664c1d1075c4930c5e9e24234daf10",
+    "rejected_as_stroke_blank": [
+      380,
+      1660,
+      515,
+      1749
+    ],
+    "positive_control": {
+      "bbox": [
+        465,
+        340,
+        495,
+        395
+      ],
+      "rgb_sha256": "52741a707b175fef5629129d25168fa666d04445087c1dcaac67aec354f485a8"
+    },
+    "negative_control": {
+      "bbox": [
+        720,
+        275,
+        790,
+        315
+      ],
+      "rgb_sha256": "271190883ca64508bbd8f7e0d83fdfd8fb3a7e565ff3c7adf43b31f0a9685e",
+      "classification": "COORDINATOR_VISUAL_EXPECTATION_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    "blind_annotators_completed": 0,
+    "physical_grapheme_classes_validated": 0
   }
 }
