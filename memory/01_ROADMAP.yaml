@@ -1,6 +1,10 @@
 schema_version: 1
-updated: '2026-11-16'
+updated: '2026-11-17'
 priorities:
+  - id: RM-038
+    title: 'W-09 Brewer/Lewis two alleged embryonic suns: fixed Rosettes corner positions and blind iconographic controls'
+    status: WATCHING
+    next: 'W-09 SRC-0040 author-source audit fixes far top-left and bottom-right solar motifs, but no independent image coding or Aristotle passage check. Acquire rights-cleared period embryological positive and astronomical/cartographic negative controls, freeze spatial motif rubric and heldout, and do not duplicate W-04/W-05/W-07/A-19 evidence. W-09 SOURCE_REVIEWED / OPEN.'
   - id: RM-036
     title: "OWNER-DEFERRED — K-0001 exhaustive image-grounded glyph occurrence inventory and EVA adequacy audit"
     status: WATCHING
