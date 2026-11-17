@@ -2,6 +2,12 @@
 
 Evidence-led, falsification-oriented investigation of Yale Beinecke MS 408. **No decipherment is assumed.**
 
+## W-09 fixed two-sun original-author locus (2026-11-17)
+
+**New item-level source delta:** Brewer's 2024-04-16 first-person SRC-0040 fixes the claimed **two embryonic-heating suns** to the **far top-left and bottom-right** of the Rosettes foldout f85v/f86r. This is a **DOCUMENTED author position claim**, not independently VERIFIED image recognition; its Aristotelian embryonic-heat rationale is **CLAIMED**, and physical folio mapping, solar motif count and meaning **UNKNOWN**. W-09 moved **QUEUED → SOURCE_REVIEWED / WATCHING / OPEN**, no test or closure. Prospective (not run) blinded anatomical-positive vs astronomical/cartographic-negative controls, fixed spatial null and sealed heldout are specified in [W-09 report](research/hypotheses/2026-11-17_W09_two_suns_fixed_locus_source_audit.md). W-04/W-05/W-07/A-19 share the same source and cannot be counted as independent replications. K-0001 remains Owner-deferred; SRC-0007 Owner-canonical, not independently live-Yale-authenticated. PR #62 is a draft and not merged.
+
+**Progress, explicitly scoped and unchanged:** A/W narrowly closed **3/40 (7.5%)**, W closed **0/20 (0%)**; owner snapshot canvas IDs inventoried **213/213 (100% of ID inventory, not canvas/physical-folio validation)**; first-ten PDF-side labels indexed **20/20 (100% of labels only)**; independently glyph-adjudicated pilot sides **0/20 (0%, deferred)**; decipherment gates **0/5 (0%)**. These are task denominators, never a decipherment probability.
+
 ## Owner research priority update — B-tier A/W programme (2026-11-16)
 
 **Owner decision:** Defer exhaustive **K-0001 glyph analysis and EVA-adequacy review** to a later phase. EVA remains the **version-pinned working transcription convention**; material ambiguities must be noted but do not automatically block unrelated cipher, language, nonlanguage or hybrid tests. K-0001 remains **WATCHING / DEFERRED**, not completed or disproved. This supersedes the prior *priority order* in D-0219/RM-036, not its historical findings or the decipherment acceptance gates.
