@@ -5,6 +5,10 @@ priorities:
     title: "OWNER-DEFERRED — K-0001 exhaustive image-grounded glyph occurrence inventory and EVA adequacy audit"
     status: WATCHING
     next: "Owner 2026-11-16 deferred glyph and EVA-adequacy analysis. Continue on version-pinned EVA; leave prior K-0001 scientific blockers open, but stop routine glyph steps until concrete new contradictions or owner request."
+  - id: RM-037
+    title: 'W-05 Brewer/Lewis five alleged veins: fixed top-left-to-center Rosettes connector and historical controls'
+    status: WATCHING
+    next: 'W-05 item-level author source SRC-0040 fixes five alleged lines top-left-to-central Rosettes circles, but no independent original al-Razi text or manuscript pixel count. Reuse W-04 control framework, preregister path segmentation, anatomical positives, matched cosmogram/map negatives and sealed heldout; do not duplicate author evidence or claim a decoded passage. W-05 SOURCE_REVIEWED / OPEN.'
   - id: RM-035
     title: W-07 Brewer/Lewis two uterine horns: exact Rosettes region and blinded iconographic controls
     status: WATCHING
