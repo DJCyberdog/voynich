@@ -1,5 +1,9 @@
 # PROJECT VOYNICH
 
+## W-06 author colour-claim audit (2026-11-21; proposed PR, not integrated)
+Brewer's 2024 first-person SRC-0040 explicitly attributes **yellow to male and blue to female** reproductive components in the Rosettes, but gives no reproducible pixel polygons or independently tested medieval colour controls. **DOCUMENTED** author attribution; **CLAIMED** iconographic reading; **UNKNOWN** manuscript specificity. W-06 proposed QUEUED → SOURCE_REVIEWED / WATCHING / OPEN; no new heldout or decipherment claim. Shared source with A-19/W-04/W-05/W-07/W-09, not independent replication. [Bounded audit](research/hypotheses/2026-11-21_W06_yellow_blue_sperm_author_source_audit.md). **Progress denominators unchanged:** narrowly closed A/W claims **3/40 (7.5%)**; inventoried canonical manifest canvas IDs **213/213 (100% of ID inventory, NOT physical mapping)**; decipherment acceptance gates **0/5 (0%)**. **Blocker:** rights-cleared image regions and blinded historical positive/negative controls; next choose a different unexhausted claim or obtain independent controls. Existing PR #63 is open; this report is proposed, not yet integrated. SRC-0007 owner-canonical, not live-Yale-authenticated.
+
+
 Evidence-led, falsification-oriented investigation of Yale Beinecke MS 408. **No decipherment is assumed.**
 
 ## W-09 fixed two-sun original-author locus (2026-11-17)
