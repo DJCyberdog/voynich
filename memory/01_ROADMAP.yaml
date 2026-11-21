@@ -1,5 +1,5 @@
 schema_version: 1
-updated: '2026-11-17'
+updated: '2026-11-21'
 priorities:
   - id: RM-038
     title: 'W-09 Brewer/Lewis two alleged embryonic suns: fixed Rosettes corner positions and blind iconographic controls'
@@ -24,7 +24,7 @@ priorities:
   - id: RM-033
     title: EXP-0026 A-05 q-continuation line-onset effect against stronger folio-cluster and image/section nulls
     status: ACTIVE
-    next: "EXP-0026 frozen q-onset result stands conditionally on original parser. 2026-11-17 synthetic adversarial audit identified unknown-inline-markup/comment deletion can join ASCII fragments into a falsely certain token; real ZL3b-n v3b prevalence UNKNOWN. First check original SHA-pinned eligible rows for such patterns without changing frozen result; then only prospectively preregister independent-witness, new heldout fail-closed parser comparison. Do not reuse previous 20 roots as unseen; A-05 remains OPEN."
+    next: "2026-11-21 EXP-0026 exploratory 20-root sensitivity reproduces 677 lines, 69 q-first vs 99.7857 expected; root-bootstrap overall positive [2.3446,6.1065] pp, but Currier-A only 0.9902 pp vs B 6.5937 pp. This reuses previously exposed TEST; no new confirmation and no causal Currier language/hand attribution. Obtain independently rights-cleared transcription or physically aligned manuscript witness; preregister genuinely unseen folio/leaf holdout and strict Currier, section, hand, token-boundary and line-construction nulls. A-05 UNKNOWN/ACTIVE/TESTED/OPEN, no closure."
   - id: RM-032
     title: K-0001 VY001 glyph variants and owner minimum-three-scribes challenge
     status: BLOCKED
