@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-17",
+  "updated": "2026-11-21",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "W-09/B-tier original-author fixed two-sun spatial attribution",
+  "cycle": "W-06 first-person colour attribution source audit",
   "status": "RESEARCH_COMPLETED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "W-09 now SOURCE_REVIEWED/WATCHING/OPEN, source fixes far top-left and bottom-right Rosettes solar-heat attribution but image/Aristotle text unverified. Do not repeat source audit; pursue other open A/W candidate unless independent licensed controls and historical original become available. K-0001 Owner-deferred; PR #62 draft needs Owner merge approval.",
+  "next": "W-06 source attribution reviewed; no image/pixel or historical control verification. Do not repeat SRC-0040 without new image/period controls; pursue another open A/W item. PR #63 open; K-0001 owner-deferred.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
