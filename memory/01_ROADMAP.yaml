@@ -1,22 +1,30 @@
 schema_version: 1
-updated: '2026-11-16'
+updated: '2026-11-17'
 priorities:
+  - id: RM-038
+    title: 'W-09 Brewer/Lewis two alleged embryonic suns: fixed Rosettes corner positions and blind iconographic controls'
+    status: WATCHING
+    next: 'W-09 SRC-0040 author-source audit fixes far top-left and bottom-right solar motifs, but no independent image coding or Aristotle passage check. Acquire rights-cleared period embryological positive and astronomical/cartographic negative controls, freeze spatial motif rubric and heldout, and do not duplicate W-04/W-05/W-07/A-19 evidence. W-09 SOURCE_REVIEWED / OPEN.'
   - id: RM-036
-    title: 'S-TIER / P0-HIGHEST — K-0001 exhaustive image-grounded glyph occurrence inventory and EVA adequacy audit'
-    status: ACTIVE
-    next: 'INV-007 Owner documents eight intended visual areas, while automatic display-mask topology finds four closed cavities; these are not glyphs. Raw negative-control SHA corrected to 64 hex characters. Next build uncertainty-preserving f1r mark candidate ledger, obtain truly independent second human polygon annotation plus separately rights-cleared registered imaging witness, and only then evaluate frozen INV-005 IoU agreement and controls. All class and EVA validation gates remain open; never promote dark connected components to signs.'
+    title: "OWNER-DEFERRED — K-0001 exhaustive image-grounded glyph occurrence inventory and EVA adequacy audit"
+    status: WATCHING
+    next: "Owner 2026-11-16 deferred glyph and EVA-adequacy analysis. Continue on version-pinned EVA; leave prior K-0001 scientific blockers open, but stop routine glyph steps until concrete new contradictions or owner request."
+  - id: RM-037
+    title: 'W-05 Brewer/Lewis five alleged veins: fixed top-left-to-center Rosettes connector and historical controls'
+    status: WATCHING
+    next: 'W-05 item-level author source SRC-0040 fixes five alleged lines top-left-to-central Rosettes circles, but no independent original al-Razi text or manuscript pixel count. Reuse W-04 control framework, preregister path segmentation, anatomical positives, matched cosmogram/map negatives and sealed heldout; do not duplicate author evidence or claim a decoded passage. W-05 SOURCE_REVIEWED / OPEN.'
   - id: RM-035
     title: W-07 Brewer/Lewis two uterine horns: exact Rosettes region and blinded iconographic controls
     status: WATCHING
     next: Author 2024-04-16 source fixes upper-right and lower-right Rosettes circles; map exact SRC-0007 canvas/crops and obtain rights-cleared labeled historical positive and architectural negative controls; no independent image test, reuse W-04/A-19 shared evidence
   - id: RM-034
     title: A-08 Naibbe author-code license scope and leakage-safe comparative test
-    status: WATCHING
-    next: Author GitHub modified MIT grant documented 2026-11-15; inspect per-file exceptions and Zenodo artifact rights separately. Do not execute third-party code without authorization; manuscript-image/transcript rights and prefit Voynich-B affix leakage remain unresolved. No independent cipher test yet
+    status: ACTIVE
+    next: "2026-11-16 SRC-0109 author code/tree and glyph-table blobs pinned. Source-level synthetic counterexample proves SR_MAX_LAG=9 is only a lag-proposal limit, not a bound on realised plaintext-aligned reuse; normal CLI resets history for every input line. Next freeze exact paper-to-code version, then design/authorise leakage-safe multi-arm historical cipher vs nonsemantic/language/hybrid heldout comparison. No third-party execution; if blocked, select other B-tier A/W candidate."
   - id: RM-033
     title: EXP-0026 A-05 q-continuation line-onset effect against stronger folio-cluster and image/section nulls
     status: ACTIVE
-    next: Preregister independently rights-cleared image-aligned witness, physical-leaf root/hand/Currier-stratified layout and line-fill controls plus cluster robust inference; do not reuse EXP-0026 heldout folios as fresh. p=3.96e-9 applies only to within-line same-length exchangeability and is not language or decipherment evidence
+    next: "EXP-0026 frozen q-onset result stands conditionally on original parser. 2026-11-17 synthetic adversarial audit identified unknown-inline-markup/comment deletion can join ASCII fragments into a falsely certain token; real ZL3b-n v3b prevalence UNKNOWN. First check original SHA-pinned eligible rows for such patterns without changing frozen result; then only prospectively preregister independent-witness, new heldout fail-closed parser comparison. Do not reuse previous 20 roots as unseen; A-05 remains OPEN."
   - id: RM-032
     title: K-0001 VY001 glyph variants and owner minimum-three-scribes challenge
     status: BLOCKED
@@ -84,11 +92,11 @@ priorities:
   - id: RM-022
     title: Consolidated bizarre and sexological claim source criticism
     status: WATCHING
-    next: D-0208 Owner revokes premature retirement of 10 W audit points. ALL W-01..W-20 remain individually OPEN and require same A-level work (dated original, exact image/folio locus, preregistered distinguishing prediction, strongest alternative, positive/negative controls and heldout). W-01 Brewer/Lewis original author and fRos (f85v/f86r) editorial locus checked, NOT_TESTED; progress one W at a time, shared sources alone never close any W.
+    next: "D-0208 still requires individual W-01..W-20 audit without early retirement. W-03 now separately SOURCE_REVIEWED/WATCHING on Brewer 2022 original PDF SRC-0110, with historical false-positive abortifacient-cipher analogue; no reproducibly decoded MS408 abortion recipe. Every W remains OPEN, shared Brewer sources counted once. Further W-03 manuscript test only if pre-fixed locus, decoder, rights and heldout controls obtained; otherwise move to another open A/W. K-0001 Owner-deferred."
   - id: RM-013
     title: Execute 40 deduplicated source claims with actual falsification gates
     status: ACTIVE
-    next: Use integrated queue/protocol from #35, prioritize runnable rights-cleared held-out tests, close blocked leads, do not duplicate source papers as independent evidence; A-03 scoped umbrella now completed/retired (D-0206, NOT language falsification); owner now requires W-01..W-20 INDIVIDUAL deep evaluations regardless of shared-source grouping, then preregister specific language/nonlanguage/cipher models for independent heldout; A-13 SRC-0107 Zhang/Sheng v2 audit documents global-ZL W training and only statistic-holdout. Full replay and truly unseen leaf-level image-witness test BLOCKED pending author-code/source pin and independent glyph/folio controls. A-13 still open; no duplicate EXP/HYP.
+    next: "Owner 2026-11-16 B-tier first: focus on 40 A/W audited claims and historical cipher or shorthand tests, replacing K-0001 routine priority. Every W individually open, shared evidence counted once; prioritize rights-safe reproducible falsification over repetitive source reading."
   - id: RM-023
     title: Repair directed synthetic EXP-0020 null sampler before real-data inference
     status: BLOCKED
