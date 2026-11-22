@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-21'
 priorities:
+  - id: RM-039
+    title: 'W-06 yellow/blue male/female dual-semen author attribution; independent colour controls pending'
+    status: WATCHING
+    next: 'SRC-0040 first-person attribution documented 2026-11-21; no pixel polygons or blinded period controls, no new heldout. Avoid duplicating A-19/W-04/W-05/W-07/W-09. W-06 SOURCE_REVIEWED / OPEN; choose other candidate absent new independent evidence.'
   - id: RM-038
     title: 'W-09 Brewer/Lewis two alleged embryonic suns: fixed Rosettes corner positions and blind iconographic controls'
     status: WATCHING
