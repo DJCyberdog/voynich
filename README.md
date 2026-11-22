@@ -1,5 +1,9 @@
 # PROJECT VOYNICH
 
+## W-06 original-author colour claim — 21 November 2026
+
+Keagan Brewer's first-person SRC-0040 attributes **yellow=male, blue=female** reproductive material to the Rosettes illustration (conventional f85v/f86r). This is a **DOCUMENTED author attribution**, **CLAIMED** pictorial interpretation, **UNKNOWN** image specificity: no independently checked manuscript pixels, historical colour controls or sealed heldout. W-06 **SOURCE_REVIEWED / WATCHING / OPEN**; shares SRC-0040 with W-04/W-05/W-07/W-09/A-19, not an independent replication. [Bounded W-06 audit](research/hypotheses/2026-11-21_W06_yellow_blue_sperm_author_source_audit.md). **Consolidation:** PR #63 contains this W-06 report alongside A-05; duplicate PR #64 may close after verified merge of #63. **Work-package denominators unchanged:** narrowly closed A/W **3/40 (7.5%)**; canonical SRC-0007 canvas IDs inventoried **213/213** (100% of IDs, not independently validated physical folio identities); decipherment gates **0/5 (0%)**. No Yale live authentication; K-0001 Owner-deferred. Next: rights-cleared image region mask and blinded matched medical/nonmedical colour controls, not another SRC-0040 reread.
+
 ## A-05 folio-cluster sensitivity — 21 November 2026
 
 **RESEARCH_COMPLETED (exploratory, not a new holdout).** A new first-party, stdlib-only analysis of Owner SHA-256-pinned ZL3b-n v3b reuses the **previously exposed** EXP-0026 20-root / 677-line TEST set without rebranding it as independent confirmation. The original count exactly reproduces **69** EVA-ASCII `q` starts against **99.7857** equal-length same-line null expected; depletion **4.5474 percentage points**. Of 20 folio roots, **13** have positive, **4** negative and **3** zero residuals; deleting any one root leaves 3.9205–4.9315 pp depletion. Exploratory 20,000-draw root bootstrap percentile interval **[2.3446, 6.1065] pp** (not a confirmatory CI for physical leaves).
