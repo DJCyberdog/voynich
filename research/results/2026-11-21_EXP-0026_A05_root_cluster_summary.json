@@ -1,0 +1,76 @@
+{
+  "experiment": "EXP-0026",
+  "audit": "A05_ROOT_CLUSTER_EXPLORATORY_REUSE",
+  "date": "2026-11-21",
+  "status": "EXPLORATORY_REUSE_NOT_NEW_HELDOUT",
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "script": "research/scripts/exp0026_a05_root_cluster_sensitivity.py",
+  "bootstrap": {
+    "draws": 20000,
+    "seed": 260521,
+    "unit": "transcription folio root",
+    "interval": "percentile 2.5/97.5; descriptive only"
+  },
+  "test": {
+    "roots": 20,
+    "lines": 677,
+    "observed_q_first": 69,
+    "expected_q_first": 99.78571428571428,
+    "depletion_pp": 4.5473728634733055,
+    "root_signs": {
+      "positive": 13,
+      "negative": 4,
+      "ties": 3
+    },
+    "leave_one_root_out_depletion_pp": [
+      3.9205037386855563,
+      4.93145190694961
+    ],
+    "bootstrap_percentile_95_pp": [
+      2.344616239932683,
+      6.1064666463213
+    ]
+  },
+  "strata": {
+    "A": {
+      "roots": 10,
+      "lines": 239,
+      "observed": 29,
+      "expected": 31.366666666666667,
+      "depletion_pp": 0.9902370990237102,
+      "bootstrap_percentile_95_pp": [
+        -1.7291732043235708,
+        2.831329461492378
+      ]
+    },
+    "B": {
+      "roots": 8,
+      "lines": 431,
+      "observed": 39,
+      "expected": 67.4190476190476,
+      "depletion_pp": 6.593746547342832,
+      "bootstrap_percentile_95_pp": [
+        4.844877344877345,
+        8.010124610591898
+      ]
+    },
+    "UNKNOWN": {
+      "roots": 2,
+      "lines": 7,
+      "observed": 1,
+      "expected": 1,
+      "depletion_pp": 0,
+      "bootstrap_percentile_95_pp": [
+        0,
+        0
+      ]
+    }
+  },
+  "controls": {
+    "synthetic_depletion": "PASS",
+    "synthetic_balanced": "PASS"
+  },
+  "heldout": "previously exposed TEST reused; not independent",
+  "caveat": "A/B are owner-held transcript header metadata, neither validated physical leaf/hand nor causal inference",
+  "decipherment_gates_passed": 0
+}
