@@ -1,0 +1,199 @@
+{
+  "currier_metadata_strata": {
+    "A": {
+      "C_gain_over_B0": 0.005193605409979041,
+      "H_gain_over_B0": 0.0051189115064858015,
+      "P_gain_over_B0": 0.0073847350157172365,
+      "delta_h_vs_best_single": -0.002265823509231435,
+      "loss_nats_per_token": {
+        "B0": 1.6327467860558904,
+        "C": 1.6275531806459114,
+        "H": 1.6276278745494046,
+        "P": 1.6253620510401732
+      },
+      "roots": 51,
+      "tokens": 3614
+    },
+    "B": {
+      "C_gain_over_B0": 0.049581000547158416,
+      "H_gain_over_B0": 0.05216277730644969,
+      "P_gain_over_B0": 0.014576502870079278,
+      "delta_h_vs_best_single": 0.0025817767592912766,
+      "loss_nats_per_token": {
+        "B0": 1.675537474618839,
+        "C": 1.6259564740716805,
+        "H": 1.6233746973123893,
+        "P": 1.6609609717487597
+      },
+      "roots": 40,
+      "tokens": 8447
+    },
+    "U": {
+      "C_gain_over_B0": -0.0009151302129122296,
+      "H_gain_over_B0": -0.006442747346887323,
+      "P_gain_over_B0": -0.005738373712713463,
+      "delta_h_vs_best_single": -0.0055276171339750935,
+      "loss_nats_per_token": {
+        "B0": 1.5451301902685397,
+        "C": 1.546045320481452,
+        "H": 1.551572937615427,
+        "P": 1.5508685639812532
+      },
+      "roots": 3,
+      "tokens": 106
+    }
+  },
+  "data_scope": {
+    "accepted_lines": 1537,
+    "accepted_tokens": 12167,
+    "all_rows": 5225,
+    "excluded_f3_f8": 63,
+    "not_+P0": 1618,
+    "uncertain_or_short_line": 2007
+  },
+  "experiment": "EXP-0027",
+  "fixed_models": "B0 group+wordlen+linelen; P adds position; C adds preceding state; H adds both with equal-mixture prior, tau25, global alpha0.5",
+  "folds": [
+    {
+      "fold": 0,
+      "nll_nats_per_token": [
+        1.6765914216076407,
+        1.6615359492242823,
+        1.6325929442214908,
+        1.633334709787238
+      ],
+      "test_lines": 274,
+      "test_roots": 16,
+      "tokens": 2286,
+      "train_roots": 78
+    },
+    {
+      "fold": 1,
+      "nll_nats_per_token": [
+        1.70590859585232,
+        1.6909174975732224,
+        1.6745182054637395,
+        1.6717809151517395
+      ],
+      "test_lines": 330,
+      "test_roots": 16,
+      "tokens": 2705,
+      "train_roots": 78
+    },
+    {
+      "fold": 2,
+      "nll_nats_per_token": [
+        1.6041679288490756,
+        1.592145527557415,
+        1.5606384773120143,
+        1.5550505067342664
+      ],
+      "test_lines": 270,
+      "test_roots": 17,
+      "tokens": 2159,
+      "train_roots": 77
+    },
+    {
+      "fold": 3,
+      "nll_nats_per_token": [
+        1.6587657859764837,
+        1.651577062418362,
+        1.6293978347611497,
+        1.6319371321748775
+      ],
+      "test_lines": 249,
+      "test_roots": 19,
+      "tokens": 1906,
+      "train_roots": 75
+    },
+    {
+      "fold": 4,
+      "nll_nats_per_token": [
+        1.6540079861934713,
+        1.6428919198890848,
+        1.6212093775209482,
+        1.6186316934049623
+      ],
+      "test_lines": 414,
+      "test_roots": 26,
+      "tokens": 3111,
+      "train_roots": 68
+    }
+  ],
+  "folio_root_groups": 94,
+  "interpretation_guardrail": "No independent source or physical-leaf heldout. This discriminates conditional class predictors within one exposed editorial EVA witness; cannot identify natural language, cipher, copy-edit generator or hybrid, or validate glyphs/semantics.",
+  "null": {
+    "delta_ge_observed": 0,
+    "delta_max": -0.007779165446462288,
+    "delta_mean": -0.012901540841410175,
+    "delta_min": -0.017229070807422087,
+    "iterations": 99,
+    "median_eligible_targets_to_shuffle": 11141,
+    "median_target_positions_changed": 6229,
+    "name": "within-line within-wordlength-bin 99 class permutation refits",
+    "upper_tail_empirical_p": 0.01
+  },
+  "observed": {
+    "C_gain_over_B0": 0.035956554431737064,
+    "H_gain_over_B0": 0.037678622082128355,
+    "P_gain_over_B0": 0.012263325756292964,
+    "delta_h_vs_best_single": 0.0017220676503912902,
+    "loss_nats_per_token": {
+      "B0": 1.6616911098117686,
+      "C": 1.6257345553800315,
+      "H": 1.6240124877296402,
+      "P": 1.6494277840554756
+    },
+    "roots": 94,
+    "tokens": 12167
+  },
+  "preregistered_criterion_passed": false,
+  "root_cluster_descriptive_bootstrap_95_delta": [
+    -0.0017417318335039235,
+    0.0048856108746661315
+  ],
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "source_version": "ZL3b-n IVTFF Eva- 2.0 M 5, v3b 2025-05-13",
+  "status": "EXPLORATORY_ALREADY_EXPOSED_SINGLE_EVA_WITNESS",
+  "synthetic_controls": {
+    "joint": {
+      "C_gain_over_B0": 0.621857638902954,
+      "H_gain_over_B0": 0.7767309770837502,
+      "P_gain_over_B0": 0.18324918507853716,
+      "delta_h_vs_best_single": 0.15487333818079618,
+      "loss_nats_per_token": {
+        "B0": 1.7109473977223255,
+        "C": 1.0890897588193715,
+        "H": 0.9342164206385754,
+        "P": 1.5276982126437884
+      },
+      "roots": 94,
+      "tokens": 12167
+    },
+    "uniform": {
+      "C_gain_over_B0": -0.0188489205335145,
+      "H_gain_over_B0": -0.030270329524988426,
+      "P_gain_over_B0": -0.006310588629450109,
+      "delta_h_vs_best_single": -0.023959740895538317,
+      "loss_nats_per_token": {
+        "B0": 2.0855235385920645,
+        "C": 2.104372459125579,
+        "H": 2.115793868117053,
+        "P": 2.0918341272215146
+      },
+      "roots": 94,
+      "tokens": 12167
+    }
+  },
+  "target": "8 states: ASCII-q initial yes/no x word-final y/n/l/other",
+  "target_state_counts": {
+    "0": 4168,
+    "1": 1754,
+    "2": 1523,
+    "3": 2501,
+    "4": 1122,
+    "5": 415,
+    "6": 305,
+    "7": 379
+  }
+}
