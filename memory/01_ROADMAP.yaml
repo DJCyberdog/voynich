@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-060
+    title: 'EXP-0038a inventory PASS; independent adjudication and cross-root attachment required'
+    status: ACTIVE
+    next: 'Independent image-only review and extend directly attached inscription candidates beyond f99, then locus alignment and EXP-0039 frozen referent test. See research/experiments/2026-11-24_EXP-0038a_report.md.'
   - id: RM-059
     title: 'EXP-0038 editorial label proxy NOT_MET; independent image adjudication needed'
     status: ACTIVE
