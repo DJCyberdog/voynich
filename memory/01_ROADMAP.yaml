@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-051
+    title: 'EXP-0035 stronger predictive comparator PASS; independent evidence next'
+    status: ACTIVE
+    next: 'Rights-reviewed independent transcription replication and preregistered semantic-anchor design; no repeated exposed-grid tuning or historical origin inference from model rank. See research/experiments/2026-11-24_EXP-0035_report.md.'
   - id: RM-050
     title: 'EXP-0034 partial transfer NOT_MET; competing generators next'
     status: ACTIVE
