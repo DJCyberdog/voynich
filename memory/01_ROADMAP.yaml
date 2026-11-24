@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-043
+    title: 'EXP-0029 segmentation robustness PASS; evaluate functional EVA classes'
+    status: ACTIVE
+    next: 'EXP-0030 proposed: derive classes on training roots only, test heldout transfer and frequency-matched null; do not confuse editorial units with glyphs. See research/experiments/2026-11-24_EXP-0029_report.md.'
   - id: RM-042
     title: 'Owner S-tier four-item scoped disposition, no repetitive settled tests'
     status: WATCHING
