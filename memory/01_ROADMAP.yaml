@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-052
+    title: 'EXP-0036 cross-transcription PASS; functional components next'
+    status: ACTIVE
+    next: 'EXP-0037 proposed: cross-witness functional subword roles with heldout discriminators and controls, followed by blinded semantic anchors; no meaning inferred from predictive structure alone. See research/experiments/2026-11-24_EXP-0036_report.md.'
   - id: RM-051
     title: 'EXP-0035 stronger predictive comparator PASS; independent evidence next'
     status: ACTIVE
