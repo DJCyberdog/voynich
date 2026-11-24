@@ -3,7 +3,7 @@
   "updated": "2026-11-24",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0032b whole-word template parameter sensitivity",
+  "cycle": "EXP-0032c unlimited whole-template learning curve",
   "status": "RESEARCH_COMPLETED_SCOPED_PROPOSED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -71,7 +71,8 @@
     "EXP-0030 scoped PASS: 21 train-eligible compound EVA units, 210 pairs, five disjoint pairs selected on TRAIN (ch/sh, k/t, f/p, l/r, cph/cth). On 21 withheld folio-number roots and 4706 words, mean cosine .909216 and full-frame Jaccard .130115 vs frequency-matched reference .018713, delta .111402, 0/999 null draws >= observed, p=.001; descriptive root-bootstrap delta [.088734,.115144]. All fixed gates and synthetic controls passed; byte-identical local replay. Frequency matching approximate especially for rare pairs, no individual significance, no functional equivalence or independent witness claimed. Next EXP-0031 external word-context discrimination. research/experiments/2026-11-24_EXP-0030_report.md",
     "EXP-0031 scoped PASS: train-only external neighbor-shape score on fixed five EXP-0030 pairs, same target frame/root/coarse line-position matched. 229 mixed TEST strata / 19 roots / 741 cross-label comparisons, AUC .581646 vs .55 threshold, conditional permutation p=.004 (3/999 >= observed), descriptive root bootstrap [.532468,.615234], all six gates and synthetic controls pass. Pair AUCs ch/sh .620763 (236), k/t .542582 (364), f/p .20 (5), l/r .624060 (133), cph/cth 1 (3); rare pairs inconclusive individually, no per-pair significance. Same previously exposed EVA witness; no physical glyph/semantic or historical mechanism identification. Next EXP-0032 frozen train-derived word formation templates versus character/copy baselines. research/experiments/2026-11-24_EXP-0031_report.md",
     "EXP-0032 RESEARCH_COMPLETED / NOT_MET: fixed 128 whole-word class templates, 984 OOV occurrences across 21 test roots. TC-C gain -0.352570 nats/word (threshold +.020), bootstrap [-.368633,-.342401], one-sided p=1; OOV template coverage 3/984. T-S all-test +.109802 but OOV -.557355; position-aware bigram best OOV. All synthetic and normalization controls PASS; two byte-identical local runs. Reject only frozen whole-template augmentation, not structural classes or all grammars. Next EXP-0033 productive compositional grammar with explicit complexity and OOV evaluation; same exposed witness, no independent glyph/semantic claim. research/experiments/2026-11-24_EXP-0032_report.md",
-    "EXP-0032b RESEARCH_COMPLETED / NOT_MET: 384 prespecified configurations, inner validation 445 OOV occurrences/10 roots, 32 positive and 19 >=+.020. Winner all templates, weight .25, 27 classes, frequency/global, validation gain +.047097; refit 3553 templates. Outer OOV gain TC-C -.027366 vs original -.352570, coverage 257/984 vs 3/984, bootstrap [-.052013,.002199], one-sided p=.969. All-test gain +.098356; outer positive OOV gates fail. All controls and byte-identical local replay PASS, original result reproduced. Scoped sensitivity complete; no further outer cap/weight fishing. Next EXP-0033 productive subword composition with complexity accounting. Previously exposed single editorial witness and outer test, no independent physical glyph/semantic claim. research/experiments/2026-11-24_EXP-0032b_report.md"
+    "EXP-0032b RESEARCH_COMPLETED / NOT_MET: 384 prespecified configurations, inner validation 445 OOV occurrences/10 roots, 32 positive and 19 >=+.020. Winner all templates, weight .25, 27 classes, frequency/global, validation gain +.047097; refit 3553 templates. Outer OOV gain TC-C -.027366 vs original -.352570, coverage 257/984 vs 3/984, bootstrap [-.052013,.002199], one-sided p=.969. All-test gain +.098356; outer positive OOV gates fail. All controls and byte-identical local replay PASS, original result reproduced. Scoped sensitivity complete; no further outer cap/weight fishing. Next EXP-0033 productive subword composition with complexity accounting. Previously exposed single editorial witness and outer test, no independent physical glyph/semantic claim. research/experiments/2026-11-24_EXP-0032b_report.md",
+    "EXP-0032c RESEARCH_COMPLETED / NOT_MET: 20 nested root permutations ×7 fractions, fixed 445 OOV occurrences/10 validation roots; all-template 27-class .25 mixture fixed. Mean OOV coverage rises 6.47%→35.28%, TC-C gain -.059558→+.047097. Late 80→100% gain +.004954 <+.010 gate; 16/20 positive, coverage +.030112 passes; 3/4 gates met. Exponential/rational fitted coverage asymptotes .35/.45, near-fit ranges [.31,.43]/[.38,.57], descriptive and model-dependent, not true limits. All controls PASS, byte-identical runs. Exposed prior inner validation, outer not scored. Prior outer OOV NOT_MET unchanged; next EXP-0033 productive subword composition, no further cap fishing. research/experiments/2026-11-24_EXP-0032c_report.md"
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
@@ -146,7 +147,7 @@
       "branch_origin": "research/exp0023-f57v-f49v-holdout-20261113"
     }
   ],
-  "top_priority": "EXP-0033 productive compositional grammar after completed EXP-0032b; no repeated outer tuning; K-0001 deferred",
+  "top_priority": "EXP-0033 after completed EXP-0032c; no further whole-template tuning; K-0001 deferred",
   "k0001_f1r_f10v_pilot": {
     "report": "research/glyphs/2026-11-15_K0001_first_ten_folios_census.md",
     "ledger": "research/glyphs/2026-11-15_K0001_f1r-f10v_preliminary_coverage.jsonl",
@@ -420,6 +421,21 @@
     "outer_oov_gain": -0.027365818916373096,
     "outer_all_gain": 0.09835640412610926,
     "p_empirical": 0.969,
+    "independent_witness": false
+  },
+  "exp0032c": {
+    "report": "research/experiments/2026-11-24_EXP-0032c_report.md",
+    "decision": "NOT_MET",
+    "nested_repeats": 20,
+    "fixed_validation_oov": 445,
+    "fit_roots": 67,
+    "full_templates": 3271,
+    "full_oov_coverage": 0.35280898876404493,
+    "full_oov_gain": 0.04709693448946454,
+    "late_gain": 0.004954370430263575,
+    "late_positive_repeats": 16,
+    "late_coverage": 0.03011235955056178,
+    "outer_scored": false,
     "independent_witness": false
   }
 }
