@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-057
+    title: 'EXP-0037k lexical n-grams NOT_MET; word-class abstraction next'
+    status: ACTIVE
+    next: 'EXP-0037l train-only distributional word classes with support-aware controls, then EXP-0037m frozen-class syntax models; no repeated tuning of k. See research/experiments/2026-11-24_EXP-0037k_report.md.'
   - id: RM-056
     title: 'EXP-0037g-j completed; graphotactic alternative remains; semantic anchors next on owner approval'
     status: WATCHING
