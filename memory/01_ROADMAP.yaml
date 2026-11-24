@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-053
+    title: 'EXP-0036a restricted STA core PASS; full native STA BLOCKED'
+    status: BLOCKED
+    next: 'Only reopen full STA analysis with exact official ZL3b.txt and GC2a_1.txt bytes; no repeated failed acquisition. EXP-0037 functional components can proceed. See research/experiments/2026-11-24_EXP-0036a_report.md.'
   - id: RM-052
     title: 'EXP-0036 cross-transcription PASS; functional components next'
     status: ACTIVE
