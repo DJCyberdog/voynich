@@ -1,0 +1,192 @@
+{
+  "experiment": "EXP-0038",
+  "decision": "NOT_MET",
+  "semantic_validation": "BLOCKED",
+  "gates_passed": 4,
+  "gates_total": 16,
+  "full_local_result_sha256": "220180d4bd22ae329ac2905e885b5f9bbcb5c36326872f1c7222e0b37acdbe7d",
+  "full_local_result_git_blob": "8eb5fd7455d56aeff7c727b8016ab89aec6bdc3d",
+  "source_label_counts": [
+    {
+      "Lc": 40,
+      "Lf": 194,
+      "Ln": 63,
+      "Lt": 47
+    },
+    {
+      "Lc": 40,
+      "Lf": 195,
+      "Ln": 63,
+      "Lt": 47
+    }
+  ],
+  "unmatched_loci": [
+    0,
+    1
+  ],
+  "results": {
+    "Lc/Lf": {
+      "eligible": 195,
+      "counts": {
+        "Lc": 35,
+        "Lf": 160
+      },
+      "mixed_strata": 15,
+      "ZL_to_GC": {
+        "auc": 0.6410256410256411,
+        "p": 0.1425,
+        "null_mean": 0.4981042349463402,
+        "pairs": 39,
+        "roots": 4,
+        "positive_roots": 1,
+        "root_mean": 0.5916666666666667,
+        "per_root": {
+          "f102": [
+            4,
+            0.5
+          ],
+          "f88": [
+            6,
+            0.5
+          ],
+          "f89": [
+            14,
+            0.5
+          ],
+          "f99": [
+            15,
+            0.8666666666666667
+          ]
+        },
+        "decision": "NOT_MET",
+        "gates": {
+          "support": true,
+          "auc": false,
+          "root_consistency": false,
+          "permutation": false
+        }
+      },
+      "GC_to_ZL": {
+        "auc": 0.6410256410256411,
+        "p": 0.13,
+        "null_mean": 0.501445922498554,
+        "pairs": 39,
+        "roots": 4,
+        "positive_roots": 2,
+        "root_mean": 0.655952380952381,
+        "per_root": {
+          "f102": [
+            4,
+            1
+          ],
+          "f88": [
+            6,
+            0.3333333333333333
+          ],
+          "f89": [
+            14,
+            0.35714285714285715
+          ],
+          "f99": [
+            15,
+            0.9333333333333333
+          ]
+        },
+        "decision": "NOT_MET",
+        "gates": {
+          "support": true,
+          "auc": false,
+          "root_consistency": false,
+          "permutation": false
+        }
+      },
+      "decision": "NOT_MET"
+    },
+    "Ln/Lt": {
+      "eligible": 93,
+      "counts": {
+        "Ln": 58,
+        "Lt": 35
+      },
+      "mixed_strata": 11,
+      "ZL_to_GC": {
+        "auc": 0.3333333333333333,
+        "p": 0.9075,
+        "null_mean": 0.4952952556830673,
+        "pairs": 57,
+        "roots": 4,
+        "positive_roots": 1,
+        "root_mean": 0.3282651072124756,
+        "per_root": {
+          "f75": [
+            27,
+            0.14814814814814814
+          ],
+          "f77": [
+            6,
+            0.3333333333333333
+          ],
+          "f82": [
+            19,
+            0.631578947368421
+          ],
+          "f84": [
+            5,
+            0.2
+          ]
+        },
+        "decision": "NOT_MET",
+        "gates": {
+          "support": true,
+          "auc": false,
+          "root_consistency": false,
+          "permutation": false
+        }
+      },
+      "GC_to_ZL": {
+        "auc": 0.2807017543859649,
+        "p": 0.955,
+        "null_mean": 0.4928329595919624,
+        "pairs": 57,
+        "roots": 4,
+        "positive_roots": 0,
+        "root_mean": 0.3256335282651072,
+        "per_root": {
+          "f75": [
+            27,
+            0.14814814814814814
+          ],
+          "f77": [
+            6,
+            0.3333333333333333
+          ],
+          "f82": [
+            19,
+            0.42105263157894735
+          ],
+          "f84": [
+            5,
+            0.4
+          ]
+        },
+        "decision": "NOT_MET",
+        "gates": {
+          "support": true,
+          "auc": false,
+          "root_consistency": false,
+          "permutation": false
+        }
+      },
+      "decision": "NOT_MET"
+    }
+  },
+  "controls": {
+    "hashes": true,
+    "root_excluded": true,
+    "subtype_agreement": true,
+    "synthetic_positive": true,
+    "ties": true,
+    "unique_loci": true,
+    "byte_identical_replay": true
+  }
+}
