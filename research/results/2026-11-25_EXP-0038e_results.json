@@ -1,0 +1,424 @@
+{
+  "experiment": "EXP-0038e",
+  "execution": "JavaScript",
+  "controls": "PASS",
+  "n": 101,
+  "unique": 74,
+  "counts": {
+    "176": {
+      "all": 27,
+      "unique": 17
+    },
+    "177": {
+      "all": 20,
+      "unique": 18
+    },
+    "178": {
+      "all": 16,
+      "unique": 14
+    },
+    "180": {
+      "all": 12,
+      "unique": 5
+    },
+    "182": {
+      "all": 18,
+      "unique": 14
+    },
+    "183": {
+      "all": 8,
+      "unique": 6
+    }
+  },
+  "results": {
+    "all": {
+      "root_only": {
+        "root": {
+          "groups": {
+            "f99": [
+              4,
+              43
+            ],
+            "f100": [
+              16,
+              0
+            ],
+            "f101": [
+              12,
+              0
+            ],
+            "f102": [
+              22,
+              2
+            ]
+          },
+          "mixed_strata": 2,
+          "mixed_class_counts": [
+            26,
+            45
+          ],
+          "assignments": "49228740",
+          "pass": true
+        },
+        "page": {
+          "groups": {
+            "176": [
+              2,
+              25
+            ],
+            "177": [
+              2,
+              18
+            ],
+            "178": [
+              16,
+              0
+            ],
+            "180": [
+              12,
+              0
+            ],
+            "182": [
+              17,
+              1
+            ],
+            "183": [
+              5,
+              1
+            ]
+          },
+          "mixed_strata": 4,
+          "mixed_class_counts": [
+            26,
+            45
+          ],
+          "assignments": "7202520",
+          "pass": true
+        }
+      },
+      "swelling": {
+        "root": {
+          "groups": {
+            "f99": [
+              13,
+              34
+            ],
+            "f100": [
+              11,
+              5
+            ],
+            "f101": [
+              4,
+              8
+            ],
+            "f102": [
+              11,
+              13
+            ]
+          },
+          "mixed_strata": 4,
+          "mixed_class_counts": [
+            39,
+            60
+          ],
+          "assignments": "759241773049134908332800",
+          "pass": true
+        },
+        "page": {
+          "groups": {
+            "176": [
+              9,
+              18
+            ],
+            "177": [
+              4,
+              16
+            ],
+            "178": [
+              11,
+              5
+            ],
+            "180": [
+              4,
+              8
+            ],
+            "182": [
+              11,
+              7
+            ],
+            "183": [
+              0,
+              6
+            ]
+          },
+          "mixed_strata": 5,
+          "mixed_class_counts": [
+            39,
+            54
+          ],
+          "assignments": "1562482326350705760000",
+          "pass": true
+        }
+      },
+      "branching": {
+        "root": {
+          "groups": {
+            "f99": [
+              2,
+              45
+            ],
+            "f100": [
+              2,
+              14
+            ],
+            "f101": [
+              2,
+              10
+            ],
+            "f102": [
+              10,
+              16
+            ]
+          },
+          "mixed_strata": 4,
+          "mixed_class_counts": [
+            16,
+            85
+          ],
+          "assignments": "45476525437200",
+          "pass": true
+        },
+        "page": {
+          "groups": {
+            "176": [
+              2,
+              25
+            ],
+            "177": [
+              0,
+              20
+            ],
+            "178": [
+              2,
+              14
+            ],
+            "180": [
+              2,
+              10
+            ],
+            "182": [
+              10,
+              8
+            ],
+            "183": [
+              0,
+              8
+            ]
+          },
+          "mixed_strata": 4,
+          "mixed_class_counts": [
+            16,
+            57
+          ],
+          "assignments": "121643739360",
+          "pass": true
+        }
+      }
+    },
+    "unique": {
+      "root_only": {
+        "root": {
+          "groups": {
+            "f99": [
+              2,
+              33
+            ],
+            "f100": [
+              14,
+              0
+            ],
+            "f101": [
+              5,
+              0
+            ],
+            "f102": [
+              19,
+              1
+            ]
+          },
+          "mixed_strata": 2,
+          "mixed_class_counts": [
+            21,
+            34
+          ],
+          "assignments": "11900",
+          "pass": true
+        },
+        "page": {
+          "groups": {
+            "176": [
+              1,
+              16
+            ],
+            "177": [
+              1,
+              17
+            ],
+            "178": [
+              14,
+              0
+            ],
+            "180": [
+              5,
+              0
+            ],
+            "182": [
+              14,
+              0
+            ],
+            "183": [
+              5,
+              1
+            ]
+          },
+          "mixed_strata": 3,
+          "mixed_class_counts": [
+            7,
+            34
+          ],
+          "assignments": "1836",
+          "pass": true
+        }
+      },
+      "swelling": {
+        "root": {
+          "groups": {
+            "f99": [
+              10,
+              25
+            ],
+            "f100": [
+              10,
+              4
+            ],
+            "f101": [
+              2,
+              3
+            ],
+            "f102": [
+              10,
+              10
+            ]
+          },
+          "mixed_strata": 4,
+          "mixed_class_counts": [
+            32,
+            42
+          ],
+          "assignments": "339513122822633760",
+          "pass": true
+        },
+        "page": {
+          "groups": {
+            "176": [
+              6,
+              11
+            ],
+            "177": [
+              4,
+              14
+            ],
+            "178": [
+              10,
+              4
+            ],
+            "180": [
+              2,
+              3
+            ],
+            "182": [
+              10,
+              4
+            ],
+            "183": [
+              0,
+              6
+            ]
+          },
+          "mixed_strata": 5,
+          "mixed_class_counts": [
+            32,
+            36
+          ],
+          "assignments": "379463389905600",
+          "pass": true
+        }
+      },
+      "branching": {
+        "root": {
+          "groups": {
+            "f99": [
+              2,
+              33
+            ],
+            "f100": [
+              2,
+              12
+            ],
+            "f101": [
+              2,
+              3
+            ],
+            "f102": [
+              8,
+              12
+            ]
+          },
+          "mixed_strata": 4,
+          "mixed_class_counts": [
+            14,
+            60
+          ],
+          "assignments": "68206456500",
+          "pass": true
+        },
+        "page": {
+          "groups": {
+            "176": [
+              2,
+              15
+            ],
+            "177": [
+              0,
+              18
+            ],
+            "178": [
+              2,
+              12
+            ],
+            "180": [
+              2,
+              3
+            ],
+            "182": [
+              8,
+              6
+            ],
+            "183": [
+              0,
+              6
+            ]
+          },
+          "mixed_strata": 4,
+          "mixed_class_counts": [
+            14,
+            36
+          ],
+          "assignments": "371651280",
+          "pass": true
+        }
+      }
+    }
+  },
+  "semantic_status": "BLOCKED"
+}
