@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-059
+    title: 'EXP-0038 editorial label proxy NOT_MET; independent image adjudication needed'
+    status: ACTIVE
+    next: 'EXP-0038a prepare blinded image-only region/referent inventory, uncertainty and competing referents before EXP-0039. No retuning the editorial proxy test. See research/experiments/2026-11-24_EXP-0038_report.md.'
   - id: RM-058
     title: 'EXP-0037l-t higher-level statistical cluster completed; semantic anchors next on owner review'
     status: WATCHING
