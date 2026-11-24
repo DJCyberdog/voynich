@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-049
+    title: 'EXP-0033 composition PASS; Currier A/B transfer next'
+    status: ACTIVE
+    next: 'EXP-0034 proposed: freeze grammar architecture and fit by provenance-checked Currier domain; compare matched within-domain and cross-domain OOV transfer controlling length, training size and section/hand confounds. See research/experiments/2026-11-24_EXP-0033_report.md.'
   - id: RM-048
     title: 'EXP-0032c learning curve NOT_MET late-growth gate; productive composition next'
     status: ACTIVE
