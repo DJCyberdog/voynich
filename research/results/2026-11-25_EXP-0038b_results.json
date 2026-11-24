@@ -1,0 +1,102 @@
+{
+  "experiment": "EXP-0038b",
+  "execution": "JavaScript connector runtime; equivalent Python script supplied but not executed",
+  "controls": "PASS",
+  "semantic_status": "BLOCKED",
+  "all": {
+    "n": 13,
+    "root": {
+      "groups": {
+        "f88": {
+          "pedestal": 3
+        },
+        "f99": {
+          "broad_body": 8
+        },
+        "f100": {
+          "broad_body": 2
+        }
+      },
+      "mixed": 0,
+      "assignments": 1
+    },
+    "page": {
+      "groups": {
+        "162": {
+          "pedestal": 3
+        },
+        "176": {
+          "broad_body": 4
+        },
+        "177": {
+          "broad_body": 4
+        },
+        "178": {
+          "broad_body": 2
+        }
+      },
+      "mixed": 0,
+      "assignments": 1
+    }
+  },
+  "candidate": {
+    "n": 12,
+    "root": {
+      "groups": {
+        "f88": {
+          "pedestal": 3
+        },
+        "f99": {
+          "broad_body": 8
+        },
+        "f100": {
+          "broad_body": 1
+        }
+      },
+      "mixed": 0,
+      "assignments": 1
+    },
+    "page": {
+      "groups": {
+        "162": {
+          "pedestal": 3
+        },
+        "176": {
+          "broad_body": 4
+        },
+        "177": {
+          "broad_body": 4
+        },
+        "178": {
+          "broad_body": 1
+        }
+      },
+      "mixed": 0,
+      "assignments": 1
+    }
+  },
+  "strict": {
+    "n": 8,
+    "root": {
+      "groups": {
+        "f99": {
+          "broad_body": 8
+        }
+      },
+      "mixed": 0,
+      "assignments": 1
+    },
+    "page": {
+      "groups": {
+        "176": {
+          "broad_body": 4
+        },
+        "177": {
+          "broad_body": 4
+        }
+      },
+      "mixed": 0,
+      "assignments": 1
+    }
+  }
+}
