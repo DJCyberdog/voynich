@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-046
+    title: 'EXP-0032 whole-word templates NOT_MET; productive compositional grammar'
+    status: ACTIVE
+    next: 'EXP-0033 proposed: reusable subword composition or finite-state transitions, train-only fit, explicit complexity, OOV evaluation against position-aware bigram and copy baseline. No cap fishing or forced class identity. See research/experiments/2026-11-24_EXP-0032_report.md.'
   - id: RM-045
     title: 'EXP-0031 external context PASS; test compact word formation templates'
     status: ACTIVE
