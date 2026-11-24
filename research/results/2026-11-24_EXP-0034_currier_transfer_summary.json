@@ -1,0 +1,155 @@
+{
+  "experiment": "EXP-0034",
+  "decision": "NOT_MET",
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "full_local_result_sha256": "656c9941faf329c14c6224636a2364489f1f4a2a79a9d02e67f269056ebb6be1",
+  "full_local_result_git_blob": "88317570fed2bbc7a0d14b84f0b887743b2c7594",
+  "accepted_tokens": 24351,
+  "headers": 226,
+  "unknown_tokens": 239,
+  "controls": {
+    "normalization_error": 8.881784197001252e-16,
+    "synthetic_gain": 7.2235178519354974,
+    "zero_weight": true,
+    "byte_identical_replay": true
+  },
+  "primary": {
+    "matched_tokens": 6015,
+    "A": {
+      "train": 6115,
+      "test": 1580,
+      "oov": 307,
+      "roots": 13,
+      "train_hands": {
+        "1": 5593,
+        "3": 522
+      },
+      "test_hands": {
+        "1": 1580
+      },
+      "nll": {
+        "cross_G": 12.43597839080338,
+        "cross_S": 13.40402594308586,
+        "own_G": 10.853792216742413,
+        "own_S": 11.167607299729552
+      },
+      "cross_gain": 0.9680475522824814,
+      "own_gain": 0.3138150829871389,
+      "penalty": 1.5821861740609666,
+      "bootstrap": [
+        0.7874589320540228,
+        1.183745024943541
+      ],
+      "p": 0.001,
+      "exceedances": 0,
+      "positive_roots": 13
+    },
+    "B": {
+      "train": 13291,
+      "test": 3126,
+      "oov": 684,
+      "roots": 8,
+      "train_hands": {
+        "2": 6680,
+        "3": 6035,
+        "5": 576
+      },
+      "test_hands": {
+        "2": 549,
+        "3": 2168,
+        "5": 61,
+        "@": 348
+      },
+      "nll": {
+        "cross_G": 12.365223129911135,
+        "cross_S": 12.740409421482115,
+        "own_G": 11.661024994798462,
+        "own_S": 12.235557893463367
+      },
+      "cross_gain": 0.37518629157098005,
+      "own_gain": 0.5745328986649056,
+      "penalty": 0.7041981351126729,
+      "bootstrap": [
+        0.24070440114178696,
+        0.5765039824849798
+      ],
+      "p": 0.009,
+      "exceedances": 8,
+      "positive_roots": 8
+    }
+  },
+  "herbal": {
+    "matched_tokens": 1791,
+    "A": {
+      "train": 4073,
+      "test": 1314,
+      "oov": 329,
+      "roots": 12,
+      "train_hands": {
+        "1": 4073
+      },
+      "test_hands": {
+        "1": 1314
+      },
+      "nll": {
+        "cross_G": 11.72366800462587,
+        "cross_S": 12.385165177085852,
+        "own_G": 10.485014280361959,
+        "own_S": 10.742304912469567
+      },
+      "cross_gain": 0.661497172459983,
+      "own_gain": 0.2572906321076083,
+      "penalty": 1.2386537242639104,
+      "bootstrap": [
+        0.4770313152484139,
+        0.8921074797449733
+      ],
+      "positive_roots": 12
+    },
+    "B": {
+      "train": 1791,
+      "test": 610,
+      "oov": 165,
+      "roots": 4,
+      "train_hands": {
+        "2": 1038,
+        "3": 398,
+        "5": 355
+      },
+      "test_hands": {
+        "2": 549,
+        "5": 61
+      },
+      "nll": {
+        "cross_G": 11.650596920708873,
+        "cross_S": 12.205576690881033,
+        "own_G": 10.552953751772161,
+        "own_S": 11.03052570676031
+      },
+      "cross_gain": 0.5549797701721602,
+      "own_gain": 0.4775719549881483,
+      "penalty": 1.0976431689367114,
+      "bootstrap": [
+        0.30738041329876564,
+        0.8320781827956265
+      ],
+      "positive_roots": 4
+    }
+  },
+  "gates": {
+    "A": {
+      "support": true,
+      "gain": true,
+      "bootstrap": true,
+      "p": true,
+      "penalty": false
+    },
+    "B": {
+      "support": true,
+      "gain": true,
+      "bootstrap": true,
+      "p": true,
+      "penalty": false
+    }
+  }
+}
