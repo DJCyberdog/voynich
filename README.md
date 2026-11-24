@@ -1,5 +1,9 @@
 # PROJECT VOYNICH
 
+## EXP-0037 — structural role and recombination (2026-11-24, proposed)
+
+EXP-0037 RESEARCH_COMPLETED / NOT_MET (8/9 gates): 102 shared native STA1 chunks, raw overlapping occurrences excluding whole-word matches. 58 TRAIN candidates, 52 heldout positional validations (7 prefix/42 suffix/3 internal), 44 recombine with novel residual contexts on both readings (6/35/3). Cross-role gain beyond length and endpoint baseline GC→ZL +.025623, ZL→GC +.016352 misses .020; p=.001 both, 20/21 roots positive each. Class-OOV gain +.013948/+.002109. Strong endpoint graphotactic explanation, no morpheme or semantic identification. Two actual byte-identical runs, controls pass. Next EXP-0038 blinded label anchors; no repeat tuning. [Report](research/experiments/2026-11-24_EXP-0037_report.md) · [Code](research/scripts/exp0037_roles.py) · [Summary](research/results/2026-11-24_EXP-0037_summary.json). No new external closure or decipherment gate; main unchanged.
+
 ## EXP-0036a — native STA1 completion (2026-11-24, proposed)
 
 EXP-0036a RESEARCH_COMPLETED / native STA1 PASS (12/12), acquisition blocker resolved by owner uploads. 28464 ZL and 30691 GC certain P0 tokens, 253 codes, 248 fixed classes. OOV gains ZL +.829385, GC +.774442, direct ZL→GC +7.296881 vs weak cross baseline; all 21 roots positive each, p=.001. Transfer penalty +3.252832; shared-training-code cohort 839 OOV gain +2.114142, penalty +.950506; remaining 462 gain +16.708826. 102/128 learned chunks overlap. Two byte-identical Python runs. Transductive alphabet prescan only, no test fitting; same exposed roots, no glyph or semantic claim. Next EXP-0037. [Report](research/experiments/2026-11-24_EXP-0036a_native_report.md) · [Code](research/scripts/exp0036a_native.py) · [Summary](research/results/2026-11-24_EXP-0036a_native_summary.json). Previous core-only result below is historical and superseded for completion status. No external A/W closure, no merge.
