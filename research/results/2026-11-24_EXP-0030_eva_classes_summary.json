@@ -1,0 +1,1338 @@
+{
+  "bootstrap_delta": [
+    0.08873413949831219,
+    0.11514369620949386
+  ],
+  "control_pools": [
+    [
+      {
+        "log_count_distance": 0.014560759974241222,
+        "pair": [
+          "k",
+          "sh"
+        ],
+        "test_cosine": 0.13743206479581183,
+        "test_counts": [
+          1227,
+          532
+        ],
+        "test_frames": [
+          550,
+          285
+        ],
+        "test_intersection": 31,
+        "test_jaccard": 0.03855721393034826,
+        "train_cosine": 0.11036466733245667,
+        "train_counts": [
+          6477,
+          2942
+        ]
+      },
+      {
+        "log_count_distance": 0.05424610254725071,
+        "pair": [
+          "ch",
+          "r"
+        ],
+        "test_cosine": 0.02334891735491967,
+        "test_counts": [
+          1906,
+          908
+        ],
+        "test_frames": [
+          879,
+          506
+        ],
+        "test_intersection": 10,
+        "test_jaccard": 0.007272727272727273,
+        "train_cosine": 0.012532307132773757,
+        "train_counts": [
+          6572,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.056166318844965306,
+        "pair": [
+          "k",
+          "r"
+        ],
+        "test_cosine": 0.08101965606848331,
+        "test_counts": [
+          1227,
+          908
+        ],
+        "test_frames": [
+          550,
+          506
+        ],
+        "test_intersection": 25,
+        "test_jaccard": 0.02424830261881668,
+        "train_cosine": 0.06118339538372547,
+        "train_counts": [
+          6477,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.07063485805102054,
+        "pair": [
+          "i",
+          "sh"
+        ],
+        "test_cosine": 0.00001906773296165861,
+        "test_counts": [
+          2146,
+          532
+        ],
+        "test_frames": [
+          700,
+          285
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.000013624239806043868,
+        "train_counts": [
+          7053,
+          2942
+        ]
+      },
+      {
+        "log_count_distance": 0.08906134298030016,
+        "pair": [
+          "i",
+          "r"
+        ],
+        "test_cosine": 0.002030099082558007,
+        "test_counts": [
+          2146,
+          908
+        ],
+        "test_frames": [
+          700,
+          506
+        ],
+        "test_intersection": 2,
+        "test_jaccard": 0.0016611295681063123,
+        "train_cosine": 0.003620087483005942,
+        "train_counts": [
+          7053,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.09091266257553787,
+        "pair": [
+          "ch",
+          "t"
+        ],
+        "test_cosine": 0.11008662502868542,
+        "test_counts": [
+          1906,
+          908
+        ],
+        "test_frames": [
+          879,
+          397
+        ],
+        "test_intersection": 39,
+        "test_jaccard": 0.03152789005658852,
+        "train_cosine": 0.15736758688207847,
+        "train_counts": [
+          6572,
+          3222
+        ]
+      },
+      {
+        "log_count_distance": 0.10025009684722441,
+        "pair": [
+          "d",
+          "sh"
+        ],
+        "test_cosine": 0.051727706640321246,
+        "test_counts": [
+          2034,
+          532
+        ],
+        "test_frames": [
+          953,
+          285
+        ],
+        "test_intersection": 17,
+        "test_jaccard": 0.013923013923013924,
+        "train_cosine": 0.04358767928610144,
+        "train_counts": [
+          7265,
+          2942
+        ]
+      },
+      {
+        "log_count_distance": 0.11398561996780433,
+        "pair": [
+          "d",
+          "r"
+        ],
+        "test_cosine": 0.09627504444408166,
+        "test_counts": [
+          2034,
+          908
+        ],
+        "test_frames": [
+          953,
+          506
+        ],
+        "test_intersection": 42,
+        "test_jaccard": 0.029640084685956247,
+        "train_cosine": 0.05211004768994394,
+        "train_counts": [
+          7265,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.11512773509655015,
+        "pair": [
+          "i",
+          "t"
+        ],
+        "test_cosine": 0.000018954716498272143,
+        "test_counts": [
+          2146,
+          908
+        ],
+        "test_frames": [
+          700,
+          397
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.0004110566120260061,
+        "train_counts": [
+          7053,
+          3222
+        ]
+      },
+      {
+        "log_count_distance": 0.1252615950191185,
+        "pair": [
+          "a",
+          "sh"
+        ],
+        "test_cosine": 0.0006390085148254602,
+        "test_counts": [
+          1890,
+          532
+        ],
+        "test_frames": [
+          837,
+          285
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.0008920606601248885,
+        "train_cosine": 0.0003211028161101194,
+        "train_counts": [
+          7449,
+          2942
+        ]
+      }
+    ],
+    [
+      {
+        "log_count_distance": 0.014560759974241222,
+        "pair": [
+          "ch",
+          "t"
+        ],
+        "test_cosine": 0.11008662502868542,
+        "test_counts": [
+          1906,
+          908
+        ],
+        "test_frames": [
+          879,
+          397
+        ],
+        "test_intersection": 39,
+        "test_jaccard": 0.03152789005658852,
+        "train_cosine": 0.15736758688207847,
+        "train_counts": [
+          6572,
+          3222
+        ]
+      },
+      {
+        "log_count_distance": 0.036666560028287165,
+        "pair": [
+          "k",
+          "r"
+        ],
+        "test_cosine": 0.08101965606848331,
+        "test_counts": [
+          1227,
+          908
+        ],
+        "test_frames": [
+          550,
+          506
+        ],
+        "test_intersection": 25,
+        "test_jaccard": 0.02424830261881668,
+        "train_cosine": 0.06118339538372547,
+        "train_counts": [
+          6477,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.039451899261448126,
+        "pair": [
+          "ch",
+          "r"
+        ],
+        "test_cosine": 0.02334891735491967,
+        "test_counts": [
+          1906,
+          908
+        ],
+        "test_frames": [
+          879,
+          506
+        ],
+        "test_intersection": 10,
+        "test_jaccard": 0.007272727272727273,
+        "train_cosine": 0.012532307132773757,
+        "train_counts": [
+          6572,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.08519561802526177,
+        "pair": [
+          "i",
+          "t"
+        ],
+        "test_cosine": 0.000018954716498272143,
+        "test_counts": [
+          2146,
+          908
+        ],
+        "test_frames": [
+          700,
+          397
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.0004110566120260061,
+        "train_counts": [
+          7053,
+          3222
+        ]
+      },
+      {
+        "log_count_distance": 0.09091266257553787,
+        "pair": [
+          "k",
+          "sh"
+        ],
+        "test_cosine": 0.13743206479581183,
+        "test_counts": [
+          1227,
+          532
+        ],
+        "test_frames": [
+          550,
+          285
+        ],
+        "test_intersection": 31,
+        "test_jaccard": 0.03855721393034826,
+        "train_cosine": 0.11036466733245667,
+        "train_counts": [
+          6477,
+          2942
+        ]
+      },
+      {
+        "log_count_distance": 0.09275090271805603,
+        "pair": [
+          "i",
+          "r"
+        ],
+        "test_cosine": 0.002030099082558007,
+        "test_counts": [
+          2146,
+          908
+        ],
+        "test_frames": [
+          700,
+          506
+        ],
+        "test_intersection": 2,
+        "test_jaccard": 0.0016611295681063123,
+        "train_cosine": 0.003620087483005942,
+        "train_counts": [
+          7053,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.11481085682146563,
+        "pair": [
+          "d",
+          "t"
+        ],
+        "test_cosine": 0.2761033457294909,
+        "test_counts": [
+          2034,
+          908
+        ],
+        "test_frames": [
+          953,
+          397
+        ],
+        "test_intersection": 64,
+        "test_jaccard": 0.049766718506998445,
+        "train_cosine": 0.17894301523195713,
+        "train_counts": [
+          7265,
+          3222
+        ]
+      },
+      {
+        "log_count_distance": 0.12052372989742338,
+        "pair": [
+          "d",
+          "r"
+        ],
+        "test_cosine": 0.09627504444408166,
+        "test_counts": [
+          2034,
+          908
+        ],
+        "test_frames": [
+          953,
+          506
+        ],
+        "test_intersection": 42,
+        "test_jaccard": 0.029640084685956247,
+        "train_cosine": 0.05211004768994394,
+        "train_counts": [
+          7265,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.12459295946111848,
+        "pair": [
+          "i",
+          "sh"
+        ],
+        "test_cosine": 0.00001906773296165861,
+        "test_counts": [
+          2146,
+          532
+        ],
+        "test_frames": [
+          700,
+          285
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.000013624239806043868,
+        "train_counts": [
+          7053,
+          2942
+        ]
+      },
+      {
+        "log_count_distance": 0.1398223549933597,
+        "pair": [
+          "a",
+          "t"
+        ],
+        "test_cosine": 0.00006559941934530823,
+        "test_counts": [
+          1890,
+          908
+        ],
+        "test_frames": [
+          837,
+          397
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.0002859929492988078,
+        "train_counts": [
+          7449,
+          3222
+        ]
+      }
+    ],
+    [
+      {
+        "log_count_distance": 0.1921071072166738,
+        "pair": [
+          "ckh",
+          "f"
+        ],
+        "test_cosine": 0.09880062600274954,
+        "test_counts": [
+          118,
+          53
+        ],
+        "test_frames": [
+          59,
+          50
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.009259259259259259,
+        "train_cosine": 0.1257930600650723,
+        "train_counts": [
+          661,
+          218
+        ]
+      },
+      {
+        "log_count_distance": 0.1934948573920794,
+        "pair": [
+          "f",
+          "s"
+        ],
+        "test_cosine": 0.23220595984904363,
+        "test_counts": [
+          53,
+          265
+        ],
+        "test_frames": [
+          50,
+          193
+        ],
+        "test_intersection": 4,
+        "test_jaccard": 0.016736401673640166,
+        "train_cosine": 0.2626179086687678,
+        "train_counts": [
+          218,
+          972
+        ]
+      },
+      {
+        "log_count_distance": 0.2872660125331521,
+        "pair": [
+          "cth",
+          "f"
+        ],
+        "test_cosine": 0.12885196620673922,
+        "test_counts": [
+          167,
+          53
+        ],
+        "test_frames": [
+          67,
+          50
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.008620689655172414,
+        "train_cosine": 0.1959024715836011,
+        "train_counts": [
+          601,
+          218
+        ]
+      },
+      {
+        "log_count_distance": 0.4866552628381777,
+        "pair": [
+          "cph",
+          "p"
+        ],
+        "test_cosine": 0.15433346478851054,
+        "test_counts": [
+          40,
+          273
+        ],
+        "test_frames": [
+          33,
+          204
+        ],
+        "test_intersection": 3,
+        "test_jaccard": 0.01282051282051282,
+        "train_cosine": 0.2691799971007895,
+        "train_counts": [
+          134,
+          801
+        ]
+      },
+      {
+        "log_count_distance": 0.523200234605504,
+        "pair": [
+          "ckh",
+          "cph"
+        ],
+        "test_cosine": 0.761773265127286,
+        "test_counts": [
+          118,
+          40
+        ],
+        "test_frames": [
+          59,
+          33
+        ],
+        "test_intersection": 12,
+        "test_jaccard": 0.15,
+        "train_cosine": 0.5621428409691467,
+        "train_counts": [
+          661,
+          134
+        ]
+      },
+      {
+        "log_count_distance": 0.5237113753636414,
+        "pair": [
+          "cph",
+          "s"
+        ],
+        "test_cosine": 0.22788817651648588,
+        "test_counts": [
+          40,
+          265
+        ],
+        "test_frames": [
+          33,
+          193
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.0044444444444444444,
+        "train_cosine": 0.41160116690368825,
+        "train_counts": [
+          134,
+          972
+        ]
+      },
+      {
+        "log_count_distance": 0.5524629040717111,
+        "pair": [
+          "f",
+          "m"
+        ],
+        "test_cosine": 0.018213367164805774,
+        "test_counts": [
+          53,
+          107
+        ],
+        "test_frames": [
+          50,
+          78
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.007874015748031496,
+        "train_cosine": 0.017481551442852506,
+        "train_counts": [
+          218,
+          461
+        ]
+      },
+      {
+        "log_count_distance": 0.736239502623599,
+        "pair": [
+          "cph",
+          "m"
+        ],
+        "test_cosine": 0,
+        "test_counts": [
+          40,
+          107
+        ],
+        "test_frames": [
+          33,
+          78
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.00042592212357652794,
+        "train_counts": [
+          134,
+          461
+        ]
+      },
+      {
+        "log_count_distance": 0.7489029802075597,
+        "pair": [
+          "m",
+          "p"
+        ],
+        "test_cosine": 0.0015778857513100816,
+        "test_counts": [
+          107,
+          273
+        ],
+        "test_frames": [
+          78,
+          204
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.008793724428551336,
+        "train_counts": [
+          461,
+          801
+        ]
+      },
+      {
+        "log_count_distance": 0.7731499300956596,
+        "pair": [
+          "ckh",
+          "m"
+        ],
+        "test_cosine": 0,
+        "test_counts": [
+          118,
+          107
+        ],
+        "test_frames": [
+          59,
+          78
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.0006056599091683238,
+        "train_counts": [
+          661,
+          461
+        ]
+      }
+    ],
+    [
+      {
+        "log_count_distance": 0.036666560028287165,
+        "pair": [
+          "l",
+          "t"
+        ],
+        "test_cosine": 0.12850962254508405,
+        "test_counts": [
+          1062,
+          908
+        ],
+        "test_frames": [
+          631,
+          397
+        ],
+        "test_intersection": 46,
+        "test_jaccard": 0.04684317718940937,
+        "train_cosine": 0.11592363831439162,
+        "train_counts": [
+          5300,
+          3222
+        ]
+      },
+      {
+        "log_count_distance": 0.05424610254725071,
+        "pair": [
+          "l",
+          "sh"
+        ],
+        "test_cosine": 0.020049401428735635,
+        "test_counts": [
+          1062,
+          532
+        ],
+        "test_frames": [
+          631,
+          285
+        ],
+        "test_intersection": 13,
+        "test_jaccard": 0.014396456256921373,
+        "train_cosine": 0.01623850439965814,
+        "train_counts": [
+          5300,
+          2942
+        ]
+      },
+      {
+        "log_count_distance": 0.20055061964270493,
+        "pair": [
+          "k",
+          "r"
+        ],
+        "test_cosine": 0.08101965606848331,
+        "test_counts": [
+          1227,
+          908
+        ],
+        "test_frames": [
+          550,
+          506
+        ],
+        "test_intersection": 25,
+        "test_jaccard": 0.02424830261881668,
+        "train_cosine": 0.06118339538372547,
+        "train_counts": [
+          6477,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.2077575285775217,
+        "pair": [
+          "k",
+          "sh"
+        ],
+        "test_cosine": 0.13743206479581183,
+        "test_counts": [
+          1227,
+          532
+        ],
+        "test_frames": [
+          550,
+          285
+        ],
+        "test_intersection": 31,
+        "test_jaccard": 0.03855721393034826,
+        "train_cosine": 0.11036466733245667,
+        "train_counts": [
+          6477,
+          2942
+        ]
+      },
+      {
+        "log_count_distance": 0.21511137961694615,
+        "pair": [
+          "ch",
+          "r"
+        ],
+        "test_cosine": 0.02334891735491967,
+        "test_counts": [
+          1906,
+          908
+        ],
+        "test_frames": [
+          879,
+          506
+        ],
+        "test_intersection": 10,
+        "test_jaccard": 0.007272727272727273,
+        "train_cosine": 0.012532307132773757,
+        "train_counts": [
+          6572,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.21821398274403478,
+        "pair": [
+          "ch",
+          "t"
+        ],
+        "test_cosine": 0.11008662502868542,
+        "test_counts": [
+          1906,
+          908
+        ],
+        "test_frames": [
+          879,
+          397
+        ],
+        "test_intersection": 39,
+        "test_jaccard": 0.03152789005658852,
+        "train_cosine": 0.15736758688207847,
+        "train_counts": [
+          6572,
+          3222
+        ]
+      },
+      {
+        "log_count_distance": 0.22146796930202406,
+        "pair": [
+          "l",
+          "q"
+        ],
+        "test_cosine": 0.022106342899024356,
+        "test_counts": [
+          1062,
+          785
+        ],
+        "test_frames": [
+          631,
+          261
+        ],
+        "test_intersection": 4,
+        "test_jaccard": 0.0045045045045045045,
+        "train_cosine": 0.030442841639695892,
+        "train_counts": [
+          5300,
+          3876
+        ]
+      },
+      {
+        "log_count_distance": 0.22943409134643744,
+        "pair": [
+          "l",
+          "n"
+        ],
+        "test_cosine": 0.014350203127472583,
+        "test_counts": [
+          1062,
+          1036
+        ],
+        "test_frames": [
+          631,
+          295
+        ],
+        "test_intersection": 4,
+        "test_jaccard": 0.004338394793926247,
+        "train_cosine": 0.014695275280257278,
+        "train_counts": [
+          5300,
+          3907
+        ]
+      },
+      {
+        "log_count_distance": 0.2857462376679667,
+        "pair": [
+          "i",
+          "r"
+        ],
+        "test_cosine": 0.002030099082558007,
+        "test_counts": [
+          2146,
+          908
+        ],
+        "test_frames": [
+          700,
+          506
+        ],
+        "test_intersection": 2,
+        "test_jaccard": 0.0016611295681063123,
+        "train_cosine": 0.003620087483005942,
+        "train_counts": [
+          7053,
+          3106
+        ]
+      },
+      {
+        "log_count_distance": 0.28808913371681705,
+        "pair": [
+          "i",
+          "t"
+        ],
+        "test_cosine": 0.000018954716498272143,
+        "test_counts": [
+          2146,
+          908
+        ],
+        "test_frames": [
+          700,
+          397
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.0004110566120260061,
+        "train_counts": [
+          7053,
+          3222
+        ]
+      }
+    ],
+    [
+      {
+        "log_count_distance": 0.0951589053164783,
+        "pair": [
+          "ckh",
+          "cph"
+        ],
+        "test_cosine": 0.761773265127286,
+        "test_counts": [
+          118,
+          40
+        ],
+        "test_frames": [
+          59,
+          33
+        ],
+        "test_intersection": 12,
+        "test_jaccard": 0.15,
+        "train_cosine": 0.5621428409691467,
+        "train_counts": [
+          661,
+          134
+        ]
+      },
+      {
+        "log_count_distance": 0.26519689153855897,
+        "pair": [
+          "cph",
+          "m"
+        ],
+        "test_cosine": 0,
+        "test_counts": [
+          40,
+          107
+        ],
+        "test_frames": [
+          33,
+          78
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.00042592212357652794,
+        "train_counts": [
+          134,
+          461
+        ]
+      },
+      {
+        "log_count_distance": 0.2872660125331521,
+        "pair": [
+          "cph",
+          "p"
+        ],
+        "test_cosine": 0.15433346478851054,
+        "test_counts": [
+          40,
+          273
+        ],
+        "test_frames": [
+          33,
+          204
+        ],
+        "test_intersection": 3,
+        "test_jaccard": 0.01282051282051282,
+        "train_cosine": 0.2691799971007895,
+        "train_counts": [
+          134,
+          801
+        ]
+      },
+      {
+        "log_count_distance": 0.4807608699252315,
+        "pair": [
+          "cph",
+          "s"
+        ],
+        "test_cosine": 0.22788817651648588,
+        "test_counts": [
+          40,
+          265
+        ],
+        "test_frames": [
+          33,
+          193
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.0044444444444444444,
+        "train_cosine": 0.41160116690368825,
+        "train_counts": [
+          134,
+          972
+        ]
+      },
+      {
+        "log_count_distance": 0.4866552628381777,
+        "pair": [
+          "cth",
+          "f"
+        ],
+        "test_cosine": 0.12885196620673922,
+        "test_counts": [
+          167,
+          53
+        ],
+        "test_frames": [
+          67,
+          50
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.008620689655172414,
+        "train_cosine": 0.1959024715836011,
+        "train_counts": [
+          601,
+          218
+        ]
+      },
+      {
+        "log_count_distance": 0.4958715177433831,
+        "pair": [
+          "ckh",
+          "f"
+        ],
+        "test_cosine": 0.09880062600274954,
+        "test_counts": [
+          118,
+          53
+        ],
+        "test_frames": [
+          59,
+          50
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.009259259259259259,
+        "train_cosine": 0.1257930600650723,
+        "train_counts": [
+          661,
+          218
+        ]
+      },
+      {
+        "log_count_distance": 0.554222641300236,
+        "pair": [
+          "f",
+          "m"
+        ],
+        "test_cosine": 0.018213367164805774,
+        "test_counts": [
+          53,
+          107
+        ],
+        "test_frames": [
+          50,
+          78
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.007874015748031496,
+        "train_cosine": 0.017481551442852506,
+        "train_counts": [
+          218,
+          461
+        ]
+      },
+      {
+        "log_count_distance": 0.6840792051358974,
+        "pair": [
+          "f",
+          "s"
+        ],
+        "test_cosine": 0.23220595984904363,
+        "test_counts": [
+          53,
+          265
+        ],
+        "test_frames": [
+          50,
+          193
+        ],
+        "test_intersection": 4,
+        "test_jaccard": 0.016736401673640166,
+        "train_cosine": 0.2626179086687678,
+        "train_counts": [
+          218,
+          972
+        ]
+      },
+      {
+        "log_count_distance": 1.0140998717461187,
+        "pair": [
+          "cph",
+          "f"
+        ],
+        "test_cosine": 0.1185242068781693,
+        "test_counts": [
+          40,
+          53
+        ],
+        "test_frames": [
+          33,
+          50
+        ],
+        "test_intersection": 1,
+        "test_jaccard": 0.012195121951219513,
+        "train_cosine": 0.17281215482732792,
+        "train_counts": [
+          134,
+          218
+        ]
+      },
+      {
+        "log_count_distance": 1.2355582430457375,
+        "pair": [
+          "cth",
+          "m"
+        ],
+        "test_cosine": 0,
+        "test_counts": [
+          167,
+          107
+        ],
+        "test_frames": [
+          67,
+          78
+        ],
+        "test_intersection": 0,
+        "test_jaccard": 0,
+        "train_cosine": 0.0004136100359253041,
+        "train_counts": [
+          601,
+          461
+        ]
+      }
+    ]
+  ],
+  "decision": "PASS",
+  "delta_jaccard": 0.11140187576119528,
+  "eligible_pairs": 210,
+  "eligible_units": [
+    "a",
+    "ch",
+    "ckh",
+    "cph",
+    "cth",
+    "d",
+    "e",
+    "f",
+    "i",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "sh",
+    "t",
+    "y"
+  ],
+  "experiment": "EXP-0030",
+  "gates": {
+    "cosine_ge_0p70": true,
+    "delta_ge_0p02": true,
+    "p_le_0p05": true,
+    "support": true
+  },
+  "learned": [
+    {
+      "pair": [
+        "ch",
+        "sh"
+      ],
+      "test_cosine": 0.9593919865429551,
+      "test_counts": [
+        1906,
+        532
+      ],
+      "test_frames": [
+        879,
+        285
+      ],
+      "test_intersection": 136,
+      "test_jaccard": 0.13229571984435798,
+      "train_cosine": 0.9664375684967011,
+      "train_counts": [
+        6572,
+        2942
+      ]
+    },
+    {
+      "pair": [
+        "k",
+        "t"
+      ],
+      "test_cosine": 0.958772894747128,
+      "test_counts": [
+        1227,
+        908
+      ],
+      "test_frames": [
+        550,
+        397
+      ],
+      "test_intersection": 152,
+      "test_jaccard": 0.19119496855345913,
+      "train_cosine": 0.9635763132721445,
+      "train_counts": [
+        6477,
+        3222
+      ]
+    },
+    {
+      "pair": [
+        "f",
+        "p"
+      ],
+      "test_cosine": 0.9146125754409039,
+      "test_counts": [
+        53,
+        273
+      ],
+      "test_frames": [
+        50,
+        204
+      ],
+      "test_intersection": 13,
+      "test_jaccard": 0.05394190871369295,
+      "train_cosine": 0.9396051097396615,
+      "train_counts": [
+        218,
+        801
+      ]
+    },
+    {
+      "pair": [
+        "l",
+        "r"
+      ],
+      "test_cosine": 0.8372997130112527,
+      "test_counts": [
+        1062,
+        908
+      ],
+      "test_frames": [
+        631,
+        506
+      ],
+      "test_intersection": 113,
+      "test_jaccard": 0.1103515625,
+      "train_cosine": 0.9016910285933967,
+      "train_counts": [
+        5300,
+        3106
+      ]
+    },
+    {
+      "pair": [
+        "cph",
+        "cth"
+      ],
+      "test_cosine": 0.8760040284674359,
+      "test_counts": [
+        40,
+        167
+      ],
+      "test_frames": [
+        33,
+        67
+      ],
+      "test_intersection": 14,
+      "test_jaccard": 0.16279069767441862,
+      "train_cosine": 0.9004504127784375,
+      "train_counts": [
+        134,
+        601
+      ]
+    }
+  ],
+  "null_exceedances": 0,
+  "null_max_jaccard": 0.07766478648746934,
+  "null_mean_cosine": 0.1029807060614598,
+  "null_mean_jaccard": 0.018713095695990445,
+  "observed_cosine": 0.9092162396419351,
+  "observed_jaccard": 0.13011497145718573,
+  "p_empirical": 0.001,
+  "parser": {
+    "accepted_tokens": 24351,
+    "candidate_segments": 31588,
+    "p0_loci": 3885,
+    "rejected_segments": 7237
+  },
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "synthetic_controls": {
+    "ab_cosine": 1,
+    "ab_jaccard": 1,
+    "cd_jaccard": 0,
+    "ef_cosine": 0,
+    "ef_jaccard": 0
+  },
+  "test_roots": 21,
+  "test_words": 4706,
+  "train_roots": 77,
+  "train_words": 19645
+}
