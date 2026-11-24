@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-055
+    title: 'EXP-0037a-f cluster complete, 4/6 PASS; original NOT_MET retained'
+    status: WATCHING
+    next: 'Owner review before EXP-0038; assess core-frame association against graphotactic controls and resolve limited support only for a new discriminating question. No threshold fishing. See research/experiments/2026-11-24_EXP-0037_cluster_report.md.'
   - id: RM-054
     title: 'EXP-0037 stable positional roles; joint threshold NOT_MET; label anchors next'
     status: ACTIVE
