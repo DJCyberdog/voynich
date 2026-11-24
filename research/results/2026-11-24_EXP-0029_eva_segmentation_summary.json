@@ -1,0 +1,119 @@
+{
+  "aligned_oov": 844,
+  "common_oov": 982,
+  "decision": "PASS",
+  "experiment": "EXP-0029",
+  "parser_counts": {
+    "accepted_tokens": 24351,
+    "candidate_segments": 31588,
+    "p0_loci": 3885,
+    "rejected_segments": 7237
+  },
+  "schemes": {
+    "ASCII": {
+      "aligned": {
+        "bridge_top1": 0.5770142180094787,
+        "gain": 0.5511405138780624,
+        "left_top1": 0.38744075829383884,
+        "n": 844,
+        "roots": 21
+      },
+      "alphabet_size": 26,
+      "controls": {
+        "negative": -0.0026610919492145364,
+        "passed": true,
+        "positive": 1.0396308457187409
+      },
+      "primary": {
+        "bootstrap": [
+          0.5680164147583342,
+          0.6857043387213678
+        ],
+        "bridge_top1": 0.6323828920570265,
+        "eligible": true,
+        "gain": 0.6213413446420114,
+        "left_top1": 0.4460285132382892,
+        "movable_fraction": 0.730142566191446,
+        "n": 982,
+        "null_max": -0.1005820811495887,
+        "null_mean": -0.234196789715687,
+        "p": 0.005,
+        "passed": true,
+        "roots": 21
+      },
+      "train_positions": 71485
+    },
+    "BENCH": {
+      "aligned": {
+        "bridge_top1": 0.5639810426540285,
+        "gain": 0.49120206467103494,
+        "left_top1": 0.39454976303317535,
+        "n": 844,
+        "roots": 21
+      },
+      "alphabet_size": 28,
+      "controls": {
+        "negative": -0.0026607892475734272,
+        "passed": true,
+        "positive": 1.0396311172799575
+      },
+      "primary": {
+        "bootstrap": [
+          0.4320506346065683,
+          0.5458852398564648
+        ],
+        "bridge_top1": 0.5142566191446029,
+        "eligible": true,
+        "gain": 0.48941066096983793,
+        "left_top1": 0.3564154786150713,
+        "movable_fraction": 0.7230142566191446,
+        "n": 982,
+        "null_max": -0.1527243604534526,
+        "null_mean": -0.24002303616911042,
+        "p": 0.005,
+        "passed": true,
+        "roots": 21
+      },
+      "train_positions": 61971
+    },
+    "COMPOUND": {
+      "aligned": {
+        "bridge_top1": 0.5746445497630331,
+        "gain": 0.4967727633757346,
+        "left_top1": 0.39454976303317535,
+        "n": 844,
+        "roots": 21
+      },
+      "alphabet_size": 32,
+      "controls": {
+        "negative": -0.0026601839932809753,
+        "passed": true,
+        "positive": 1.0396316602670197
+      },
+      "primary": {
+        "bootstrap": [
+          0.438050807609944,
+          0.5427333865336056
+        ],
+        "bridge_top1": 0.5285132382892057,
+        "eligible": true,
+        "gain": 0.4905989951502697,
+        "left_top1": 0.3615071283095723,
+        "movable_fraction": 0.7260692464358453,
+        "n": 982,
+        "null_max": -0.12604015634068103,
+        "null_mean": -0.22487043162936637,
+        "p": 0.005,
+        "passed": true,
+        "roots": 21
+      },
+      "train_positions": 59083
+    }
+  },
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "test_roots": 21,
+  "test_tokens": 4706,
+  "train_roots": 77,
+  "train_tokens": 19645,
+  "train_wordtypes": 4815
+}
