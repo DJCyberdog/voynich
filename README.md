@@ -1,5 +1,9 @@
 # PROJECT VOYNICH
 
+## EXP-0036a — native STA1 completion (2026-11-24, proposed)
+
+EXP-0036a RESEARCH_COMPLETED / native STA1 PASS (12/12), acquisition blocker resolved by owner uploads. 28464 ZL and 30691 GC certain P0 tokens, 253 codes, 248 fixed classes. OOV gains ZL +.829385, GC +.774442, direct ZL→GC +7.296881 vs weak cross baseline; all 21 roots positive each, p=.001. Transfer penalty +3.252832; shared-training-code cohort 839 OOV gain +2.114142, penalty +.950506; remaining 462 gain +16.708826. 102/128 learned chunks overlap. Two byte-identical Python runs. Transductive alphabet prescan only, no test fitting; same exposed roots, no glyph or semantic claim. Next EXP-0037. [Report](research/experiments/2026-11-24_EXP-0036a_native_report.md) · [Code](research/scripts/exp0036a_native.py) · [Summary](research/results/2026-11-24_EXP-0036a_native_summary.json). Previous core-only result below is historical and superseded for completion status. No external A/W closure, no merge.
+
 ## EXP-0036a — STA core projection (2026-11-24, proposed)
 
 EXP-0036a PARTIAL / native STA1 BLOCKED; restricted core projection PASS (12/12). Hash-verified native ZL and independent Claston GC readings projected using official STA factual correspondences; complete official files unavailable (download DNS and mirror 404). 95 code types, 90 classes; 28075/30426 tokens. OOV gains ZL +.227855, GC +.495077, ZL→GC +7.879153 vs poor cross baseline; transfer penalty +3.369960; 102/128 learned chunks shared. All p=.001, two deterministic runs and controls PASS. Not official full STA1, no independent physical glyph/semantic claim. Full test only with exact official files; EXP-0037 can proceed. [Report](research/experiments/2026-11-24_EXP-0036a_report.md) · [Code](research/scripts/exp0036a_sta_core.cjs) · [Results](research/results/2026-11-24_EXP-0036a_sta_core.json). No new A/W closure: main 3/40, stacked 4/40; no decipherment gates or merge.
