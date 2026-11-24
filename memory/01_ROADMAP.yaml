@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-050
+    title: 'EXP-0034 partial transfer NOT_MET; competing generators next'
+    status: ACTIVE
+    next: 'EXP-0035 proposed: stronger higher-order character and competing generative references with frozen length/domain controls; no repeated transfer tuning or presumed language. See research/experiments/2026-11-24_EXP-0034_report.md.'
   - id: RM-049
     title: 'EXP-0033 composition PASS; Currier A/B transfer next'
     status: ACTIVE
