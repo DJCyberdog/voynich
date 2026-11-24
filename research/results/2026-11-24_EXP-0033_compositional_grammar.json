@@ -1,0 +1,384 @@
+{
+  "all": {
+    "GC_C": 0.07514981505230356,
+    "GC_W": -0.023206589073805794,
+    "G_S": 0.11872694009518447,
+    "multi_chunk_hits": 4688,
+    "nll": {
+      "C": 7.009770056361404,
+      "G": 6.977168441835811,
+      "GC": 6.9346202413091005,
+      "S": 7.095895381930996,
+      "W": 6.911413652235295
+    },
+    "roots": 21,
+    "tokens": 4706,
+    "types": 1986
+  },
+  "bootstrap": [
+    0.1947461175020633,
+    0.4025698059747927
+  ],
+  "complexity": {
+    "baseline_bigram_nonzero": 331,
+    "baseline_slot_nonzero": 782,
+    "chunk_symbols": 429,
+    "chunks": 155,
+    "emission_entries": 32,
+    "multi_chunks": 128,
+    "role_cells": 620,
+    "role_nonzero": 430,
+    "whole_entries": 3553,
+    "whole_symbols": 20974
+  },
+  "controls": {
+    "baseline_replay": true,
+    "normalization_max_error": 8.881784197001252e-16,
+    "root_disjoint": true,
+    "singleton_negative": true,
+    "synthetic_positive_gain": 7.2235178519354974,
+    "zero_weight_exact": true
+  },
+  "decision": "PASS",
+  "exceedances": 0,
+  "experiment": "EXP-0033",
+  "gates": {
+    "bootstrap": true,
+    "inner": true,
+    "inventory": true,
+    "outer_GC_C": true,
+    "outer_GC_W": true,
+    "outer_G_S": true,
+    "p": true,
+    "support": true
+  },
+  "grid": [
+    {
+      "classes": 27,
+      "gain": 0.13469922666198467,
+      "inventory": 59,
+      "merges": 32,
+      "weight": 0.25
+    },
+    {
+      "classes": 27,
+      "gain": 0.04312386875064868,
+      "inventory": 59,
+      "merges": 32,
+      "weight": 0.5
+    },
+    {
+      "classes": 27,
+      "gain": -0.163708829924755,
+      "inventory": 59,
+      "merges": 32,
+      "weight": 0.75
+    },
+    {
+      "classes": 27,
+      "gain": -0.9372287088452584,
+      "inventory": 59,
+      "merges": 32,
+      "weight": 1.0
+    },
+    {
+      "classes": 32,
+      "gain": 0.13343873099384276,
+      "inventory": 64,
+      "merges": 32,
+      "weight": 0.25
+    },
+    {
+      "classes": 32,
+      "gain": 0.03940816856033158,
+      "inventory": 64,
+      "merges": 32,
+      "weight": 0.5
+    },
+    {
+      "classes": 32,
+      "gain": -0.1739488069114055,
+      "inventory": 64,
+      "merges": 32,
+      "weight": 0.75
+    },
+    {
+      "classes": 32,
+      "gain": -1.0264340742795253,
+      "inventory": 64,
+      "merges": 32,
+      "weight": 1.0
+    },
+    {
+      "classes": 27,
+      "gain": 0.23165248156104606,
+      "inventory": 91,
+      "merges": 64,
+      "weight": 0.25
+    },
+    {
+      "classes": 27,
+      "gain": 0.21502212114924982,
+      "inventory": 91,
+      "merges": 64,
+      "weight": 0.5
+    },
+    {
+      "classes": 27,
+      "gain": 0.09505325175252947,
+      "inventory": 91,
+      "merges": 64,
+      "weight": 0.75
+    },
+    {
+      "classes": 27,
+      "gain": -0.41138162291018027,
+      "inventory": 91,
+      "merges": 64,
+      "weight": 1.0
+    },
+    {
+      "classes": 32,
+      "gain": 0.18395216114537646,
+      "inventory": 96,
+      "merges": 64,
+      "weight": 0.25
+    },
+    {
+      "classes": 32,
+      "gain": 0.1371079830992301,
+      "inventory": 96,
+      "merges": 64,
+      "weight": 0.5
+    },
+    {
+      "classes": 32,
+      "gain": -0.011599750279931717,
+      "inventory": 96,
+      "merges": 64,
+      "weight": 0.75
+    },
+    {
+      "classes": 32,
+      "gain": -0.5751607804656252,
+      "inventory": 96,
+      "merges": 64,
+      "weight": 1.0
+    },
+    {
+      "classes": 27,
+      "gain": 0.31021257128065993,
+      "inventory": 155,
+      "merges": 128,
+      "weight": 0.25
+    },
+    {
+      "classes": 27,
+      "gain": 0.3290830158842646,
+      "inventory": 155,
+      "merges": 128,
+      "weight": 0.5
+    },
+    {
+      "classes": 27,
+      "gain": 0.24425711765930536,
+      "inventory": 155,
+      "merges": 128,
+      "weight": 0.75
+    },
+    {
+      "classes": 27,
+      "gain": -0.16334904992047525,
+      "inventory": 155,
+      "merges": 128,
+      "weight": 1.0
+    },
+    {
+      "classes": 32,
+      "gain": 0.23788195449823213,
+      "inventory": 160,
+      "merges": 128,
+      "weight": 0.25
+    },
+    {
+      "classes": 32,
+      "gain": 0.2275513743862495,
+      "inventory": 160,
+      "merges": 128,
+      "weight": 0.5
+    },
+    {
+      "classes": 32,
+      "gain": 0.12131737586745478,
+      "inventory": 160,
+      "merges": 128,
+      "weight": 0.75
+    },
+    {
+      "classes": 32,
+      "gain": -0.3214619210054045,
+      "inventory": 160,
+      "merges": 128,
+      "weight": 1.0
+    }
+  ],
+  "oov": {
+    "GC_C": 0.28830188117141375,
+    "GC_W": 0.31566770008778633,
+    "G_S": 0.27502713179538496,
+    "multi_chunk_hits": 974,
+    "nll": {
+      "C": 12.008504037349509,
+      "G": 11.46570758571434,
+      "GC": 11.720202156178095,
+      "S": 11.740734717509724,
+      "W": 12.035869856265881
+    },
+    "roots": 21,
+    "tokens": 984,
+    "types": 938
+  },
+  "p": 0.001,
+  "root_gains": [
+    {
+      "gain": -0.3757436510543352,
+      "root": "f10",
+      "tokens": 11
+    },
+    {
+      "gain": 0.25753498909303557,
+      "root": "f101",
+      "tokens": 44
+    },
+    {
+      "gain": 0.27886911941031733,
+      "root": "f105",
+      "tokens": 142
+    },
+    {
+      "gain": 0.16463935619394615,
+      "root": "f106",
+      "tokens": 137
+    },
+    {
+      "gain": 0.14930956077848295,
+      "root": "f114",
+      "tokens": 147
+    },
+    {
+      "gain": 0.060222551159092544,
+      "root": "f115",
+      "tokens": 138
+    },
+    {
+      "gain": 0.045156387283531656,
+      "root": "f14",
+      "tokens": 23
+    },
+    {
+      "gain": 0.6537117346935994,
+      "root": "f18",
+      "tokens": 18
+    },
+    {
+      "gain": 0.36062685192237853,
+      "root": "f22",
+      "tokens": 21
+    },
+    {
+      "gain": 0.9675664237875128,
+      "root": "f25",
+      "tokens": 18
+    },
+    {
+      "gain": 0.5997306383671288,
+      "root": "f27",
+      "tokens": 19
+    },
+    {
+      "gain": 0.17171328960396534,
+      "root": "f28",
+      "tokens": 12
+    },
+    {
+      "gain": 0.36962266376706326,
+      "root": "f34",
+      "tokens": 28
+    },
+    {
+      "gain": 0.707301626134994,
+      "root": "f35",
+      "tokens": 20
+    },
+    {
+      "gain": 0.18766506678912884,
+      "root": "f43",
+      "tokens": 46
+    },
+    {
+      "gain": 0.5500975661801286,
+      "root": "f44",
+      "tokens": 28
+    },
+    {
+      "gain": 0.2552244324255765,
+      "root": "f45",
+      "tokens": 19
+    },
+    {
+      "gain": 0.60638646051228,
+      "root": "f51",
+      "tokens": 23
+    },
+    {
+      "gain": 1.061966319804931,
+      "root": "f55",
+      "tokens": 23
+    },
+    {
+      "gain": 0.2016943764382973,
+      "root": "f57",
+      "tokens": 17
+    },
+    {
+      "gain": 0.4916586045566985,
+      "root": "f87",
+      "tokens": 50
+    }
+  ],
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "split": {
+    "fit": {
+      "roots": 67,
+      "tokens": 16854,
+      "types": 4389
+    },
+    "test": {
+      "roots": 21,
+      "tokens": 4706,
+      "types": 1986
+    },
+    "train": {
+      "roots": 77,
+      "tokens": 19645,
+      "types": 4815
+    },
+    "validation": {
+      "roots": 10,
+      "tokens": 2791,
+      "types": 1065
+    },
+    "validation_oov": {
+      "roots": 10,
+      "tokens": 445,
+      "types": 426
+    }
+  },
+  "winner": {
+    "classes": 27,
+    "gain": 0.3290830158842646,
+    "inventory": 155,
+    "merges": 128,
+    "weight": 0.5
+  }
+}
