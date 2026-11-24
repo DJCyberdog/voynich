@@ -1,0 +1,164 @@
+{
+  "experiment": "EXP-0036a-native",
+  "decision": "PASS",
+  "full_local_result_sha256": "5cc725ca349e2ac2a91258a92b16ad9ba6c1eed0627851a265c663db0290f2d8",
+  "full_local_result_git_blob": "28fcbcc5c6d36c9bc46f61c6825438d5d1779701",
+  "source_hashes": {
+    "ZL": "8438ba1c45f47fe1d06b5262cbcdf60ce69158a0edbd4dd802612896f3217e2a",
+    "GC": "0c0d1eea4b5ab87f8a65fb7f4346864cd90758ad993812b4f2122b3899d4ac88"
+  },
+  "sources": {
+    "ZL": {
+      "tokens": 28464,
+      "types": 6344,
+      "train": 22997,
+      "test": 5467,
+      "observed_codes": 182,
+      "pieces": 31585,
+      "invalid": 2686,
+      "short": 435
+    },
+    "GC": {
+      "tokens": 30691,
+      "types": 7994,
+      "train": 24818,
+      "test": 5873,
+      "observed_codes": 174,
+      "pieces": 33384,
+      "invalid": 1906,
+      "short": 787
+    },
+    "shared_loci": 3885,
+    "train_roots": 77,
+    "test_roots": 21
+  },
+  "complexity": {
+    "alphabet": 253,
+    "singletons": 248,
+    "entries_per_inventory": 376,
+    "shared_entries": 350,
+    "shared_learned": 102,
+    "ZL_train_codes": 154,
+    "GC_train_codes": 160,
+    "shared_train_codes": 92,
+    "ZL_H_cells": 3704,
+    "GC_H_cells": 5645
+  },
+  "zrefit": {
+    "tokens": 1086,
+    "types": 1036,
+    "H": 12.63874101479612,
+    "J": 11.809356408171961,
+    "S": 12.490161044443273,
+    "Q": 12.491920881039265,
+    "gain": 0.8293846066241577,
+    "bootstrap": [
+      0.6157186873734695,
+      1.2007406791841266
+    ],
+    "p": 0.001,
+    "positive_roots": 21
+  },
+  "grefit": {
+    "tokens": 1379,
+    "types": 1312,
+    "H": 13.006177031411992,
+    "J": 12.231735105593103,
+    "S": 12.822994944201145,
+    "Q": 12.93723440811176,
+    "gain": 0.7744419258188887,
+    "bootstrap": [
+      0.5938221572568245,
+      1.0922910182173162
+    ],
+    "p": 0.001,
+    "positive_roots": 21
+  },
+  "transfer": {
+    "tokens": 1301,
+    "types": 1245,
+    "H": 22.938628043495083,
+    "J": 15.64174665592302,
+    "S": 21.72818698605788,
+    "Q": 15.703991761027165,
+    "gain": 7.296881387572062,
+    "bootstrap": [
+      6.485480323050943,
+      8.00039798661132
+    ],
+    "p": 0.001,
+    "positive_roots": 21
+  },
+  "ownCommon": {
+    "tokens": 1301,
+    "H": 13.209401112280068,
+    "J": 12.38891496247111,
+    "gain": 0.8204861498089568
+  },
+  "transfer_penalty": 3.2528316934519097,
+  "sensitivity": {
+    "shared_training_codes": {
+      "tokens": 839,
+      "transfer_H": 14.944954875796434,
+      "transfer_J": 12.830812980592688,
+      "transfer_gain": 2.114141895203746,
+      "own_J": 11.8803073841941,
+      "own_gain": 0.4701628042855968
+    },
+    "other": {
+      "tokens": 462,
+      "transfer_H": 37.45527693461889,
+      "transfer_J": 20.746450884499076,
+      "transfer_gain": 16.70882605011981,
+      "own_J": 13.312555131679844,
+      "own_gain": 1.4566794114844528
+    }
+  },
+  "all": {
+    "ZL": {
+      "H": 7.134401120851826,
+      "J": 6.924305697983503,
+      "gain": 0.21009542286832217
+    },
+    "GC": {
+      "H": 7.6109572056209815,
+      "J": 7.402729977769231,
+      "gain": 0.2082272278517505
+    },
+    "transfer": {
+      "H": 12.640505354419265,
+      "J": 9.123091187274188,
+      "gain": 3.517414167145078
+    }
+  },
+  "controls": {
+    "source_hashes": true,
+    "parser": true,
+    "root_disjoint": true,
+    "normalization_error": 8.881784197001252e-16,
+    "new_normalization_error": 1.1102230246251565e-15,
+    "synthetic_gain": 7.2235178519354974,
+    "zero_weight": true,
+    "byte_identical_replay": true
+  },
+  "gates": {
+    "zrefit": {
+      "support": true,
+      "gain": true,
+      "bootstrap": true,
+      "p": true
+    },
+    "grefit": {
+      "support": true,
+      "gain": true,
+      "bootstrap": true,
+      "p": true
+    },
+    "transfer": {
+      "support": true,
+      "gain": true,
+      "bootstrap": true,
+      "p": true
+    }
+  }
+}
