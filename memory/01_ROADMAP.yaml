@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-048
+    title: 'EXP-0032c learning curve NOT_MET late-growth gate; productive composition next'
+    status: ACTIVE
+    next: 'EXP-0033 proposed: reusable subword composition, train-only fit, explicit complexity, heldout OOV test against same-data positional character and copy models. No extrapolation of infinite-data likelihood or repeated whole-template cap fishing. See research/experiments/2026-11-24_EXP-0032c_report.md.'
   - id: RM-047
     title: 'EXP-0032b sensitivity NOT_MET; productive composition next'
     status: ACTIVE
