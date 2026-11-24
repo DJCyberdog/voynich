@@ -1,0 +1,199 @@
+{
+  "experiment": "EXP-0038d",
+  "source_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+  "source_pages": {
+    "160": "f87r: no vessel",
+    "161": "f87v: no vessel",
+    "166": "f90r: no vessel",
+    "167": "f90v part: no vessel",
+    "183": "f102v part: two new vessels; upper ambiguous nearby, lower none"
+  },
+  "new_objects": [
+    {
+      "id": "D01",
+      "page": 183,
+      "root": "f102",
+      "position": "left upper; normalized approximate bbox [0.17,0.13,0.27,0.39]",
+      "silhouette": "P",
+      "top_color": "blue",
+      "pointed": "N",
+      "discrete_feet": "Y",
+      "bands": "Y",
+      "attachment": "A",
+      "reason": "isolated label to right also immediately above adjacent plant root; body bands look ornamental"
+    },
+    {
+      "id": "D02",
+      "page": 183,
+      "root": "f102",
+      "position": "left lower; normalized approximate bbox [0.19,0.45,0.30,0.64]",
+      "silhouette": "B",
+      "top_color": "red",
+      "pointed": "N",
+      "discrete_feet": "N",
+      "bands": "Y",
+      "attachment": "O",
+      "reason": "no unambiguous inscription; nearby paragraph and plant labels"
+    }
+  ],
+  "nearby_review": [
+    {
+      "id": "V01",
+      "page": 162,
+      "status": "ambiguous",
+      "reason": "nearby isolated writing is above neighboring plant and not inside vessel"
+    },
+    {
+      "id": "V02",
+      "page": 162,
+      "status": "ambiguous",
+      "reason": "writing beside adjacent root"
+    },
+    {
+      "id": "V03",
+      "page": 162,
+      "status": "ambiguous",
+      "reason": "neighboring foliage and paragraph compete"
+    },
+    {
+      "id": "V12",
+      "page": 178,
+      "status": "ambiguous",
+      "reason": "label below vessel also immediately above plant"
+    },
+    {
+      "id": "C01",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "adjacent plant and paragraph"
+    },
+    {
+      "id": "C02",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "adjacent plant row and paragraph"
+    },
+    {
+      "id": "C03",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "adjacent plant and paragraph"
+    },
+    {
+      "id": "C04",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "adjacent root and unresolved foldout panel"
+    },
+    {
+      "id": "C05",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "neighboring plant labels and unresolved panel"
+    },
+    {
+      "id": "C06",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "lower connected complex beside plants and paragraph; unresolved panel"
+    },
+    {
+      "id": "C07",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "plant labels and text block"
+    },
+    {
+      "id": "C08",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "neighboring plants and text"
+    },
+    {
+      "id": "C09",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "neighboring plants and text"
+    },
+    {
+      "id": "C10",
+      "page": 163,
+      "status": "ambiguous",
+      "reason": "neighboring plants and text"
+    },
+    {
+      "id": "C11",
+      "page": 164,
+      "status": "ambiguous",
+      "reason": "adjacent plant roots and paragraph"
+    },
+    {
+      "id": "C12",
+      "page": 164,
+      "status": "ambiguous",
+      "reason": "adjacent root and paragraph"
+    },
+    {
+      "id": "C13",
+      "page": 164,
+      "status": "ambiguous",
+      "reason": "short label beside vessel foot but adjacent faded root and text compete"
+    },
+    {
+      "id": "C14",
+      "page": 165,
+      "status": "ambiguous",
+      "reason": "short mark at right also near plant; no connecting indication"
+    },
+    {
+      "id": "C15",
+      "page": 165,
+      "status": "ambiguous",
+      "reason": "short label below lower foot, plausible vessel label but nearby plant association not excluded"
+    },
+    {
+      "id": "D01",
+      "page": 183,
+      "status": "ambiguous",
+      "reason": "isolated label to right also immediately above adjacent plant root; body bands look ornamental"
+    }
+  ],
+  "multiple_regions": [
+    {
+      "object": "C29",
+      "page": 182,
+      "region": "upper pale cylindrical panel",
+      "box": [
+        0.137,
+        0.228,
+        0.212,
+        0.274
+      ]
+    },
+    {
+      "object": "C29",
+      "page": 182,
+      "region": "lower pale cylindrical panel",
+      "box": [
+        0.144,
+        0.341,
+        0.207,
+        0.365
+      ]
+    },
+    {
+      "object": "C30",
+      "page": 182,
+      "region": "lower pale cylindrical panel",
+      "box": [
+        0.166,
+        0.524,
+        0.228,
+        0.562
+      ]
+    }
+  ],
+  "notes": [
+    "C29 has two distinct possible text regions; keep one object-level unit. C30 has one. Earlier eight f99 candidates retained as possible writing (white-on-red marks V05/V06 uncertain), not verified transcription. Existing foldout attribution not resolved. C15 short line immediately below vessel is strongest nearby candidate but remains ambiguous; no relaxed inclusion in primary. No raw images or text transcription."
+  ]
+}
