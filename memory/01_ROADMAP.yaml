@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-047
+    title: 'EXP-0032b sensitivity NOT_MET; productive composition next'
+    status: ACTIVE
+    next: 'EXP-0033 proposed: reusable subword composition, train-only fit, explicit complexity, heldout OOV test versus positional character and copy models; do not retune on exposed outer results. See research/experiments/2026-11-24_EXP-0032b_report.md.'
   - id: RM-046
     title: 'EXP-0032 whole-word templates NOT_MET; productive compositional grammar'
     status: ACTIVE
