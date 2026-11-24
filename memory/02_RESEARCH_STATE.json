@@ -3,7 +3,7 @@
   "updated": "2026-11-24",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0037 structural roles and recombination",
+  "cycle": "EXP-0037a-f functional structural cluster",
   "status": "RESEARCH_COMPLETED_SCOPED_PROPOSED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "EXP-0038 blinded label anchor design",
+  "next": "Owner review of cluster; EXP-0038 deferred",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -79,7 +79,8 @@
     "EXP-0036 RESEARCH_COMPLETED / PASS (8/8): hash-verified Takahashi IT2a independent reading in EVA family; 27733 tokens, 3884 shared P0 IDs, same root split. Fixed H/Q/J architecture, no retuning. IT-refit OOV 1166/21 roots gain +.295139, ZL→IT no refit common OOV 1144/21 gain +.764650, both p=.001 and 18/21 positive roots. Matched transfer penalty +.273381. 151/155 inventory entries overlap (124/128 learned chunks). Exact prior H/J replay and deterministic two-run check PASS. Same manuscript and shared EVA conventions, no independent glyph or semantic evidence. Next EXP-0037 functional subword components. research/experiments/2026-11-24_EXP-0036_report.md",
     "EXP-0036a PARTIAL / native STA1 BLOCKED; restricted core projection PASS (12/12). Hash-verified native ZL and independent Claston GC readings projected using official STA factual correspondences; complete official files unavailable (download DNS and mirror 404). 95 code types, 90 classes; 28075/30426 tokens. OOV gains ZL +.227855, GC +.495077, ZL→GC +7.879153 vs poor cross baseline; transfer penalty +3.369960; 102/128 learned chunks shared. All p=.001, two deterministic runs and controls PASS. Not official full STA1, no independent physical glyph/semantic claim. Full test only with exact official files; EXP-0037 can proceed. research/experiments/2026-11-24_EXP-0036a_report.md",
     "EXP-0036a RESEARCH_COMPLETED / native STA1 PASS (12/12), acquisition blocker resolved by owner uploads. 28464 ZL and 30691 GC certain P0 tokens, 253 codes, 248 fixed classes. OOV gains ZL +.829385, GC +.774442, direct ZL→GC +7.296881 vs weak cross baseline; all 21 roots positive each, p=.001. Transfer penalty +3.252832; shared-training-code cohort 839 OOV gain +2.114142, penalty +.950506; remaining 462 gain +16.708826. 102/128 learned chunks overlap. Two byte-identical Python runs. Transductive alphabet prescan only, no test fitting; same exposed roots, no glyph or semantic claim. Next EXP-0037. research/experiments/2026-11-24_EXP-0036a_native_report.md",
-    "EXP-0037 RESEARCH_COMPLETED / NOT_MET (8/9 gates): 102 shared native STA1 chunks, raw overlapping occurrences excluding whole-word matches. 58 TRAIN candidates, 52 heldout positional validations (7 prefix/42 suffix/3 internal), 44 recombine with novel residual contexts on both readings (6/35/3). Cross-role gain beyond length and endpoint baseline GC→ZL +.025623, ZL→GC +.016352 misses .020; p=.001 both, 20/21 roots positive each. Class-OOV gain +.013948/+.002109. Strong endpoint graphotactic explanation, no morpheme or semantic identification. Two actual byte-identical runs, controls pass. Next EXP-0038 blinded label anchors; no repeat tuning. research/experiments/2026-11-24_EXP-0037_report.md"
+    "EXP-0037 RESEARCH_COMPLETED / NOT_MET (8/9 gates): 102 shared native STA1 chunks, raw overlapping occurrences excluding whole-word matches. 58 TRAIN candidates, 52 heldout positional validations (7 prefix/42 suffix/3 internal), 44 recombine with novel residual contexts on both readings (6/35/3). Cross-role gain beyond length and endpoint baseline GC→ZL +.025623, ZL→GC +.016352 misses .020; p=.001 both, 20/21 roots positive each. Class-OOV gain +.013948/+.002109. Strong endpoint graphotactic explanation, no morpheme or semantic identification. Two actual byte-identical runs, controls pass. Next EXP-0038 blinded label anchors; no repeat tuning. research/experiments/2026-11-24_EXP-0037_report.md",
+    "EXP-0037a-f RESEARCH_COMPLETED / NOT_MET (4/6): a long chunks PASS gains +.024410/+ .036531 ZL→GC/GC→ZL, k2 exact null; b PASS 57 retained, 51 validated, 43 recombining; c PASS 97 cores, +.407982/+.391067, 81/106 novel core-frame pairs; d NOT_MET direct affix association, 74/115 test observations, first insufficient support; e NOT_MET Currier role augmentation +.004464/+.003945; f PASS 52/57 EVA position validations same ZL reader. Original EXP-0037 NOT_MET unchanged. Two byte-identical runs; no semantics or linguistic stem claim. EXP-0038 deferred pending owner review, no repeated threshold tuning. research/experiments/2026-11-24_EXP-0037_cluster_report.md"
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
@@ -154,7 +155,7 @@
       "branch_origin": "research/exp0023-f57v-f49v-holdout-20261113"
     }
   ],
-  "top_priority": "Semantic-anchor testing after scoped structural roles; K-0001 deferred",
+  "top_priority": "Owner review, core-frame discrimination, no repeated tuning; K-0001 deferred",
   "k0001_f1r_f10v_pilot": {
     "report": "research/glyphs/2026-11-15_K0001_first_ten_folios_census.md",
     "ledger": "research/glyphs/2026-11-15_K0001_f1r-f10v_preliminary_coverage.jsonl",
@@ -583,5 +584,27 @@
     "gates_passed": 8,
     "gates_total": 9,
     "semantic_evidence": false
+  },
+  "exp0037_cluster": {
+    "report": "research/experiments/2026-11-24_EXP-0037_cluster_report.md",
+    "decision": "NOT_MET",
+    "passed": 4,
+    "total": 6,
+    "subtests": {
+      "a": "PASS",
+      "b": "PASS",
+      "c": "PASS",
+      "d": "NOT_MET",
+      "e": "NOT_MET",
+      "f": "PASS"
+    },
+    "core_candidates": 97,
+    "novel_pairs_ZL": 106,
+    "novel_pairs_GC": 81,
+    "retained": 57,
+    "validated": 51,
+    "recombining": 43,
+    "eva_validated": 52,
+    "original_exp0037": "NOT_MET"
   }
 }
