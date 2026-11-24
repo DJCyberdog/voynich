@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-24'
 priorities:
+  - id: RM-056
+    title: 'EXP-0037g-j completed; graphotactic alternative remains; semantic anchors next on owner approval'
+    status: WATCHING
+    next: 'Preserve all NOT_MET findings. Do not repeat tuning for PASS. Owner review then EXP-0038 blinded label-anchor design. See research/experiments/2026-11-24_EXP-0037_gj_report.md.'
   - id: RM-055
     title: 'EXP-0037a-f cluster complete, 4/6 PASS; original NOT_MET retained'
     status: WATCHING
