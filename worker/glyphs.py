@@ -30,20 +30,21 @@ def inventory(path):
     return obj
 
 
-def propose(manifest, output, reviewer):
+def propose(manifest, output, reviewer, alphabet):
     from PIL import Image
-    m = w.dataset(manifest); output = Path(output)
+    m = w.dataset(manifest); inventory(alphabet); output = Path(output)
     w.require(not output.exists() and reviewer.strip(), 'New output and reviewer required')
     regions = {}
     for r in m['regions']:
         with Image.open(w.within(Path(manifest).parent,r['file'])) as im:
             regions[r['id']] = {'status':'unreviewed','glyphs':[{'box':b,'label':UNKNOWN} for b in boxes(im)]}
-    w.write(output,dict(schema=1,manifest_sha256=w.sha(manifest),reviewer=reviewer,regions=regions))
+    w.write(output,dict(schema=1,manifest_sha256=w.sha(manifest),inventory_sha256=w.sha(alphabet),reviewer=reviewer,regions=regions))
 
 
-def checked_review(path, manifest, sizes, labels):
+def checked_review(path, manifest, sizes, labels, alphabet_sha):
     a = w.read(path)
     w.require(a['schema']==1 and a['manifest_sha256']==w.sha(manifest) and isinstance(a['reviewer'],str) and a['reviewer'].strip(), 'Invalid review provenance')
+    w.require(a.get('inventory_sha256')==alphabet_sha, 'Review inventory mismatch')
     w.require(set(a['regions'])==set(sizes), 'Review must account for every region')
     for rid, row in a['regions'].items():
         w.require(row['status'] in ('unreviewed','single_line','reject','uncertain'), 'Invalid review status')
@@ -70,7 +71,7 @@ def cohorts(manifest,left,right,alphabet,split):
     labels=inventory(alphabet)['labels']; m=w.dataset(manifest); sizes={}
     for r in m['regions']:
         with Image.open(w.within(Path(manifest).parent,r['file'])) as im: sizes[r['id']]=im.size
-    a,b=[checked_review(p,manifest,sizes,labels) for p in (left,right)]
+    a,b=[checked_review(p,manifest,sizes,labels,w.sha(alphabet)) for p in (left,right)]
     w.require(a['reviewer']!=b['reviewer'],'Distinct reviewer IDs required')
     s=w.read(split); groups={r['group'] for r in m['regions']}
     w.require(set(s)=={'train','test'} and all(isinstance(v,list) and v and len(set(v))==len(v) for v in s.values()), 'Invalid split')
@@ -133,7 +134,7 @@ def predict(manifest, review, alphabet, model_path, report_path, output, device=
     sizes={}
     for r in m['regions']:
         with Image.open(w.within(Path(manifest).parent,r['file'])) as im: sizes[r['id']]=im.size
-    a=checked_review(review,manifest,sizes,labels); info=w.device_info(device); dev=info['device']
+    a=checked_review(review,manifest,sizes,labels,w.sha(alphabet)); info=w.device_info(device); dev=info['device']
     prototypes=torch.tensor(model['prototypes'],dtype=torch.float32,device=dev)
     w.require(prototypes.shape==(len(labels),1024) and bool(torch.isfinite(prototypes).all()) and bool(((prototypes>=0)&(prototypes<=1)).all()), 'Invalid model prototypes')
     rows=[]; excluded=0
@@ -154,7 +155,7 @@ def predict(manifest, review, alphabet, model_path, report_path, output, device=
 def main():
     parser=argparse.ArgumentParser(description=__doc__); sub=parser.add_subparsers(dest='action',required=True)
     p=sub.add_parser('propose')
-    for k in ('manifest','output','reviewer'): p.add_argument(k)
+    for k in ('manifest','output','reviewer','alphabet'): p.add_argument(k)
     p=sub.add_parser('train')
     for k in ('manifest','left','right','alphabet','split','out'): p.add_argument(k)
     p.add_argument('--device',choices=['auto','cpu','cuda'],default='auto')
