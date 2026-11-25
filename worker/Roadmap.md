@@ -104,16 +104,32 @@ Evidence envelope contains repository, commit and experiment IDs, job and run ID
 
 The reviewer can select native glyph images/codes independently per convention; absence applies only to loaded inventory/coverage. Keep uncertainty and reference alternatives explicit. Original crop/box never overwritten by a correction. Similarity grouping may reorder, never propagate a decision without review. Hide model predictions and previous reviewer answers in blind mode. Optional advanced context appears on demand. Preserve keyboard shortcuts where possible; support command palette, discoverable shortcuts, search, undo via revision, clear focus rings and screen-reader labels. Use non-color status cues, WCAG 2.2 AA contrast as a design target, keyboard-only operation and scalable text. Responsive layouts at 1280x720, 1366x768 and 1920x1080 with 100–200% scaling: collapsible navigation, queue drawer, stacked/tabs for references on small screens, no inaccessible action buttons. Native tray only if supported and opted in; count-based exception notifications, no forced review or focus stealing. Publication is controlled by the coordinator's explicit repository policy, not the tray.
 
-### Hardware profiles / proposed acceptance budgets
+### Hardware-neutral minimum requirements, adaptive scaling and acceptance budgets
 
-| Target | Initial goal (measure, do not claim measured) |
-|---|---|
-| Windows notebook: Ryzen 5 3500U, Radeon Vega 8, 8 GB RAM target; 16 GB recommended | Review-only without Torch/CUDA; cold start <= 5 s on SSD, steady idle RSS <= 500 MiB, cached next glyph p95 <= 200 ms; usable at 1366x768; no swapping from ordinary review. RAM actual owner configuration unknown. |
-| Windows desktop: i5-11400F, RTX 5060 Ti 16 GB, 16 GB RAM | Combined/compute; real CUDA smoke and representative job, bounded VRAM/RAM, responsive GUI under load. |
-| Linux x64 CPU | Headless and UI regression matrix; reproducible baseline. |
-| Other OS/GPU | Best effort until explicit acceptance; no claim of native Vega 8 GPU acceleration. |
+Owner clarification, 2026-11-25: no mandatory optimization for any particular owner PC, notebook, CPU, GPU or RAM configuration. Define sensible product-wide minimum requirements and let faster supported systems benefit from their resources. A machine below the measured minimum is unsupported, not a release blocker. Owner hardware may serve as optional test equipment only.
 
-Benchmark on representative frozen local bundles with documented crop sizes, cache state, sample counts and measured hardware. Budgets are engineering targets, not scientific thresholds. If a target is missed, profile and remediate or explicitly revise with owner approval; do not fabricate metrics.
+Provisional engineering targets (not certified requirements until measured on actual representative systems):
+
+| Component | Review-only | Compute-only / Combined |
+|---|---|---|
+| CPU minimum | x64, 4 physical cores | x64, 4 physical cores / 8 logical threads, AVX2 |
+| CPU recommended | 6 cores | 8–16 or more physical cores |
+| System RAM minimum / recommended | 8 / 16 GiB | 16 / 32–64+ GiB |
+| GPU | No dedicated GPU or ML runtime required | CPU backend supported without GPU; optional compatible CUDA GPU with an initial 8 GiB VRAM target minimum, 16+ GiB recommended |
+| Storage | SSD, initial 10 GB free floor | SSD/NVMe, initial 50 GB free floor; workspace-specific estimate may require substantially more |
+| OS target | Windows 11 x64 | Windows 11 x64 and Linux x64 |
+| Display | 1280x720 minimum target | Headless supported; 1920x1080 recommended for GUI |
+
+Minimum CPU/GPU ISA and driver/runtime support must follow the actual selected dependency builds and verified capability probes, not model-name matching or a VRAM number alone. GPU support is conditional on successful compute, allocation and representative workload tests. AMD/Intel GPU backends are optional future feasibility work; CPU mode is not contingent on vendor hardware. Review-only remains installable without Torch/CUDA. Native Linux review UI is a regression target, not a certified distribution until tested. Storage floors are planning targets, not claims of maximum workspace consumption; estimate inputs, artifacts, cache, checkpoints and free-space reserve before starting. Unsupported or insufficient systems get actionable diagnostics rather than silent failure.
+
+**Adaptive resource scaling (required):**
+- Detect physical/logical CPU cores, available RAM, GPU backend capabilities, allocatable VRAM, available storage and relevant OS limits. Probe actual backend execution, not merely device enumeration. Do not identify a performance profile by CPU/GPU marketing name.
+- Plan CPU worker count, inference batch size, prefetch depth, I/O concurrency and cache size from measured headroom, representative warm-up probes and user-configurable CPU/RAM/VRAM/storage ceilings. Leave configurable OS/UI headroom; use bounded queues and backpressure, respect resource limits. Avoid oversubscription by nested Torch/BLAS/process pools. Support quiet/balanced/performance presets and explicit advanced overrides constrained by validated resource budgets.
+- Use larger resources when beneficial (not simply because present); benchmark single-worker vs parallel processing and increasing inference batch sizes, report actual throughput, memory peaks and bottlenecks. Multiple supported GPUs may process independent shards/runs only after safe device isolation and deterministic result assembly are implemented and tested; multi-GPU is an expansion capability, not a minimum requirement. No artificial cap tied to any owner's hardware.
+- Under memory pressure, reduce eligible operational concurrency, pause/checkpoint at a safe boundary or fail clearly. A backend change after a failure requires an explicit new run/revision under the existing evidence policy, not a silent restart. No automatic switch in scientific methods, thresholds, precision, effective training batch, seed, sampling, dataset membership or holdout. Only vary operational parameters when semantic equivalence or preregistered numerical tolerances are established; otherwise record a distinct configuration and run identity. Log effective resources, backend, runtime and any throttling. Never label speedup as scientific improvement.
+- Benchmark at least a representative minimum review system, minimum CPU compute profile, validated CUDA profile and a higher-capacity performance profile where actual hardware is available. Compare same pinned workloads and report wall time, throughput, peak RAM/VRAM, UI responsiveness and output equivalence; no invented measurements or linear scaling promise. Missing hardware evidence = BLOCKED for that specific compatibility/scaling claim, not a blanket requirement to test any particular owner's machine.
+
+Review UI target on minimum supported hardware: SSD cold start <= 5 s, steady idle RSS <= 500 MiB, cached next glyph p95 <= 200 ms, responsive 1280x720 layout and no routine swapping. Engineering targets only; benchmark with documented data sizes, cache conditions and actual hardware. Revise minimums or optimize against evidence before stable release. The same scientific and privacy gates apply across every profile.
 
 ## 5. Delivery roadmap
 
@@ -127,7 +143,7 @@ Priority: S = release/security/scientific-integrity critical; A = core experienc
 | 0.9.1 / VRS-091 | S | Extract stable research/core, compute, review and repository interfaces behind adapters | Old commands and golden outputs preserved; no ML import in Review-only |
 | 0.9.2 / VRS-092 | S | Versioned manifests, module capabilities and evidence envelope | Schema validation, unknown-version reject, tamper/path/size tests; migration fixtures |
 | 0.9.3 / VRS-093 | S | Local job ledger, locks, cancellation/checkpoints, outbox | Crash/restart, stale lock, retry, duplicate and failed-stage tests; no silent rerun |
-| 0.9.4 / VRS-094 | A | CPU-only / CUDA / Review-only install profiles and diagnostic CLI | Clean offline review install without Torch; actual backend probes, explicit CPU fallback policy |
+| 0.9.4 / VRS-094 | A | Hardware-neutral installation profiles, capability diagnostics and adaptive resource planner | Clean offline review install without Torch; real backend probes, memory/storage preflight, bounded adaptive CPU/VRAM scheduling plan, overrides and explicit fallback policy; synthetic low/high-resource profile tests |
 | 0.9.5 / VRS-095 | S | Unattended fixed-scope local coordinator and durable dependency-aware exception lifecycle | Local pipeline replay with UI closed and no GitHub job, optional policy-gated polling, nonblocking pending reviews, restart recovery, pause/stop, no unapproved execution |
 | 0.9.6 / VRS-096 | S | Versioned selective-recognition policy and exception router | Frozen policy fixture: accepted candidates never enter routine inbox, unknown/ambiguous/unsupported cases do, conservative abstention without valid calibration, denominator conservation |
 | 0.9.7 / VRS-097 | S | Correction handoff and controlled resume | Atomic decisions, immutable originals, exact dependency wakeup, duplicate/stale decision rejection, offline recovery; no automatic model promotion |
@@ -155,8 +171,8 @@ Priority: S = release/security/scientific-integrity critical; A = core experienc
 | 0.12.6 / VRS-126 | S | Controlled learning from reviewed exceptions and selective-risk evaluation | Frozen independent holdout, calibration/coverage and selective risk, approved training and model promotion, rollback; no leakage or self-label confirmation |
 | 0.13.0 / VRS-130 | S | Windows x64 distribution, Review-only portable package, optional separate compute dependencies | Clean VM/install/uninstall, dependency locks, checksums, reproducible build procedure, no bundled private data |
 | 0.13.1 / VRS-131 | S | Security/privacy hardening, credential store, artifact quotas and threat model | Secret redaction, malicious manifest, archive traversal, symlink, zip-bomb, unsafe checkpoint and cross-repo leak tests |
-| 0.13.2 / VRS-132 | S | Native Windows notebook acceptance and benchmark | Actual Ryzen 3500U/Vega 8 or explicitly identified equivalent plus owner target check; CPU-only review, tray, small display |
-| 0.13.3 / VRS-133 | S | Native RTX 5060 Ti acceptance | Actual Windows CUDA training/inference/interrupt-resume smoke; driver and Torch versions; no synthetic scientific claim |
+| 0.13.2 / VRS-132 | S | Native Windows minimum-profile acceptance and benchmark | Representative supported minimum review and CPU compute hardware; tray, small display, measured RAM/CPU/storage budgets; no owner-specific hardware gate |
+| 0.13.3 / VRS-133 | S | Native CUDA and performance-scaling acceptance | Actual supported CUDA hardware, higher-capacity profile where available, training/inference/interrupt-resume smoke, resource/throughput comparison and pinned output equivalence; driver and Torch versions; no synthetic scientific claim |
 | 0.13.4 / VRS-134 | A | Usability validation and docs for external researchers | Unassisted import-review-export/reproduction tasks, accessible UI, documented failures and remedies |
 | 0.14.0 / VRS-140 | S | Integrated release candidate, migration and rollback | Legacy decision roundtrip, compatibility matrix, full regression, known limitations, no unapproved migrations |
 | 0.14.1+ / VRS-141 | S | Release candidate defect remediation as needed | Every blocker closed or explicit owner disposition with evidence; no fixed patch ceiling |
@@ -167,11 +183,11 @@ Optional later work (not 1.0 blockers): authenticated LAN/private artifact trans
 ## 6. Release gates and reporting
 
 - G1 compatibility: old CLI, original schemas/reviews and artifacts replay or migrate with verified digest, rollback and no data loss; reported 61 baseline tests rerun plus new regression tests. Private-source-dependent tests report actual run/skip counts.
-- G2 isolation: Review-only installs and performs review on real notebook without CUDA/Torch; compute/headless works separately; package tests pass.
-- G3 real platform: native Windows review/tray and native RTX 5060 Ti CUDA tested on actual hardware, Linux CPU regression. No fabricated machine test; absent hardware = BLOCKED, not PASS.
+- G2 isolation: Review-only installs and performs review on representative minimum supported hardware without CUDA/Torch; compute/headless works separately; package tests pass.
+- G3 real platform: native Windows review/tray and supported CUDA tested on representative actual hardware, Linux CPU regression. Demonstrate minimum and higher-resource profiles, or mark untested compatibility/scaling claims BLOCKED. No mandatory owner-specific hardware.
 - G4 repository workflow: live authorized test repos prove read-only intake, exact evidence PR, receipt, retry, revoke, permissions and cross-repo isolation; no direct main write or auto merge.
 - G5 evidence integrity: frozen inputs, hashes, split and reviewer rules, failure/unknown accounting, reproducibility/tolerances, privacy and blind-mode negative tests.
-- G6 product quality: UX tasks, keyboard-only and HiDPI, notebook budgets measured, understandable errors and recovery; actual benchmark results documented.
+- G6 product quality: UX tasks, keyboard-only and HiDPI, minimum-profile budgets and adaptive resource scaling measured, understandable errors and recovery; actual benchmark results documented.
 - G8 autonomous operation: end-to-end locally scheduled fixed-scope analysis without GitHub job intake, compute, exception-only review routing, continued unrelated work, correction/resume and policy-approved result PR with UI closed; actual crash/restart and empty-inbox cases; no silent acceptance of unvalidated glyphs. Separate blind annotation/audit jobs remain available.
 - G7 distribution: locked dependencies, build/license review, portable review and compute installation path, hashes, release notes, migration/rollback, owner approval.
 
