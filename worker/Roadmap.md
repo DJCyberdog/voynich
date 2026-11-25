@@ -201,6 +201,10 @@ VRS-090 / VRS-091: local technical PASS, full recovered baseline 61/61 and curre
 
 VRS-093: local ledger/outbox API implemented and TECH_PASS, 13/13 new and 95/95 integrated tests, no skips. See [VRS-093.md](VRS-093.md). Actual coordinator and transport integration remain pending. Next: VRS-094 hardware/install profiles and diagnostics, then VRS-095. No automatic publication or new scientific research implied.
 
+### VRS-094 — S-tier checkpoint
+
+S1 hardware/resource diagnostics, S2 CUDA execution probe, S3 adaptive memory planning, S4 memory/storage admission and allocation-failure handling, S5 Performance default: implementation and local regression PASS (10 new / 105 integrated tests, zero skips). See [VRS-094-S.md](VRS-094-S.md). Native RTX 5060 Ti/Windows execution remains BLOCKED pending owner hardware; synthetic profile results do not prove CUDA compatibility, measured throughput or runtime OOM prevention. The planner and admission API are not yet wired into the legacy stage execution or future coordinator (VRS-095); the S-tier is not fully accepted until the outstanding evidence and integration are obtained. No repeated remote CI attempts or scientific experiments implied. VRS-094 A-tier remains open.
+
 ## 8. Original starting action (historical)
 
 VRS-090: freeze v0.8.1 interfaces and exact baseline, enumerate imports and existing GitHub bridge policies, rerun available tests, define private-fixture and actual Windows/GPU gaps, and prepare migration adapters. Follow with VRS-091 and the automation/exception milestones VRS-095–097 before UI migration; do not start remote publication or new scientific scoring merely because this roadmap exists.
