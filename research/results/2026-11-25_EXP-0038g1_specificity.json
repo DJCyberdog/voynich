@@ -1,0 +1,285 @@
+{
+  "counts": {
+    "nontext_leaves": {
+      "n": 4,
+      "passed": 4
+    },
+    "nontext_rings": {
+      "n": 4,
+      "passed": 4
+    },
+    "nontext_squares": {
+      "n": 4,
+      "passed": 4
+    },
+    "sanity_negative": {
+      "n": 2,
+      "passed": 0
+    },
+    "sanity_positive": {
+      "n": 1,
+      "passed": 1
+    },
+    "synthetic_text": {
+      "n": 4,
+      "passed": 3
+    }
+  },
+  "decision": "CONTRADICTED",
+  "experiment": "EXP-0038g1",
+  "nontext_passed": 12,
+  "nontext_total": 12,
+  "numpy": "2.3.5",
+  "opencv": "4.13.0",
+  "parent_sha256": "388208b3b93778d79de333f3222de04898adfabc5ced745b3bc25a50cee2dfce",
+  "rows": [
+    {
+      "fraction": 0.0,
+      "gates": {
+        "center": false,
+        "components": false,
+        "fraction": false,
+        "iou": false
+      },
+      "id": "blank",
+      "iou": 0,
+      "kind": "sanity_negative",
+      "passed": false
+    },
+    {
+      "fraction": 0.0,
+      "gates": {
+        "center": false,
+        "components": false,
+        "fraction": false,
+        "iou": false
+      },
+      "id": "edge",
+      "iou": 0,
+      "kind": "sanity_negative",
+      "passed": false
+    },
+    {
+      "fraction": 0.01875,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "parent_strokes",
+      "iou": 1.0,
+      "kind": "sanity_positive",
+      "passed": true
+    },
+    {
+      "fraction": 0.0295625,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "text_0",
+      "iou": 1.0,
+      "kind": "synthetic_text",
+      "passed": true
+    },
+    {
+      "fraction": 0.028,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "rings_0",
+      "iou": 1.0,
+      "kind": "nontext_rings",
+      "passed": true
+    },
+    {
+      "fraction": 0.04325,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "leaves_0",
+      "iou": 1.0,
+      "kind": "nontext_leaves",
+      "passed": true
+    },
+    {
+      "fraction": 0.0295,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "squares_0",
+      "iou": 1.0,
+      "kind": "nontext_squares",
+      "passed": true
+    },
+    {
+      "fraction": 0.0474375,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "text_1",
+      "iou": 1.0,
+      "kind": "synthetic_text",
+      "passed": true
+    },
+    {
+      "fraction": 0.04625,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "rings_1",
+      "iou": 1.0,
+      "kind": "nontext_rings",
+      "passed": true
+    },
+    {
+      "fraction": 0.06975,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "leaves_1",
+      "iou": 1.0,
+      "kind": "nontext_leaves",
+      "passed": true
+    },
+    {
+      "fraction": 0.0485,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "squares_1",
+      "iou": 1.0,
+      "kind": "nontext_squares",
+      "passed": true
+    },
+    {
+      "fraction": 0.0474375,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "text_2",
+      "iou": 1.0,
+      "kind": "synthetic_text",
+      "passed": true
+    },
+    {
+      "fraction": 0.04625,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "rings_2",
+      "iou": 1.0,
+      "kind": "nontext_rings",
+      "passed": true
+    },
+    {
+      "fraction": 0.06975,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "leaves_2",
+      "iou": 1.0,
+      "kind": "nontext_leaves",
+      "passed": true
+    },
+    {
+      "fraction": 0.0485,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "squares_2",
+      "iou": 1.0,
+      "kind": "nontext_squares",
+      "passed": true
+    },
+    {
+      "fraction": 0.064125,
+      "gates": {
+        "center": true,
+        "components": false,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "text_3",
+      "iou": 1.0,
+      "kind": "synthetic_text",
+      "passed": false
+    },
+    {
+      "fraction": 0.06425,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "rings_3",
+      "iou": 1.0,
+      "kind": "nontext_rings",
+      "passed": true
+    },
+    {
+      "fraction": 0.09575,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "leaves_3",
+      "iou": 1.0,
+      "kind": "nontext_leaves",
+      "passed": true
+    },
+    {
+      "fraction": 0.0675,
+      "gates": {
+        "center": true,
+        "components": true,
+        "fraction": true,
+        "iou": true
+      },
+      "id": "squares_3",
+      "iou": 1.0,
+      "kind": "nontext_squares",
+      "passed": true
+    }
+  ],
+  "sanity": true
+}
