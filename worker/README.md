@@ -1,5 +1,7 @@
 # Voynich GPU Worker 0.1.0
 
+**Release 0.3.0:** See [BRIDGE.md](BRIDGE.md) for opt-in GitHub job polling and aggregate PR publication. Offline mode remains supported.
+
 **Release 0.2.0:** The unchanged core is extended by the [offline pipeline guide](PIPELINE.md) and [test report](TEST_REPORT.md). Follow those for the current queue, inference and validation status.
 
 Offline developer preview for EXP-0038g follow-up. It is a crop classifier and annotation tool, not a glyph recognizer or decipherment system. The original EXP-0038g readiness thresholds remain unchanged. No images, labels, model weights, or manuscript PDF are bundled or uploaded by the worker.
