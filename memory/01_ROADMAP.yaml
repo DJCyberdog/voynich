@@ -1,6 +1,10 @@
 schema_version: 1
-updated: '2026-11-24'
+updated: '2026-11-25'
 priorities:
+  - id: RM-061
+    title: 'EXP-0038b-g integrated evidence checkpoint; semantic validation blocked'
+    status: ACTIVE
+    next: 'Independent blinded review of EXP-0038f without owner key; certify matched script/non-script controls for segmentation specificity and retain all 15 failures from EXP-0038g. No threshold tuning, no accepted region-locus match or meaning. Other open A/W tests may proceed while independent review is unavailable. See research/experiments/2026-11-25_EXP-0038g_report.md.'
   - id: RM-060
     title: 'EXP-0038a inventory PASS; independent adjudication and cross-root attachment required'
     status: ACTIVE
