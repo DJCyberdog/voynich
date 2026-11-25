@@ -1,7 +1,7 @@
 """Deterministic visual grouping for review order only; no label propagation."""
 from collections import defaultdict
 from pathlib import Path
-import worker as w
+import vrs_core as w
 
 
 def ordered(manifest, rows):

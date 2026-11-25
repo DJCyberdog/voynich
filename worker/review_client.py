@@ -7,7 +7,7 @@ from tkinter import ttk, filedialog, messagebox
 from PIL import Image, ImageTk, ImageDraw
 import active_review as ar
 import review_groups
-import worker as w
+import vrs_core as w
 
 VERSION = '0.8.0'
 PAGE_SIZE = 18

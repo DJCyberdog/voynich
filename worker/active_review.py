@@ -3,7 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import worker as w
+import vrs_core as w
 
 VERSION = '0.5.1'
 STATES = ('unreviewed', 'mapped', 'not_in_inventory', 'uncertain')

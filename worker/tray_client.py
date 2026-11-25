@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import active_review as ar
-import worker as w
+import vrs_core as w
 
 VERSION = '0.8.1'
 PATH_KEYS = ('manifest', 'predictions', 'references', 'output')

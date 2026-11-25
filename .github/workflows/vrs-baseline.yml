@@ -21,6 +21,10 @@ jobs:
       PYTHONUNBUFFERED: '1'
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: cd1455caa0de793a0b5cbffdb609098cd908482e
+          path: immutable-baseline
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -32,6 +36,9 @@ jobs:
           python -m pip install Pillow==12.3.0 PyMuPDF==1.26.7 numpy==2.3.5
           python -c "import tkinter, torch; print(torch.__version__)"
       - name: Verify pinned baseline
-        run: python baseline_audit.py
-      - name: Run available regression tests (private fixtures intentionally absent)
+        run: python baseline_audit.py --root ../immutable-baseline/worker
+      - name: Run immutable baseline regression (private fixtures intentionally absent)
+        working-directory: immutable-baseline/worker
+        run: xvfb-run -a python -m unittest discover -v
+      - name: Run current regression tests (private fixtures intentionally absent)
         run: xvfb-run -a python -m unittest discover -v
