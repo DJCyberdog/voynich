@@ -183,7 +183,7 @@ For every milestone: record ID, exact code/test commit, status (PLANNED / IN_PRO
 
 VRS-090 / VRS-091: local technical PASS, full recovered baseline 61/61 and current 71/71 (no skips). VRS-092: fixed local manifest/receipt/evidence contract implemented; 11/11 new tests, 82/82 integrated tests, no skips. See [VRS-091-092.md](VRS-091-092.md). Live CI, native Windows/CUDA, scientific acceptance and coordinator/reporting integration remain separate gates. GitHub is the output destination, not a required input to local execution.
 
-Next: VRS-093 durable local job ledger, locking, checkpoints and outbox; then VRS-094/095. No automatic publication or new scientific research implied.
+VRS-093: local ledger/outbox API implemented and TECH_PASS, 13/13 new and 95/95 integrated tests, no skips. See [VRS-093.md](VRS-093.md). Actual coordinator and transport integration remain pending. Next: VRS-094 hardware/install profiles and diagnostics, then VRS-095. No automatic publication or new scientific research implied.
 
 ## 8. Original starting action (historical)
 
