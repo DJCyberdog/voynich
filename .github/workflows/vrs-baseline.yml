@@ -1,0 +1,37 @@
+name: VRS baseline CPU regression
+on:
+  push:
+    branches: [development/gpu-worker-v0.1.0]
+    paths:
+      - 'worker/**'
+      - '.github/workflows/vrs-baseline.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cpu:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: worker
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: System display
+        run: sudo apt-get update && sudo apt-get install -y xvfb xauth
+      - name: CPU dependencies
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+          python -m pip install Pillow==12.3.0 PyMuPDF==1.26.7 numpy==2.3.5
+          python -c "import tkinter, torch; print(torch.__version__)"
+      - name: Verify pinned baseline
+        run: python baseline_audit.py
+      - name: Run available regression tests (private fixtures intentionally absent)
+        run: xvfb-run -a python -m unittest discover -v
