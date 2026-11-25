@@ -82,12 +82,13 @@ def ordered_batches(items, prepare, infer, *, batch, workers, admit, group=None)
             chunk,pending = following,futures
 
 
-def _predict(manifest, review, alphabet, model_path, report_path, output, *, device='auto', preset=h.DEFAULT_PRESET, serial=False, limits=None):
+def _predict(manifest, review, alphabet, model_path, report_path, output, *, device='auto', preset=h.DEFAULT_PRESET, serial=False, limits=None, profiler=None):
     """Opt-in local glyph prediction adapter. No training or automatic research."""
     import glyphs as g
     import torch
     import numpy as np
     from PIL import Image
+    phase_start=time.perf_counter()
     labels=g.inventory(alphabet)['labels']; m=core.dataset(manifest)
     model=core.read(model_path); report=core.read(report_path)
     core.require(report['model_sha256']==core.sha(model_path) and model['inventory_sha256']==core.sha(alphabet) and model['code_sha256']==core.sha(g.__file__) and model['labels']==labels and model['thresholds']==[.12,.005], 'Model provenance mismatch')
@@ -99,6 +100,8 @@ def _predict(manifest, review, alphabet, model_path, report_path, output, *, dev
     a=g.checked_review(review,manifest,sizes,labels,core.sha(alphabet))
     items=[(r['id'],x['box']) for r in m['regions'] if a['regions'][r['id']]['status']=='single_line' for x in sorted(a['regions'][r['id']]['glyphs'],key=lambda z:z['box'][0])]
     excluded=sum(a['regions'][r['id']]['status']!='single_line' for r in m['regions'])
+    if profiler: profiler.record('validation',time.perf_counter()-phase_start)
+    phase_start=time.perf_counter()
     info=h.snapshot(root,device); estimate=workload_estimate(max(w*y for w,y in sizes.values()),len(labels),max(1,len(items)),max(1024**2,len(items)*512))
     repeated={key for key,count in Counter(hashes.values()).items() if count>1}
     caps=resources.limits(limits)
@@ -117,10 +120,16 @@ def _predict(manifest, review, alphabet, model_path, report_path, output, *, dev
         headroom=max(0,current['ram_available']-selected['ram_reserve']-demand)
         cache.resize(min(cache.stats()['budget'],headroom))
         h.admit_next(current,selected,demand+cache.stats()['budget'],estimate['vram_base']+n*estimate['vram_item'] if dev=='cuda' else 0,estimate['disk'])
+    if profiler:
+        profiler.record('planning',time.perf_counter()-phase_start)
+        admit_raw=admit
+        def admit(n): return profiler.call('admission',admit_raw,n)
     admit(batch)
+    phase_start=time.perf_counter()
     target='cuda:'+str(selected['gpu_index']) if dev=='cuda' else 'cpu'
     prototypes=h.bounded_call(torch.tensor,model['prototypes'],dtype=torch.float32,device=target)
     core.require(prototypes.shape==(len(labels),1024) and bool(torch.isfinite(prototypes).all()) and bool(((prototypes>=0)&(prototypes<=1)).all()), 'Invalid model prototypes')
+    if profiler: profiler.record('model_setup',time.perf_counter()-phase_start)
     def prepare(group):
         rid=group[0][0]
         keys=[(hashes[rid],tuple(box)) for _,box in group]
@@ -138,6 +147,13 @@ def _predict(manifest, review, alphabet, model_path, report_path, output, *, dev
         with torch.inference_mode():
             f=torch.from_numpy(np.stack(features)).to(target)
             return g.classify(f,prototypes)
+    if profiler:
+        prepare_raw,infer_raw=prepare,infer
+        def prepare(group): return profiler.call('preparation',prepare_raw,group)
+        def infer(features):
+            result=profiler.call('inference',infer_raw,features)
+            if dev=='cuda': profiler.gpu_sample(torch,selected['gpu_index'])
+            return result
     start=time.perf_counter(); rows=[]
     def sequential():
         iterator=iter(items)
@@ -152,10 +168,13 @@ def _predict(manifest, review, alphabet, model_path, report_path, output, *, dev
         rows.append(dict(region_id=rid,box=box,predicted=g.decision(labels[i],d,gap),distance=d,margin=gap))
     result=dict(version=g.VERSION,scientific_status='UNADJUDICATED',environment={'device':dev,'torch':str(torch.__version__),'cuda_build':torch.version.cuda},manifest_sha256=core.sha(manifest),review_sha256=core.sha(review),model_sha256=core.sha(model_path),excluded_regions=excluded,rows=rows,
                 operational=dict(adapter='0.9.4-b',preset=selected['preset'],workers=workers,torch_threads=torch.get_num_threads(),batch=batch,limits=selected['limits'],cache=cache.stats(),seconds=time.perf_counter()-start,estimate=estimate,backend=target))
+    phase_start=time.perf_counter()
     # Estimate is advisory; also enforce the exact final JSON byte count before publishing.
     if len((json.dumps(result,indent=2,sort_keys=True,allow_nan=False)+'\n').encode('utf-8'))>selected['disk_budget']:
         raise h.ResourceBlocked('Configured disk limit exceeded by actual report')
-    core.write(output,result); return result
+    core.write(output,result)
+    if profiler: profiler.record('serialization',time.perf_counter()-phase_start)
+    return result
 
 
 def predict(*args, **kwargs):
