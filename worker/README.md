@@ -1,4 +1,6 @@
-# Voynich GPU Worker 0.1.0
+# Voynich GPU Worker — v0.8.1 development baseline
+
+**Product direction (planned): Voynich Research Studio (VRS).** See [Roadmap.md](Roadmap.md) for the modular post-v0.8.1 research workbench, lightweight review profile, modern UI and multi-repository evidence reporting. This does not change the current executable name, scientific status or release acceptance.
 
 **Release 0.8.1:** [Local Windows review tray](TRAY.md). Explicit batch registration, pending notifications and one-click review; native Windows validation pending.
 
