@@ -27,6 +27,8 @@ def positive(value, name, zero=False):
 def cuda_probe(torch, index=0):
     """Require actual allocation, arithmetic and synchronization on selected device."""
     try:
+        if isinstance(getattr(torch.version, 'hip', None), str) and torch.version.hip:
+            raise ResourceBlocked('HIP build is ROCm, not NVIDIA CUDA; use explicit alternative qualification')
         if not torch.cuda.is_available():
             raise ResourceBlocked('CUDA unavailable')
         if not 0 <= index < torch.cuda.device_count():

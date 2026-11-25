@@ -1,0 +1,2 @@
+# Probe only; separate Python 3.12 local environment, never install into CUDA/CPU environment.
+torch-directml==0.2.5.dev240914
