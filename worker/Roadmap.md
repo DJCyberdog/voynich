@@ -213,6 +213,10 @@ A1–A6 implementation delivered: bounded ordered inference, adaptive batch and 
 
 B1–B4: local technical PASS for operational limit overrides, Silent/Balanced/Performance integration, adaptive bounded per-run feature caching, and larger-resource planner scaling. 8/8 new tests; 125/125 integrated tests, no skips. Native RTX/Windows, clean wheel install, representative real-manuscript throughput and full coordinator integration remain open; high-end native benchmarks are optional. See [VRS-094-B.md](VRS-094-B.md). C-tier diagnostics/profiling optional; D/E deferred, F excluded. Proceed to VRS-095 without repeating CPU-only acceptance loops or claiming a complete native release.
 
+### VRS-094 — C-tier checkpoint
+
+C1–C2: TECH_PASS locally for expanded hardware diagnostics and opt-in phase profiler integrated with adaptive inference. 6/6 new tests, 131/131 integrated PASS, zero skips. Windows SSD mapping and CUDA allocator telemetry implemented, mocked only; native owner validation remains open. Unique-region synthetic CPU benchmark (512 distinct region hashes, 4096 candidates, no cache hits) with adaptive profiling enabled: median 7782 -> 11507 candidates/s, exact output-row parity. See [VRS-094-C.md](VRS-094-C.md). Owner direction: evaluate remaining tiers sequentially before VRS-095; D/E were previously deferred optional capabilities and F excluded, not automatic commitments to native support or new dependencies. No new experiments.
+
 ## 8. Original starting action (historical)
 
 VRS-090: freeze v0.8.1 interfaces and exact baseline, enumerate imports and existing GitHub bridge policies, rerun available tests, define private-fixture and actual Windows/GPU gaps, and prepare migration adapters. Follow with VRS-091 and the automation/exception milestones VRS-095–097 before UI migration; do not start remote publication or new scientific scoring merely because this roadmap exists.
