@@ -16,9 +16,10 @@ Choose the Windows/Pip CUDA build of PyTorch compatible with your RTX 5060 Ti an
 ```powershell
 .\.venv\Scripts\python.exe worker.py doctor --device cuda
 .\.venv\Scripts\python.exe -m unittest -v test_worker
+.\.venv\Scripts\python.exe cuda_smoke.py
 ```
 
-The doctor performs a small CUDA matrix multiplication, not merely device enumeration. `--device cuda` fails closed if CUDA cannot run; `--device auto` reports a reason and uses CPU if the initial CUDA probe fails. It does not silently restart failed GPU training on CPU. Use `--device cpu` to request CPU explicitly. If the GPU probe passes, a real CUDA training/checkpoint smoke test is still needed; the supplied tests train on CPU only.
+The doctor performs a small CUDA matrix multiplication, not merely device enumeration. `--device cuda` fails closed if CUDA cannot run; `--device auto` reports a reason and uses CPU if the initial CUDA probe fails. It does not silently restart failed GPU training on CPU. Use `--device cpu` to request CPU explicitly. If the GPU probe passes, run the supplied cuda_smoke.py for actual synthetic CUDA training; the unittest suite trains on CPU only.
 
 ## Local workflow
 
