@@ -1,0 +1,27 @@
+{
+  "code_sha256": {
+    "glyphs.py": "2f8b5867b08999ab97df7f67457a9b2d164a4a41cdd1e9ab359feafec4cd44b2",
+    "regions.py": "374a585c186f84340e66ccb94dc680a2782cf044910f09a9cad6f40d8d6999b2",
+    "worker.py": "7de715b0f740c969e102cebdf5b042e13cd2c013d05a3f2303e6279dc56530dd"
+  },
+  "groups_sha256": "e91433184fa823431163575d22f54759f00def6651e9ec6accda121e9d7eadcb",
+  "manifest_sha256": "5aeaf43587a63ba32681f8f145d302eb291ddef9545fc6dbbb83589c0358777d",
+  "note": "Overlapping ink windows and projection runs, not distinct glyphs or text detections.",
+  "pages": [
+    6,
+    176
+  ],
+  "projection_run_counts": {
+    "176": 8222,
+    "6": 8468
+  },
+  "proposal_counts": {
+    "176": 3106,
+    "6": 2361
+  },
+  "scientific_status": "BLOCKED_NO_INDEPENDENT_LABELS",
+  "scope": "real_source_engineering_probe",
+  "screened": 12782,
+  "source_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+  "version": "0.7.0"
+}
