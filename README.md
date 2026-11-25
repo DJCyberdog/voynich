@@ -1,5 +1,21 @@
 # PROJECT VOYNICH
 
+## Current integration checkpoint — 2026-11-25
+
+This consolidated branch contains the complete reviewed research stack #65–#91 (including historical PASS and NOT_MET results). The earlier proposed-status sections below are retained as dated history; this checkpoint supersedes their progress/next-step statements once merged to main. No experiment is independently rerun by the integration itself.
+
+| Measurable work package | Progress |
+| --- | --- |
+| Scoped completed A/W audit claims | **4/40 (10%)** — A-03, A-11, A-14, W-20; 36 open |
+| Inventoried owner-canonical canvas IDs | **213/213 (100%)** — not physical folio validation or live Yale authentication |
+| Decipherment acceptance gates | **0/5 (0%)** |
+| Independent glyph pilot adjudication (deprioritized) | **0/20 (0%)** |
+| EXP-0038g candidate segmentation gates | **59/74 (79.73%)** — NOT_MET; 60 required |
+
+No global decipherment percentage. EXP-0038b–g are documented scoped work, not independently reproduced in this integration. b conditional identifiability NOT_MET; c partial visual feature support; d strict vessel attachment NOT_MET; e botanical numeric readiness PASS but fragile; f blind review packet and candidate pool documented, no accepted matches; g CPU segmentation NOT_MET (59/74, 60 required), 16/74 shifted positives not certified blank, 3/3 synthetic controls. Semantic validation BLOCKED; no physical glyph/meaning or decipherment claim. Next independent blinded annotation and certified script/non-script controls; do not expose owner key, repeat or tune failed gates. GPU execution not performed.
+
+Latest reports: [EXP-0038b](research/experiments/2026-11-25_EXP-0038b_report.md) · [EXP-0038c](research/experiments/2026-11-25_EXP-0038c_report.md) · [EXP-0038d](research/experiments/2026-11-25_EXP-0038d_report.md) · [EXP-0038e](research/experiments/2026-11-25_EXP-0038e_report.md) · [EXP-0038f](research/experiments/2026-11-25_EXP-0038f_report.md) · [EXP-0038g](research/experiments/2026-11-25_EXP-0038g_report.md). Source SRC-0007 remains owner-canonical, not independently live authenticated. All integration is through PR; no automation changes.
+
 ## EXP-0038a — image-only inventory (2026-11-24, proposed)
 
 EXP-0038a RESEARCH_COMPLETED for inventory / PASS 5/5; independent semantic readiness BLOCKED. Owner SHA-pinned PDF four pages f88r/f99r/f99v/f100r; 13 provisional object rectangles, three pedestal forms within f88, ten broad-body forms across f99/f100. Eight possible enclosed writing regions all f99, four ambiguous nearby, one none clear. No transcription used in visual classification, prior pilot known; no independent image review or locus join. Two byte-identical validator runs, exact inventory/code/results saved. Randomized empty reviewer template generated, no reviewer enrolled. Next independent adjudication and extend directly attached candidate writing across roots, then freeze specific referents before EXP-0039. Original EXP-0038 NOT_MET preserved. [Report](research/experiments/2026-11-24_EXP-0038a_report.md) · [Inventory](research/results/2026-11-24_EXP-0038a_inventory.json) · [Results](research/results/2026-11-24_EXP-0038a_results.json). No new decipherment gate.
