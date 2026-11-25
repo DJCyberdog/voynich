@@ -102,6 +102,28 @@ def validate(root, job):
     return args
 
 
+def make_job(root, jid, action, inputs, options, out):
+    """Create a pinned local job from explicit relative paths; never submits it."""
+    root=Path(root).resolve(); entries={}
+    for value in inputs:
+        name, sep, rel=value.partition("=")
+        w.require(sep and name not in entries and not Path(rel).is_absolute(),"Expected unique name=relative/path")
+        path=w.within(root,rel); w.require(path.is_file(),"Missing input: "+name)
+        entries[name]=dict(path=rel,sha256=w.sha(path))
+    job=dict(schema=1,id=jid,action=action,inputs=entries,options=json.loads(options))
+    validate(root,job); out=Path(out); w.require(not out.exists(),"Job output already exists")
+    w.write(out,job); return job
+
+
+def status(root):
+    root=Path(root).resolve(); results=[]
+    for path in sorted(w.within(root,"jobs").glob("*.json")):
+        journal=w.within(root,"status/"+path.stem+".json")
+        row=w.read(journal) if journal.exists() else dict(id=path.stem,state="PENDING",job_sha256=w.sha(path))
+        results.append(row)
+    return results
+
+
 def submit(root, source):
     root=Path(root).resolve(); job=w.read(source); validate(root,job)
     inbox=w.within(root,"jobs"); inbox.mkdir(parents=True,exist_ok=True)
@@ -189,12 +211,14 @@ def export(root, jid, out):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); sub=p.add_subparsers(dest="cmd",required=True)
+    q=sub.add_parser("make"); q.add_argument("root"); q.add_argument("jid"); q.add_argument("action",choices=sorted(INPUTS)); q.add_argument("out"); q.add_argument("--input",dest="inputs",action="append",required=True); q.add_argument("--options",default="{}")
+    q=sub.add_parser("status"); q.add_argument("root")
     q=sub.add_parser("submit"); q.add_argument("root"); q.add_argument("source")
     q=sub.add_parser("import-git"); q.add_argument("root"); q.add_argument("repo"); q.add_argument("commit"); q.add_argument("path"); q.add_argument("expected_sha")
     q=sub.add_parser("process"); q.add_argument("root"); q.add_argument("--retry")
     q=sub.add_parser("watch"); q.add_argument("root"); q.add_argument("--interval",type=int,default=15)
     q=sub.add_parser("export"); q.add_argument("root"); q.add_argument("jid"); q.add_argument("out")
-    args=vars(p.parse_args()); cmd=args.pop("cmd"); print(json.dumps({"submit":submit,"import-git":import_git,"process":process,"watch":watch,"export":export}[cmd](**args),indent=2))
+    args=vars(p.parse_args()); cmd=args.pop("cmd"); print(json.dumps({"make":make_job,"status":status,"submit":submit,"import-git":import_git,"process":process,"watch":watch,"export":export}[cmd](**args),indent=2))
 
 if __name__=="__main__":
     try: main()
