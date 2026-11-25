@@ -1,5 +1,7 @@
 # Voynich GPU Worker 0.1.0
 
+**Release 0.4.0:** [Multiscale region proposals and localization evaluation](REGIONS.md). Local-only development release; existing offline and bridge modes retained.
+
 **Release 0.3.0:** See [BRIDGE.md](BRIDGE.md) for opt-in GitHub job polling and aggregate PR publication. Offline mode remains supported.
 
 **Release 0.2.0:** The unchanged core is extended by the [offline pipeline guide](PIPELINE.md) and [test report](TEST_REPORT.md). Follow those for the current queue, inference and validation status.
