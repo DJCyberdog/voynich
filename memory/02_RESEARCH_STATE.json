@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-24",
+  "updated": "2026-11-25",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0038a image-only referent inventory",
-  "status": "RESEARCH_COMPLETED_SCOPED_PROPOSED",
+  "cycle": "Owner-authorized PR stack consolidation through EXP-0038g",
+  "status": "RESEARCH_DOCUMENTED_SEMANTIC_VALIDATION_BLOCKED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
   "source_rights_verified": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Independent image-only review and cross-root inscription inventory before EXP-0039",
+  "next": "Independent blinded annotation, certified script/non-script specificity controls and separate region-locus mapping; preserve NOT_MET thresholds; other A/W tasks may continue.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -160,7 +160,7 @@
       "branch_origin": "research/exp0023-f57v-f49v-holdout-20261113"
     }
   ],
-  "top_priority": "Independent semantic anchor adjudication; K-0001 deferred",
+  "top_priority": "Independent semantic anchor adjudication and segmentation specificity; K-0001 deferred",
   "k0001_f1r_f10v_pilot": {
     "report": "research/glyphs/2026-11-15_K0001_first_ten_folios_census.md",
     "ledger": "research/glyphs/2026-11-15_K0001_f1r-f10v_preliminary_coverage.jsonl",
@@ -716,5 +716,61 @@
     "inside_writing_roots": 1,
     "independent_review_count": 0,
     "locus_alignment_count": 0
+  },
+  "exp0038b": {
+    "report": "research/experiments/2026-11-25_EXP-0038b_report.md",
+    "result": "research/results/2026-11-25_EXP-0038b_results.json",
+    "decision": "NOT_MET",
+    "semantic_readiness": "BLOCKED",
+    "scope": "All three subsets have pure strata, one conditional assignment; no semantic statistic.",
+    "caveat": "JS executed; equivalent Python not run."
+  },
+  "exp0038c": {
+    "report": "research/experiments/2026-11-25_EXP-0038c_report.md",
+    "result": "research/results/2026-11-25_EXP-0038c_results.json",
+    "decision": "PARTIAL",
+    "semantic_readiness": "BLOCKED",
+    "scope": "43 provisional objects; feet support all/new objects, enclosed subset NOT_MET.",
+    "caveat": "JS repeated; equivalent Python not run; panel mapping provisional."
+  },
+  "exp0038d": {
+    "report": "research/experiments/2026-11-25_EXP-0038d_report.md",
+    "result": "research/results/2026-11-25_EXP-0038d_results.json",
+    "decision": "NOT_MET",
+    "semantic_readiness": "BLOCKED",
+    "scope": "45 objects, 20 ambiguous nearby, none uniquely assigned; strict 28 assignments, sensitivity 6.",
+    "caveat": "JS executed; equivalent Python not run; freeze vessel-foot confirmation."
+  },
+  "exp0038e": {
+    "report": "research/experiments/2026-11-25_EXP-0038e_report.md",
+    "result": "research/results/2026-11-25_EXP-0038e_results.json",
+    "decision": "PASS",
+    "semantic_readiness": "BLOCKED",
+    "scope": "101 candidates, 74 provisional unique attachments; primary numeric support PASS, fragile to single f102 candidate.",
+    "caveat": "JS and BigInt replay; equivalent Python not run; no independent adjudication."
+  },
+  "exp0038f": {
+    "report": "research/experiments/2026-11-25_EXP-0038f_report.md",
+    "result": "research/results/2026-11-25_EXP-0038f_results.json",
+    "decision": "DOCUMENTED",
+    "semantic_readiness": "BLOCKED",
+    "scope": "74 opaque IDs; 113 Lf loci, 93 strict dual single-word, 59 exact agreements; zero accepted matches.",
+    "caveat": "Python repeated; no reviewer response. Owner crosswalk restricted to non-reviewers."
+  },
+  "exp0038g": {
+    "report": "research/experiments/2026-11-25_EXP-0038g_report.md",
+    "result": "research/results/2026-11-25_EXP-0038g_summary.json",
+    "decision": "NOT_MET",
+    "semantic_readiness": "BLOCKED",
+    "scope": "59/74 vs 60 required; shifted 16/74 not certified blank; synthetic 3/3.",
+    "caveat": "Two byte-identical Python runs reported; ink blobs not glyphs; no specificity or OCR accuracy."
+  },
+  "integration_checkpoint": {
+    "date": "2026-11-25",
+    "scope": "PRs #65–#91",
+    "previous_tip": "b6fd6ac58ade966361d03e55fbd3c72a633492c3",
+    "scientific_reproduction": "NOT_RUN_IN_INTEGRATION",
+    "semantic_validation": "BLOCKED",
+    "automation_changed": false
   }
 }
