@@ -1,0 +1,15 @@
+__pycache__/
+.venv/
+*.pt
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.tmp
+manifest.json
+reviewer*.json
+report.json
+crops/
+dataset/
+run*/
+private/
