@@ -46,6 +46,15 @@ class PipelineTests(unittest.TestCase):
         with (self.root/'outputs/predict1/predictions.json').open('a') as f: f.write(' ')
         with self.assertRaisesRegex(ValueError,'Report changed'): p.export(self.root,'predict1',self.root/'share.json')
 
+    def test_make_and_status(self):
+        f=self.fixture; out=self.root/'new.json'
+        inputs=['pdf=synthetic.pdf','review=review.csv','groups=groups.json']
+        p.make_job(self.root,'new','prepare',inputs,'{}',out)
+        self.assertEqual(w.read(out)['inputs']['pdf']['sha256'],w.sha(f.pdf))
+        self.assertEqual(p.status(self.root),[]); p.submit(self.root,out)
+        self.assertEqual(p.status(self.root)[0]['state'],'PENDING'); p.process(self.root)
+        self.assertEqual(p.status(self.root)[0]['state'],'COMPLETED')
+
     def test_git_import(self):
         f=self.fixture; job=self.job('git1','prepare',dict(pdf=f.pdf,review=f.review,groups=f.groups))
         repo=self.root/'clone'; repo.mkdir()
