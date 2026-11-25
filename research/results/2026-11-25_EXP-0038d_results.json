@@ -1,0 +1,151 @@
+{
+  "experiment": "EXP-0038d",
+  "n": 45,
+  "nearby_reviewed": 20,
+  "unique_nearby": 0,
+  "strict_objects": 10,
+  "possible_enclosed_regions": 11,
+  "execution": "JavaScript",
+  "controls": "PASS",
+  "results": {
+    "all": {
+      "groups": {
+        "f88": [
+          1,
+          5
+        ],
+        "f99": [
+          6,
+          2
+        ],
+        "f100": [
+          3,
+          0
+        ],
+        "f89": [
+          4,
+          4
+        ],
+        "f101": [
+          6,
+          0
+        ],
+        "f102": [
+          7,
+          3
+        ]
+      },
+      "mixed_roots": 4,
+      "mixed_class_counts": [
+        18,
+        14
+      ],
+      "assignments": 1411200,
+      "pass": true
+    },
+    "strict": {
+      "groups": {
+        "f99": [
+          6,
+          2
+        ],
+        "f102": [
+          0,
+          2
+        ]
+      },
+      "mixed_roots": 1,
+      "mixed_class_counts": [
+        6,
+        2
+      ],
+      "assignments": 28,
+      "pass": false
+    },
+    "expanded": {
+      "groups": {
+        "f99": [
+          6,
+          2
+        ],
+        "f102": [
+          0,
+          2
+        ]
+      },
+      "mixed_roots": 1,
+      "mixed_class_counts": [
+        6,
+        2
+      ],
+      "assignments": 28,
+      "pass": false
+    },
+    "exclude_uncertain_white_marks": {
+      "groups": {
+        "f99": [
+          5,
+          1
+        ],
+        "f102": [
+          0,
+          2
+        ]
+      },
+      "mixed_roots": 1,
+      "mixed_class_counts": [
+        5,
+        1
+      ],
+      "assignments": 6,
+      "pass": false
+    },
+    "relaxed_all_nearby_diagnostic_only": {
+      "groups": {
+        "f88": [
+          1,
+          5
+        ],
+        "f99": [
+          6,
+          2
+        ],
+        "f100": [
+          1,
+          0
+        ],
+        "f89": [
+          4,
+          4
+        ],
+        "f102": [
+          0,
+          3
+        ]
+      },
+      "mixed_roots": 3,
+      "mixed_class_counts": [
+        11,
+        11
+      ],
+      "assignments": 11760,
+      "pass": true
+    },
+    "strict_exclude_f102": {
+      "groups": {
+        "f99": [
+          6,
+          2
+        ]
+      },
+      "mixed_roots": 1,
+      "mixed_class_counts": [
+        6,
+        2
+      ],
+      "assignments": 28,
+      "pass": false
+    }
+  },
+  "semantic_status": "BLOCKED"
+}

@@ -1,0 +1,123 @@
+{
+  "experiment": "EXP-0037k",
+  "decision": "NOT_MET",
+  "gates_passed": 5,
+  "gates_total": 12,
+  "full_local_result_sha256": "155aea980a6544b5d303e4adb96f0b26b5051791429a3a921b7a2b6ad38bd199",
+  "full_local_result_git_blob": "ed18e4b3581a9b12cfec325a375df41135eb0ef7",
+  "vocab_size": 502,
+  "sources": {
+    "ZL": {
+      "tokens": 28464,
+      "train": 22997,
+      "test": 5467,
+      "train_context": 18038,
+      "test_context": 4249,
+      "test_three": 2467,
+      "loci": 3885,
+      "train_roots": 77,
+      "test_roots": 21
+    },
+    "GC": {
+      "tokens": 30691,
+      "train": 24818,
+      "test": 5873,
+      "train_context": 20273,
+      "test_context": 4755,
+      "test_three": 2973,
+      "loci": 3885,
+      "train_roots": 77,
+      "test_roots": 21
+    }
+  },
+  "results": {
+    "GC_to_ZL": {
+      "N": 4249,
+      "roots": 21,
+      "gain": -0.16848315071825604,
+      "bootstrap": [
+        -0.19235243778347935,
+        -0.14351046213303592
+      ],
+      "p": 1,
+      "positive_roots": 0,
+      "permutable": 3757,
+      "permutation_strata": 493,
+      "permutation_p": 0.04,
+      "permutation_mean": -0.18549545928522695,
+      "permutation_excess": 0.01701230856697092,
+      "known_N": 2688,
+      "known_gain": -0.27047280635888615,
+      "own_gain": -0.14261602775022997,
+      "long_bits": [
+        4.779446421127656,
+        4.99134279027159,
+        5.048123998051956,
+        5.053629993086499
+      ],
+      "own_long_bits": [
+        4.703264669794992,
+        4.890390899052926,
+        4.922876329452128,
+        4.924936653898932
+      ],
+      "gates": {
+        "support": true,
+        "gain": false,
+        "bootstrap": false,
+        "sign_p": false,
+        "perm_p": true,
+        "perm_support": true
+      }
+    },
+    "ZL_to_GC": {
+      "N": 4755,
+      "roots": 21,
+      "gain": -0.12062637445676114,
+      "bootstrap": [
+        -0.15744883467401147,
+        -0.09245554044147462
+      ],
+      "p": 1,
+      "positive_roots": 1,
+      "permutable": 4150,
+      "permutation_strata": 507,
+      "permutation_p": 0.055,
+      "permutation_mean": -0.1351602755754656,
+      "permutation_excess": 0.014533901118704451,
+      "known_N": 2564,
+      "known_gain": -0.28424595890562543,
+      "own_gain": -0.14191124603282335,
+      "long_bits": [
+        4.3215173396277295,
+        4.493024458295286,
+        4.533695862105155,
+        4.536029663989651
+      ],
+      "own_long_bits": [
+        4.175534920942643,
+        4.333816823571163,
+        4.401147453293379,
+        4.408225058258847
+      ],
+      "gates": {
+        "support": true,
+        "gain": false,
+        "bootstrap": false,
+        "sign_p": false,
+        "perm_p": false,
+        "perm_support": true
+      }
+    }
+  },
+  "controls": {
+    "source_hashes": true,
+    "parser_replay": true,
+    "root_disjoint": true,
+    "barrier": true,
+    "normalization": true,
+    "zero_count": true,
+    "synthetic_gain": 0.6061369362633827,
+    "byte_identical_replay": true
+  }
+}

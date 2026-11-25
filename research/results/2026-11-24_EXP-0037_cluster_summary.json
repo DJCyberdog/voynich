@@ -1,0 +1,207 @@
+{
+  "experiment": "EXP-0037a-f",
+  "decision": "NOT_MET",
+  "passes": 4,
+  "total": 6,
+  "full_local_result_sha256": "4c61a9f04d43c3d71f1b200fc7fffe340b34cb2bea617df7c0fd5515118fab82",
+  "full_local_result_git_blob": "0994bb29bc9251efbf9ee7dd42ecbd6468304f9d",
+  "shared_chunks": 102,
+  "train_candidates": 58,
+  "witness_order": [
+    "ZL",
+    "GC"
+  ],
+  "results": {
+    "a": {
+      "decision": "PASS",
+      "ZL_to_GC": {
+        "n2": 10391,
+        "n3": 3712,
+        "n4": 847,
+        "gain2": 0,
+        "gain3": 0.022735893312209085,
+        "gain4": 0.03174843059538887,
+        "long_gain": 0.02441029977828789,
+        "long_bootstrap": [
+          0.016937887091825744,
+          0.03016384787238188
+        ],
+        "p": 0.001,
+        "positive_roots": 21
+      },
+      "GC_to_ZL": {
+        "n2": 11550,
+        "n3": 4476,
+        "n4": 1092,
+        "gain2": 0,
+        "gain3": 0.035109624898612905,
+        "gain4": 0.04235737007085089,
+        "long_gain": 0.036531057680237164,
+        "long_bootstrap": [
+          0.030619963538824464,
+          0.04102752655148835
+        ],
+        "p": 0.001,
+        "positive_roots": 20
+      }
+    },
+    "b": {
+      "decision": "PASS",
+      "retained": 57,
+      "validated": 51,
+      "recombining": 43,
+      "removed": {
+        "short": [
+          "D1",
+          "A1"
+        ],
+        "long": [
+          "D1",
+          "A1",
+          "Q1"
+        ],
+        "coverage": [
+          0.8257113821138211,
+          0.8253196930946292
+        ]
+      },
+      "counts": {
+        "prefix": [
+          8,
+          6,
+          5
+        ],
+        "suffix": [
+          45,
+          42,
+          35
+        ],
+        "internal": [
+          4,
+          3,
+          3
+        ]
+      }
+    },
+    "c": {
+      "decision": "PASS",
+      "supported_cores": 97,
+      "train_decomposed": [
+        11709,
+        10291
+      ],
+      "test_decomposed": [
+        2611,
+        2304
+      ],
+      "ZL_to_GC": {
+        "N": 1586,
+        "gain": 0.4079817686766892,
+        "bootstrap": [
+          0.3756048090655889,
+          0.4460547983489806
+        ],
+        "p": 0.001,
+        "positive_roots": 21,
+        "novel_pairs": 81
+      },
+      "GC_to_ZL": {
+        "N": 2138,
+        "gain": 0.3910666530532302,
+        "bootstrap": [
+          0.3633419436549412,
+          0.4225984839623926
+        ],
+        "p": 0.001,
+        "positive_roots": 21,
+        "novel_pairs": 106
+      }
+    },
+    "d": {
+      "decision": "NOT_MET",
+      "ZL_to_GC": {
+        "decision": "INCONCLUSIVE",
+        "N": 74,
+        "roots": 15,
+        "gain": 0.0025245585180554914,
+        "bootstrap": [
+          -0.025174235327713092,
+          0.07588542560121318
+        ],
+        "p": 0.505
+      },
+      "GC_to_ZL": {
+        "decision": "NOT_MET",
+        "N": 115,
+        "roots": 15,
+        "gain": 0.0073193390681555205,
+        "bootstrap": [
+          -0.01791159606751236,
+          0.03422607793997871
+        ],
+        "p": 0.29
+      }
+    },
+    "e": {
+      "decision": "NOT_MET",
+      "ZL_to_GC": {
+        "N": 14950,
+        "gain": 0.004463781186722987,
+        "p": 0.005,
+        "bootstrap": [
+          0.0015710669862903858,
+          0.009169472185557479
+        ],
+        "A_gain": 0.012581188280460365,
+        "B_gain": 0.00034656422043679273
+      },
+      "GC_to_ZL": {
+        "N": 17118,
+        "gain": 0.003945029682037926,
+        "p": 0.001,
+        "bootstrap": [
+          0.0014074823024084373,
+          0.0077650104028903
+        ],
+        "A_gain": 0.011469446943472898,
+        "B_gain": 0.0007304962446865181
+      }
+    },
+    "f": {
+      "decision": "PASS",
+      "mapped": 57,
+      "validated": 52,
+      "unmapped": 0,
+      "collisions": 0,
+      "counts": {
+        "prefix": [
+          8,
+          7
+        ],
+        "suffix": [
+          45,
+          41
+        ],
+        "internal": [
+          4,
+          4
+        ]
+      },
+      "independent_reader": false
+    }
+  },
+  "controls": {
+    "source_hashes": true,
+    "root_disjoint": true,
+    "inventory_replay": true,
+    "train_candidate_replay": true,
+    "two_code_exact_zero": true,
+    "categorical_normalization": true,
+    "categorical_positive_gain": 0.6061358035703155,
+    "folio_metadata_replay": true,
+    "normalization": true,
+    "synthetic_positive_gain": 0.6492545968096639,
+    "zero_count_backoff": true,
+    "byte_identical_replay": true
+  }
+}

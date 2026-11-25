@@ -1,0 +1,211 @@
+{
+  "controls": {
+    "normalization": true,
+    "prior_hash": true,
+    "replay": true,
+    "root_disjoint": true,
+    "source_hashes": true,
+    "synthetic_gain": 0.6061358035703155,
+    "zero_count": true
+  },
+  "decision": "NOT_MET",
+  "experiment": "EXP-0037g-i",
+  "groups": {
+    "GC_to_ZL": {
+      "groups": 22,
+      "singletons": 4,
+      "sizes": [
+        19,
+        14,
+        8,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        3,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "ZL_to_GC": {
+      "groups": 22,
+      "singletons": 5,
+      "sizes": [
+        18,
+        17,
+        9,
+        8,
+        8,
+        6,
+        4,
+        3,
+        3,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "results": {
+    "g": {
+      "GC_to_ZL": {
+        "N": 2138,
+        "bootstrap": [
+          -0.017959450853112437,
+          0.0061322299109751975
+        ],
+        "decision": "NOT_MET",
+        "gain": -0.008289493099618774,
+        "gates": {
+          "bootstrap": false,
+          "gain": false,
+          "p": false,
+          "support": true
+        },
+        "novel_gain": -0.35915931144412455,
+        "novel_pairs": 106,
+        "novel_tokens": 118,
+        "p": 0.936,
+        "positive_roots": 10,
+        "roots": 21,
+        "singleton_options": 0
+      },
+      "ZL_to_GC": {
+        "N": 1586,
+        "bootstrap": [
+          -0.016967041220568645,
+          0.003456775506691555
+        ],
+        "decision": "NOT_MET",
+        "gain": -0.006796738786423474,
+        "gates": {
+          "bootstrap": false,
+          "gain": false,
+          "p": false,
+          "support": true
+        },
+        "novel_gain": -0.5119150411443301,
+        "novel_pairs": 81,
+        "novel_tokens": 90,
+        "p": 0.88,
+        "positive_roots": 8,
+        "roots": 21,
+        "singleton_options": 0
+      },
+      "decision": "NOT_MET"
+    },
+    "h": {
+      "GC_to_ZL": {
+        "N": 2138,
+        "bootstrap": [
+          -0.11893397883990128,
+          -0.052915346111032234
+        ],
+        "decision": "NOT_MET",
+        "gain": -0.08101500305253805,
+        "gates": {
+          "bootstrap": false,
+          "gain": false,
+          "p": false,
+          "support": true
+        },
+        "novel_gain": 0.19177025543664689,
+        "other_core_coverage": 2071,
+        "p": 1.0,
+        "positive_roots": 2,
+        "roots": 21
+      },
+      "ZL_to_GC": {
+        "N": 1586,
+        "bootstrap": [
+          -0.11149094205830705,
+          -0.03642214636270386
+        ],
+        "decision": "NOT_MET",
+        "gain": -0.07516263552151237,
+        "gates": {
+          "bootstrap": false,
+          "gain": false,
+          "p": false,
+          "support": true
+        },
+        "novel_gain": 0.1616396297008275,
+        "other_core_coverage": 1466,
+        "p": 0.997,
+        "positive_roots": 5,
+        "roots": 21
+      },
+      "decision": "NOT_MET"
+    },
+    "i": {
+      "GC_to_ZL": {
+        "N": 116,
+        "auc_H": 0.7801129665353803,
+        "auc_L": 0.7696783819628646,
+        "bootstrap": [
+          -0.047575110075110075,
+          0.03278410043115926
+        ],
+        "decision": "NOT_MET",
+        "distinct_pairs": 104,
+        "gain": -0.010434584572515608,
+        "gates": {
+          "bootstrap": false,
+          "gain": false,
+          "p": false,
+          "support": true
+        },
+        "mean_negatives": 9.310344827586206,
+        "p": 0.702,
+        "positive_roots": 7,
+        "roots": 21
+      },
+      "ZL_to_GC": {
+        "N": 88,
+        "auc_H": 0.7754866345775436,
+        "auc_L": 0.7965634744043836,
+        "bootstrap": [
+          -0.014525474525474527,
+          0.06482267732267732
+        ],
+        "decision": "INCONCLUSIVE",
+        "distinct_pairs": 79,
+        "gain": 0.02107683982683983,
+        "gates": {
+          "bootstrap": false,
+          "gain": true,
+          "p": false,
+          "support": false
+        },
+        "mean_negatives": 9.056818181818182,
+        "p": 0.166,
+        "positive_roots": 9,
+        "roots": 20
+      },
+      "decision": "NOT_MET"
+    }
+  },
+  "supported_cores": 97
+}

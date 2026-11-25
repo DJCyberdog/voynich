@@ -1,0 +1,47 @@
+{
+  "attachment_counts": {
+    "ambiguous_nearby": 4,
+    "inside_object": 8,
+    "none_clear": 1
+  },
+  "candidate_writing_roots": [
+    "f100",
+    "f88",
+    "f99"
+  ],
+  "experiment": "EXP-0038a",
+  "gates": {
+    "candidate_writing_roots": true,
+    "coordinates_and_ids": true,
+    "objects": true,
+    "repeated_shape": true,
+    "roots": true
+  },
+  "independent_review_count": 0,
+  "inside_object_writing_roots": [
+    "f99"
+  ],
+  "inventory_decision": "PASS",
+  "locus_alignment_count": 0,
+  "objects": 13,
+  "render_version": "1.26.7",
+  "roots": [
+    "f100",
+    "f88",
+    "f99"
+  ],
+  "semantic_readiness": "BLOCKED",
+  "shape_counts": {
+    "broad_body": 10,
+    "pedestal": 3
+  },
+  "shape_roots": {
+    "broad_body": [
+      "f100",
+      "f99"
+    ],
+    "pedestal": [
+      "f88"
+    ]
+  }
+}

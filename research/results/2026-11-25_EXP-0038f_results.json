@@ -1,0 +1,217 @@
+{
+  "experiment": "EXP-0038f",
+  "review_cases": 74,
+  "duplicate_exact_text_centers": 0,
+  "review_responses": 0,
+  "exact_region_locus_alignments": 0,
+  "source_hashes_verified": true,
+  "python_runs": 2,
+  "identical_output": true,
+  "pools": [
+    {
+      "pages": [
+        176
+      ],
+      "folios": [
+        "f99r"
+      ],
+      "review_cases": 17,
+      "Lf": 30,
+      "Lc": 4,
+      "dual_strict": 24,
+      "dual_exact_agreement": 14,
+      "loci": [
+        "f99r.2",
+        "f99r.3",
+        "f99r.4",
+        "f99r.5",
+        "f99r.6",
+        "f99r.7",
+        "f99r.8",
+        "f99r.9",
+        "f99r.10",
+        "f99r.11",
+        "f99r.12",
+        "f99r.13",
+        "f99r.14",
+        "f99r.20",
+        "f99r.21",
+        "f99r.22",
+        "f99r.23",
+        "f99r.24",
+        "f99r.25",
+        "f99r.26",
+        "f99r.27",
+        "f99r.33",
+        "f99r.34",
+        "f99r.35",
+        "f99r.36",
+        "f99r.37",
+        "f99r.38",
+        "f99r.39",
+        "f99r.40",
+        "f99r.46"
+      ]
+    },
+    {
+      "pages": [
+        177
+      ],
+      "folios": [
+        "f99v"
+      ],
+      "review_cases": 18,
+      "Lf": 21,
+      "Lc": 4,
+      "dual_strict": 17,
+      "dual_exact_agreement": 11,
+      "loci": [
+        "f99v.2",
+        "f99v.3",
+        "f99v.4",
+        "f99v.5",
+        "f99v.6",
+        "f99v.7",
+        "f99v.8",
+        "f99v.9",
+        "f99v.15",
+        "f99v.16",
+        "f99v.17",
+        "f99v.18",
+        "f99v.19",
+        "f99v.20",
+        "f99v.26",
+        "f99v.27",
+        "f99v.28",
+        "f99v.29",
+        "f99v.30",
+        "f99v.31",
+        "f99v.44"
+      ]
+    },
+    {
+      "pages": [
+        178
+      ],
+      "folios": [
+        "f100r"
+      ],
+      "review_cases": 14,
+      "Lf": 17,
+      "Lc": 0,
+      "dual_strict": 13,
+      "dual_exact_agreement": 7,
+      "loci": [
+        "f100r.1",
+        "f100r.2",
+        "f100r.3",
+        "f100r.4",
+        "f100r.5",
+        "f100r.6",
+        "f100r.7",
+        "f100r.8",
+        "f100r.9",
+        "f100r.10",
+        "f100r.11",
+        "f100r.16",
+        "f100r.17",
+        "f100r.18",
+        "f100r.19",
+        "f100r.20",
+        "f100r.21"
+      ]
+    },
+    {
+      "pages": [
+        180
+      ],
+      "folios": [
+        "f101v"
+      ],
+      "review_cases": 5,
+      "Lf": 18,
+      "Lc": 0,
+      "dual_strict": 14,
+      "dual_exact_agreement": 10,
+      "loci": [
+        "f101v.1",
+        "f101v.2",
+        "f101v.3",
+        "f101v.4",
+        "f101v.5",
+        "f101v.6",
+        "f101v.7",
+        "f101v.8",
+        "f101v.9",
+        "f101v.10",
+        "f101v.11",
+        "f101v.12",
+        "f101v.13",
+        "f101v.14",
+        "f101v.15",
+        "f101v.16",
+        "f101v.17",
+        "f101v.18"
+      ]
+    },
+    {
+      "pages": [
+        182,
+        183
+      ],
+      "folios": [
+        "f102v1",
+        "f102v2"
+      ],
+      "review_cases": 20,
+      "Lf": 27,
+      "Lc": 5,
+      "dual_strict": 25,
+      "dual_exact_agreement": 17,
+      "loci": [
+        "f102v2.3",
+        "f102v2.4",
+        "f102v2.5",
+        "f102v2.6",
+        "f102v2.7",
+        "f102v2.8",
+        "f102v2.9",
+        "f102v2.10",
+        "f102v2.11",
+        "f102v2.12",
+        "f102v2.13",
+        "f102v2.14",
+        "f102v2.15",
+        "f102v2.16",
+        "f102v2.25",
+        "f102v2.26",
+        "f102v2.27",
+        "f102v2.28",
+        "f102v2.29",
+        "f102v1.2",
+        "f102v1.3",
+        "f102v1.4",
+        "f102v1.5",
+        "f102v1.6",
+        "f102v1.16",
+        "f102v1.17",
+        "f102v1.18"
+      ]
+    }
+  ],
+  "total": {
+    "Lf": 113,
+    "dual_strict": 93,
+    "dual_exact_agreement": 59
+  },
+  "coordinate_diagnostic": {
+    "normalized_distance_threshold": 0.15,
+    "flagged": [
+      "B063"
+    ],
+    "distance": 0.281,
+    "interpretation": "Review priority only, not an exclusion; object extends across page."
+  },
+  "status": "BLOCKED",
+  "reason": "Independent review and exact region-locus alignment outstanding; folio candidate pools are not mappings."
+}

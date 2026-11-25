@@ -1,0 +1,139 @@
+{
+  "experiment": "EXP-0038g",
+  "decision": "NOT_MET",
+  "semantic_validation": "BLOCKED",
+  "source_sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c",
+  "review_sha256": "031c9f7c6b1a87de18916da446a71894fe2dd7479e7246c5082dafe2baa78e99",
+  "script_sha256": "388208b3b93778d79de333f3222de04898adfabc5ced745b3bc25a50cee2dfce",
+  "script_git_blob": "f7b2805b92dd2f85bcdcafee31e448952f0d6a31",
+  "full_result_sha256": "9b8b79b545a54d4c207898007cee0a9c5d3f6742b0565a06c64949b4710df35c",
+  "identical_runs": 2,
+  "versions": {
+    "opencv": "4.13.0",
+    "pymupdf": "1.26.7",
+    "numpy": "2.3.5"
+  },
+  "controls": {
+    "blank": true,
+    "edge_rejected": true,
+    "strokes": true
+  },
+  "summary": {
+    "n": 74,
+    "passed": 59,
+    "gates": {
+      "center": 74,
+      "components": 72,
+      "fraction": 69,
+      "iou": 59
+    }
+  },
+  "shifted_summary": {
+    "n": 74,
+    "passed": 16,
+    "gates": {
+      "center": 42,
+      "components": 58,
+      "fraction": 32,
+      "iou": 22
+    }
+  },
+  "pages": {
+    "176": {
+      "n": 17,
+      "passed": 16,
+      "gates": {
+        "center": 17,
+        "components": 17,
+        "fraction": 17,
+        "iou": 16
+      }
+    },
+    "177": {
+      "n": 18,
+      "passed": 17,
+      "gates": {
+        "center": 18,
+        "components": 18,
+        "fraction": 17,
+        "iou": 17
+      }
+    },
+    "178": {
+      "n": 14,
+      "passed": 11,
+      "gates": {
+        "center": 14,
+        "components": 13,
+        "fraction": 13,
+        "iou": 11
+      }
+    },
+    "180": {
+      "n": 5,
+      "passed": 2,
+      "gates": {
+        "center": 5,
+        "components": 5,
+        "fraction": 5,
+        "iou": 2
+      }
+    },
+    "182": {
+      "n": 14,
+      "passed": 7,
+      "gates": {
+        "center": 14,
+        "components": 13,
+        "fraction": 11,
+        "iou": 7
+      }
+    },
+    "183": {
+      "n": 6,
+      "passed": 6,
+      "gates": {
+        "center": 6,
+        "components": 6,
+        "fraction": 6,
+        "iou": 6
+      }
+    }
+  },
+  "failed_ids": [
+    "B006",
+    "B014",
+    "B025",
+    "B027",
+    "B032",
+    "B043",
+    "B045",
+    "B048",
+    "B053",
+    "B054",
+    "B061",
+    "B065",
+    "B067",
+    "B070",
+    "B073"
+  ],
+  "shifted_pass_ids": [
+    "B004",
+    "B019",
+    "B022",
+    "B023",
+    "B032",
+    "B038",
+    "B043",
+    "B047",
+    "B050",
+    "B054",
+    "B055",
+    "B057",
+    "B058",
+    "B064",
+    "B065",
+    "B071"
+  ],
+  "overlap_pass": 12
+}

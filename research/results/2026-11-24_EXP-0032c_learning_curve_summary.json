@@ -1,0 +1,166 @@
+{
+  "experiment": "EXP-0032c",
+  "decision": "NOT_MET",
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "full_local_result_sha256": "d69ccb31e116a868f47c3a4a1b869f4627e70c43a9d2898bc46d490c8aff7000",
+  "fit": {
+    "roots": 67,
+    "tokens": 16854,
+    "types": 4389
+  },
+  "validation": {
+    "roots": 10,
+    "tokens": 2791,
+    "types": 1065
+  },
+  "fixed_oov": {
+    "roots": 10,
+    "tokens": 445,
+    "types": 426
+  },
+  "repeats": 20,
+  "mean_rows": [
+    {
+      "fraction": 0.05,
+      "roots": 3,
+      "train_tokens": 791.2,
+      "templates": 357.15,
+      "oov_coverage": 0.06471910112359551,
+      "oov_gain": -0.059558191246681554,
+      "oov_C_nll": 13.026153992092222,
+      "oov_TC_nll": 13.085712183338904,
+      "all_gain": 0.0914484813530409
+    },
+    {
+      "fraction": 0.1,
+      "roots": 7,
+      "train_tokens": 1856.45,
+      "templates": 692.1,
+      "oov_coverage": 0.11898876404494382,
+      "oov_gain": -0.012627276761055798,
+      "oov_C_nll": 12.43333053587614,
+      "oov_TC_nll": 12.445957812637195,
+      "all_gain": 0.09429477899084408
+    },
+    {
+      "fraction": 0.2,
+      "roots": 13,
+      "train_tokens": 3263,
+      "templates": 1051,
+      "oov_coverage": 0.16786516853932584,
+      "oov_gain": 0.008624753654187597,
+      "oov_C_nll": 12.170556687311143,
+      "oov_TC_nll": 12.161931933656955,
+      "all_gain": 0.09060411180787543
+    },
+    {
+      "fraction": 0.4,
+      "roots": 27,
+      "train_tokens": 6943.4,
+      "templates": 1784,
+      "oov_coverage": 0.2398876404494382,
+      "oov_gain": 0.02505017489633604,
+      "oov_C_nll": 11.975112478172647,
+      "oov_TC_nll": 11.950062303276312,
+      "all_gain": 0.09127777900219629
+    },
+    {
+      "fraction": 0.6,
+      "roots": 40,
+      "train_tokens": 10189.7,
+      "templates": 2321.35,
+      "oov_coverage": 0.28247191011235956,
+      "oov_gain": 0.03621136705964663,
+      "oov_C_nll": 11.90784195254134,
+      "oov_TC_nll": 11.871630585481693,
+      "all_gain": 0.09411527922878997
+    },
+    {
+      "fraction": 0.8,
+      "roots": 54,
+      "train_tokens": 13660.2,
+      "templates": 2831.6,
+      "oov_coverage": 0.32269662921348313,
+      "oov_gain": 0.042142564059200964,
+      "oov_C_nll": 11.853742753916379,
+      "oov_TC_nll": 11.81160018985718,
+      "all_gain": 0.09560178256494986
+    },
+    {
+      "fraction": 1,
+      "roots": 67,
+      "train_tokens": 16854,
+      "templates": 3271,
+      "oov_coverage": 0.35280898876404493,
+      "oov_gain": 0.04709693448946454,
+      "oov_C_nll": 11.826508064765125,
+      "oov_TC_nll": 11.77941113027566,
+      "all_gain": 0.09842758705924427
+    }
+  ],
+  "late": {
+    "gain": {
+      "max": 0.02656830016725242,
+      "mean": 0.004954370430263575,
+      "min": -0.01383522304852939,
+      "sd": 0.009911445500726769
+    },
+    "coverage": {
+      "max": 0.04943820224719098,
+      "mean": 0.03011235955056178,
+      "min": 0.013483146067415741,
+      "sd": 0.009628340195304223
+    },
+    "positive_gain": 16
+  },
+  "total": {
+    "gain": {
+      "max": 0.17263241437300125,
+      "mean": 0.10665512573614609,
+      "min": 0.05434808152625347,
+      "sd": 0.034816563577391886
+    },
+    "coverage": {
+      "max": 0.32584269662921345,
+      "mean": 0.2880898876404494,
+      "min": 0.25617977528089886,
+      "sd": 0.020054477662095734
+    },
+    "positive_gain": 20
+  },
+  "extrapolation": {
+    "exponential": {
+      "asymptote": 0.35,
+      "parameter": 3.1622776601683795,
+      "rmse": 0.014588408900480932,
+      "near_fit_asymptote_range": [
+        0.31,
+        0.43
+      ]
+    },
+    "rational": {
+      "asymptote": 0.45,
+      "parameter": 0.31622776601683794,
+      "rmse": 0.008855876067662945,
+      "near_fit_asymptote_range": [
+        0.38,
+        0.57
+      ]
+    }
+  },
+  "controls": {
+    "full_replay": true,
+    "nested_coverage": true,
+    "normalization_max_error": 3.3306690738754696e-16,
+    "root_disjoint": true,
+    "synthetic_positive_gain": 0.3463583957669212,
+    "zero_weight_exact": true,
+    "byte_identical_replay": true
+  },
+  "gates": {
+    "late_coverage": true,
+    "late_gain": false,
+    "positive_repeats": true,
+    "support": true
+  }
+}

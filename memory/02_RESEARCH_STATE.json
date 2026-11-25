@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-22",
+  "updated": "2026-11-25",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "EXP-0028 first-party EVA generative innovation/copier model comparison: narrow copy-channel primary PASS, contextual secondary NOT_MET",
-  "status": "RESEARCH_COMPLETED_SCOPED_EXPLORATORY",
+  "cycle": "Owner-authorized PR stack consolidation through EXP-0038g",
+  "status": "RESEARCH_DOCUMENTED_SEMANTIC_VALIDATION_BLOCKED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
   "source_rights_verified": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "EXP-0028 copy-edit mixture improves local EVA words against a shared char-bigram innovation base in exposed same-witness out-of-root folds, but not historical mechanism identification. Next: rights-cleared independent transcription and image-aligned true physical-leaf heldout; stronger matched-complexity natural-language, cipher and copy/edit generators with preregistered section/Currier/hand controls. EXP-0027 PR #65 remains open; EXP-0028 is stacked pending Owner review; K-0001 deferred.",
+  "next": "Independent blinded annotation, certified script/non-script specificity controls and separate region-locus mapping; preserve NOT_MET thresholds; other A/W tasks may continue.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -65,7 +65,27 @@
     "2026-11-21 A-05 EXP-0026 exploratory source-level followup: exact original 677 lines/69 q observed/99.7857 expected; 13/20 roots positive, 4 negative, 3 ties; all leave-one-root-out deficits positive, overall root-percentile bootstrap [2.3446, 6.1065] pp. Currier metadata A 10 roots/239 lines -> 0.9902 pp (CI includes zero); B 8 roots/431 lines -> 6.5937 pp. Same previously exposed source/test, no new confirmation, no physical glyph/leaf/hand verification or decipherment; 3/40 claim closures and 0/5 acceptance gates unchanged. See research/experiments/2026-11-21_EXP-0026_A05_root_cluster_sensitivity.md.",
     "2026-11-21 W-06 SRC-0040 first-person author colour attribution: yellow=male, blue=female dual-semen interpretation of Rosettes, DOCUMENTED only as author's attribution, actual pixels/semantic correctness UNKNOWN. Shared source W-04/W-05/W-07/W-09/A-19, no independent heldout or image/period controls. W-06 SOURCE_REVIEWED / WATCHING / OPEN, no new HYP/EXP/SRC or closed claim; 3/40 and 0/5 unchanged. See research/hypotheses/2026-11-21_W06_yellow_blue_sperm_author_source_audit.md.",
     "2026-11-22 EXP-0027 first-party SHA-pinned EVA v3b run, 1537 +P0 lines/12167 tokens/94 folio-name roots, five root folds; NLL baseline 1.6616911, pos 1.6494278, predecessor 1.6257346, joint 1.6240125 nats/token. Preregistered D>=0.005 and D>0 both Currier A/B FAILED: pooled D=.0017221, A=-.0022658, B=.0025818; 99 conditional within-line/bin shuffles p=.01, root descriptive 95% bootstrap crosses zero. Positive and negative synthetic controls run. Prior exposed same witness (no independent heldout), no identifiable generative origin; A-01/A-05/A-13 remain OPEN. See research/experiments/2026-11-22_EXP-0027_report.md. 3/40 claim closures, 213/213 manifest ID inventory only and 0/5 decipherment gates unchanged.",
-    "2026-11-22 EXP-0028 Owner-instructed pre-frozen first-party EVA generated-word benchmark, ZL3b-n v3b 411671 B SHA bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc. Five reused out-of-folio-number-root folds 1537 lines/12167 tokens/94 roots. L char-bigram and bijective ROT13 K exactly same loss 8.7996147; M trained single-edit+same bigram 8.7855273, +0.0140874 nats/word, Currier A/B both positive, conditional 49-permutation p=.04, primary PASSED. H split-copy-rate 8.7855075, extra +0.0000198 fails prespecified secondary. Edit-kernel normalization and positive/negative synthetic controls passed; 2000-root descriptive bootstrap M gain [+0.0093062,+0.0195892]. Same editorial source previously exposed and actual language/cipher/copy origin UNKNOWN; A-01/A-05/A-13 stay OPEN; no new glyph/semantic/decipherment gate or A/W claim closure. See research/experiments/2026-11-22_EXP-0028_report.md. Stacked on PR #65, merge requires Owner authorization."
+    "2026-11-22 EXP-0028 Owner-instructed pre-frozen first-party EVA generated-word benchmark, ZL3b-n v3b 411671 B SHA bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc. Five reused out-of-folio-number-root folds 1537 lines/12167 tokens/94 roots. L char-bigram and bijective ROT13 K exactly same loss 8.7996147; M trained single-edit+same bigram 8.7855273, +0.0140874 nats/word, Currier A/B both positive, conditional 49-permutation p=.04, primary PASSED. H split-copy-rate 8.7855075, extra +0.0000198 fails prespecified secondary. Edit-kernel normalization and positive/negative synthetic controls passed; 2000-root descriptive bootstrap M gain [+0.0093062,+0.0195892]. Same editorial source previously exposed and actual language/cipher/copy origin UNKNOWN; A-01/A-05/A-13 stay OPEN; no new glyph/semantic/decipherment gate or A/W claim closure. See research/experiments/2026-11-22_EXP-0028_report.md. Stacked on PR #65, merge requires Owner authorization.",
+    "2026-11-24 — Owner S-tier scoped disposition (D-0240, RM-042): research/hypotheses/2026-11-24_s_tier_scoped_disposition.md. W-20 UNKNOWN/RETIRED completed only as unfalsifiable catalogued folklore. W-02/W-03 closed attribution subclaims (SRC-0040 direct author confirmation), broader manuscript content UNKNOWN/BLOCKED and open. A-05 EXP-0026 narrow q-first deviation supported, EXP-0027 strong joint predictor and EXP-0028 position extension NOT_MET, EXP-0028 global copy primary scoped PASS; broad causal mechanism UNKNOWN/WATCHING/TESTED/OPEN. Four disposition decisions, only one additional scoped closure: proposed 4/40, main remains 3/40 until integration. No new independent manuscript test. SRC-0007 Owner canonical only, 213/213 inventoried IDs, 0/5 gates, K-0001 deferred. No automation change.",
+    "EXP-0029 PASS (scoped single EVA witness): 982 common OOV tokens, 21 heldout folio-number roots; ASCII/BENCH/COMPOUND bridge gains +0.621341/+0.489411/+0.490599 nats/unit, each p=.005 and positive root-bootstrap lower bound; aligned same-target cohort 844 gains +0.551141/+0.491202/+0.496773. All synthetic controls pass. No independent physical glyph/witness or historic mechanism claim. Next EXP-0030 train-only distributional classes with controlled heldout tests. research/experiments/2026-11-24_EXP-0029_report.md",
+    "EXP-0030 scoped PASS: 21 train-eligible compound EVA units, 210 pairs, five disjoint pairs selected on TRAIN (ch/sh, k/t, f/p, l/r, cph/cth). On 21 withheld folio-number roots and 4706 words, mean cosine .909216 and full-frame Jaccard .130115 vs frequency-matched reference .018713, delta .111402, 0/999 null draws >= observed, p=.001; descriptive root-bootstrap delta [.088734,.115144]. All fixed gates and synthetic controls passed; byte-identical local replay. Frequency matching approximate especially for rare pairs, no individual significance, no functional equivalence or independent witness claimed. Next EXP-0031 external word-context discrimination. research/experiments/2026-11-24_EXP-0030_report.md",
+    "EXP-0031 scoped PASS: train-only external neighbor-shape score on fixed five EXP-0030 pairs, same target frame/root/coarse line-position matched. 229 mixed TEST strata / 19 roots / 741 cross-label comparisons, AUC .581646 vs .55 threshold, conditional permutation p=.004 (3/999 >= observed), descriptive root bootstrap [.532468,.615234], all six gates and synthetic controls pass. Pair AUCs ch/sh .620763 (236), k/t .542582 (364), f/p .20 (5), l/r .624060 (133), cph/cth 1 (3); rare pairs inconclusive individually, no per-pair significance. Same previously exposed EVA witness; no physical glyph/semantic or historical mechanism identification. Next EXP-0032 frozen train-derived word formation templates versus character/copy baselines. research/experiments/2026-11-24_EXP-0031_report.md",
+    "EXP-0032 RESEARCH_COMPLETED / NOT_MET: fixed 128 whole-word class templates, 984 OOV occurrences across 21 test roots. TC-C gain -0.352570 nats/word (threshold +.020), bootstrap [-.368633,-.342401], one-sided p=1; OOV template coverage 3/984. T-S all-test +.109802 but OOV -.557355; position-aware bigram best OOV. All synthetic and normalization controls PASS; two byte-identical local runs. Reject only frozen whole-template augmentation, not structural classes or all grammars. Next EXP-0033 productive compositional grammar with explicit complexity and OOV evaluation; same exposed witness, no independent glyph/semantic claim. research/experiments/2026-11-24_EXP-0032_report.md",
+    "EXP-0032b RESEARCH_COMPLETED / NOT_MET: 384 prespecified configurations, inner validation 445 OOV occurrences/10 roots, 32 positive and 19 >=+.020. Winner all templates, weight .25, 27 classes, frequency/global, validation gain +.047097; refit 3553 templates. Outer OOV gain TC-C -.027366 vs original -.352570, coverage 257/984 vs 3/984, bootstrap [-.052013,.002199], one-sided p=.969. All-test gain +.098356; outer positive OOV gates fail. All controls and byte-identical local replay PASS, original result reproduced. Scoped sensitivity complete; no further outer cap/weight fishing. Next EXP-0033 productive subword composition with complexity accounting. Previously exposed single editorial witness and outer test, no independent physical glyph/semantic claim. research/experiments/2026-11-24_EXP-0032b_report.md",
+    "EXP-0032c RESEARCH_COMPLETED / NOT_MET: 20 nested root permutations ×7 fractions, fixed 445 OOV occurrences/10 validation roots; all-template 27-class .25 mixture fixed. Mean OOV coverage rises 6.47%→35.28%, TC-C gain -.059558→+.047097. Late 80→100% gain +.004954 <+.010 gate; 16/20 positive, coverage +.030112 passes; 3/4 gates met. Exponential/rational fitted coverage asymptotes .35/.45, near-fit ranges [.31,.43]/[.38,.57], descriptive and model-dependent, not true limits. All controls PASS, byte-identical runs. Exposed prior inner validation, outer not scored. Prior outer OOV NOT_MET unchanged; next EXP-0033 productive subword composition, no further cap fishing. research/experiments/2026-11-24_EXP-0032c_report.md",
+    "EXP-0033 RESEARCH_COMPLETED / PASS (8/8 gates): 24 inner configurations, selected 128 merges/27 classes/.5 weight, inner G-S +.329083. Outer OOV 984 tokens/21 roots: G-S +.275027, GC-C +.288302, GC-W +.315668; bootstrap [.194746,.402570], p=.001; 155 chunks vs 3553 whole templates, 974/984 contain multi-unit substring. W still best all-test; GC-W -.023207 there. Pure Q negative on inner grid; no morphology, language, historical mechanism or independent witness claim. All controls and actual byte-identical replay pass. Next EXP-0034 Currier A/B transfer with matched domain controls. research/experiments/2026-11-24_EXP-0033_report.md",
+    "EXP-0034 RESEARCH_COMPLETED / NOT_MET (8/10 gates): matched 6015 TRAIN tokens/domain, five samples, common OOV cohort A 307/13 roots, B 684/8 roots. Cross G-S gains B→A +.968048 (p=.001), A→B +.375186 (p=.009), all 21 roots positive; cross vs own G penalties +1.582186/+.704198 fail .50 ceiling. Herbal-only matched 1791/domain, gains +.661497/+.554980, penalties +1.238654/+1.097643. Hand/section confounding persists; no separate language or shared historical grammar claim. Exact source, controls and two byte-identical runs verified. Next EXP-0035 competing generators and stronger higher-order character baseline. research/experiments/2026-11-24_EXP-0034_report.md",
+    "EXP-0035 RESEARCH_COMPLETED / PASS (4/4): nine inner configurations, selected positional trigram alpha80. Outer OOV 984/21 roots: J-H +.292200 nats/word, bootstrap [.176106,.470536], p=.001, 20/21 roots positive; all-token gain +.070750. Fixed copy M-H -.013597 OOV, K-J -.015598; A/B pooled OOV gains +.490251/+.202814. Bijective toy relabel invariant, no language/cipher/nonlanguage/hybrid origin identification. Exact script/result and actual byte-identical runs verified. Next independent transcription replication and preregistered semantic anchors; no repeat exposed-grid tuning. research/experiments/2026-11-24_EXP-0035_report.md",
+    "EXP-0036 RESEARCH_COMPLETED / PASS (8/8): hash-verified Takahashi IT2a independent reading in EVA family; 27733 tokens, 3884 shared P0 IDs, same root split. Fixed H/Q/J architecture, no retuning. IT-refit OOV 1166/21 roots gain +.295139, ZL→IT no refit common OOV 1144/21 gain +.764650, both p=.001 and 18/21 positive roots. Matched transfer penalty +.273381. 151/155 inventory entries overlap (124/128 learned chunks). Exact prior H/J replay and deterministic two-run check PASS. Same manuscript and shared EVA conventions, no independent glyph or semantic evidence. Next EXP-0037 functional subword components. research/experiments/2026-11-24_EXP-0036_report.md",
+    "EXP-0036a PARTIAL / native STA1 BLOCKED; restricted core projection PASS (12/12). Hash-verified native ZL and independent Claston GC readings projected using official STA factual correspondences; complete official files unavailable (download DNS and mirror 404). 95 code types, 90 classes; 28075/30426 tokens. OOV gains ZL +.227855, GC +.495077, ZL→GC +7.879153 vs poor cross baseline; transfer penalty +3.369960; 102/128 learned chunks shared. All p=.001, two deterministic runs and controls PASS. Not official full STA1, no independent physical glyph/semantic claim. Full test only with exact official files; EXP-0037 can proceed. research/experiments/2026-11-24_EXP-0036a_report.md",
+    "EXP-0036a RESEARCH_COMPLETED / native STA1 PASS (12/12), acquisition blocker resolved by owner uploads. 28464 ZL and 30691 GC certain P0 tokens, 253 codes, 248 fixed classes. OOV gains ZL +.829385, GC +.774442, direct ZL→GC +7.296881 vs weak cross baseline; all 21 roots positive each, p=.001. Transfer penalty +3.252832; shared-training-code cohort 839 OOV gain +2.114142, penalty +.950506; remaining 462 gain +16.708826. 102/128 learned chunks overlap. Two byte-identical Python runs. Transductive alphabet prescan only, no test fitting; same exposed roots, no glyph or semantic claim. Next EXP-0037. research/experiments/2026-11-24_EXP-0036a_native_report.md",
+    "EXP-0037 RESEARCH_COMPLETED / NOT_MET (8/9 gates): 102 shared native STA1 chunks, raw overlapping occurrences excluding whole-word matches. 58 TRAIN candidates, 52 heldout positional validations (7 prefix/42 suffix/3 internal), 44 recombine with novel residual contexts on both readings (6/35/3). Cross-role gain beyond length and endpoint baseline GC→ZL +.025623, ZL→GC +.016352 misses .020; p=.001 both, 20/21 roots positive each. Class-OOV gain +.013948/+.002109. Strong endpoint graphotactic explanation, no morpheme or semantic identification. Two actual byte-identical runs, controls pass. Next EXP-0038 blinded label anchors; no repeat tuning. research/experiments/2026-11-24_EXP-0037_report.md",
+    "EXP-0037a-f RESEARCH_COMPLETED / NOT_MET (4/6): a long chunks PASS gains +.024410/+ .036531 ZL→GC/GC→ZL, k2 exact null; b PASS 57 retained, 51 validated, 43 recombining; c PASS 97 cores, +.407982/+.391067, 81/106 novel core-frame pairs; d NOT_MET direct affix association, 74/115 test observations, first insufficient support; e NOT_MET Currier role augmentation +.004464/+.003945; f PASS 52/57 EVA position validations same ZL reader. Original EXP-0037 NOT_MET unchanged. Two byte-identical runs; no semantics or linguistic stem claim. EXP-0038 deferred pending owner review, no repeated threshold tuning. research/experiments/2026-11-24_EXP-0037_cluster_report.md",
+    "EXP-0037g-j RESEARCH_COMPLETED / NOT_MET (1/4 PASS). g: conditional fivegram H vs core-count augmentation gains -.006797/-.008289 ZL→GC/GC→ZL, intervals include zero; h: dominant-frame groups (22 each) gain -.075163/-.081015, no overall advantage; i: novel-pair rank AUC gain +.021077/-.010435, 88/116 observations, first insufficient support; j PASS Takahashi EVA replication against length baseline, 146 supported cores, gains +.301415/+.307649, 166/149 novel pairs. Original and a–f NOT_MET preserved. No added core-function evidence beyond selected strong graphotactic comparator; no semantic or linguistic stem claim. Actual identical reruns; same exposed roots. Recommend finish structural investigation with mixed results, not repeated threshold tuning; EXP-0038 awaits owner decision. research/experiments/2026-11-24_EXP-0037_gj_report.md",
+    "EXP-0037k RESEARCH_COMPLETED / NOT_MET (5/12): native STA1 502 shared frequent exact word forms plus length-specific UNK; conditional bigram gains GC→ZL -.168483, ZL→GC -.120626 nats, all higher orders degrade on matched three-history cohorts. Real-minus-stratified-shuffle residual +.017012/+.014534, permutation p=.040/.055; one direction passes only, no confirmed joint lexical-context benefit. Own-witness and known-only results negative too. Two byte-identical runs, controls PASS. Coarse conditional cross entropy, not full text entropy or proof of absent syntax. EXP-0037l train-only word classes next; no tuning k on exposed roots. research/experiments/2026-11-24_EXP-0037k_report.md",
+    "EXP-0037l-t RESEARCH_COMPLETED / NOT_MET (3/9 PASS): l distributional clustering ARI .307165/.317540 across two partitions vs length-stratified null p=.005 both; m/n word-class and longer context prediction NOT_MET; o/p small layout effects below fixed .020; q/r folio cluster and boundary discrimination NOT_MET; s exact prepared-sequence zlib compression benefit .376587/.459322 bits/word ZL/GC, alternate .340200/.400536, p=.001 all; t PASS 8/8 identical categorical decisions after alternative root split, six overlapping test roots, both positives replicated. Two byte-identical executions, exact parser replay against k and code verified. Same exposed manuscript, no syntax or semantic proof, no theoretical entropy claim. All EXP-0037 through t executed, preserve NOT_MET. Recommend move to EXP-0038 blind label anchors on owner review. research/experiments/2026-11-24_EXP-0037_lt_report.md",
+    "EXP-0038 RESEARCH_COMPLETED (editorial proxy pilot) / NOT_MET (4/16 gates); independent semantic validation BLOCKED. Native STA1 matched 288 certain single-word loci, two object-class contrasts, same-folio and exact both-witness length matching, leave-root-out cross-reader classifier. Lc/Lf 39 pairs/4 roots, AUC .641026 both directions, constrained refit permutation p=.1425/.1300; Ln/Lt 57 pairs/4 roots, AUC .333333/.280702, p=.9075/.9550. Support gates only pass. Two byte-identical executions; no individual semantic anchor, shared editorial labels not independent image ground truth. Next EXP-0038a independent image-only referent/region inventory with blind adjudication before EXP-0039 prospective specific predictions. No threshold tuning. research/experiments/2026-11-24_EXP-0038_report.md",
+    "EXP-0038a RESEARCH_COMPLETED for inventory / PASS 5/5; independent semantic readiness BLOCKED. Owner SHA-pinned PDF four pages f88r/f99r/f99v/f100r; 13 provisional object rectangles, three pedestal forms within f88, ten broad-body forms across f99/f100. Eight possible enclosed writing regions all f99, four ambiguous nearby, one none clear. No transcription used in visual classification, prior pilot known; no independent image review or locus join. Two byte-identical validator runs, exact inventory/code/results saved. Randomized empty reviewer template generated, no reviewer enrolled. Next independent adjudication and extend directly attached candidate writing across roots, then freeze specific referents before EXP-0039. Original EXP-0038 NOT_MET preserved. research/experiments/2026-11-24_EXP-0038a_report.md"
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
@@ -77,7 +97,7 @@
   "claim_queue": {
     "path": "research/hypotheses/2026-11-09_40_claims_queue.jsonl",
     "total": 40,
-    "completed": 3,
+    "completed": 4,
     "distinct_claims_not_independent_hypotheses": true,
     "integrated_source_audits": [
       "research/hypotheses/2026-11-09_top20_critical_audit.md",
@@ -140,7 +160,7 @@
       "branch_origin": "research/exp0023-f57v-f49v-holdout-20261113"
     }
   ],
-  "top_priority": "S-tier/P0 K-0001 glyph inventory",
+  "top_priority": "Independent semantic anchor adjudication and segmentation specificity; K-0001 deferred",
   "k0001_f1r_f10v_pilot": {
     "report": "research/glyphs/2026-11-15_K0001_first_ten_folios_census.md",
     "ledger": "research/glyphs/2026-11-15_K0001_f1r-f10v_preliminary_coverage.jsonl",
@@ -344,5 +364,413 @@
     "fully_glyph_adjudicated_f1r_lines": 0,
     "fully_glyph_adjudicated_pilot_sides": 0,
     "notes": "Eight self-reported visual areas versus four mask-enclosed screen voids; not a comparable count, no polygon IoU or control-pass, no image pixels redistributed."
+  },
+  "s_tier_disposition": {
+    "report": "research/hypotheses/2026-11-24_s_tier_scoped_disposition.md",
+    "selected": 4,
+    "dispositions_recorded": 4,
+    "new_full_scoped_closures": 1,
+    "prior_main_completed": 3,
+    "proposed_completed": 4,
+    "remaining_open": 36,
+    "items": {
+      "W-20": "METHOD_SCOPE_CLOSED",
+      "W-02": "ATTRIBUTION_SCOPE_CLOSED_CONTENT_BLOCKED",
+      "W-03": "ATTRIBUTION_SCOPE_CLOSED_CONTENT_BLOCKED",
+      "A-05": "FIXED_TESTS_SYNTHESIZED_CAUSAL_CLAIM_OPEN"
+    },
+    "new_manuscript_test": false,
+    "owner_merge_gate": true
+  },
+  "exp0029": {
+    "report": "research/experiments/2026-11-24_EXP-0029_report.md",
+    "decision": "PASS",
+    "common_oov": 982,
+    "aligned_oov": 844,
+    "heldout_roots": 21,
+    "independent_witness": false
+  },
+  "exp0030": {
+    "report": "research/experiments/2026-11-24_EXP-0030_report.md",
+    "decision": "PASS",
+    "eligible_pairs": 210,
+    "selected_pairs": 5,
+    "heldout_roots": 21,
+    "test_words": 4706,
+    "mean_jaccard": 0.13011497145718573,
+    "matched_reference_mean": 0.018713095695990445,
+    "p_empirical": 0.001,
+    "independent_witness": false
+  },
+  "exp0031": {
+    "report": "research/experiments/2026-11-24_EXP-0031_report.md",
+    "decision": "PASS",
+    "mixed_test_strata": 229,
+    "heldout_mixed_roots": 19,
+    "comparisons": 741,
+    "auc": 0.581646423751687,
+    "p_empirical": 0.004,
+    "independent_witness": false
+  },
+  "exp0032": {
+    "report": "research/experiments/2026-11-24_EXP-0032_report.md",
+    "decision": "NOT_MET",
+    "heldout_roots": 21,
+    "oov_tokens": 984,
+    "oov_template_hits": 3,
+    "TC_minus_C": -0.35256954002597846,
+    "p_empirical": 1,
+    "independent_witness": false
+  },
+  "exp0032b": {
+    "report": "research/experiments/2026-11-24_EXP-0032b_report.md",
+    "decision": "NOT_MET",
+    "grid_configurations": 384,
+    "inner_validation_oov": 445,
+    "inner_validation_gain": 0.04709693448946789,
+    "selected_templates": 3553,
+    "outer_oov_tokens": 984,
+    "outer_oov_template_hits": 257,
+    "outer_oov_gain": -0.027365818916373096,
+    "outer_all_gain": 0.09835640412610926,
+    "p_empirical": 0.969,
+    "independent_witness": false
+  },
+  "exp0032c": {
+    "report": "research/experiments/2026-11-24_EXP-0032c_report.md",
+    "decision": "NOT_MET",
+    "nested_repeats": 20,
+    "fixed_validation_oov": 445,
+    "fit_roots": 67,
+    "full_templates": 3271,
+    "full_oov_coverage": 0.35280898876404493,
+    "full_oov_gain": 0.04709693448946454,
+    "late_gain": 0.004954370430263575,
+    "late_positive_repeats": 16,
+    "late_coverage": 0.03011235955056178,
+    "outer_scored": false,
+    "independent_witness": false
+  },
+  "exp0033": {
+    "report": "research/experiments/2026-11-24_EXP-0033_report.md",
+    "decision": "PASS",
+    "inner_configs": 24,
+    "inner_gain": 0.3290830158842646,
+    "heldout_roots": 21,
+    "oov_tokens": 984,
+    "oov_G_S": 0.27502713179538496,
+    "oov_GC_C": 0.28830188117141375,
+    "oov_GC_W": 0.31566770008778633,
+    "chunks": 155,
+    "multi_chunk_hits": 974,
+    "p_empirical": 0.001,
+    "independent_witness": false
+  },
+  "exp0034": {
+    "report": "research/experiments/2026-11-24_EXP-0034_report.md",
+    "decision": "NOT_MET",
+    "matched_tokens_per_domain": 6015,
+    "oov_A": 307,
+    "oov_B": 684,
+    "B_to_A_gain": 0.9680475522824814,
+    "A_to_B_gain": 0.37518629157098005,
+    "B_to_A_penalty": 1.5821861740609666,
+    "A_to_B_penalty": 0.7041981351126729,
+    "positive_roots": 21,
+    "primary_gates_passed": 8,
+    "primary_gates_total": 10,
+    "independent_witness": false
+  },
+  "exp0035": {
+    "report": "research/experiments/2026-11-24_EXP-0035_report.md",
+    "decision": "PASS",
+    "inner_configs": 9,
+    "selected_context": 2,
+    "selected_alpha": 80,
+    "heldout_roots": 21,
+    "oov_tokens": 984,
+    "oov_J_H": 0.2921996757737553,
+    "oov_K_M": 0.29019957178626754,
+    "oov_M_H": -0.013597397883071238,
+    "all_J_H": 0.07075018535228672,
+    "positive_roots": 20,
+    "p_empirical": 0.001,
+    "independent_witness": false
+  },
+  "exp0036": {
+    "report": "research/experiments/2026-11-24_EXP-0036_report.md",
+    "decision": "PASS",
+    "source": "SRC-0111",
+    "IT_source_sha256": "7f27a8b0feed8f6de0a99900df6bf912dd1d295c38e5f830bac8b41c3f536fb5",
+    "IT_tokens": 27733,
+    "shared_P0_loci": 3884,
+    "IT_oov": 1166,
+    "IT_refit_gain": 0.29513945782424567,
+    "transfer_common_oov": 1144,
+    "transfer_gain": 0.7646498206124746,
+    "transfer_penalty": 0.27338096493871333,
+    "shared_chunks": 151,
+    "learned_shared_chunks": 124,
+    "p_refit": 0.001,
+    "p_transfer": 0.001,
+    "distinct_transcription": true,
+    "independent_manuscript": false
+  },
+  "exp0036a": {
+    "report": "research/experiments/2026-11-24_EXP-0036a_native_report.md",
+    "decision": "PASS",
+    "full_decision": "PASS",
+    "core_decision": "PASS",
+    "core_gates_passed": 12,
+    "core_gates_total": 12,
+    "ZL_tokens": 28464,
+    "GC_tokens": 30691,
+    "ZL_oov_gain": 0.8293846066241577,
+    "GC_oov_gain": 0.7744419258188887,
+    "transfer_gain": 7.296881387572062,
+    "transfer_penalty": 3.2528316934519097,
+    "shared_learned_chunks": 102,
+    "total_learned_chunks": 128,
+    "source_ids": [
+      "SRC-0114",
+      "SRC-0115"
+    ],
+    "official_full_sta": true,
+    "core_history": {
+      "report": "research/experiments/2026-11-24_EXP-0036a_report.md",
+      "decision": "PARTIAL",
+      "full_decision": "BLOCKED",
+      "core_decision": "PASS",
+      "core_gates_passed": 12,
+      "core_gates_total": 12,
+      "ZL_tokens": 28075,
+      "GC_tokens": 30426,
+      "ZL_oov_gain": 0.22785464428540048,
+      "GC_oov_gain": 0.49507745463526914,
+      "transfer_gain": 7.879153355821338,
+      "transfer_penalty": 3.3699604163556334,
+      "shared_learned_chunks": 102,
+      "total_learned_chunks": 128,
+      "source_ids": [
+        "SRC-0112",
+        "SRC-0113"
+      ],
+      "official_full_sta": false
+    },
+    "native_gates_passed": 12,
+    "native_gates_total": 12
+  },
+  "exp0037": {
+    "report": "research/experiments/2026-11-24_EXP-0037_report.md",
+    "decision": "NOT_MET",
+    "shared_chunks": 102,
+    "selected": 58,
+    "validated": 52,
+    "recombining": 44,
+    "role_counts": {
+      "prefix": [
+        9,
+        7,
+        6
+      ],
+      "suffix": [
+        45,
+        42,
+        35
+      ],
+      "internal": [
+        4,
+        3,
+        3
+      ]
+    },
+    "GC_to_ZL_gain": 0.025622996918916473,
+    "ZL_to_GC_gain": 0.01635230947060835,
+    "gates_passed": 8,
+    "gates_total": 9,
+    "semantic_evidence": false
+  },
+  "exp0037_cluster": {
+    "report": "research/experiments/2026-11-24_EXP-0037_cluster_report.md",
+    "decision": "NOT_MET",
+    "passed": 4,
+    "total": 6,
+    "subtests": {
+      "a": "PASS",
+      "b": "PASS",
+      "c": "PASS",
+      "d": "NOT_MET",
+      "e": "NOT_MET",
+      "f": "PASS"
+    },
+    "core_candidates": 97,
+    "novel_pairs_ZL": 106,
+    "novel_pairs_GC": 81,
+    "retained": 57,
+    "validated": 51,
+    "recombining": 43,
+    "eva_validated": 52,
+    "original_exp0037": "NOT_MET"
+  },
+  "exp0037_gj": {
+    "report": "research/experiments/2026-11-24_EXP-0037_gj_report.md",
+    "decision": "NOT_MET",
+    "passed": 1,
+    "total": 4,
+    "subtests": {
+      "g": "NOT_MET",
+      "h": "NOT_MET",
+      "i": "NOT_MET",
+      "j": "PASS"
+    },
+    "sta_cores": 97,
+    "eva_cores": 146,
+    "original_exp0037": "NOT_MET",
+    "af_cluster": "NOT_MET",
+    "semantic_evidence": false
+  },
+  "exp0037k": {
+    "report": "research/experiments/2026-11-24_EXP-0037k_report.md",
+    "decision": "NOT_MET",
+    "gates_passed": 5,
+    "gates_total": 12,
+    "vocab": 502,
+    "GC_to_ZL_gain": -0.16848315071825604,
+    "ZL_to_GC_gain": -0.12062637445676114,
+    "permutation_p": [
+      0.04,
+      0.055
+    ],
+    "semantic_evidence": false
+  },
+  "exp0037_lt": {
+    "report": "research/experiments/2026-11-24_EXP-0037_lt_report.md",
+    "decision": "NOT_MET",
+    "passed": 3,
+    "total": 9,
+    "subtests": {
+      "l": "PASS",
+      "m": "NOT_MET",
+      "n": "NOT_MET",
+      "o": "NOT_MET",
+      "p": "NOT_MET",
+      "q": "NOT_MET",
+      "r": "NOT_MET",
+      "s": "PASS",
+      "t": "PASS"
+    },
+    "ari": [
+      0.3071647968462461,
+      0.31753962719047313
+    ],
+    "compression_gain_ZL_GC": [
+      0.3765867934882021,
+      0.4593223224927635
+    ],
+    "alternate_agreement": 8,
+    "overlapping_test_roots": 6,
+    "semantic_evidence": false
+  },
+  "exp0038": {
+    "report": "research/experiments/2026-11-24_EXP-0038_report.md",
+    "decision": "NOT_MET",
+    "semantic_validation": "BLOCKED",
+    "gates_passed": 4,
+    "gates_total": 16,
+    "eligible_loci": 288,
+    "contrasts": {
+      "Lc_Lf": {
+        "pairs": 39,
+        "auc": [
+          0.6410256410256411,
+          0.6410256410256411
+        ],
+        "p": [
+          0.1425,
+          0.13
+        ]
+      },
+      "Ln_Lt": {
+        "pairs": 57,
+        "auc": [
+          0.3333333333333333,
+          0.2807017543859649
+        ],
+        "p": [
+          0.9075,
+          0.955
+        ]
+      }
+    },
+    "semantic_evidence": false
+  },
+  "exp0038a": {
+    "report": "research/experiments/2026-11-24_EXP-0038a_report.md",
+    "inventory_decision": "PASS",
+    "semantic_readiness": "BLOCKED",
+    "objects": 13,
+    "roots": 3,
+    "gates_passed": 5,
+    "gates_total": 5,
+    "possible_inside_writing": 8,
+    "inside_writing_roots": 1,
+    "independent_review_count": 0,
+    "locus_alignment_count": 0
+  },
+  "exp0038b": {
+    "report": "research/experiments/2026-11-25_EXP-0038b_report.md",
+    "result": "research/results/2026-11-25_EXP-0038b_results.json",
+    "decision": "NOT_MET",
+    "semantic_readiness": "BLOCKED",
+    "scope": "All three subsets have pure strata, one conditional assignment; no semantic statistic.",
+    "caveat": "JS executed; equivalent Python not run."
+  },
+  "exp0038c": {
+    "report": "research/experiments/2026-11-25_EXP-0038c_report.md",
+    "result": "research/results/2026-11-25_EXP-0038c_results.json",
+    "decision": "PARTIAL",
+    "semantic_readiness": "BLOCKED",
+    "scope": "43 provisional objects; feet support all/new objects, enclosed subset NOT_MET.",
+    "caveat": "JS repeated; equivalent Python not run; panel mapping provisional."
+  },
+  "exp0038d": {
+    "report": "research/experiments/2026-11-25_EXP-0038d_report.md",
+    "result": "research/results/2026-11-25_EXP-0038d_results.json",
+    "decision": "NOT_MET",
+    "semantic_readiness": "BLOCKED",
+    "scope": "45 objects, 20 ambiguous nearby, none uniquely assigned; strict 28 assignments, sensitivity 6.",
+    "caveat": "JS executed; equivalent Python not run; freeze vessel-foot confirmation."
+  },
+  "exp0038e": {
+    "report": "research/experiments/2026-11-25_EXP-0038e_report.md",
+    "result": "research/results/2026-11-25_EXP-0038e_results.json",
+    "decision": "PASS",
+    "semantic_readiness": "BLOCKED",
+    "scope": "101 candidates, 74 provisional unique attachments; primary numeric support PASS, fragile to single f102 candidate.",
+    "caveat": "JS and BigInt replay; equivalent Python not run; no independent adjudication."
+  },
+  "exp0038f": {
+    "report": "research/experiments/2026-11-25_EXP-0038f_report.md",
+    "result": "research/results/2026-11-25_EXP-0038f_results.json",
+    "decision": "DOCUMENTED",
+    "semantic_readiness": "BLOCKED",
+    "scope": "74 opaque IDs; 113 Lf loci, 93 strict dual single-word, 59 exact agreements; zero accepted matches.",
+    "caveat": "Python repeated; no reviewer response. Owner crosswalk restricted to non-reviewers."
+  },
+  "exp0038g": {
+    "report": "research/experiments/2026-11-25_EXP-0038g_report.md",
+    "result": "research/results/2026-11-25_EXP-0038g_summary.json",
+    "decision": "NOT_MET",
+    "semantic_readiness": "BLOCKED",
+    "scope": "59/74 vs 60 required; shifted 16/74 not certified blank; synthetic 3/3.",
+    "caveat": "Two byte-identical Python runs reported; ink blobs not glyphs; no specificity or OCR accuracy."
+  },
+  "integration_checkpoint": {
+    "date": "2026-11-25",
+    "scope": "PRs #65–#91",
+    "previous_tip": "b6fd6ac58ade966361d03e55fbd3c72a633492c3",
+    "scientific_reproduction": "NOT_RUN_IN_INTEGRATION",
+    "semantic_validation": "BLOCKED",
+    "automation_changed": false
   }
 }

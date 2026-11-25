@@ -1,0 +1,24 @@
+{
+  "experiment": "EXP-0038a",
+  "source": {"filename": "voynich(1).pdf", "sha256": "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c", "pages": 214, "render": "PyMuPDF, 100 dpi, RGB, alpha=False", "coordinate_system": "upper-left origin; x0,y0,x1,y1 in full raster pixels, approximate rectangles", "raster_width": 827, "raster_height": 1170},
+  "pages": {"162": {"folio":"f88r","root":"f88","rgb_sha256":"f6c09c196bd2d16840601da7f5083180640f3db10743a79226fe5f9fd280e4d9"}, "176": {"folio":"f99r","root":"f99","rgb_sha256":"9facd4ddea52d177c636b6972092883c42cd67a731fb0664f97184cf8973d36e"}, "177": {"folio":"f99v","root":"f99","rgb_sha256":"1f224d1757d36ddc5cad4b82e0157b98d8c49307cc2abfa30cbb797fe5c12c9e"}, "178": {"folio":"f100r","root":"f100","rgb_sha256":"3dd82a73ea64c36100bea2b7cf5933a438acf4d1d7ef6c58292397e57546d0f8"}},
+  "objects": [
+    {"id":"V01","page":162,"box":[116,145,215,415],"shape":"pedestal","features":"open green oval, red tiered body, long green waist, flared feet","writing_box":[216,161,277,189],"attachment":"ambiguous_nearby","alternative":"plant label to right, not vessel"},
+    {"id":"V02","page":162,"box":[127,412,222,682],"shape":"pedestal","features":"pointed red top, red and pale banded body, green long waist, footed base","writing_box":[197,421,241,444],"attachment":"ambiguous_nearby","alternative":"near adjacent root illustration"},
+    {"id":"V03","page":162,"box":[132,684,209,957],"shape":"pedestal","features":"pointed green top, red banded body, narrow green stem and circular base","writing_box":[187,698,278,732],"attachment":"ambiguous_nearby","alternative":"adjacent leaf/root annotation or text fragment"},
+    {"id":"V04","page":176,"box":[133,144,210,297],"shape":"broad_body","features":"red cylindrical body, pale ring, green oval top, flat base","writing_box":[143,152,201,172],"attachment":"inside_object","alternative":"writing on top/inside oval; could mark contents rather than vessel type"},
+    {"id":"V05","page":176,"box":[141,351,204,488],"shape":"broad_body","features":"red cylindrical body, olive oval opening, pale bands, flat base","writing_box":[154,419,193,442],"attachment":"inside_object","alternative":"white marks may be stylized writing or decoration"},
+    {"id":"V06","page":176,"box":[128,505,217,649],"shape":"broad_body","features":"red cylinder, olive oval top, pale bands, three visible feet","writing_box":[156,586,195,609],"attachment":"inside_object","alternative":"white marks may be stylized writing or decoration"},
+    {"id":"V07","page":176,"box":[128,695,207,842],"shape":"broad_body","features":"red cylinder, olive oval opening, pale bands, plain base","writing_box":[146,763,193,785],"attachment":"inside_object","alternative":"possible contents/owner mark rather than vessel name"},
+    {"id":"V08","page":177,"box":[144,136,218,325],"shape":"broad_body","features":"tall tiered body, blue oval opening, pale and blue bands, red lower panel","writing_box":[155,270,205,289],"attachment":"inside_object","alternative":"possible contents/owner mark"},
+    {"id":"V09","page":177,"box":[147,325,228,480],"shape":"broad_body","features":"red cylinder, blue oval opening, pale bands, feet","writing_box":[166,404,209,423],"attachment":"inside_object","alternative":"possible contents/owner mark"},
+    {"id":"V10","page":177,"box":[163,481,235,654],"shape":"broad_body","features":"red cylinder, blue oval opening, pale bands, circular base","writing_box":[179,572,224,593],"attachment":"inside_object","alternative":"possible contents/owner mark"},
+    {"id":"V11","page":177,"box":[162,688,231,830],"shape":"broad_body","features":"red cylinder, blue-green oval opening, pale bands, circular base","writing_box":[178,773,221,796],"attachment":"inside_object","alternative":"possible contents/owner mark"},
+    {"id":"V12","page":178,"box":[111,117,166,254],"shape":"broad_body","features":"red plain cylinder, pale ring, beige oval opening","writing_box":[133,254,177,275],"attachment":"ambiguous_nearby","alternative":"mark likely belongs to plant beneath, no clear vessel-body inscription"},
+    {"id":"V13","page":178,"box":[149,503,205,654],"shape":"broad_body","features":"red plain cylinder, pale rings, olive oval opening","writing_box":null,"attachment":"none_clear","alternative":"adjacent plant annotation not assigned to vessel"}
+  ],
+  "exclusions": ["p177 rightmost cut-off red drawing on facing page; not a complete object of f99v", "plant and root drawings excluded from vessel-only pilot"],
+  "status": "provisional_single_model_visual_annotation",
+  "independent_review": "NOT_STARTED",
+  "region_to_IVTFF_locus": "NOT_STARTED"
+}

@@ -1,0 +1,106 @@
+{
+  "experiment": "EXP-0037",
+  "decision": "NOT_MET",
+  "full_local_result_sha256": "fd79a539758b529673eafde19da027d79003a49ce4e782bb446cb6cc31a908f3",
+  "full_local_result_git_blob": "f5726a9d5c12d90bfce56d0521323138e98a1e33",
+  "shared_chunks": 102,
+  "train_occurrences": [
+    76685,
+    65957
+  ],
+  "test_occurrences": [
+    17118,
+    14950
+  ],
+  "witness_order": [
+    "ZL",
+    "GC"
+  ],
+  "role_counts": {
+    "prefix": {
+      "selected": 9,
+      "validated": 7,
+      "recombining": 6
+    },
+    "suffix": {
+      "selected": 45,
+      "validated": 42,
+      "recombining": 35
+    },
+    "internal": {
+      "selected": 4,
+      "validated": 3,
+      "recombining": 3
+    }
+  },
+  "recombination_gate": true,
+  "transfer": {
+    "GC_to_ZL": {
+      "occurrences": 17118,
+      "roots": 21,
+      "gain": 0.025622996918916473,
+      "bootstrap": [
+        0.019949711367558673,
+        0.029833185092537316
+      ],
+      "p": 0.001,
+      "positive_roots": 20,
+      "oov_occurrences": 2633,
+      "oov_gain": 0.013947964619091785,
+      "nll": {
+        "geometric": 1.0176286249414728,
+        "B": 0.3751789777290005,
+        "M": 0.34955598081007877
+      },
+      "accuracy": {
+        "geometric": 0.3833391751372824,
+        "B": 0.8559411146161935,
+        "M": 0.8580441640378549
+      },
+      "gates": {
+        "support": true,
+        "gain": true,
+        "bootstrap": true,
+        "p": true
+      }
+    },
+    "ZL_to_GC": {
+      "occurrences": 14950,
+      "roots": 21,
+      "gain": 0.01635230947060835,
+      "bootstrap": [
+        0.011666854467612467,
+        0.019855115925796026
+      ],
+      "p": 0.001,
+      "positive_roots": 20,
+      "oov_occurrences": 2547,
+      "oov_gain": 0.002108814938777023,
+      "nll": {
+        "geometric": 1.0154044939029974,
+        "B": 0.3808677186502386,
+        "M": 0.3645154091796335
+      },
+      "accuracy": {
+        "geometric": 0.38414715719063547,
+        "B": 0.8535785953177257,
+        "M": 0.8547826086956521
+      },
+      "gates": {
+        "support": true,
+        "gain": false,
+        "bootstrap": true,
+        "p": true
+      }
+    }
+  },
+  "controls": {
+    "inventory_replay": true,
+    "normalization": true,
+    "root_disjoint": true,
+    "source_hashes": true,
+    "synthetic_positive_gain": 0.6492545968096639,
+    "zero_count_backoff": true,
+    "byte_identical_replay": true
+  }
+}

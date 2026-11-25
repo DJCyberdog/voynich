@@ -1,0 +1,123 @@
+{
+  "experiment": "EXP-0032b",
+  "decision": "NOT_MET",
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "local_full_result_sha256": "ee2225d6b9e602da9a3b388fe883044c4e7bace666784d86d4875291f5f06b88",
+  "grid_file": "research/results/2026-11-24_EXP-0032b_validation_grid.csv",
+  "grid_configurations": 384,
+  "validation_positive": 32,
+  "validation_ge_threshold": 19,
+  "split": {
+    "fit": {
+      "tokens": 16854,
+      "types": 4389,
+      "roots": 67
+    },
+    "validation": {
+      "tokens": 2791,
+      "types": 1065,
+      "roots": 10
+    },
+    "validation_oov": {
+      "tokens": 445,
+      "types": 426,
+      "roots": 10
+    },
+    "train": {
+      "tokens": 19645,
+      "types": 4815,
+      "roots": 77
+    },
+    "test": {
+      "tokens": 4706,
+      "types": 1986,
+      "roots": 21
+    }
+  },
+  "winner": {
+    "config": [
+      null,
+      0.25,
+      27,
+      "frequency",
+      "global"
+    ],
+    "entries": 3271,
+    "gain": 0.04709693448946789,
+    "hits": 157
+  },
+  "selected": {
+    "entries": 3553,
+    "lexicon_entries": 128,
+    "bigram_nonzero": 331,
+    "slot_bigram_nonzero": 782,
+    "all": {
+      "tokens": 4706,
+      "types": 1986,
+      "roots": 21,
+      "hits": 3979,
+      "type_hits": 1284,
+      "gain": 0.09835640412610926,
+      "T_minus_S": 0.20715888073376323,
+      "nll": {
+        "C": 7.009770056361404,
+        "S": 7.095895381930996,
+        "T": 6.888736501197232,
+        "TC": 6.911413652235295
+      }
+    },
+    "oov": {
+      "tokens": 984,
+      "types": 938,
+      "roots": 21,
+      "hits": 257,
+      "type_hits": 236,
+      "gain": -0.027365818916373096,
+      "T_minus_S": -0.08097593250679863,
+      "nll": {
+        "C": 12.008504037349509,
+        "S": 11.740734717509724,
+        "T": 11.821710650016524,
+        "TC": 12.035869856265881
+      }
+    },
+    "bootstrap": [
+      -0.05201326599456417,
+      0.002199338584233021
+    ],
+    "p": 0.969,
+    "exceedances": 968
+  },
+  "original": {
+    "config": [
+      128,
+      0.5,
+      27,
+      "frequency",
+      "global"
+    ],
+    "all_gain": -0.020930512641693967,
+    "oov_gain": -0.35256954002597846,
+    "oov_hits": 3,
+    "all_hits": 2438,
+    "bootstrap": [
+      -0.3686334947899098,
+      -0.3424011078467293
+    ],
+    "p": 1
+  },
+  "controls": {
+    "normalization_max_error": 3.3306690738754696e-16,
+    "original_replay": true,
+    "synthetic_positive_gain": 0.3463583957669212,
+    "zero_weight_exact": true,
+    "byte_identical_replay": true
+  },
+  "gates": {
+    "support": true,
+    "validation_gain": true,
+    "outer_gain": false,
+    "bootstrap": false,
+    "p": false
+  }
+}

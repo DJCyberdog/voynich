@@ -1,0 +1,519 @@
+{
+  "experiment": "EXP-0038c",
+  "execution": "JavaScript; exact replay in same execution",
+  "controls": "PASS",
+  "n": 43,
+  "new": 30,
+  "enclosed": 10,
+  "results": {
+    "all": {
+      "pedestal": {
+        "groups": {
+          "f88": [
+            0,
+            6
+          ],
+          "f99": [
+            8,
+            0
+          ],
+          "f100": [
+            3,
+            0
+          ],
+          "f89": [
+            0,
+            9
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            6,
+            1
+          ]
+        },
+        "mixed_roots": 1,
+        "mixed_class_counts": [
+          6,
+          1
+        ],
+        "assignments": 7,
+        "pass": false
+      },
+      "blue_top": {
+        "groups": {
+          "f88": [
+            6,
+            0
+          ],
+          "f99": [
+            4,
+            3
+          ],
+          "f100": [
+            3,
+            0
+          ],
+          "f89": [
+            9,
+            0
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            8,
+            0
+          ]
+        },
+        "mixed_roots": 1,
+        "mixed_class_counts": [
+          4,
+          3
+        ],
+        "assignments": 35,
+        "pass": false
+      },
+      "pointed": {
+        "groups": {
+          "f88": [
+            2,
+            4
+          ],
+          "f99": [
+            8,
+            0
+          ],
+          "f100": [
+            3,
+            0
+          ],
+          "f89": [
+            0,
+            9
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            8,
+            0
+          ]
+        },
+        "mixed_roots": 1,
+        "mixed_class_counts": [
+          2,
+          4
+        ],
+        "assignments": 15,
+        "pass": false
+      },
+      "feet": {
+        "groups": {
+          "f88": [
+            1,
+            5
+          ],
+          "f99": [
+            6,
+            2
+          ],
+          "f100": [
+            3,
+            0
+          ],
+          "f89": [
+            4,
+            4
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            6,
+            2
+          ]
+        },
+        "mixed_roots": 4,
+        "mixed_class_counts": [
+          17,
+          13
+        ],
+        "assignments": 329280,
+        "pass": true
+      },
+      "bands": {
+        "groups": {
+          "f88": [
+            0,
+            6
+          ],
+          "f99": [
+            0,
+            8
+          ],
+          "f100": [
+            0,
+            3
+          ],
+          "f89": [
+            0,
+            9
+          ],
+          "f101": [
+            0,
+            6
+          ],
+          "f102": [
+            0,
+            8
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      }
+    },
+    "new": {
+      "pedestal": {
+        "groups": {
+          "f88": [
+            0,
+            3
+          ],
+          "f89": [
+            0,
+            9
+          ],
+          "f100": [
+            1,
+            0
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            6,
+            1
+          ]
+        },
+        "mixed_roots": 1,
+        "mixed_class_counts": [
+          6,
+          1
+        ],
+        "assignments": 7,
+        "pass": false
+      },
+      "blue_top": {
+        "groups": {
+          "f88": [
+            3,
+            0
+          ],
+          "f89": [
+            9,
+            0
+          ],
+          "f100": [
+            1,
+            0
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            8,
+            0
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      },
+      "pointed": {
+        "groups": {
+          "f88": [
+            1,
+            2
+          ],
+          "f89": [
+            0,
+            9
+          ],
+          "f100": [
+            1,
+            0
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            8,
+            0
+          ]
+        },
+        "mixed_roots": 1,
+        "mixed_class_counts": [
+          1,
+          2
+        ],
+        "assignments": 3,
+        "pass": false
+      },
+      "feet": {
+        "groups": {
+          "f88": [
+            0,
+            3
+          ],
+          "f89": [
+            4,
+            4
+          ],
+          "f100": [
+            1,
+            0
+          ],
+          "f101": [
+            6,
+            0
+          ],
+          "f102": [
+            6,
+            2
+          ]
+        },
+        "mixed_roots": 2,
+        "mixed_class_counts": [
+          10,
+          6
+        ],
+        "assignments": 1960,
+        "pass": true
+      },
+      "bands": {
+        "groups": {
+          "f88": [
+            0,
+            3
+          ],
+          "f89": [
+            0,
+            9
+          ],
+          "f100": [
+            0,
+            1
+          ],
+          "f101": [
+            0,
+            6
+          ],
+          "f102": [
+            0,
+            8
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      }
+    },
+    "enclosed": {
+      "pedestal": {
+        "groups": {
+          "f99": [
+            8,
+            0
+          ],
+          "f102": [
+            0,
+            1
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      },
+      "blue_top": {
+        "groups": {
+          "f99": [
+            4,
+            3
+          ],
+          "f102": [
+            2,
+            0
+          ]
+        },
+        "mixed_roots": 1,
+        "mixed_class_counts": [
+          4,
+          3
+        ],
+        "assignments": 35,
+        "pass": false
+      },
+      "pointed": {
+        "groups": {
+          "f99": [
+            8,
+            0
+          ],
+          "f102": [
+            2,
+            0
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      },
+      "feet": {
+        "groups": {
+          "f99": [
+            6,
+            2
+          ],
+          "f102": [
+            0,
+            2
+          ]
+        },
+        "mixed_roots": 1,
+        "mixed_class_counts": [
+          6,
+          2
+        ],
+        "assignments": 28,
+        "pass": false
+      },
+      "bands": {
+        "groups": {
+          "f99": [
+            0,
+            8
+          ],
+          "f102": [
+            0,
+            2
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      }
+    },
+    "new_enclosed": {
+      "pedestal": {
+        "groups": {
+          "f102": [
+            0,
+            1
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      },
+      "blue_top": {
+        "groups": {
+          "f102": [
+            2,
+            0
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      },
+      "pointed": {
+        "groups": {
+          "f102": [
+            2,
+            0
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      },
+      "feet": {
+        "groups": {
+          "f102": [
+            0,
+            2
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      },
+      "bands": {
+        "groups": {
+          "f102": [
+            0,
+            2
+          ]
+        },
+        "mixed_roots": 0,
+        "mixed_class_counts": [
+          0,
+          0
+        ],
+        "assignments": 1,
+        "pass": false
+      }
+    }
+  },
+  "semantic_status": "BLOCKED"
+}

@@ -1,6 +1,86 @@
 schema_version: 1
-updated: '2026-11-22'
+updated: '2026-11-25'
 priorities:
+  - id: RM-061
+    title: 'EXP-0038b-g integrated evidence checkpoint; semantic validation blocked'
+    status: ACTIVE
+    next: 'Independent blinded review of EXP-0038f without owner key; certify matched script/non-script controls for segmentation specificity and retain all 15 failures from EXP-0038g. No threshold tuning, no accepted region-locus match or meaning. Other open A/W tests may proceed while independent review is unavailable. See research/experiments/2026-11-25_EXP-0038g_report.md.'
+  - id: RM-060
+    title: 'EXP-0038a inventory PASS; independent adjudication and cross-root attachment required'
+    status: ACTIVE
+    next: 'Independent image-only review and extend directly attached inscription candidates beyond f99, then locus alignment and EXP-0039 frozen referent test. See research/experiments/2026-11-24_EXP-0038a_report.md.'
+  - id: RM-059
+    title: 'EXP-0038 editorial label proxy NOT_MET; independent image adjudication needed'
+    status: ACTIVE
+    next: 'EXP-0038a prepare blinded image-only region/referent inventory, uncertainty and competing referents before EXP-0039. No retuning the editorial proxy test. See research/experiments/2026-11-24_EXP-0038_report.md.'
+  - id: RM-058
+    title: 'EXP-0037l-t higher-level statistical cluster completed; semantic anchors next on owner review'
+    status: WATCHING
+    next: 'Preserve positive and negative results. No repeat tuning. EXP-0038 blinded label-anchor design upon owner review. See research/experiments/2026-11-24_EXP-0037_lt_report.md.'
+  - id: RM-057
+    title: 'EXP-0037k lexical n-grams NOT_MET; word-class abstraction next'
+    status: ACTIVE
+    next: 'EXP-0037l train-only distributional word classes with support-aware controls, then EXP-0037m frozen-class syntax models; no repeated tuning of k. See research/experiments/2026-11-24_EXP-0037k_report.md.'
+  - id: RM-056
+    title: 'EXP-0037g-j completed; graphotactic alternative remains; semantic anchors next on owner approval'
+    status: WATCHING
+    next: 'Preserve all NOT_MET findings. Do not repeat tuning for PASS. Owner review then EXP-0038 blinded label-anchor design. See research/experiments/2026-11-24_EXP-0037_gj_report.md.'
+  - id: RM-055
+    title: 'EXP-0037a-f cluster complete, 4/6 PASS; original NOT_MET retained'
+    status: WATCHING
+    next: 'Owner review before EXP-0038; assess core-frame association against graphotactic controls and resolve limited support only for a new discriminating question. No threshold fishing. See research/experiments/2026-11-24_EXP-0037_cluster_report.md.'
+  - id: RM-054
+    title: 'EXP-0037 stable positional roles; joint threshold NOT_MET; label anchors next'
+    status: ACTIVE
+    next: 'EXP-0038 proposed: preregister blinded label-anchor design with competing referents and controls; do not equate positional chunks with morphemes. See research/experiments/2026-11-24_EXP-0037_report.md.'
+  - id: RM-053
+    title: 'EXP-0036a native STA1 PASS; acquisition blocker resolved'
+    status: SATURATED
+    next: 'Proceed EXP-0037 functional subword roles with cross-witness discriminators; native completion documented in research/experiments/2026-11-24_EXP-0036a_native_report.md. No repeated acquisition.'
+  - id: RM-052
+    title: 'EXP-0036 cross-transcription PASS; functional components next'
+    status: ACTIVE
+    next: 'EXP-0037 proposed: cross-witness functional subword roles with heldout discriminators and controls, followed by blinded semantic anchors; no meaning inferred from predictive structure alone. See research/experiments/2026-11-24_EXP-0036_report.md.'
+  - id: RM-051
+    title: 'EXP-0035 stronger predictive comparator PASS; independent evidence next'
+    status: ACTIVE
+    next: 'Rights-reviewed independent transcription replication and preregistered semantic-anchor design; no repeated exposed-grid tuning or historical origin inference from model rank. See research/experiments/2026-11-24_EXP-0035_report.md.'
+  - id: RM-050
+    title: 'EXP-0034 partial transfer NOT_MET; competing generators next'
+    status: ACTIVE
+    next: 'EXP-0035 proposed: stronger higher-order character and competing generative references with frozen length/domain controls; no repeated transfer tuning or presumed language. See research/experiments/2026-11-24_EXP-0034_report.md.'
+  - id: RM-049
+    title: 'EXP-0033 composition PASS; Currier A/B transfer next'
+    status: ACTIVE
+    next: 'EXP-0034 proposed: freeze grammar architecture and fit by provenance-checked Currier domain; compare matched within-domain and cross-domain OOV transfer controlling length, training size and section/hand confounds. See research/experiments/2026-11-24_EXP-0033_report.md.'
+  - id: RM-048
+    title: 'EXP-0032c learning curve NOT_MET late-growth gate; productive composition next'
+    status: ACTIVE
+    next: 'EXP-0033 proposed: reusable subword composition, train-only fit, explicit complexity, heldout OOV test against same-data positional character and copy models. No extrapolation of infinite-data likelihood or repeated whole-template cap fishing. See research/experiments/2026-11-24_EXP-0032c_report.md.'
+  - id: RM-047
+    title: 'EXP-0032b sensitivity NOT_MET; productive composition next'
+    status: ACTIVE
+    next: 'EXP-0033 proposed: reusable subword composition, train-only fit, explicit complexity, heldout OOV test versus positional character and copy models; do not retune on exposed outer results. See research/experiments/2026-11-24_EXP-0032b_report.md.'
+  - id: RM-046
+    title: 'EXP-0032 whole-word templates NOT_MET; productive compositional grammar'
+    status: ACTIVE
+    next: 'EXP-0033 proposed: reusable subword composition or finite-state transitions, train-only fit, explicit complexity, OOV evaluation against position-aware bigram and copy baseline. No cap fishing or forced class identity. See research/experiments/2026-11-24_EXP-0032_report.md.'
+  - id: RM-045
+    title: 'EXP-0031 external context PASS; test compact word formation templates'
+    status: ACTIVE
+    next: 'EXP-0032 proposed: learn compact word templates on TRAIN only, compare heldout prediction at fixed complexity against character and copy-edit baselines; no assumed glyph equivalence. See research/experiments/2026-11-24_EXP-0031_report.md.'
+  - id: RM-044
+    title: 'EXP-0030 distributional classes PASS; test external word context'
+    status: ACTIVE
+    next: 'EXP-0031 proposed: distinguish variants in external word context with frequency and position controls; do not equate structural relatedness with functional identity. See research/experiments/2026-11-24_EXP-0030_report.md.'
+  - id: RM-043
+    title: 'EXP-0029 segmentation robustness PASS; evaluate functional EVA classes'
+    status: ACTIVE
+    next: 'EXP-0030 proposed: derive classes on training roots only, test heldout transfer and frequency-matched null; do not confuse editorial units with glyphs. See research/experiments/2026-11-24_EXP-0029_report.md.'
+  - id: RM-042
+    title: 'Owner S-tier four-item scoped disposition, no repetitive settled tests'
+    status: WATCHING
+    next: 'W-20 retired, W-02/W-03 attribution settled and content blocked, A-05 fixed EXP-0026/27/28 decisions settled and broad mechanism open. Reopen only on specific new evidence or prospective separating test. Proposed 4/40 scoped closures; choose A-06 or A-04 if executable. See research/hypotheses/2026-11-24_s_tier_scoped_disposition.md.'
   - id: RM-041
     title: 'EXP-0028 copy-channel primary passes within editorial EVA; validate on independent witness and stronger generative alternatives'
     status: ACTIVE

@@ -1,0 +1,302 @@
+{
+  "seed": 380601,
+  "warning": "Do not provide to independent reviewer; prior source IDs link to exposed classifications.",
+  "key": [
+    {
+      "review_id": "B001",
+      "source_id": "P042"
+    },
+    {
+      "review_id": "B002",
+      "source_id": "P021"
+    },
+    {
+      "review_id": "B003",
+      "source_id": "P055"
+    },
+    {
+      "review_id": "B004",
+      "source_id": "P011"
+    },
+    {
+      "review_id": "B005",
+      "source_id": "P061"
+    },
+    {
+      "review_id": "B006",
+      "source_id": "P065"
+    },
+    {
+      "review_id": "B007",
+      "source_id": "P091"
+    },
+    {
+      "review_id": "B008",
+      "source_id": "P030"
+    },
+    {
+      "review_id": "B009",
+      "source_id": "P008"
+    },
+    {
+      "review_id": "B010",
+      "source_id": "P098"
+    },
+    {
+      "review_id": "B011",
+      "source_id": "P049"
+    },
+    {
+      "review_id": "B012",
+      "source_id": "P005"
+    },
+    {
+      "review_id": "B013",
+      "source_id": "P013"
+    },
+    {
+      "review_id": "B014",
+      "source_id": "P064"
+    },
+    {
+      "review_id": "B015",
+      "source_id": "P018"
+    },
+    {
+      "review_id": "B016",
+      "source_id": "P053"
+    },
+    {
+      "review_id": "B017",
+      "source_id": "P062"
+    },
+    {
+      "review_id": "B018",
+      "source_id": "P100"
+    },
+    {
+      "review_id": "B019",
+      "source_id": "P041"
+    },
+    {
+      "review_id": "B020",
+      "source_id": "P035"
+    },
+    {
+      "review_id": "B021",
+      "source_id": "P090"
+    },
+    {
+      "review_id": "B022",
+      "source_id": "P037"
+    },
+    {
+      "review_id": "B023",
+      "source_id": "P097"
+    },
+    {
+      "review_id": "B024",
+      "source_id": "P046"
+    },
+    {
+      "review_id": "B025",
+      "source_id": "P048"
+    },
+    {
+      "review_id": "B026",
+      "source_id": "P039"
+    },
+    {
+      "review_id": "B027",
+      "source_id": "P050"
+    },
+    {
+      "review_id": "B028",
+      "source_id": "P038"
+    },
+    {
+      "review_id": "B029",
+      "source_id": "P059"
+    },
+    {
+      "review_id": "B030",
+      "source_id": "P081"
+    },
+    {
+      "review_id": "B031",
+      "source_id": "P096"
+    },
+    {
+      "review_id": "B032",
+      "source_id": "P076"
+    },
+    {
+      "review_id": "B033",
+      "source_id": "P079"
+    },
+    {
+      "review_id": "B034",
+      "source_id": "P068"
+    },
+    {
+      "review_id": "B035",
+      "source_id": "P044"
+    },
+    {
+      "review_id": "B036",
+      "source_id": "P056"
+    },
+    {
+      "review_id": "B037",
+      "source_id": "P069"
+    },
+    {
+      "review_id": "B038",
+      "source_id": "P087"
+    },
+    {
+      "review_id": "B039",
+      "source_id": "P024"
+    },
+    {
+      "review_id": "B040",
+      "source_id": "P057"
+    },
+    {
+      "review_id": "B041",
+      "source_id": "P047"
+    },
+    {
+      "review_id": "B042",
+      "source_id": "P099"
+    },
+    {
+      "review_id": "B043",
+      "source_id": "P092"
+    },
+    {
+      "review_id": "B044",
+      "source_id": "P051"
+    },
+    {
+      "review_id": "B045",
+      "source_id": "P078"
+    },
+    {
+      "review_id": "B046",
+      "source_id": "P045"
+    },
+    {
+      "review_id": "B047",
+      "source_id": "P014"
+    },
+    {
+      "review_id": "B048",
+      "source_id": "P060"
+    },
+    {
+      "review_id": "B049",
+      "source_id": "P101"
+    },
+    {
+      "review_id": "B050",
+      "source_id": "P019"
+    },
+    {
+      "review_id": "B051",
+      "source_id": "P002"
+    },
+    {
+      "review_id": "B052",
+      "source_id": "P010"
+    },
+    {
+      "review_id": "B053",
+      "source_id": "P006"
+    },
+    {
+      "review_id": "B054",
+      "source_id": "P085"
+    },
+    {
+      "review_id": "B055",
+      "source_id": "P088"
+    },
+    {
+      "review_id": "B056",
+      "source_id": "P043"
+    },
+    {
+      "review_id": "B057",
+      "source_id": "P003"
+    },
+    {
+      "review_id": "B058",
+      "source_id": "P036"
+    },
+    {
+      "review_id": "B059",
+      "source_id": "P028"
+    },
+    {
+      "review_id": "B060",
+      "source_id": "P015"
+    },
+    {
+      "review_id": "B061",
+      "source_id": "P077"
+    },
+    {
+      "review_id": "B062",
+      "source_id": "P054"
+    },
+    {
+      "review_id": "B063",
+      "source_id": "P027"
+    },
+    {
+      "review_id": "B064",
+      "source_id": "P086"
+    },
+    {
+      "review_id": "B065",
+      "source_id": "P084"
+    },
+    {
+      "review_id": "B066",
+      "source_id": "P058"
+    },
+    {
+      "review_id": "B067",
+      "source_id": "P080"
+    },
+    {
+      "review_id": "B068",
+      "source_id": "P029"
+    },
+    {
+      "review_id": "B069",
+      "source_id": "P033"
+    },
+    {
+      "review_id": "B070",
+      "source_id": "P032"
+    },
+    {
+      "review_id": "B071",
+      "source_id": "P025"
+    },
+    {
+      "review_id": "B072",
+      "source_id": "P034"
+    },
+    {
+      "review_id": "B073",
+      "source_id": "P071"
+    },
+    {
+      "review_id": "B074",
+      "source_id": "P007"
+    }
+  ]
+}

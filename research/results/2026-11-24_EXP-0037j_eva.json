@@ -1,0 +1,71 @@
+{
+  "experiment": "EXP-0037j",
+  "source_hashes": {
+    "ZL": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+    "IT": "7f27a8b0feed8f6de0a99900df6bf912dd1d295c38e5f830bac8b41c3f536fb5"
+  },
+  "affix_counts": [
+    8,
+    45
+  ],
+  "supported_cores": 146,
+  "source_tokens": [
+    24351,
+    27733
+  ],
+  "train_decomposed": [
+    12025,
+    13135
+  ],
+  "test_decomposed": [
+    2664,
+    2961
+  ],
+  "ZL_to_IT": {
+    "N": 2589,
+    "roots": 21,
+    "gain": 0.30141462132573577,
+    "bootstrap": [
+      0.27271532531158327,
+      0.34806741428541754
+    ],
+    "p": 0.001,
+    "positive_roots": 21,
+    "novel_pairs": 166,
+    "gates": {
+      "support": true,
+      "gain": true,
+      "bootstrap": true,
+      "p": true,
+      "novel": true
+    },
+    "decision": "PASS"
+  },
+  "IT_to_ZL": {
+    "N": 2366,
+    "roots": 21,
+    "gain": 0.30764911054263905,
+    "bootstrap": [
+      0.27448317007458917,
+      0.34772693927456116
+    ],
+    "p": 0.001,
+    "positive_roots": 21,
+    "novel_pairs": 149,
+    "gates": {
+      "support": true,
+      "gain": true,
+      "bootstrap": true,
+      "p": true,
+      "novel": true
+    },
+    "decision": "PASS"
+  },
+  "decision": "PASS",
+  "controls": {
+    "source_hashes": true,
+    "source_token_replay": true,
+    "root_disjoint": true
+  },
+  "byte_identical_replay": true
+}
