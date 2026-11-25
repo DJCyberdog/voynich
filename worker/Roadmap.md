@@ -209,6 +209,10 @@ S1 hardware/resource diagnostics, S2 CUDA execution probe, S3 adaptive memory pl
 
 A1–A6 implementation delivered: bounded ordered inference, adaptive batch and CPU preparation, overlapping prefetch, reproducible benchmark, pinned profile requirements, expanded platform/dependency preflight. Local regression 117/117 PASS (12 new tests since S-tier), no skips. Independent review environment with only Pillow/psutil: 15/15 tests PASS, no Torch/NumPy/PyMuPDF. This used copied installed distributions, not verified original wheel installation. Synthetic CPU benchmark at 4096 candidates: median 8033 -> 16720 candidates/s, exact row parity; smaller 512 candidate result 6937 -> 9768/s. Native CUDA, original wheel clean installs, Windows SSD detection and representative throughput/peak-memory validation remain unverified. No certification from simulated profiles. See [VRS-094-A.md](VRS-094-A.md). Do not label full A-tier acceptance PASS yet; B-tier can proceed independently.
 
+### VRS-094 — B-tier checkpoint
+
+B1–B4: local technical PASS for operational limit overrides, Silent/Balanced/Performance integration, adaptive bounded per-run feature caching, and larger-resource planner scaling. 8/8 new tests; 125/125 integrated tests, no skips. Native RTX/Windows, clean wheel install, representative real-manuscript throughput and full coordinator integration remain open; high-end native benchmarks are optional. See [VRS-094-B.md](VRS-094-B.md). C-tier diagnostics/profiling optional; D/E deferred, F excluded. Proceed to VRS-095 without repeating CPU-only acceptance loops or claiming a complete native release.
+
 ## 8. Original starting action (historical)
 
 VRS-090: freeze v0.8.1 interfaces and exact baseline, enumerate imports and existing GitHub bridge policies, rerun available tests, define private-fixture and actual Windows/GPU gaps, and prepare migration adapters. Follow with VRS-091 and the automation/exception milestones VRS-095–097 before UI migration; do not start remote publication or new scientific scoring merely because this roadmap exists.
