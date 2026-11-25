@@ -13,8 +13,8 @@ def review(manifest, alphabet, output, reviewer):
     output=Path(output); items=m['regions']; sizes={}
     for r in items:
         with Image.open(w.within(Path(manifest).parent,r['file'])) as im: sizes[r['id']]=im.size
-    if not output.exists(): g.propose(manifest,output,reviewer)
-    data=g.checked_review(output,manifest,sizes,labels[:-1])
+    if not output.exists(): g.propose(manifest,output,reviewer,alphabet)
+    data=g.checked_review(output,manifest,sizes,labels[:-1],w.sha(alphabet))
     w.require(data['reviewer']==reviewer,'Reviewer output belongs to someone else')
     root=tk.Tk(); root.title('Voynich | Glyph review'); info=ttk.Label(root); info.pack(pady=6)
     canvas=tk.Canvas(root,width=900,height=400,background='white'); canvas.pack()
