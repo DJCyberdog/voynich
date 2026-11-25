@@ -1,5 +1,7 @@
 # Voynich GPU Worker 0.1.0
 
+**Release 0.5.0:** [Glyph candidates, box review and prototype classifier](GLYPHS.md). Local-only baseline with explicit unknown labels; no validated manuscript recognizer.
+
 **Release 0.4.0:** [Multiscale region proposals and localization evaluation](REGIONS.md). Local-only development release; existing offline and bridge modes retained.
 
 **Release 0.3.0:** See [BRIDGE.md](BRIDGE.md) for opt-in GitHub job polling and aggregate PR publication. Offline mode remains supported.
