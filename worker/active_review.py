@@ -13,7 +13,7 @@ KINDS = ('glyph', 'compound', 'false_positive', 'uncertain')
 def catalog(path):
     from PIL import Image
     root = Path(path).parent; obj = w.read(path); schemes = obj['schemes']
-    w.require(obj['schema'] == 1 and isinstance(schemes,list) and 1 <= len(schemes) <= 8, 'Invalid reference catalog')
+    w.require(obj['schema'] == 1 and isinstance(schemes,list) and 1 <= len(schemes) <= 12, 'Invalid reference catalog')
     result = {}
     for s in schemes:
         key = s['id']
@@ -30,8 +30,8 @@ def catalog(path):
                     im.verify()
                 images.append((f,sample['source']))
             entries[label] = images
-        w.require(1 <= len(entries) <= 256,'Empty or oversized inventory')
-        result[key] = dict(name=s['name'],version=s['version'],source=s['source'],entries=entries)
+        w.require(1 <= len(entries) <= 1024,'Empty or oversized inventory')
+        result[key] = dict(name=s['name'],version=s['version'],source=s['source'],coverage=s.get('coverage','coverage not established'),entries=entries)
     return result
 
 
@@ -94,7 +94,7 @@ def review(manifest,predictions,references,output,reviewer):
         mapping[key]=dict(state=state,label=label); displays[key].set(label if state=='mapped' else state)
     for i,(key,s) in enumerate(schemes.items()):
         panel=ttk.LabelFrame(columns,text=f'{s["name"]} · {s["version"]}',padding=5); panel.grid(row=0,column=i,sticky='n',padx=4)
-        ttk.Label(panel,text=s['source'],wraplength=330).pack()
+        ttk.Label(panel,text=s['source']+' | '+s['coverage'],wraplength=330).pack()
         displays[key]=tk.StringVar(); ttk.Label(panel,textvariable=displays[key]).pack()
         ttk.Button(panel,text='Nicht im geladenen Inventar',command=lambda k=key:select(k,'not_in_inventory')).pack(fill='x')
         ttk.Button(panel,text='Nicht bestimmbar',command=lambda k=key:select(k,'uncertain')).pack(fill='x')
@@ -110,7 +110,8 @@ def review(manifest,predictions,references,output,reviewer):
             ttk.Button(cell,text=label,command=lambda k=key,l=label:select(k,'mapped',l)).pack(fill='x')
     note=tk.Text(root,height=2); note.pack(fill='x',padx=8)
     status=ttk.Label(root); status.pack(); bar=ttk.Frame(root); bar.pack(pady=5)
-    position=[0]; pending=[r for r in rows if r['id'] not in data['decisions']]
+    from review_groups import ordered
+    position=[0]; pending=[r for r in ordered(manifest,rows) if r['id'] not in data['decisions']]
     def show():
         note.delete('1.0','end'); mapping.clear(); mapping.update(empty_mapping(schemes))
         for k in schemes: displays[k].set('unreviewed')
@@ -122,7 +123,7 @@ def review(manifest,predictions,references,output,reviewer):
             im.thumbnail((1000,100)); scale=min(280/crop.width,100/crop.height); crop=crop.resize((max(1,round(crop.width*scale)),max(1,round(crop.height*scale))))
             context.image=ImageTk.PhotoImage(im); zoom.image=ImageTk.PhotoImage(crop)
         context.configure(image=context.image); zoom.configure(image=zoom.image)
-        header.configure(text=f'{len(data["decisions"])}/{len(rows)} erledigt | Seite {record["page"]} · {r["region_id"]} · {r["box"]}')
+        header.configure(text=f'{len(data["decisions"])}/{len(rows)} erledigt | Seite {record["page"]} · {r["region_id"]} · {r["box"]} | Gruppe {r["visual_group"]} ({r["group_size"]})')
     def save(kind):
         if position[0]>=len(pending): return
         d=dict(kind=kind,mapping=dict(mapping) if kind=='glyph' else empty_mapping(schemes),note=note.get('1.0','end-1c'))
