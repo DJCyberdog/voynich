@@ -3,8 +3,8 @@
   "updated": "2026-11-22",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "Consolidated A-05 exploratory EXP-0026 sensitivity and W-06 original-author attribution",
-  "status": "RESEARCH_COMPLETED",
+  "cycle": "EXP-0027 EVA combined position/preceding-class predictor model comparison, preregistered criterion NOT_MET",
+  "status": "RESEARCH_COMPLETED_SCOPED_EXPLORATORY",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
   "source_rights_verified": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "A-05 source-level reanalysis remains open and previously exposed; next needs independent rights-checked witness and preregistered leaf-heldout controlling Currier/section/hand. W-06 original SRC-0040 colour claim source-reviewed but manuscript meaning unknown; next needs blinded licensed region/colour historical controls. No new decipherment gates. K-0001 Owner-deferred.",
+  "next": "EXP-0027 source-only combined prediction did not meet strong criterion; do not claim hybrid/cipher/language identification. Next require independently rights-reviewed transcription and verified physical-leaf/Currier/section/hand matched heldout plus genuinely generative copy/cipher/language controls. A-01/A-05/A-13 stay OPEN; K-0001 Owner-deferred.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -63,7 +63,8 @@
     "2026-11-17 W-05 source-attribution scope: original author SRC-0040 pins alleged five veins top-left→central Rosettes; author claim DOCUMENTED, al-Razi primary text CLAIMED, pixel count and anatomical meaning UNKNOWN. No new image experiment or HYP/EXP/SRC; W-05 QUEUED→SOURCE_REVIEWED/WATCHING/OPEN, 3/40 and 0/5 unchanged; PR #62 draft.",
     "2026-11-17 W-09 original-author SRC-0040 source check: Brewer fixes two alleged embryonic warming suns to far top-left and bottom-right Rosettes positions; no independent image inspection or Aristotle primary text, no heldout or experiment. W-09 QUEUED -> SOURCE_REVIEWED/WATCHING/OPEN; no new SRC/HYP/EXP, W-04/W-05/W-07/A-19 shared evidence. 3/40 closures, 0/5 gates unchanged. PR #62 draft, Owner merge gate.",
     "2026-11-21 A-05 EXP-0026 exploratory source-level followup: exact original 677 lines/69 q observed/99.7857 expected; 13/20 roots positive, 4 negative, 3 ties; all leave-one-root-out deficits positive, overall root-percentile bootstrap [2.3446, 6.1065] pp. Currier metadata A 10 roots/239 lines -> 0.9902 pp (CI includes zero); B 8 roots/431 lines -> 6.5937 pp. Same previously exposed source/test, no new confirmation, no physical glyph/leaf/hand verification or decipherment; 3/40 claim closures and 0/5 acceptance gates unchanged. See research/experiments/2026-11-21_EXP-0026_A05_root_cluster_sensitivity.md.",
-    "2026-11-21 W-06 SRC-0040 first-person author colour attribution: yellow=male, blue=female dual-semen interpretation of Rosettes, DOCUMENTED only as author's attribution, actual pixels/semantic correctness UNKNOWN. Shared source W-04/W-05/W-07/W-09/A-19, no independent heldout or image/period controls. W-06 SOURCE_REVIEWED / WATCHING / OPEN, no new HYP/EXP/SRC or closed claim; 3/40 and 0/5 unchanged. See research/hypotheses/2026-11-21_W06_yellow_blue_sperm_author_source_audit.md."
+    "2026-11-21 W-06 SRC-0040 first-person author colour attribution: yellow=male, blue=female dual-semen interpretation of Rosettes, DOCUMENTED only as author's attribution, actual pixels/semantic correctness UNKNOWN. Shared source W-04/W-05/W-07/W-09/A-19, no independent heldout or image/period controls. W-06 SOURCE_REVIEWED / WATCHING / OPEN, no new HYP/EXP/SRC or closed claim; 3/40 and 0/5 unchanged. See research/hypotheses/2026-11-21_W06_yellow_blue_sperm_author_source_audit.md.",
+    "2026-11-22 EXP-0027 first-party SHA-pinned EVA v3b run, 1537 +P0 lines/12167 tokens/94 folio-name roots, five root folds; NLL baseline 1.6616911, pos 1.6494278, predecessor 1.6257346, joint 1.6240125 nats/token. Preregistered D>=0.005 and D>0 both Currier A/B FAILED: pooled D=.0017221, A=-.0022658, B=.0025818; 99 conditional within-line/bin shuffles p=.01, root descriptive 95% bootstrap crosses zero. Positive and negative synthetic controls run. Prior exposed same witness (no independent heldout), no identifiable generative origin; A-01/A-05/A-13 remain OPEN. See research/experiments/2026-11-22_EXP-0027_report.md. 3/40 claim closures, 213/213 manifest ID inventory only and 0/5 decipherment gates unchanged."
   ],
   "owner_manifest_policy": {
     "decision_id": "D-0005",
