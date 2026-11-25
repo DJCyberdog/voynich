@@ -106,7 +106,14 @@ def submit(root, source):
     root=Path(root).resolve(); job=w.read(source); validate(root,job)
     inbox=w.within(root,"jobs"); inbox.mkdir(parents=True,exist_ok=True)
     path=w.within(inbox,job["id"]+".json")
-    with path.open("x",encoding="utf-8") as f: json.dump(job,f,sort_keys=True,indent=2); f.write("\n")
+    # Publish only a complete job, and never replace an existing ID.
+    fd, tmp = tempfile.mkstemp(prefix=".submit-", dir=inbox)
+    try:
+        with os.fdopen(fd,"w",encoding="utf-8") as f:
+            json.dump(job,f,sort_keys=True,indent=2); f.write("\n"); f.flush(); os.fsync(f.fileno())
+        os.link(tmp,path)
+    finally:
+        Path(tmp).unlink()
     return job["id"]
 
 
