@@ -179,6 +179,12 @@ Optional later work (not 1.0 blockers): authenticated LAN/private artifact trans
 
 For every milestone: record ID, exact code/test commit, status (PLANNED / IN_PROGRESS / TECH_PASS / NOT_MET / BLOCKED), actual tests and results, artifact digests, hardware/software, remaining limitations, next actionable step. No repeated status-only loops; if blocked, identify smallest missing evidence and move to a genuinely independent unblocked task. Use a scoped PR with change manifest, regression evidence, and owner merge gate. Do not alter hourly research automation by implication. Keep code and research experiments separate and never rewrite existing findings.
 
-## 7. Immediate next action
+## 7. Implementation checkpoint — 2026-11-25
+
+VRS-090 / VRS-091: local technical PASS, full recovered baseline 61/61 and current 71/71 (no skips). VRS-092: fixed local manifest/receipt/evidence contract implemented; 11/11 new tests, 82/82 integrated tests, no skips. See [VRS-091-092.md](VRS-091-092.md). Live CI, native Windows/CUDA, scientific acceptance and coordinator/reporting integration remain separate gates. GitHub is the output destination, not a required input to local execution.
+
+Next: VRS-093 durable local job ledger, locking, checkpoints and outbox; then VRS-094/095. No automatic publication or new scientific research implied.
+
+## 8. Original starting action (historical)
 
 VRS-090: freeze v0.8.1 interfaces and exact baseline, enumerate imports and existing GitHub bridge policies, rerun available tests, define private-fixture and actual Windows/GPU gaps, and prepare migration adapters. Follow with VRS-091 and the automation/exception milestones VRS-095–097 before UI migration; do not start remote publication or new scientific scoring merely because this roadmap exists.
