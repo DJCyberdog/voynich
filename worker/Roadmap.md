@@ -211,11 +211,11 @@ A1–A6 implementation delivered: bounded ordered inference, adaptive batch and 
 
 ### VRS-094 — B-tier checkpoint
 
-B1–B4: local technical PASS for operational limit overrides, Silent/Balanced/Performance integration, adaptive bounded per-run feature caching, and larger-resource planner scaling. 8/8 new tests; 125/125 integrated tests, no skips. Native RTX/Windows, clean wheel install, representative real-manuscript throughput and full coordinator integration remain open; high-end native benchmarks are optional. See [VRS-094-B.md](VRS-094-B.md). C-tier diagnostics/profiling optional; D/E deferred, F excluded. Proceed to VRS-095 without repeating CPU-only acceptance loops or claiming a complete native release.
+B1–B4: local technical PASS for operational limit overrides, Silent/Balanced/Performance integration, adaptive bounded per-run feature caching, and larger-resource planner scaling. 8/8 new tests; 125/125 integrated tests, no skips. Native RTX/Windows, clean wheel install, representative real-manuscript throughput and full coordinator integration remain open; high-end native benchmarks are optional. See [VRS-094-B.md](VRS-094-B.md). C-tier diagnostics/profiling and D/E capabilities are tracked separately. Continue the remaining defined tiers without repeating CPU-only acceptance loops or claiming a complete native release.
 
 ### VRS-094 — D-tier checkpoint
 
-D1/D2: isolated local CPU/CUDA inference shards, deterministic whole-region partition and result merge, aggregate host budgets, per-device verified CUDA probe and explicit device binding. Seven new tests; 138/138 integrated local tests PASS, no skips. Actual two-process CPU parity established; native multi-GPU execution and workstation throughput unverified. See [VRS-094-D.md](VRS-094-D.md). Single-device default unchanged; optional multi-GPU is not an owner release gate. E-tier next, F excluded by definition.
+D1/D2: isolated local CPU/CUDA inference shards, deterministic whole-region partition and result merge, aggregate host budgets, per-device verified CUDA probe and explicit device binding. Seven new tests; 138/138 integrated local tests PASS, no skips. Actual two-process CPU parity established; native multi-GPU execution and workstation throughput unverified. See [VRS-094-D.md](VRS-094-D.md). Single-device default unchanged; optional multi-GPU is not an owner release gate. E-tier is the final defined tier of VRS-094. After it, proceed to VRS-095, retaining outstanding native acceptance gates.
 
 ### Owner decision — mandatory portable distribution
 
