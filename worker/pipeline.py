@@ -189,7 +189,6 @@ def main():
     q=sub.add_parser("export"); q.add_argument("root"); q.add_argument("jid"); q.add_argument("out")
     args=vars(p.parse_args()); cmd=args.pop("cmd"); print(json.dumps({"submit":submit,"import-git":import_git,"process":process,"watch":watch,"export":export}[cmd](**args),indent=2))
 
-
 if __name__=="__main__":
     try: main()
     except KeyboardInterrupt: sys.exit(130)
