@@ -1,5 +1,7 @@
 # Voynich GPU Worker 0.1.0
 
+**Release 0.5.1:** [Multi-convention uncertainty review](ACTIVE_REVIEW.md). Local reference-image catalogs, separate mappings and false-positive decisions; real EVA/STA1 catalogs not included.
+
 **Release 0.5.0:** [Glyph candidates, box review and prototype classifier](GLYPHS.md). Local-only baseline with explicit unknown labels; no validated manuscript recognizer.
 
 **Release 0.4.0:** [Multiscale region proposals and localization evaluation](REGIONS.md). Local-only development release; existing offline and bridge modes retained.
