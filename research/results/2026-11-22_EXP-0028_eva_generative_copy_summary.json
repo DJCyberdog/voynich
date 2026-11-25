@@ -1,0 +1,202 @@
+{
+  "classification": "EXPLORATORY_SCOPED_NOT_INDEPENDENT_MANUSCRIPT_TEST",
+  "edit_normalization_control": "PASS",
+  "experiment": "EXP-0028",
+  "folds": [
+    {
+      "fold": 0,
+      "nll_nats_per_word": [
+        8.750818244792022,
+        8.750818244792022,
+        8.732811232175434,
+        8.73307727617024
+      ],
+      "test_lines": 274,
+      "test_roots": 16,
+      "tokens": 2286
+    },
+    {
+      "fold": 1,
+      "nll_nats_per_word": [
+        8.950107358582132,
+        8.950107358582132,
+        8.940385821223614,
+        8.940288290721103
+      ],
+      "test_lines": 330,
+      "test_roots": 16,
+      "tokens": 2705
+    },
+    {
+      "fold": 2,
+      "nll_nats_per_word": [
+        8.469478949655558,
+        8.469478949655558,
+        8.45924918915271,
+        8.458768731732816
+      ],
+      "test_lines": 270,
+      "test_roots": 17,
+      "tokens": 2159
+    },
+    {
+      "fold": 3,
+      "nll_nats_per_word": [
+        8.968779044800653,
+        8.968779044800653,
+        8.94968296266209,
+        8.950431915146837
+      ],
+      "test_lines": 249,
+      "test_roots": 19,
+      "tokens": 1906
+    },
+    {
+      "fold": 4,
+      "nll_nats_per_word": [
+        8.830087891954626,
+        8.830087891954626,
+        8.815475984529627,
+        8.815162444905058
+      ],
+      "test_lines": 414,
+      "test_roots": 26,
+      "tokens": 3111
+    }
+  ],
+  "folio_number_roots": 94,
+  "interpretation_guardrail": "One-exposed-source predictive fit only. Same B innovation in L/M/H, ROT13 K identical. No actual language, decipherment, semantic cipher or unique historical mechanical production identified.",
+  "models": {
+    "H": "same B, but separate trained INTERIOR and LAST copy weights; first uses B",
+    "K": "ROT13 bijective relabel of L, trained on rotated TRAIN, mathematically indistinguishable",
+    "L": "trained character bigram B(word), alpha 0.5, START+END, same training roots",
+    "M": "same B, plus trained single global copy/edit weight; resets from B"
+  },
+  "observed": {
+    "gain_H_over_M": 0.00001979693786680059,
+    "gain_M_over_L": 0.014087418334577606,
+    "loss_nats_per_word": {
+      "H_copy_position": 8.785507501266249,
+      "K_rot13_relabel": 8.799614716538693,
+      "L_char_bigram": 8.799614716538693,
+      "M_copy_global": 8.785527298204116
+    },
+    "roots": 94,
+    "tokens": 12167
+  },
+  "per_currier_metadata": {
+    "A": {
+      "gain_H_over_M": -0.0001821990163826115,
+      "gain_M_over_L": 0.023946047081254918,
+      "loss_nats_per_word": {
+        "H_copy_position": 9.1905638414458,
+        "K_rot13_relabel": 9.214327689510672,
+        "L_char_bigram": 9.214327689510672,
+        "M_copy_global": 9.190381642429417
+      },
+      "roots": 51,
+      "tokens": 3614
+    },
+    "B": {
+      "gain_H_over_M": 0.00009657698950960025,
+      "gain_M_over_L": 0.009853580580543309,
+      "loss_nats_per_word": {
+        "H_copy_position": 8.600978553264733,
+        "K_rot13_relabel": 8.610928710834786,
+        "L_char_bigram": 8.610928710834786,
+        "M_copy_global": 8.601075130254243
+      },
+      "roots": 40,
+      "tokens": 8447
+    },
+    "U": {
+      "gain_H_over_M": 0.0007882146965929593,
+      "gain_M_over_L": 0.015352920389624103,
+      "loss_nats_per_word": {
+        "H_copy_position": 9.680247221642917,
+        "K_rot13_relabel": 9.696388356729134,
+        "L_char_bigram": 9.696388356729134,
+        "M_copy_global": 9.68103543633951
+      },
+      "roots": 3,
+      "tokens": 106
+    }
+  },
+  "permutation_null": {
+    "gain_max": 0.015593617268198301,
+    "gain_mean": 0.011786339768432796,
+    "gain_min": 0.00866508914586639,
+    "ge_observed": 1,
+    "median_changed_words": 5218,
+    "median_movable": 8674,
+    "n": 49,
+    "one_sided_empirical_p": 0.04,
+    "preserves": "within-line original word multiset and exact wordlength-position buckets"
+  },
+  "primary_success_criteria_passed": true,
+  "root_cluster_bootstrap_95_descriptive": {
+    "gain_H_over_M": [
+      -0.0003018213715744178,
+      0.00035556122372413216
+    ],
+    "gain_M_over_L": [
+      0.009306209931988186,
+      0.01958915751929271
+    ]
+  },
+  "row_scope": {
+    "accepted_lines": 1537,
+    "accepted_tokens": 12167,
+    "all_rows": 5225,
+    "excluded_f3_f8": 63,
+    "not_+P0": 1618,
+    "uncertain_or_short_line": 2007
+  },
+  "secondary_context_gate_passed": false,
+  "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+  "source_version": "ZL3b-n v3b 2025-05-13, 411671 bytes, single previously exposed IVTFF EVA witness",
+  "synthetic_negative": {
+    "gain_M_over_L": 0.00094158851471704,
+    "pass": true
+  },
+  "synthetic_positive": {
+    "gain_M_over_L": 2.0273936886148913,
+    "pass": true,
+    "replacements": {
+      "exact_copy": 1653,
+      "substitute_one": 1550
+    }
+  },
+  "training_copy_rates": [
+    {
+      "fold": 0,
+      "global": 0.012578853475396471,
+      "interior": 0.0139070405332187,
+      "last": 0.005235395103375155
+    },
+    {
+      "fold": 1,
+      "global": 0.015004633612332513,
+      "interior": 0.016244292154415384,
+      "last": 0.008859423054585116
+    },
+    {
+      "fold": 2,
+      "global": 0.014632277549994393,
+      "interior": 0.015470637815603054,
+      "last": 0.010204358724839055
+    },
+    {
+      "fold": 3,
+      "global": 0.013367581358711078,
+      "interior": 0.014875625677451699,
+      "last": 0.005658886510165812
+    },
+    {
+      "fold": 4,
+      "global": 0.013853589306025335,
+      "interior": 0.014730512906205877,
+      "last": 0.009235010742448587
+    }
+  ]
+}

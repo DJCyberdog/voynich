@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-22'
 priorities:
+  - id: RM-041
+    title: 'EXP-0028 copy-channel primary passes within editorial EVA; validate on independent witness and stronger generative alternatives'
+    status: ACTIVE
+    next: 'Within previously exposed ZL3b-n v3b, copy/edit+char-bigram +0.0140874 nats/word vs char-bigram; Currier A/B positive and 49 within-line permutations p=.04. More elaborate position-dependent copy mix adds only +0.0000198 and fails secondary threshold. No unique mechanical, language or cipher origin. Confirm on rights-reviewed independent transcription, authenticated folio groups and matched-complexity model alternatives. Do not equate ROT13-identical relabeling with a real cipher test; A-01/A-05/A-13 remain OPEN.'
   - id: RM-040
     title: 'EXP-0027 EVA context/position predictor: independent source, leaf-heldout and genuine generative model competition'
     status: WATCHING
