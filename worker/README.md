@@ -1,5 +1,9 @@
 # Voynich GPU Worker 0.1.0
 
+**Release 0.8.1:** [Local Windows review tray](TRAY.md). Explicit batch registration, pending notifications and one-click review; native Windows validation pending.
+
+**Release 0.8.0:** [Focused glyph review client](REVIEW_CLIENT.md). Local dark UI, reference search, keyboard review, correction proposals and revision history.
+
 **Release 0.7.0:** [Local end-to-end validation](VALIDATION.md). Technical integration tested with synthetic data and a real-source image probe; scientific manuscript validation remains blocked pending independent annotations.
 
 **Release 0.6.0:** [Local IVTFF transcription alignment](ALIGNMENT.md). Source-pinned lexical audit, explicit physical mapping, human-review adapter and uncertainty-aware alignment; no scientific recognition score.
