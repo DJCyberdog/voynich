@@ -152,7 +152,7 @@ def import_git(root, repo, commit, path, expected_sha):
         return submit(root,source)
 
 
-def process(root, retry=None):
+def process(root, retry=None, allowed_ids=None):
     root=Path(root).resolve(); root.mkdir(parents=True,exist_ok=True)
     lock=w.within(root,"worker.lock"); fd=os.open(lock,os.O_CREAT|os.O_EXCL|os.O_WRONLY)
     try:
@@ -160,6 +160,7 @@ def process(root, retry=None):
         inbox=w.within(root,"jobs"); results=[]
         for path in sorted(inbox.glob("*.json")):
             jid=path.stem
+            if allowed_ids is not None and jid not in allowed_ids: continue
             if retry is not None and retry!=jid: continue
             journal=w.within(root,"status/"+jid+".json"); old=w.read(journal) if journal.exists() else None
             digest=w.sha(path)
