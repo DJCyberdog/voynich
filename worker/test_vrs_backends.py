@@ -34,8 +34,9 @@ class BackendTests(unittest.TestCase):
         with self.assertRaises(h.ResourceBlocked): b.resolve(torch,'directml',0,'Linux',loader)
         api.device.return_value=torch.device('cpu')
         with self.assertRaises(h.ResourceBlocked): b.resolve(torch,'directml',0,'Windows',loader)
-        with self.assertRaisesRegex(h.ResourceBlocked,'probe-only'):
-            b.qualify(None,None,None,None,None,None,backend='directml')
+        with patch.object(b,'probe',return_value={'status':'BLOCKED','reason':'fixture'}):
+            with self.assertRaises(h.ResourceBlocked):
+                b.qualify(None,None,None,None,None,None,backend='directml')
 
     def test_memory_fail_closed(self):
         api=MagicMock(); api.mem_get_info.return_value=(4*h.GIB,8*h.GIB)
@@ -61,8 +62,9 @@ class BackendTests(unittest.TestCase):
             result=b.probe('xpu')
             self.assertEqual(result['status'],'PROBE_PASS'); self.assertEqual(result['native_acceptance'],'UNVERIFIED')
             self.assertTrue(result['qualification_available']); api.synchronize.assert_called_once_with(0)
-            result=b.probe('directml')
-            self.assertEqual(result['status'],'PROBE_PASS'); self.assertFalse(result['qualification_available'])
+            with patch.object(b.dxgi,'memory',return_value=dict(free=4*h.GIB,total=8*h.GIB,luid=[0,1])):
+                result=b.probe('directml')
+            self.assertEqual(result['status'],'PROBE_PASS'); self.assertTrue(result['qualification_available'])
         # Actual CPU-only environment, explicitly not a native accelerator test.
         if not torch.version.hip:
             self.assertEqual(b.probe('rocm')['status'],'BLOCKED')

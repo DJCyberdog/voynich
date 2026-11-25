@@ -9,6 +9,7 @@ from pathlib import Path
 
 import vrs_hardware as h
 import vrs_resources as resources
+import vrs_dxgi as dxgi
 
 BACKENDS = ('rocm', 'xpu', 'directml')
 
@@ -80,6 +81,9 @@ def probe(backend, index=0, *, torch=None):
             import torch
         import glyphs as g
         api, target = resolve(torch, backend, index)
+        before = dxgi.memory(api,index) if backend == 'directml' else memory(api,index)
+        if before['free'] < 256*h.MIB:
+            raise h.ResourceBlocked('Insufficient device budget for classifier probe')
         # Exactly representable values, distinct nearest prototypes, no ties.
         p = torch.stack([torch.zeros(1024), torch.ones(1024)]).float()
         f = torch.stack([torch.full((1024,), .125), torch.full((1024,), .875)]).float()
@@ -88,7 +92,7 @@ def probe(backend, index=0, *, torch=None):
             raise h.ResourceBlocked('Unexpected probe result')
         if backend != 'directml':
             api.synchronize(index)
-        telemetry = None if backend == 'directml' else memory(api, index)
+        telemetry = dxgi.memory(api,index,before['luid']) if backend == 'directml' else memory(api,index)
         return dict(backend=backend, index=index, target=str(target), status='PROBE_PASS',
                     torch=str(torch.__version__), hip=getattr(torch.version,'hip',None),
                     memory=telemetry, qualification_available=telemetry is not None,
@@ -101,8 +105,8 @@ def probe(backend, index=0, *, torch=None):
 def qualify(manifest, review, alphabet, model_path, report_path, output, *, backend, index=0, preset=h.DEFAULT_PRESET, limits=None):
     """Bounded local inference qualification, never auto-selected or used for training.
 
-    DirectML stays probe-only until reliable memory telemetry is available.
-    Every ROCm/XPU batch is independently checked on CPU before any report is written.
+    Every backend batch is independently checked on CPU before any report is written.
+    DirectML is limited to a single unambiguous dedicated Windows adapter.
     """
     import torch
     import glyphs as g
@@ -112,10 +116,8 @@ def qualify(manifest, review, alphabet, model_path, report_path, output, *, back
     import os
     import tempfile
     caps = resources.limits(limits)
-    if backend == 'directml':
-        raise h.ResourceBlocked('DirectML probe-only: reliable free-memory admission is not implemented')
-    if backend not in ('rocm','xpu'):
-        raise ValueError('Explicit ROCm or XPU required')
+    if backend not in BACKENDS:
+        raise ValueError('Explicit alternative backend required')
     evidence = probe(backend,index)
     if evidence['status'] != 'PROBE_PASS' or not evidence['qualification_available']:
         raise h.ResourceBlocked('Backend qualification blocked: '+evidence.get('reason','memory unavailable'))
@@ -137,7 +139,9 @@ def qualify(manifest, review, alphabet, model_path, report_path, output, *, back
               vram_base=256*h.MIB,vram_item=scratch,disk=max(h.MIB,n*512),items=max(1,n))
     output.parent.mkdir(parents=True,exist_ok=True)
     def snapshot():
-        info=h.snapshot(output.parent,'review'); info['gpu']=memory(api,index); return info
+        info=h.snapshot(output.parent,'review')
+        info['gpu']=dxgi.memory(api,index,evidence['memory']['luid']) if backend=='directml' else memory(api,index)
+        return info
     info=snapshot()
     # Reuse the CUDA-shaped budget contract only internally; actual identity stays explicit.
     selected=resources.plan(info,work,'cuda',preset,{**caps,'cache_bytes':0})
@@ -160,7 +164,10 @@ def qualify(manifest, review, alphabet, model_path, report_path, output, *, back
                     chunk=glyphs[start:start+batch]; admit(len(chunk))
                     f=torch.from_numpy(np.stack([g.feature(im.crop(x['box'])) for x in chunk]))
                     result=h.bounded_call(exact_classify,torch,g.classify,f,p,target)
-                    api.synchronize(index)
+                    if backend != 'directml': api.synchronize(index)
+                    # Classifier list conversion synchronizes DirectML readback.
+                    # Recheck budget after execution; never publish under pressure.
+                    admit(len(chunk))
                     for x,(i,d,gap) in zip(chunk,result):
                         rows.append(dict(region_id=r['id'],box=x['box'],predicted=g.decision(labels[i],d,gap),distance=d,margin=gap))
     finally:
