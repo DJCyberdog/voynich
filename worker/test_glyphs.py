@@ -17,16 +17,20 @@ class GlyphTests(unittest.TestCase):
             records.append(dict(id=f'r{i}',page=i+1,group=f'leaf{i}',file=path.name,sha256=w.sha(path)))
             annotations[f'r{i}']=dict(status='single_line',glyphs=[dict(box=b,label=l) for b,l in zip(g.boxes(image),['X','Y'])])
         w.write(self.manifest,dict(regions=records)); self.a=self.root/'a.json'; self.b=self.root/'b.json'
-        for p,who in [(self.a,'alpha'),(self.b,'beta')]: w.write(p,dict(schema=1,manifest_sha256=w.sha(self.manifest),reviewer=who,regions=annotations))
         self.alphabet=self.root/'alphabet.json'; w.write(self.alphabet,dict(convention='synthetic-only',labels=['X','Y']))
+        for p,who in [(self.a,'alpha'),(self.b,'beta')]: w.write(p,dict(schema=1,manifest_sha256=w.sha(self.manifest),inventory_sha256=w.sha(self.alphabet),reviewer=who,regions=annotations))
         self.split=self.root/'split.json'; w.write(self.split,dict(train=['leaf0','leaf1'],test=['leaf2','leaf3']))
 
     def test_projection_and_review_template(self):
         im=Image.new('L',(32,20),255); self.assertEqual(g.boxes(im),[])
         d=ImageDraw.Draw(im); d.rectangle((0,2,3,9),fill=0); d.rectangle((28,4,31,15),fill=0)
         self.assertEqual(g.boxes(im),[[0,2,4,10],[28,4,32,16]])
-        path=self.root/'template.json'; g.propose(self.manifest,path,'reviewer')
+        path=self.root/'template.json'; g.propose(self.manifest,path,'reviewer',self.alphabet)
         self.assertTrue(all(r['status']=='unreviewed' and all(x['label']=='unknown' for x in r['glyphs']) for r in w.read(path)['regions'].values()))
+
+    def test_inventory_binding(self):
+        w.write(self.alphabet,dict(convention='different-convention',labels=['X','Y']))
+        with self.assertRaisesRegex(ValueError,'inventory mismatch'): g.cohorts(self.manifest,self.a,self.b,self.alphabet,self.split)
 
     def test_review_and_split_guards(self):
         b=w.read(self.b); b['reviewer']='alpha'; w.write(self.b,b)
