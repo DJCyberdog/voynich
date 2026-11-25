@@ -82,7 +82,7 @@ def ordered_batches(items, prepare, infer, *, batch, workers, admit, group=None)
             chunk,pending = following,futures
 
 
-def _predict(manifest, review, alphabet, model_path, report_path, output, *, device='auto', preset=h.DEFAULT_PRESET, serial=False, limits=None, profiler=None):
+def _predict(manifest, review, alphabet, model_path, report_path, output, *, device='auto', preset=h.DEFAULT_PRESET, serial=False, limits=None, profiler=None, gpu_index=0, region_ids=None):
     """Opt-in local glyph prediction adapter. No training or automatic research."""
     import glyphs as g
     import torch
@@ -98,11 +98,18 @@ def _predict(manifest, review, alphabet, model_path, report_path, output, *, dev
         p=core.within(root,r['file']); paths[r['id']]=p; hashes[r['id']]=r['sha256']
         with Image.open(p) as im: sizes[r['id']]=im.size
     a=g.checked_review(review,manifest,sizes,labels,core.sha(alphabet))
+    h.positive(gpu_index,'GPU index',zero=True)
+    if region_ids is not None:
+        core.require(type(region_ids) is list and region_ids and all(type(x) is str for x in region_ids) and len(set(region_ids))==len(region_ids) and set(region_ids)<=set(sizes),'Invalid shard regions')
+        selected_ids=set(region_ids)
+        m={'regions':[r for r in m['regions'] if r['id'] in selected_ids]}
+        sizes={k:v for k,v in sizes.items() if k in selected_ids}
+        hashes={k:v for k,v in hashes.items() if k in selected_ids}
     items=[(r['id'],x['box']) for r in m['regions'] if a['regions'][r['id']]['status']=='single_line' for x in sorted(a['regions'][r['id']]['glyphs'],key=lambda z:z['box'][0])]
     excluded=sum(a['regions'][r['id']]['status']!='single_line' for r in m['regions'])
     if profiler: profiler.record('validation',time.perf_counter()-phase_start)
     phase_start=time.perf_counter()
-    info=h.snapshot(root,device); estimate=workload_estimate(max(w*y for w,y in sizes.values()),len(labels),max(1,len(items)),max(1024**2,len(items)*512))
+    info=h.snapshot(root,device,gpu_index); estimate=workload_estimate(max(w*y for w,y in sizes.values()),len(labels),max(1,len(items)),max(1024**2,len(items)*512))
     repeated={key for key,count in Counter(hashes.values()).items() if count>1}
     caps=resources.limits(limits)
     plan_caps=caps if repeated else {**caps,'cache_bytes':0}
