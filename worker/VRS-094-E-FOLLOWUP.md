@@ -1,0 +1,28 @@
+# VRS-094 E follow-up — DirectML admission and native acceptance harness
+
+Parent E checkpoint 31d39ce9d519c79ad7f66eeb3b2271f65d4a9553; implementation d15aaece4cbd4897a7da8c596fce6583d980c258; fixture runner 7f60bd2ccf15ee16a30d5435881e9f3a82e0c099; C-tier restoration 5195f72780b569ef3b290b33f5dcabbf88f273e8.
+
+Status: all three experimental qualification implementation paths exist; locally available regression PASS, native and distribution acceptance BLOCKED. Not a production support claim.
+
+## Changes and acceptance boundaries
+
+- ROCm/XPU: explicit backend and device, require real execution and usable free/total telemetry before tiny classifier probe, recheck resources after each actual batch as well as before. Existing CPU mirror and exact parity requirements unchanged.
+- DirectML: no longer probe-only. Native Windows x64 DXGI adapter enumeration and IDXGIAdapter3::QueryVideoMemoryInfo in the same inference process. Conservative restriction to exactly one visible DirectML device and one physical non-software DXGI adapter with matching name and nonzero dedicated memory. LUID pinned across calls. Hybrid/multiple, unknown identity, missing memory telemetry and pressure block. The usable budget is min(dedicated bytes, OS process budget) minus current process usage, floored at zero. It is not global VRAM free or an OS-enforced allocation limit. Readback of classifier results provides synchronization; no CUDA synchronization is called for DirectML. No fallback on observed operator fallback warnings or exact CPU mismatch. Native ABI/adapter mapping and actual operator behavior not executed here; unobserved internal fallback cannot be ruled out.
+- All backends: synthetic acceptance runner generates four local regions/eight glyph candidates and a fixed synthetic prototype model, checks actual target type/index and full row/exclusion parity; removes its temporary workspace. NATIVE_FIXTURE_PASS establishes only that fixture on that device/runtime, not representative scientific or production acceptance. No user manuscript training, downloads, publication or automatic backend selection.
+- Separate candidate requirements-directml.txt uses Python 3.12, NumPy 1.26.4 to avoid potential old Torch/NumPy ABI conflicts, and the pinned torch-directml release. Never combine with modern compute requirements. Existing ROCm Linux/XPU profiles unchanged, DirectML probe-only file retained for backward compatibility. No clean wheel install performed; Windows ROCm wheel choice remains hardware/vendor-matrix specific. VRS-130 must resolve locked wheels and verify hashes inside separate app-local environments before promotion.
+- Repository audit found D-tier tree had lost VRS-094-C.md, vrs_diagnostics.py, test_vrs_diagnostics.py and reverted vrs_benchmark.py to its A-tier version. Restored all four exact C-tier blobs and restored the C-tier checkpoint in Roadmap. D-tier inference changes preserved. No merge.
+
+## Executed evidence
+
+Linux CPU/Xvfb, Python 3.13.5, torch 2.10.0+cpu, original baseline recovered from owner archive with original private fixtures. Original 61 tests plus 13 E tests (7 initial, 4 DXGI, 2 acceptance runner) = **74/74 PASS**, zero failures/skips, 19.751s. Log SHA256 f0efe4482f809d9505097c761963dd223053a7f9715199b9c5a5fc22f5effb28. New DXGI tests use mock adapter/telemetry and actual CPU image/classifier execution. Test memory accounting, ambiguous identity, LUID changes, missing/failed queries, post-inference pressure (no report written), CPU target cannot qualify as native. Actual runner results: ROCm BLOCKED (no HIP build), XPU BLOCKED (no device), DirectML BLOCKED (not Windows). No native GPU executed. Full current branch integrated regression cannot be inferred from historical test counts; direct clone/archive download unavailable in this environment. No successful remote CI claimed.
+
+Verified tested blobs: vrs_dxgi.py eabb1da67bbb64a24b238e967a279cc431008395; test_vrs_dxgi.py 0f466dfd3301a940f49f44dfb6a87105389503e4; vrs_backends.py 49a6f8f97e71a34ef3f29fe4d874201087c86aed; test_vrs_backends.py e066e27dddb1e6b42238591274e546206cd111db; vrs_backend_acceptance.py b479f2e80552634ae84cfdf01ba74dee91ff7cc9; test_vrs_backend_acceptance.py bfab1dc99a2f748f657a25af6dcc35ff90dd94b3. Restored exact C blobs: VRS-094-C.md 41b7c88b431ffe02a7d83e59f1b5270bd25b4f3a, vrs_diagnostics.py 8f94ce3054ab4969a5bfd62cf4d207fa0b976604, test_vrs_diagnostics.py 19c56824920f3ab7065dd8b639bd206a2b6b4d8e, vrs_benchmark.py 5691191640c52850b34ce14973909bf43bb8fee1. Restoration itself is not a rerun.
+
+## Native acceptance command
+
+From worker/ in the separately provisioned backend environment:
+`python vrs_backend_acceptance.py rocm --workspace .` (or xpu or directml; optional --index 0). Exit 0 only on actual synthetic NATIVE_FIXTURE_PASS, otherwise exit 1 with BLOCKED. Then qualify a representative approved local workload under the frozen evidence policy; document numerical equivalence, actual memory counters, throughput, drivers and clean installation. Native hardware and complete integrated regression remain prerequisites to claiming full E acceptance, not to proceeding with the primary CPU/CUDA coordinator.
+
+References: https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_4/nf-dxgi1_4-idxgiadapter3-queryvideomemoryinfo ; https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_4/ns-dxgi1_4-dxgi_query_video_memory_info ; https://pypi.org/project/torch-directml/ ; https://numpy.org/doc/stable/user/troubleshooting-importerror.html
+
+No scientific changes or scope expansion; no automated publication or research automation changes.
