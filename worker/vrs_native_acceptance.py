@@ -21,9 +21,12 @@ def assemble_runtime(base, target):
     with zipfile.ZipFile(target,'x',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
         for p in sorted(base.rglob('*')):
             r=p.relative_to(base); parts=r.parts
-            if parts[0].lower() not in ('lib','dlls','tcl','include','libs') and not (len(parts)==1 and p.suffix.lower() in ('.exe','.dll','.txt','.pdb')):continue
+            # setup-python adds python3.exe as a symbolic alias. It is not
+            # a runtime dependency; never copy or dereference that alias.
+            root_file=len(parts)==1 and (p.name.lower() in ('python.exe','pythonw.exe','license.txt','news.txt') or p.suffix.lower()=='.dll')
+            if parts[0].lower() not in ('lib','dlls','tcl','include','libs') and not root_file:continue
             if any(x.lower() in ('site-packages','__pycache__','test','tests') for x in parts):continue
-            need(not p.is_symlink() and not getattr(p,'is_junction',lambda:False)(),'Runtime link refused')
+            need(not p.is_symlink() and not getattr(p,'is_junction',lambda:False)() and not getattr(p.lstat(),'st_file_attributes',0)&1024,'Runtime link refused: '+r.as_posix())
             if p.is_file():z.write(p,r.as_posix())
     return digest(target)
 
@@ -63,9 +66,16 @@ def qualify(source,profile,report):
     source=source.resolve(strict=True); report=report.resolve(); report.parent.mkdir(parents=True,exist_ok=True)
     result={'schema':1,'profile':profile,'scope':'DISPOSABLE_NATIVE_CANDIDATE','production_approved':False,'checks':{},'elapsed_seconds':{}}
     def step(name,fn):
-        t=time.monotonic(); result['checks'][name]='RUNNING'; save(report,result)
+        t=time.monotonic(); result['checks'][name]='RUNNING'; save(report,result); print('VRS native check: '+name,flush=True)
         try:value=fn()
-        except BaseException:result['checks'][name]='FAIL'; raise
+        except BaseException as error:
+            result['checks'][name]='FAIL';result['failure']={'check':name,'type':type(error).__name__}
+            # Only validated structured records from the disposable workspace.
+            try:
+                from vrs_portable_logs import records
+                result['technical_log_tail']=records(root)[-40:]
+            except Exception:pass
+            raise
         else:result['checks'][name]='PASS';return value
         finally:result['elapsed_seconds'][name]=round(time.monotonic()-t,3);save(report,result)
     with tempfile.TemporaryDirectory(prefix='vrs-native-') as d:
