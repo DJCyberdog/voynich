@@ -127,4 +127,54 @@ class Integration(unittest.TestCase):
             self.assertEqual(self.f.app.review_items(self.run)['snapshot']['resolved'],0); self.f.app.submit(result['decision']); self.assertEqual(self.f.app.review_items(self.run)['snapshot']['resolved'],1); self.assertRaises(ValueError,app.adjudicate,cohort,'curator',choice)
 
 
+class LiveSandboxAcceptance(unittest.TestCase):
+    def test_two_private_sandboxes(self):
+        # Explicit local opt-in; never run against production or with ambient credentials.
+        config=os.environ.get('VRS116_SANDBOX_CONFIG')
+        if not config:self.skipTest('Owner-authorized private VRS-116 sandbox configuration required')
+        path=Path(config).resolve(strict=True)
+        raw=path.read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),os.environ.get('VRS116_APPROVE_SHA256'))
+        f=fixtures.RuntimeTests();f.setUp();self.addCleanup(f.doCleanups)
+        f.file('config/repositories.json',json.loads(raw))
+        ps=r.profiles(f.root);self.assertEqual(len(ps),2)
+        for p in ps.values():
+            self.assertEqual(p['visibility'],'private');self.assertTrue(p['publish'])
+            self.assertIsNone(p['head_profile'])
+            self.assertNotEqual(p['repository'].casefold(),'djcyberdog/voynich')
+        names=list(ps);tokens=[os.environ.get(ps[n]['credential_env']) for n in names]
+        self.assertTrue(all(tokens));self.assertNotEqual(*tokens)
+        for n in names:
+            a=r.API(ps[n]);a.verify();a.base()
+        for i,n in enumerate(names):
+            with patch.dict(os.environ,{ps[n]['credential_env']:tokens[1-i]}):
+                with self.assertRaisesRegex(RuntimeError,'GitHub HTTP (403|404)'):r.API(ps[n]).verify()
+        run=f.run_to_review()
+        # Lose the first real PR acknowledgement, then reconcile by exact bytes/diff.
+        class LostAck(r.API):
+            lost=False
+            def call(self,method,path='',body=None,missing=False):
+                result=super().call(method,path,body,missing)
+                if method=='POST' and path=='pulls' and not self.__class__.lost:
+                    self.__class__.lost=True
+                    raise RuntimeError('Synthetic acknowledgement loss after real PR creation')
+                return result
+        pub=r.Publisher(f.root,LostAck);receipts=[]
+        for n in names:
+            LostAck.lost=False
+            key=pub.enqueue(run,n)
+            first=pub.sweep();self.assertEqual(first[0]['state'],'PENDING');self.assertTrue(LostAck.lost)
+            second=pub.sweep();self.assertEqual(second[0]['state'],'SENT')
+            receipt=second[0]['receipt'];self.assertEqual(receipt['report_sha256'],key)
+            self.assertEqual(receipt['repository'],ps[n]['repository'])
+            a=r.API(ps[n]);pr=a.call('GET','pulls/'+str(receipt['pr_number']))
+            self.assertTrue(pr['draft']);self.assertEqual(pr['state'],'open');a.base()
+            self.assertEqual(pub.sweep(),[]);receipts.append(receipt)
+        self.assertNotEqual(receipts[0]['report_sha256'],receipts[1]['report_sha256'])
+        f.file('config/repositories.json',dict(schema=1,profiles={n:dict(p,publish=False) for n,p in ps.items()}))
+        for n in names:
+            with self.assertRaises(ValueError):pub.enqueue(run,n)
+        print(json.dumps(dict(scope='SYNTHETIC_SANDBOX_ONLY',receipts=receipts),sort_keys=True))
+
+
 if __name__=='__main__': unittest.main()
