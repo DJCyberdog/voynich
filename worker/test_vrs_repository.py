@@ -127,11 +127,40 @@ class Integration(unittest.TestCase):
             self.assertEqual(self.f.app.review_items(self.run)['snapshot']['resolved'],0); self.f.app.submit(result['decision']); self.assertEqual(self.f.app.review_items(self.run)['snapshot']['resolved'],1); self.assertRaises(ValueError,app.adjudicate,cohort,'curator',choice)
 
 
+def live_intake_fixture(root=None):
+    # Contract-only deterministic input; never register it for computation.
+    def ref_bytes(name,data):
+        if root is not None:
+            target=root/name;target.parent.mkdir(parents=True,exist_ok=True)
+            with target.open('xb') as f:f.write(data)
+        return dict(path=name,sha256=hashlib.sha256(data).hexdigest())
+    inputs={role:ref_bytes('vrs116-intake/'+role+'.json',c.canonical(dict(synthetic=True,role=role))) for role in c.ROLES}
+    trans=[ref_bytes('vrs116-intake/transcription.txt',b'SYNTHETIC INTAKE ONLY')]
+    manifest=dict(schema=1,module=c.MODULE,protocol=c.PROTOCOL,inputs=inputs,transcriptions=trans,
+                  backend='cpu',seed=116,run_nonce='0'*32)
+    ref=ref_bytes('vrs116-intake/manifest.json',c.canonical(manifest))
+    return manifest,ref,c.canonical(dict(schema=1,capability='fixed-local-manuscript',manifest=ref))
+
+
+def seed_bytes():
+    return live_intake_fixture()[2]
+
+
+class IntakeSeedTests(unittest.TestCase):
+    def test_deterministic_contract_only_seed(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d).resolve()
+            manifest,ref,payload=live_intake_fixture(root)
+            self.assertEqual(payload,seed_bytes())
+            self.assertEqual(c.load(c.artifact(root,ref)),manifest)
+            c.manifest(root,manifest)
+
+
 class LiveSandboxAcceptance(unittest.TestCase):
     def test_two_private_sandboxes(self):
         # Explicit local opt-in; never run against production or with ambient credentials.
-        config=os.environ.get('VRS116_SANDBOX_CONFIG')
-        if not config:self.skipTest('Owner-authorized private VRS-116 sandbox configuration required')
+        if os.environ.get('VRS116_ENABLE_LIVE_TEST')!='1':self.skipTest('Owner-authorized private VRS-116 sandbox configuration required')
+        config=os.environ.get('VRS116_SANDBOX_CONFIG');self.assertTrue(config,'Sandbox config path required')
         path=Path(config).resolve(strict=True)
         raw=path.read_bytes()
         self.assertEqual(hashlib.sha256(raw).hexdigest(),os.environ.get('VRS116_APPROVE_SHA256'))
@@ -139,17 +168,23 @@ class LiveSandboxAcceptance(unittest.TestCase):
         f.file('config/repositories.json',json.loads(raw))
         ps=r.profiles(f.root);self.assertEqual(len(ps),2)
         for p in ps.values():
-            self.assertEqual(p['visibility'],'private');self.assertTrue(p['publish'])
+            self.assertEqual(p['visibility'],'private');self.assertTrue(p['publish']);self.assertTrue(p['intake'])
             self.assertIsNone(p['head_profile'])
             self.assertNotEqual(p['repository'].casefold(),'djcyberdog/voynich')
         names=list(ps);tokens=[os.environ.get(ps[n]['credential_env']) for n in names]
-        self.assertTrue(all(tokens));self.assertNotEqual(*tokens)
+        self.assertTrue(all(tokens) and tokens[0]!=tokens[1],'Two distinct credentials required')
+        fixture,entry,seed=live_intake_fixture(f.root)
         for n in names:
-            a=r.API(ps[n]);a.verify();a.base()
+            a=r.API(ps[n]);a.verify();base=a.base()
+            approved=dict(repository_id=ps[n]['repository_id'],commit=base,job_id='vrs116-synthetic',job_sha256=hashlib.sha256(seed).hexdigest(),manifest=entry)
+            self.assertEqual(r.intake(f.root,a,'vrs116-synthetic',approved),fixture)
+            with self.assertRaises(ValueError):r.intake(f.root,a,'vrs116-synthetic',dict(approved,job_sha256='f'*64))
+        self.assertEqual(f.app.ledger.registered(),[])
         for i,n in enumerate(names):
             with patch.dict(os.environ,{ps[n]['credential_env']:tokens[1-i]}):
                 with self.assertRaisesRegex(RuntimeError,'GitHub HTTP (403|404)'):r.API(ps[n]).verify()
-        run=f.run_to_review()
+        import secrets
+        run=f.run_to_review(dict(f.m,run_nonce=secrets.token_hex(16)))
         # Lose the first real PR acknowledgement, then reconcile by exact bytes/diff.
         class LostAck(r.API):
             lost=False
@@ -171,7 +206,7 @@ class LiveSandboxAcceptance(unittest.TestCase):
             self.assertTrue(pr['draft']);self.assertEqual(pr['state'],'open');a.base()
             self.assertEqual(pub.sweep(),[]);receipts.append(receipt)
         self.assertNotEqual(receipts[0]['report_sha256'],receipts[1]['report_sha256'])
-        f.file('config/repositories.json',dict(schema=1,profiles={n:dict(p,publish=False) for n,p in ps.items()}))
+        f.file('config/repositories.json',dict(schema=1,profiles={n:dict(p,publish=False,intake=False) for n,p in ps.items()}))
         for n in names:
             with self.assertRaises(ValueError):pub.enqueue(run,n)
         print(json.dumps(dict(scope='SYNTHETIC_SANDBOX_ONLY',receipts=receipts),sort_keys=True))
