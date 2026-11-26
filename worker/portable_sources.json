@@ -142,7 +142,7 @@
     "vrs_license_inventory.py": "466415ec0fd96f33903263f53ad176260b690008",
     "vrs_modules.py": "cb39b66a71a2bf2d41e28fe7cdc20a1eadb343e6",
     "vrs_monitor.py": "7e6dbe93fdef330fff8b766b687ace875fbc95fc",
-    "vrs_native_acceptance.py": "7d028e9e28c05044cc17051e4f59c271a82e1de3",
+    "vrs_native_acceptance.py": "db4e8f8beca3c0bb3da7a5c9880bba022acdfbbd",
     "vrs_operations.py": "83093f9281e2a832b51ef4c6fa01717af654c26d",
     "vrs_portable.py": "cd2723257784c8bd5b458c5eb40864ca4f7f9429",
     "vrs_portable_logs.py": "ae718781bdcbf859062af494d6a1c1b272973167",
@@ -168,7 +168,7 @@
     "vrs_ui_format.py": "aaff07b521713ab092ceca8025019c56b40552af",
     "test_vrs_ui_format.py": "86ce72dc4085a8b044123f23f4349ab80b39afa7",
     "vrs_ui_gallery.py": "c933c719b0d1290bbc46ed3b6a4e7c2c9422931b",
-    "VRS-142.md": "82521ce87a4b6144d994be0826c131dab612154b",
+    "VRS-142.md": "2f056e5327cfff75dcbd460ef419fc4029c7c752",
     "VRS-RC1.md": "001875f6a59d74a0b1e96bcf0dd224fc2166a544",
     "vrs_rc1_intake.py": "477892b7f48e1316c314745b129c6884dd17bbb2",
     "test_vrs_rc1_intake.py": "bf1e54f4d02d5946d714e4f0b3419f2735953ee1"
