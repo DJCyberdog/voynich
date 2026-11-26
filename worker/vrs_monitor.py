@@ -36,6 +36,7 @@ class Monitor(App):
         nav=self.nav['Home'].master
         for name in ('Jobs','Evidence'):
             b=ttk.Button(nav,text=self.t(name),command=lambda n=name:self.show(n)); b.pack(fill='x',pady=4,before=self.nav['Settings']); self.nav[name]=b
+        for name,button in self.nav.items():button.configure(command=lambda n=name:self.request_view(n))
         ttk.Button(nav,text=self.t('Enable tray'),command=self.enable_tray).pack(fill='x',pady=4)
         ttk.Button(nav,text=self.t('Hide to tray'),command=self.hide).pack(fill='x',pady=4)
         self.w.bind('<Control-j>',lambda e:self.request_view('Jobs')); self.w.bind('<Control-e>',lambda e:self.request_view('Evidence'))
@@ -46,6 +47,7 @@ class Monitor(App):
         if self.close_pending or self.closing:return 'break'
         if self.future is not None:self.pending_view=name
         else:
+            self.pending_view=None
             self.show(name)
             if name in self.nav:self.nav[name].focus_set()
         return 'break'

@@ -174,8 +174,10 @@ def exercise(w):
     assert geometry==[1024,650]
     pages=[]
     for page in ('Sources','Settings','Review','Jobs','Evidence','Logs','Home'):
-        start=time.perf_counter();app.request_view(page);settle();w.update()
-        assert app.view==page
+        start=time.perf_counter();app.request_view(page)
+        until(lambda:app.view==page and app.pending_view is None)
+        settle();w.update()
+        assert app.view==page,('requested',page,'actual',app.view)
         pages.append(dict(page=page,seconds=time.perf_counter()-start,body_width=w.body.winfo_width() if hasattr(w,'body') else app.body.winfo_width()))
     # Keep the UI event loop active during real asynchronous background work.
     gaps=[];previous=time.perf_counter()

@@ -59,3 +59,10 @@ class NativeHarness(unittest.TestCase):
         app.jobs_loaded(([row],dict(ram_total=16*1024**3,ram_available=8*1024**3,disk_free=32*1024**3,worker=dict(state='STOPPED'),cpu_percent=0,allowed=4),None))
         tree.delete.assert_called_once_with('stale');tree.insert.assert_not_called()
         self.assertTrue(all(not call.kwargs for call in tree.item.call_args_list))
+
+    def test_pending_navigation_latest_request_wins(self):
+        from unittest.mock import Mock
+        from vrs_monitor import Monitor
+        app=Monitor.__new__(Monitor);app.closing=False;app.close_pending=False;app.pending_view=None;app.future=object();app.nav={};app.show=Mock()
+        app.request_view('Jobs');app.request_view('Evidence');self.assertEqual(app.pending_view,'Evidence');app.show.assert_not_called()
+        app.future=None;app.request_view('Home');app.show.assert_called_once_with('Home');self.assertIsNone(app.pending_view)
