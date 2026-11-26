@@ -65,7 +65,7 @@ def outcomes(root, run, manifest, receipts):
         require(type(data['schema']) is int and data['schema'] == 1 and data['run_id'] == run and data['stage'] == stage and data['scientific_status'] == 'UNADJUDICATED', 'Outcome stage binding mismatch')
     require(regions['kind'] == 'INK_PROPOSALS_ONLY' and seg['kind'] == 'UNREVIEWED_BOX_PROPOSALS_ONLY', 'Unsupported proposal contract')
     c.fields(result, ('schema','run_id','stage','scientific_status','kind','source','model_sha256','policy_sha256','references_sha256','pages'))
-    require(result['kind'] == 'OCCURRENCE_OUTCOMES_V1' and seg['source'] == r['artifact'] and result['source'] == s['artifact'], 'Outcome source binding mismatch')
+    require(result['kind'] in ('OCCURRENCE_OUTCOMES_V1','OCCURRENCE_OUTCOMES_V2') and seg['source'] == r['artifact'] and result['source'] == s['artifact'], 'Outcome source binding mismatch')
     for key, role in (('model_sha256','model'),('policy_sha256','recognition_policy'),('references_sha256','references')):
         require(result[key] == manifest['inputs'][role]['sha256'], 'Outcome model/policy/reference binding mismatch')
     require(pages(regions['pages']) == pages(seg['pages']) == pages(result['pages']), 'Page coverage mismatch')
@@ -82,7 +82,7 @@ def outcomes(root, run, manifest, receipts):
         require(type(b['rows']) is list, 'Invalid outcome rows')
         lookup = {}
         for row in b['rows']:
-            c.fields(row, ('region_id','box','outcome','reason','uncertainty'))
+            c.fields(row, ('region_id','box','outcome','reason','uncertainty') + (('predictions',) if result['kind']=='OCCURRENCE_OUTCOMES_V2' else ()))
             require(type(row['region_id']) is str and 0 < len(row['region_id']) <= 128, 'Invalid region ID')
             key = row['region_id'], box_key(row['box'])
             require(key not in lookup, 'Duplicate outcome occurrence')
