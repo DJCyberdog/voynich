@@ -1,7 +1,7 @@
 name: VRS baseline CPU regression
 on:
   push:
-    branches: [development/gpu-worker-v0.1.0]
+    branches: [development/gpu-worker-v0.1.0, development/vrs-0.13.0, development/vrs-0.13.1]
     paths:
       - 'worker/**'
       - '.github/workflows/vrs-baseline.yml'
@@ -11,7 +11,7 @@ permissions:
 jobs:
   cpu:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 35
     defaults:
       run:
         working-directory: worker
@@ -21,10 +21,13 @@ jobs:
       PYTHONUNBUFFERED: '1'
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/checkout@v4
         with:
           ref: cd1455caa0de793a0b5cbffdb609098cd908482e
           path: immutable-baseline
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
