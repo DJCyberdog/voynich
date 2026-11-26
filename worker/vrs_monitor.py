@@ -131,7 +131,7 @@ class Monitor(App):
             waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED'); self.notice_done((len(waiting),digest(waiting)))
 
     def write_text(self,widget,value):
-        if widget is self.job_text:self.job_value=value
+        if widget is getattr(self,'job_text',None):self.job_value=value
         widget.configure(state='normal');widget.delete('1.0','end');widget.insert('end',human(value));widget.configure(state='disabled')
 
     def job_detail(self):

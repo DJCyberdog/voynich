@@ -100,7 +100,10 @@ class DesktopTests(unittest.TestCase):
                 if app.future is None: w.update(); return
             self.fail('UI task timeout')
         try:
-            settle(); self.assertIn(run,app.tree.get_children()); app.tree.selection_set(run); app.open_selected(); settle(); self.assertTrue(app.items); self.assertIsNotNone(app.image)
+            settle(); self.assertIn(run,app.tree.get_children()); self.assertEqual(app.homecount.cget('text'),'1');self.assertEqual(app.homepending.cget('text'),'1');self.assertEqual(app.homecomplete.cget('text'),'0');app.tree.selection_set(run); app.open_selected(); settle(); self.assertTrue(app.items); self.assertIsNotNone(app.image)
+            from vrs_build_portable import RELEASE_VERSION
+            self.assertIn(RELEASE_VERSION,w.title());self.assertEqual(float(app.reviewprogress.cget('value')),0)
+            app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
             self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only)
             app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
             app.show('Settings'); app.fields['theme'].set('light'); app.fields['language'].set('en'); app.apply(); settle(); self.assertEqual(app.cfg['theme'],'light'); self.assertEqual(app.cfg['language'],'en')

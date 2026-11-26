@@ -95,7 +95,7 @@
     "test_vrs_contract.py": "b4745577f62791dd5d46d6f06c674e6786e2f037",
     "test_vrs_coordinator.py": "3071e380b0b9c14451d58d335a3a7ef8c878d049",
     "test_vrs_core.py": "270fb1f509568f8ebd5a8bdb7874b10fd801273f",
-    "test_vrs_desktop.py": "600fd0602f820f3852e6b45dc6b2e32f84c7f9a7",
+    "test_vrs_desktop.py": "3f6c1b48f733a15ba806fed5ad814ad633d849fe",
     "test_vrs_diagnostics.py": "19c56824920f3ab7065dd8b639bd206a2b6b4d8e",
     "test_vrs_dxgi.py": "0f466dfd3301a940f49f44dfb6a87105389503e4",
     "test_vrs_exceptions.py": "65598dd9f411282e43e4720aaf9a7255fe38b6cc",
@@ -106,7 +106,7 @@
     "test_vrs_license_inventory.py": "91179f4431bc70956fe2fb80b8aa8df969000525",
     "test_vrs_modules.py": "ac0da05f267d392cc8fa4853f8950ea05d0ac995",
     "test_vrs_native_acceptance.py": "43ebaba04ebb553174171724ada8855ae8ba5973",
-    "test_vrs_operations.py": "d4978a95a0a48696f4bb7f228d5f3b2451c85431",
+    "test_vrs_operations.py": "a32658ca55589b5389df075582c23d02c758283f",
     "test_vrs_portable.py": "d69a83e227fe1e09d152ffbb9d4120646c5218d2",
     "test_vrs_preflight.py": "90a217148b265abfd0239268f79eeba1b5d3bf53",
     "test_vrs_prepare_plan.py": "6f68a808b113fb2f3f785f349f7edb7453878213",
@@ -141,7 +141,7 @@
     "vrs_ledger.py": "f21f86e8c728c3bee00a549f5116373fe44d5013",
     "vrs_license_inventory.py": "466415ec0fd96f33903263f53ad176260b690008",
     "vrs_modules.py": "cb39b66a71a2bf2d41e28fe7cdc20a1eadb343e6",
-    "vrs_monitor.py": "127644efe577c9389a22870bdf01350be2c173c7",
+    "vrs_monitor.py": "a14f9a6e4fcea122b20db99e3971593c55c089fb",
     "vrs_native_acceptance.py": "67de68c73666d6f23eef5b48a69c7ea5a405a138",
     "vrs_operations.py": "83093f9281e2a832b51ef4c6fa01717af654c26d",
     "vrs_portable.py": "cd2723257784c8bd5b458c5eb40864ca4f7f9429",
@@ -165,6 +165,7 @@
     "vrs_rc_snapshot.py": "514ff3edeffe5e71106338cf655b13adf96d3383",
     "test_vrs_rc_snapshot.py": "8a80f2e2f1409ca94a447cdc60e42c23d3ff8f2f",
     "vrs_rc_cross_version.py": "d1792fc7fe2403d5981112d26196ad9beaff460b",
-    "vrs_ui_format.py": "fa404fb17d56351e8dad8473e33d58a1d7e6703f"
+    "vrs_ui_format.py": "fa404fb17d56351e8dad8473e33d58a1d7e6703f",
+    "test_vrs_ui_format.py": "82d1f35c2a0126502a4678ec5a8f7d8c29f41d21"
   }
 }

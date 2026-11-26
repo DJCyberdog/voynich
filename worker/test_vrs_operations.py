@@ -106,7 +106,7 @@ class OperationsTests(unittest.TestCase):
                 if app.future is None:return
             self.fail('GUI operation timeout')
         try:
-            settle(); app.show('Jobs'); settle(); self.assertIn(run,app.jobs_tree.get_children()); app.jobs_tree.selection_set(run); app.job_detail(); settle(); self.assertIn('REVIEW_PENDING',app.job_text.get('1.0','end')); self.assertIn('CPU',app.telemetry.get()); app.show('Evidence'); settle(); self.assertIn('UNADJUDICATED',app.ev_text.get('1.0','end')); app.export(); settle(); self.assertTrue(list((self.root/'workspace/vrs101/exports').glob('*.json')))
+            settle(); app.show('Jobs'); settle(); self.assertIn(run,app.jobs_tree.get_children()); app.jobs_tree.selection_set(run); app.job_detail(); settle(); self.assertIn('REVIEW_PENDING',app.job_text.get('1.0','end')); self.assertIn('CPU',app.telemetry.get()); app.show('Evidence'); settle(); self.assertIn('UNADJUDICATED',app.ev_text.get('1.0','end')); self.assertEqual(app.ev_compared.cget('text'),'—');self.assertIsNotNone(app.ev_value);app.export(); settle(); self.assertTrue(list((self.root/'workspace/vrs101/exports').glob('*.json')))
             w.geometry('1024x650'); w.update(); self.assertEqual(w.winfo_width(),1024); self.assertEqual(w.winfo_height(),650)
         finally:
             if app.future: settle()
