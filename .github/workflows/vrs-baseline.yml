@@ -46,3 +46,12 @@ jobs:
         run: xvfb-run -a python -m unittest discover -v
       - name: Run current regression tests (private fixtures intentionally absent)
         run: xvfb-run -a python -m unittest discover -v
+      - uses: actions/checkout@v4
+        if: startsWith(github.ref, 'refs/heads/development/vrs-0.14.')
+        with:
+          ref: 74eeab963a6451b63496ed8e29f7c0518b939980
+          path: immutable-rc-base
+          persist-credentials: false
+      - name: Immutable 0.13.x source upgrade, rollback and replay
+        if: startsWith(github.ref, 'refs/heads/development/vrs-0.14.')
+        run: python -B vrs_rc_cross_version.py --old-source ../immutable-rc-base/worker

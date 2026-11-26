@@ -142,7 +142,7 @@
     "vrs_license_inventory.py": "466415ec0fd96f33903263f53ad176260b690008",
     "vrs_modules.py": "cb39b66a71a2bf2d41e28fe7cdc20a1eadb343e6",
     "vrs_monitor.py": "1738952a945b2d8d1045abd1c76943a3a96ba493",
-    "vrs_native_acceptance.py": "19775e09db2694ed71f00ebcf24efed88e0c8ac1",
+    "vrs_native_acceptance.py": "f47ac849b53eb789235313e02c752aed73c2fce5",
     "vrs_operations.py": "eeac87f9c36a3fb81356431cc9adecb0b450982c",
     "vrs_portable.py": "cd2723257784c8bd5b458c5eb40864ca4f7f9429",
     "vrs_portable_logs.py": "ae718781bdcbf859062af494d6a1c1b272973167",
@@ -163,6 +163,7 @@
     "test_vrs_rc_preflight.py": "89747daf194e11ea24895f6e4ae994ebe475a069",
     "VRS-140.md": "8179cc4a343e80b4472974831e65b7f5cb956a15",
     "vrs_rc_snapshot.py": "514ff3edeffe5e71106338cf655b13adf96d3383",
-    "test_vrs_rc_snapshot.py": "8a80f2e2f1409ca94a447cdc60e42c23d3ff8f2f"
+    "test_vrs_rc_snapshot.py": "8a80f2e2f1409ca94a447cdc60e42c23d3ff8f2f",
+    "vrs_rc_cross_version.py": "d1792fc7fe2403d5981112d26196ad9beaff460b"
   }
 }

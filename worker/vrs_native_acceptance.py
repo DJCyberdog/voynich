@@ -61,7 +61,7 @@ def batch(root,name,*args,timeout=1800):
     subprocess.run(command,cwd=root.parent,env=environment(root),check=True,timeout=timeout)
 
 
-def qualify(source,profile,report,owner_interactive=False):
+def qualify(source,profile,report,owner_interactive=False,compat_source=None):
     need(os.name=='nt' and sys.version_info[:2]==(3,13),'Native Windows CPython 3.13 required')
     import ctypes
     elevated=bool(ctypes.windll.shell32.IsUserAnAdmin())
@@ -221,6 +221,11 @@ with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercis
         step('portable_regression',lambda:test(['test_vrs_portable','test_vrs_prepare_plan','test_vrs_worker_log','test_vrs_native_acceptance','test_vrs_source_update','test_vrs_license_inventory']))
         if profile=='cuda':step('native_cuda_candidate',lambda:test(['test_vrs_runtime.RuntimeTests.test_native_cuda_candidate','test_vrs_runtime.RuntimeTests.test_native_cuda_checkpoint_resume','test_vrs_learning.LearningTests.test_native_cuda_training_and_cpu_replay']))
         if profile=='cpu':step('cpu_integration',lambda:test(['test_vrs_runtime','test_vrs_desktop','test_vrs_operations','test_vrs_learning','test_vrs_repository','test_vrs_coordinator','test_vrs_service','test_vrs_exceptions','test_vrs_modules','test_vrs_rc_preflight','test_vrs_rc_snapshot']))
+        if profile=='cpu' and compat_source is not None:
+            def cross_version():
+                result=subprocess.run([str(exe(root,profile)),'-B','-s',str(local(root,'vrs_rc_cross_version.py')),'--old-source',str(compat_source)],cwd=root,env=environment(root),capture_output=True,text=True,check=True,timeout=1200)
+                value=json.loads(result.stdout);need(value['status']=='PASS','Cross-version fixture failed');return value
+            result['cross_version']=step('immutable_013_upgrade_rollback_replay',cross_version)
         step('stop_idle_worker',lambda:batch(root,'Stop'))
         step('diagnostics',lambda:batch(root,'Diagnostics'))
         marker=root/'workspace'/'preserve.txt';marker.parent.mkdir(exist_ok=True);marker.write_text('synthetic-state'); moved=home/'VRS relocated';root.rename(moved);root=moved.resolve(strict=True)
@@ -234,4 +239,4 @@ with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercis
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--profile',choices=('review','cpu','cuda'),required=True);p.add_argument('--report',type=Path,required=True);p.add_argument('--disposable-test',action='store_true',required=True);p.add_argument('--owner-interactive',action='store_true');a=p.parse_args();qualify(Path(__file__).resolve().parent,a.profile,a.report,a.owner_interactive)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--profile',choices=('review','cpu','cuda'),required=True);p.add_argument('--report',type=Path,required=True);p.add_argument('--disposable-test',action='store_true',required=True);p.add_argument('--owner-interactive',action='store_true');p.add_argument('--compat-source',type=Path);a=p.parse_args();qualify(Path(__file__).resolve().parent,a.profile,a.report,a.owner_interactive,a.compat_source)
