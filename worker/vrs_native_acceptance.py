@@ -109,6 +109,9 @@ def qualify(source,profile,report,owner_interactive=False):
             extract(candidate,destination)
             package=(destination/'Voynich Research Studio').resolve(strict=True)
             need(digest(local(package,plan['plan']))==plan['sha256'],'Extracted plan hash mismatch')
+            sbom=local(package,'SBOM.cdx.json').read_bytes()
+            value['sbom_sha256']=hashlib.sha256(sbom).hexdigest()
+            report.with_name(report.stem+'-sbom.json').write_bytes(sbom)
             candidate.unlink();return value,package
         result['candidate_zip'],package=step('locked_candidate_zip',candidate_zip)
         # Discard the assembly tree: all subsequent checks use the extracted ZIP.
