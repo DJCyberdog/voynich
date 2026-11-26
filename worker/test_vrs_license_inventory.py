@@ -76,7 +76,10 @@ class LicenseInventory(unittest.TestCase):
                 prefix='Voynich Research Studio/'
                 self.assertNotIn(prefix+'private.txt',z.namelist())
                 self.assertEqual(z.read(prefix+'bootstrap/python.exe'),b'fixture')
-                self.assertFalse(json.loads(z.read(prefix+'CANDIDATE.json'))['redistribution_approved'])
+                metadata=json.loads(z.read(prefix+'CANDIDATE.json'));self.assertFalse(metadata['redistribution_approved']);self.assertFalse(metadata['release_approved'])
+                from vrs_build_portable import RELEASE_VERSION
+                self.assertEqual(metadata['version'],RELEASE_VERSION)
+                self.assertEqual(metadata['source_manifest_sha256'],hashlib.sha256(z.read(prefix+'portable_sources.json')).hexdigest())
                 self.assertEqual(json.loads(z.read(prefix+'SBOM.cdx.json'))['bomFormat'],'CycloneDX')
                 self.assertFalse(json.loads(z.read(prefix+'COMPONENTS.json'))['redistribution_approved'])
                 lock=json.loads(z.read(prefix+p['plan']))

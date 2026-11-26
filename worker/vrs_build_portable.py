@@ -10,6 +10,9 @@ from pathlib import Path
 from vrs_portable import local, need, load, plan, acquire, digest, extract
 
 
+RELEASE_VERSION='0.14.0-rc.1'
+
+
 def source_payload(root):
     root=Path(root).resolve(strict=True); p=local(root,'portable_sources.json'); manifest=load(p)
     need(set(manifest)=={'schema','files'} and manifest['schema']==1 and 0<len(manifest['files'])<=500,'Invalid source manifest')
@@ -23,7 +26,7 @@ def source_payload(root):
 
 
 def build(root):
-    root=Path(root).resolve(strict=True); files=source_payload(root); home=local(root,'dist'); home.mkdir(exist_ok=True); out=local(root,'dist/VRS-0.13.0-source.zip'); need(not out.exists(),'Existing build; remove explicitly')
+    root=Path(root).resolve(strict=True); files=source_payload(root); home=local(root,'dist'); home.mkdir(exist_ok=True); out=local(root,'dist/VRS-'+RELEASE_VERSION+'-source.zip'); need(not out.exists(),'Existing build; remove explicitly')
     with zipfile.ZipFile(out,'x',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
         for name,data in sorted(files.items()):
             i=zipfile.ZipInfo('Voynich Research Studio/'+name,(2026,11,26,0,0,0)); i.compress_type=zipfile.ZIP_DEFLATED; i.external_attr=0o100644<<16; z.writestr(i,data)
@@ -39,7 +42,7 @@ def build_candidate(root,profile,rel,approved):
     from vrs_license_inventory import inventory,cyclonedx
     component_report=inventory(root,profile,rel,approved)
     home=local(root,'dist');home.mkdir(exist_ok=True)
-    out=local(root,'dist/VRS-0.13.0-'+profile+'-candidate.zip')
+    out=local(root,'dist/VRS-'+RELEASE_VERSION+'-'+profile+'-candidate.zip')
     need(not out.exists(),'Existing candidate; remove explicitly')
     prefix='Voynich Research Studio/'
     def info(name,compression):
@@ -58,7 +61,7 @@ def build_candidate(root,profile,rel,approved):
             need(hashlib.sha256(raw).hexdigest()==approved,'Plan changed during packaging')
             z.writestr(info(rel,zipfile.ZIP_DEFLATED),raw)
             z.writestr(info('CANDIDATE.json',zipfile.ZIP_DEFLATED),json.dumps(
-                dict(schema=1,profile=profile,plan_sha256=approved,redistribution_approved=False),sort_keys=True))
+                dict(schema=1,version=RELEASE_VERSION,profile=profile,plan_sha256=approved,source_manifest_sha256=hashlib.sha256(sources['portable_sources.json']).hexdigest(),redistribution_approved=False,release_approved=False),sort_keys=True))
             z.writestr(info('COMPONENTS.json',zipfile.ZIP_DEFLATED),json.dumps(component_report,sort_keys=True,ensure_ascii=True))
             z.writestr(info('SBOM.cdx.json',zipfile.ZIP_DEFLATED),json.dumps(cyclonedx(component_report),sort_keys=True,ensure_ascii=True))
             for item,path in assets:

@@ -90,7 +90,8 @@ def qualify(source,profile,report,owner_interactive=False,compat_source=None):
                 if name.endswith(('.py','.pyw')):
                     compile(local(root,name).read_bytes(),name,'exec')
         step('source_syntax',source_syntax)
-        from vrs_build_portable import build
+        from vrs_build_portable import build,RELEASE_VERSION
+        result['release_version']=RELEASE_VERSION;result['source_manifest_sha256']=digest(local(root,'portable_sources.json'))
         def source_zip():
             z=build(root); h=digest(z);z.unlink();z=build(root);need(digest(z)==h,'Nondeterministic source ZIP');z.unlink();return h
         result['source_zip_sha256']=step('source_zip',source_zip)
@@ -109,6 +110,9 @@ def qualify(source,profile,report,owner_interactive=False,compat_source=None):
             extract(candidate,destination)
             package=(destination/'Voynich Research Studio').resolve(strict=True)
             need(digest(local(package,plan['plan']))==plan['sha256'],'Extracted plan hash mismatch')
+            metadata=json.loads(local(package,'CANDIDATE.json').read_text(encoding='utf-8'))
+            need(metadata==dict(schema=1,version=RELEASE_VERSION,profile=profile,plan_sha256=plan['sha256'],source_manifest_sha256=result['source_manifest_sha256'],redistribution_approved=False,release_approved=False),'Candidate metadata mismatch')
+            value['version']=metadata['version'];value['source_manifest_sha256']=metadata['source_manifest_sha256']
             sbom=local(package,'SBOM.cdx.json').read_bytes()
             value['sbom_sha256']=hashlib.sha256(sbom).hexdigest()
             report.with_name(report.stem+'-sbom.json').write_bytes(sbom)
@@ -234,6 +238,23 @@ with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercis
             except ValueError:return
             raise AssertionError('Stale environment accepted')
         step('moved_environment_refused',moved_check);step('offline_repair',lambda:batch(root,'Repair'));step('relocated_gui',lambda:run(smoke));need((root/'workspace/preserve.txt').read_text()=='synthetic-state','State lost')
+        if profile=='review':
+            def restored_package():
+                # Actual portable installation, not just the synthetic ledger fixture.
+                from vrs_rc_snapshot import snapshot,restore
+                bundle=home/'private-backup';out=home/'restored-copy'
+                value=snapshot(root,bundle);restore(bundle,out,value['manifest_sha256'])
+                restored=out/'app'
+                try:active(restored)
+                except ValueError:pass
+                else:raise AssertionError('Restored stale environment accepted')
+                batch(restored,'Repair')
+                subprocess.run([str(exe(restored,profile)),'-s','-c',smoke],cwd=restored,env=environment(restored),check=True,timeout=90)
+                need((restored/'workspace/preserve.txt').read_text()=='synthetic-state','Restored state lost')
+                need((root/'workspace/preserve.txt').read_text()=='synthetic-state','Original state lost')
+                shutil.rmtree(bundle);shutil.rmtree(out)
+                return value
+            result['portable_snapshot_restore']=step('review_full_package_snapshot_restore_repair',restored_package)
         step('delete_root',lambda:shutil.rmtree(root));need(not root.exists(),'Root not removed')
     result['status']='CANDIDATE_TEST_PASS';save(report,result)
 
