@@ -17,15 +17,29 @@ from vrs_rc_snapshot import existing_directory,destination,private_directory
 SCOPES=('REAL_RESEARCH','SYNTHETIC_TEST')
 SCHEMES=('Eva-','STA1')
 JSON_ROLES={'groups','references','model_bundle','recognition_policy','inventory','model','model_report','mapping','run_manifest','visual_catalog','catalog_plan','historical_result'}
-ROLES=JSON_ROLES|{'manuscript','transcription','transcription_archive','reference_pdf','reference_sample','historical_report'}
-CORE={'manuscript','transcription','reference_pdf'}
-ARCHIVE_SCHEMES=('EvaT',)
+ROLES=JSON_ROLES|{'manuscript','transcription','transcription_archive','reference_pdf','reference_sample','historical_report','metadata_workbook','supplementary_document'}
+CORE={'manuscript','transcription','reference_pdf','transcription_archive','metadata_workbook','supplementary_document'}
+from vrs_rc1_archive import ARCHIVE_SCHEMES,inspect_transcription,inspect_document
 VISUAL_SCHEMES={'basic-eva':'Eva-','extended-eva':'Eva-','sta1':'STA1','sta1r':'STA1','eva-from-sta':'STA1','v101-from-sta':'STA1'}
 KNOWN_SOURCES=(
  ('manuscript-beinecke-408','voynich.pdf','manuscript',None,'d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c',127121031,'Owner copy; matches repository LFS declaration','exact PDF object'),
  ('zl3b-sta1','ZL3b.txt','transcription','STA1','8438ba1c45f47fe1d06b5262cbcdf60ce69158a0edbd4dd802612896f3217e2a',472861,'Zandbergen–Landini; owner copy','ZL3b, IVTFF STA1 2.0 M 5'),
  ('eva-font-reference','eva2_reference.pdf','reference_pdf','Eva-','2f9a9c7e81dedfbd934e49eeac47de07e7e0855eda46f063a0624958d3e524fc',170416,'G. Landini; owner copy','EVA Alphabet Font Version 2 Reference'),
  ('sta-definition-reference','STA1_def.pdf','reference_pdf','STA1','85a595aa61936fa103a0f2c11d980e9970e11f98d1f35038f9fc268cc433ada2',1159908,'R. Zandbergen; owner copy','STA definition 1.03, 2025-09-13; includes reduced-STA markers'),
+)
+OPTIONAL_SOURCES=(
+ ("zl3b-eva","ZL3b-n(1).txt","transcription","Eva-","bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",411671,"Owner copy; same ZL edition family as zl3b-sta1","ZL3b 2025-05-13, IVTFF Eva- M 5"),
+ ("rf1b-e","RF1b-e.txt","transcription_archive","Eva-","e7d3238e35743e06c63367a933909ec37b1e2de7ada3a1b449447eafa1918782",362373,"Owner copy; RF1b edition family","RF1b-e, IVTFF Eva- D 9"),
+ ("rf1b-er","RF1b-er.txt","transcription_archive","Eva-","eb857a1f353b18983fbc25b954e1bbce227a26d99cefabfda9206ff9b57644d2",343891,"Owner copy; RF1b edition family","RF1b-er, IVTFF Eva- D 9"),
+ ("takahashi-it2a-original","IT2a-n.txt","transcription_archive","EvaT","7f27a8b0feed8f6de0a99900df6bf912dd1d295c38e5f830bac8b41c3f536fb5",342104,"Owner copy; Takahashi edition family","IT2a, IVTFF EvaT M 3"),
+ ("vt0e","VT0e-n.txt","transcription_archive","EvaT","e13ba5e073cae54722bc095db8eb9a1aa9c7105f45a70f66a0aad236077f2426",335205,"Owner copy; source genealogy unverified","VT0e, IVTFF EvaT D 4"),
+ ("gc2a-v101","GC2a-n.txt","transcription_archive","v101","b09570cb6c993bc2d87134d115e60a978650a8a6495483ddbb1f6005a586096f",314916,"Owner copy; v101 edition family","GC2a, IVTFF v101 M 6"),
+ ("v101-legacy","voyn_101.txt","transcription_archive","v101-legacy","f278a451d873c520f7ab509c4af12152698a1d3efd2353924e177a565c17ba7e",248567,"Owner copy; v101 edition family","Legacy v101, encoding not asserted"),
+ ("fsg-fg2a","FG2a-n.txt","transcription_archive","FSG-","a1460a05ff610a406e62b4095a8f8e88c04653c1ef4aa5ad6428ddb1ac01fe06",264787,"Owner copy; FSG edition family","FG2a, IVTFF FSG- M 2"),
+ ("currier-cd2a","CD2a-n.txt","transcription_archive","Curr","edc18e6de699c50d575925d4f469685ccbbe22c9755b9b8a3b002f83253cbde5",132833,"Owner copy; Currier edition family","CD2a, IVTFF Curr M 1"),
+ ("stolfi-evt-16e6","text16e6.zip","transcription_archive","EVT-EVA","0419e8031447c88ba08eb93e7b7a95c58f92c6c7e6d913d4bbc4701271c6f876",347914,"Owner copy; historical interlinear composite","Stolfi 1.6e6, 1998-12"),
+ ("ivtff-metadata","ivtff.xlsx","metadata_workbook",None,"4abb051eee0e3550a451597a35f1b24329d128d2415a937ad49db1ce81080e84",55337,"Owner copy; metadata provenance pending","Per Page / Per Quire workbook"),
+ ("ab-document","AB.docx","supplementary_document",None,"767aee17e376b0ced6c65eb2925b26918f2c076c0120bd8810cbd6b186ebd8e0",258126,"Owner copy; notation and provenance pending","Formatted transcription document"),
 )
 MAX_BYTES=16*1024**3
 MAX_ENTRIES=5000
@@ -59,7 +73,9 @@ def validate_plan(plan):
         if role=='historical_report':need(path.lower().endswith(('.md','.txt')),'Historical report format')
         if role in JSON_ROLES:need(path.lower().endswith('.json'),'JSON role requires JSON path')
         if role in ('manuscript','reference_pdf'):need(path.lower().endswith('.pdf'),'PDF role requires PDF path')
-        if role in ('transcription','transcription_archive'):need(path.lower().endswith(('.txt','.ivtff')),'Transcription path')
+        if role in ('transcription','transcription_archive'):need(path.lower().endswith(('.txt','.ivtff','.zip') if scheme=='EVT-EVA' else ('.txt','.ivtff')),'Transcription path')
+        if role=='metadata_workbook':need(path.lower().endswith('.xlsx') and scheme is None,'Workbook path')
+        if role=='supplementary_document':need(path.lower().endswith('.docx') and scheme is None,'Document path')
         paths[path.casefold()]=row;roles.setdefault(role,[]).append(row)
     need(len(roles.get('manuscript',[]))<=1,'Ambiguous manuscript')
     for role,key in [('run_manifest','run_manifest'),('visual_catalog','catalog')]:
@@ -102,11 +118,9 @@ def inspect(root,plan):
                 import fitz
                 with fitz.open(p,filetype='pdf') as d:need(d.is_pdf and not d.needs_pass and 0<len(d)<=10000,'Invalid PDF');info={'pages':len(d)}
             elif role=='transcription_archive':
-                # Preserve unsupported source notation literally; never feed it into alignment.
-                need(row['bytes']<=64*1024**2,'Archive transcription quota')
-                with p.open(encoding='utf-8-sig') as f:header=f.readline(1024).strip()
-                need(re.fullmatch(r'#=IVTFF '+re.escape(row['scheme'])+r' 2\.0 M\s*[0-9]+',header),'Archive header mismatch')
-                info=dict(header=header,runtime_eligible=False)
+                info=inspect_transcription(p,row['scheme'])
+            elif role in ('metadata_workbook','supplementary_document'):
+                info=inspect_document(p,role)
             elif role=='transcription':
                 need(row['bytes']<=64*1024**2,'Transcription quota')
                 import alignment
@@ -235,10 +249,8 @@ def starter(source,intake):
     def entry(rid,name,role,scheme,h,size,origin,edition):
         return dict(id=rid,path='data/rc1/'+name,role=role,scheme=scheme,sha256=h,bytes=size,origin=origin,edition=edition,rights='UNKNOWN',rights_basis='Owner local-use attestation required; no redistribution claim')
     for args in KNOWN_SOURCES:rows.append(entry(*args))
-    path=local(intake,'data/rc1/IT2a-n.txt')
-    if path.exists():
-        p,s=regular(intake,'data/rc1/IT2a-n.txt');need(0<s.st_size<=64*1024**2,'Archive transcription quota')
-        rows.append(entry('takahashi-it2a-original','IT2a-n.txt','transcription_archive','EvaT',digest(p),s.st_size,'Local copy; candidate origin https://voynich.nu/data/IT2a-n.txt','IT 2a; source edition to be verified'))
+    for args in OPTIONAL_SOURCES:
+        if local(intake,'data/rc1/'+args[1]).exists():rows.append(entry(*args))
     result=dict(schema=1,scope='REAL_RESEARCH',application_sha256=digest(local(source,'portable_sources.json')),sources=rows,run_manifest=None,catalog=None)
     validate_plan(result);return result
 

@@ -124,7 +124,7 @@ class IntakeTests(unittest.TestCase):
         report,_=i.inspect(self.intake,self.plan)
         self.assertIn('transcription:Eva-',report['missing'])
         self.assertEqual(self.provision()['status'],'PROVISIONED_INCOMPLETE')
-        self.assertEqual(len(Desktop(self.out).sources()),4)
+        self.assertEqual(len(Desktop(self.out).sources()),5)
         self.assertEqual((self.out/'data/rc1/IT2a-n.txt').read_bytes(),p.read_bytes())
     def test_starter_never_authorizes_rights_or_fabricates_eva(self):
         seed=i.starter(self.source,self.intake)
@@ -155,3 +155,50 @@ class IntakeTests(unittest.TestCase):
         self.provision();catalog=Desktop(self.out).catalog(Desktop(self.out).settings()['catalog'])
         self.assertEqual(set(catalog),{'basic-eva','sta1r'})
         self.assertTrue(all(v['preview'] for v in catalog.values()))
+
+    def test_archival_modes_and_legacy_duplicates(self):
+        from vrs_rc1_archive import inspect_transcription
+        p=self.path('d.txt');p.write_bytes(b'#=IVTFF Eva- 2.0 D 9\n<f1r>\n<f1r.1,@P0> a\n')
+        self.add('transcription_archive','Eva-',p.name)
+        self.assertEqual(inspect_transcription(p,'Eva-')['mode'],'D')
+        legacy=self.path('legacy.txt');legacy.write_bytes(b'<1r.1>a\xff\n<1r.1>b\n<57v.label>c\n')
+        self.add('transcription_archive','v101-legacy',legacy.name)
+        report,details=i.inspect(self.intake,self.plan)
+        self.assertEqual(report['status'],'INVENTORY_INCOMPLETE')
+        self.assertEqual(details['legacy.txt']['duplicate_records'],1)
+        self.assertEqual(details['legacy.txt']['non_ascii_records'],1)
+        self.assertFalse(details['d.txt']['runtime_eligible'])
+        self.provision();self.assertEqual(len(Desktop(self.out).sources()),7)
+        self.assertEqual((self.out/'data/rc1/legacy.txt').read_bytes(),legacy.read_bytes())
+
+    def test_evt_variants_and_unsafe_zip(self):
+        import zipfile
+        from vrs_rc1_archive import inspect_transcription
+        p=self.path('historical.zip')
+        with zipfile.ZipFile(p,'w') as z:z.writestr('old/TEST.EVT',b'# historic\n<f1r> {}\n<f1r.P1.1;H> a\n<f1r.P1.1;F> b\n')
+        self.add('transcription_archive','EVT-EVA',p.name)
+        report,details=i.inspect(self.intake,self.plan)
+        self.assertEqual(details['historical.zip']['records'],2)
+        self.assertEqual(details['historical.zip']['unique_loci'],1)
+        self.assertFalse(details['historical.zip']['independent_sources_established'])
+        with zipfile.ZipFile(p,'w') as z:z.writestr('../escape.EVT',b'bad')
+        with self.assertRaises(ValueError):inspect_transcription(p,'EVT-EVA')
+
+    def test_ooxml_archive_structure_only(self):
+        import zipfile
+        p=self.path('meta.xlsx')
+        with zipfile.ZipFile(p,'w') as z:
+            z.writestr('[Content_Types].xml','<Types/>')
+            z.writestr('xl/workbook.xml','<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheets><sheet name="Per Page"/></sheets></workbook>')
+        self.add('metadata_workbook',None,p.name)
+        p=self.path('extra.docx')
+        with zipfile.ZipFile(p,'w') as z:
+            z.writestr('[Content_Types].xml','<Types/>')
+            z.writestr('word/document.xml','<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p/></w:body></w:document>')
+        self.add('supplementary_document',None,p.name)
+        report,details=i.inspect(self.intake,self.plan)
+        self.assertEqual(details['meta.xlsx']['sheets'],['Per Page'])
+        self.assertFalse(details['meta.xlsx']['semantic_mapping_verified'])
+        self.assertEqual(details['extra.docx']['paragraphs'],1)
+        self.provision()
+        self.assertEqual(len(Desktop(self.out).sources()),7)
