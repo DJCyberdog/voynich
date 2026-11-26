@@ -1,0 +1,2 @@
+# Optional candidate native Windows tray; clean install/native acceptance pending.
+pystray==0.19.5; sys_platform == 'win32'
