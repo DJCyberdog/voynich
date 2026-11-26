@@ -14,7 +14,7 @@ from vrs_exceptions import load_page, outcomes, candidate_id, box_key
 from vrs_service import Service
 from vrs_decisions import Decisions
 
-VERSION='0.13.1-cuda-candidate.2'
+VERSION='0.13.1-cuda-candidate.3'
 
 
 class Runtime(Service):
@@ -29,6 +29,7 @@ class Runtime(Service):
         info=h.snapshot(self.home,'cuda',0)
         if not (info.get('gpu') or {}).get('ok'):
             raise h.ResourceBlocked('Explicit CUDA unavailable; no CPU fallback')
+        h.cuda_binding(info)
         return 'cuda'
 
     def register(self,manifest):

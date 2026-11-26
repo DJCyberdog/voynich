@@ -205,6 +205,47 @@ class RuntimeTests(unittest.TestCase):
         self.assertNotEqual(a,h.cuda_binding({'gpu':dict(gpu,torch='different')}))
         with self.assertRaises(h.ResourceBlocked):h.cuda_binding({'gpu':dict(gpu,device_uuid='')})
 
+    def test_cuda_checkpoint_device_change_guard(self):
+        # No GPU claim: inject an existing immutable checkpoint and a different binding.
+        m=dict(self.m,backend='cuda')
+        with patch.object(self.app,'_backend',return_value='cuda'):
+            run=self.app.register(m)
+        self.app.sweep(); self.app.sweep()
+        token=self.app.ledger.claim(run)
+        cp=self.file('mock-cuda-checkpoint.json',dict(schema=1,worker=self.app.identity,
+            run_id=run,stage='glyph_classification',pages=[],cuda_binding='1'*64))
+        self.app.ledger.checkpoint(run,token,'glyph_classification',cp)
+        self.app.ledger.release(run,token)
+        with patch.object(self.app,'_backend',return_value='cuda'),patch('vrs_runtime.h.cuda_binding',return_value='2'*64),patch.object(self.app,'_page_outcome') as compute:
+            result=self.app.sweep()[0]
+            compute.assert_not_called()
+        self.assertEqual(result['reason'],'PROCESSING_OR_INTEGRITY_ERROR')
+        self.assertEqual(self.status(run)['control'],'PAUSED')
+        self.assertEqual(self.status(run)['checkpoint']['artifact'],cp)
+
+    def test_native_cuda_checkpoint_resume(self):
+        if os.environ.get('VRS_NATIVE_CUDA_TEST')!='1':
+            self.skipTest('Explicit native CUDA qualification required')
+        m=dict(self.m,backend='cuda',inputs=dict(self.m['inputs'],
+            groups=self.file('cuda-both.json',{'1':'leaf-a','2':'leaf-b'}),
+            recognition_policy=self.file('cuda-no-map.json',dict(schema=1,approval=None,mapping=None))))
+        run=self.app.register(m);self.app.sweep();self.app.sweep()
+        code="import os,sys; from vrs_runtime import Runtime; a=Runtime(sys.argv[1]); old=a.ledger.checkpoint; a.ledger.checkpoint=lambda *x:(old(*x),os._exit(77)); a.sweep()"
+        proc=subprocess.run([sys.executable,'-c',code,str(self.root)],cwd=Path(__file__).parent,timeout=120)
+        self.assertEqual(proc.returncode,77)
+        status=self.status(run);cp=c.load(c.artifact(self.root,status['checkpoint']['artifact']))
+        self.assertEqual([r['page'] for r in cp['pages']],[1]);c.digest_ok(cp['cuda_binding'])
+        self.app.recover(run,status['generation'],confirm_stopped=True)
+        other=Runtime(self.root);original=other._page_outcome;calls=[]
+        def observe(run,rr,*args):
+            calls.append(rr['page']);return original(run,rr,*args)
+        with patch.object(other,'_page_outcome',side_effect=observe):
+            self.assertEqual(other.sweep()[0]['control'],'READY')
+        self.assertEqual(calls,[2])
+        index=c.load(c.artifact(self.root,self.status(run)['receipts']['glyph_classification']['artifact']))
+        self.assertEqual(index['cuda_binding'],cp['cuda_binding'])
+        self.assertEqual(index['pages'][0],cp['pages'][0])
+
     def test_native_cuda_candidate(self):
         if os.environ.get('VRS_NATIVE_CUDA_TEST')!='1':
             self.skipTest('Explicit native CUDA qualification required')

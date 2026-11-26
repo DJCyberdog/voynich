@@ -96,8 +96,14 @@ def qualify(source,profile,report):
         def candidate_zip():
             candidate=build_candidate(root,profile,plan['plan'],plan['sha256'])
             value=dict(sha256=digest(candidate),bytes=candidate.stat().st_size,redistribution_approved=False)
-            candidate.unlink();return value
-        result['candidate_zip']=step('locked_candidate_zip',candidate_zip)
+            destination=home/'candidate-extracted';destination.mkdir()
+            extract(candidate,destination)
+            package=(destination/'Voynich Research Studio').resolve(strict=True)
+            need(digest(local(package,plan['plan']))==plan['sha256'],'Extracted plan hash mismatch')
+            candidate.unlink();return value,package
+        result['candidate_zip'],package=step('locked_candidate_zip',candidate_zip)
+        # Discard the assembly tree: all subsequent checks use the extracted ZIP.
+        shutil.rmtree(root);root=package
         # Consent is limited to this disposable test, not a transferable owner approval.
         step('offline_setup',lambda:batch(root,'Setup','--profile',profile,'--plan',plan['plan'],'--approve',plan['sha256']))
         def run(code):subprocess.run([str(exe(root,profile)),'-s','-c',code],cwd=root,env=environment(root),check=True,timeout=90)
@@ -133,7 +139,7 @@ assert not any(x['event']=='CRASH' for x in records(Path.cwd()))
             if profile=='cuda':env['VRS_NATIVE_CUDA_TEST']='1'
             subprocess.run([str(exe(root,profile)),'-s','-m','unittest','-v',*names],cwd=root,env=env,check=True,timeout=1200)
         step('portable_regression',lambda:test(['test_vrs_portable','test_vrs_prepare_plan','test_vrs_worker_log','test_vrs_native_acceptance','test_vrs_source_update','test_vrs_license_inventory']))
-        if profile=='cuda':step('native_cuda_candidate',lambda:test(['test_vrs_runtime.RuntimeTests.test_native_cuda_candidate']))
+        if profile=='cuda':step('native_cuda_candidate',lambda:test(['test_vrs_runtime.RuntimeTests.test_native_cuda_candidate','test_vrs_runtime.RuntimeTests.test_native_cuda_checkpoint_resume']))
         if profile=='cpu':step('cpu_integration',lambda:test(['test_vrs_runtime','test_vrs_desktop','test_vrs_operations','test_vrs_learning','test_vrs_repository','test_vrs_coordinator','test_vrs_service','test_vrs_exceptions','test_vrs_modules']))
         step('stop_idle_worker',lambda:batch(root,'Stop'))
         step('diagnostics',lambda:batch(root,'Diagnostics'))
