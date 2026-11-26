@@ -1,0 +1,15 @@
+{
+  "action": "train",
+  "args": {
+    "manifest": "C:/private/dataset/manifest.json",
+    "left": "C:/private/reviewer_a.json",
+    "right": "C:/private/reviewer_b.json",
+    "split": "C:/private/split.json",
+    "out": "C:/private/run01",
+    "device": "cuda",
+    "epochs": 8,
+    "batch": 16,
+    "seed": 42,
+    "resume": false
+  }
+}

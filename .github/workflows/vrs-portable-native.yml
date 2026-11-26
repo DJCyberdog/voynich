@@ -1,0 +1,57 @@
+name: VRS portable Windows candidate
+on:
+  push:
+    branches: [development/vrs-0.13.0, development/vrs-0.13.1, development/vrs-0.14.0, development/vrs-0.14.1]
+    paths:
+      - 'worker/**'
+      - '.github/workflows/vrs-portable-native.yml'
+      - '.github/scripts/vrs_validate_bom.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: windows-2025
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [review, cpu]
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - name: Preserve Git blob line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        if: startsWith(github.ref, 'refs/heads/development/vrs-0.14.')
+        with:
+          ref: 74eeab963a6451b63496ed8e29f7c0518b939980
+          path: immutable-rc-base
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.5'
+          architecture: x64
+      - name: Assemble and qualify disposable native package
+        working-directory: worker
+        run: |
+          $extra = @()
+          if (Test-Path "../immutable-rc-base/worker") { $extra = @("--compat-source", (Resolve-Path "../immutable-rc-base/worker").Path) }
+          python -B vrs_native_acceptance.py --profile ${{ matrix.profile }} --disposable-test --report "${{ runner.temp }}/vrs-native-${{ matrix.profile }}.json" @extra
+      - name: Validate exact candidate SBOM against pinned CycloneDX schema
+        run: |
+          python -m pip install jsonschema==4.25.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B .github/scripts/vrs_validate_bom.py "${{ runner.temp }}/vrs-native-${{ matrix.profile }}.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vrs-native-${{ matrix.profile }}-evidence
+          path: ${{ runner.temp }}/vrs-native-${{ matrix.profile }}*.json
+          if-no-files-found: warn
+          retention-days: 14

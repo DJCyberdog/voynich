@@ -1,0 +1,7 @@
+# Experimental Windows x64 qualification only; separate app-local Python 3.12 environment.
+# Candidate top-level pins; full wheel locks/hashes and clean installation still unverified.
+# Do NOT combine with requirements-compute.txt (modern NumPy/PyTorch profile).
+-r requirements-review.txt
+numpy==1.26.4
+PyMuPDF==1.26.7
+torch-directml==0.2.5.dev240914

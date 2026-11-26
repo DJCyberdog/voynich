@@ -1,0 +1,43 @@
+{
+  "code_sha256": "f207c147158b7342ff6a1641ee746043dea0946db858a43ca902012e4a2a5443",
+  "common_loci": 5366,
+  "common_subtype": 5366,
+  "scientific_status": "UNADJUDICATED",
+  "sources": [
+    {
+      "header": "#=IVTFF Eva- 2.0 M 5",
+      "ignored": {
+        "page_header": 227
+      },
+      "loci": 5385,
+      "source_sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+      "strict": 2161,
+      "unresolved": 3224,
+      "version": "0.6.0"
+    },
+    {
+      "header": "#=IVTFF STA1 2.0 M 5",
+      "ignored": {
+        "page_header": 227
+      },
+      "loci": 5385,
+      "source_sha256": "8438ba1c45f47fe1d06b5262cbcdf60ce69158a0edbd4dd802612896f3217e2a",
+      "strict": 2772,
+      "unresolved": 2613,
+      "version": "0.6.0"
+    },
+    {
+      "header": "#=IVTFF STA1 2.0 M 6",
+      "ignored": {
+        "page_header": 226
+      },
+      "loci": 5367,
+      "source_sha256": "0c0d1eea4b5ab87f8a65fb7f4346864cd90758ad993812b4f2122b3899d4ac88",
+      "strict": 3733,
+      "unresolved": 1634,
+      "version": "0.6.0"
+    }
+  ],
+  "strict_common": 1691,
+  "version": "0.6.0"
+}

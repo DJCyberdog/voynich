@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "poll_seconds": 60,
+  "notify_at": 10,
+  "cooldown_seconds": 900,
+  "sessions": []
+}

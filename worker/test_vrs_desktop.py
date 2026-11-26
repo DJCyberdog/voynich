@@ -1,0 +1,118 @@
+import json
+import os
+import subprocess
+import sys
+import tempfile
+import time
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+from PIL import Image
+import vrs_contract as c
+from vrs_core import sha
+from vrs_desktop_api import Desktop, ReadLedger, safe
+import test_vrs_runtime as fixtures
+
+
+class DesktopTests(unittest.TestCase):
+    def setUp(self):
+        self.f=fixtures.RuntimeTests(); self.f.setUp(); self.addCleanup(self.f.doCleanups)
+        self.root=self.f.root; self.api=Desktop(self.root)
+
+    def test_empty_workspace_and_settings(self):
+        with tempfile.TemporaryDirectory() as d:
+            a=Desktop(d); self.assertEqual(a.runs(),[]); cfg=a.settings(); self.assertEqual(cfg['language'],'de'); cfg.update(theme='light',language='en',reviewer='reviewer'); self.assertEqual(a.save_settings(cfg),cfg)
+            self.assertFalse((Path(d)/'workspace').exists())
+
+    def test_read_only_review_and_crop(self):
+        run=self.f.run_to_review(); db=ReadLedger(self.root).db; before=sha(db); result=self.api.review(run,limit=1)
+        self.assertEqual(result['snapshot'],self.f.app.review_items(run,limit=1)['snapshot']); self.assertEqual(result['items'],self.f.app.review_items(run,limit=1)['items']); im,box=self.api.crop(result['items'][0]); self.assertGreater(im.width,0); self.assertEqual(box,result['items'][0]['box']); self.assertEqual(sha(db),before)
+        with ReadLedger(self.root)._tx() as conn:
+            with self.assertRaises(Exception): conn.execute("UPDATE runs SET control='READY'")
+
+    def test_offline_draft_and_authoritative_subprocess(self):
+        run=self.f.run_to_review(); q=self.api.review(run); item=q['items'][0]; path=self.api.stage_decision(item,q['snapshot'],q['inventory'],'fixture','glyph',{'Eva-':{'state':'mapped','label':'a'},'STA1':{'state':'absent','label':None}})
+        self.assertEqual(self.f.app.review_items(run)['snapshot']['resolved'],0); self.assertEqual(c.load(self.root/path)['candidate_id'],item['id'])
+        result=self.api.command(sys.executable,'decide',path); self.assertEqual(result['resolved'],1)
+        self.assertNotIn(item['id'],[x['id'] for x in self.api.review(run)['items']]); self.assertEqual(self.api.command(sys.executable,'decide',path),result)
+        with self.assertRaises(ValueError): self.api.command(sys.executable,'watch',path)
+
+    def test_invalid_draft_and_tampered_crop(self):
+        run=self.f.run_to_review(); q=self.api.review(run); item=q['items'][0]
+        with self.assertRaises(ValueError): self.api.stage_decision(item,q['snapshot'],q['inventory'],'r','glyph',{})
+        with self.assertRaises(ValueError): self.api.stage_decision(item,q['snapshot'],q['inventory'],'r','glyph',{'Eva-':{'state':'mapped','label':'fake'},'STA1':{'state':'unknown','label':None}})
+        (self.root/item['crop']['path']).write_bytes(b'bad')
+        with self.assertRaises(ValueError): self.api.crop(item)
+
+    def test_visual_catalog_and_import(self):
+        image=self.root/'glyph.png'; Image.new('L',(20,30),30).save(image)
+        r=self.f.file('catalog.json',dict(schema=1,preview=True,schemes=[dict(id='Eva-',name='EVA',version='fixture',source='synthetic',coverage='subset',entries=[dict(label='a',samples=[dict(file='glyph.png',sha256=sha(image),source='fixture page')])])]))
+        cat=self.api.catalog(r['path']); self.assertIn('a',cat['Eva-']['entries']); self.assertNotIn('STA1',cat); self.assertEqual(self.api.reference_image(cat['Eva-']['entries']['a'][0][0]).size,(20,30))
+        p=self.api.import_source(self.root/'source.pdf','manuscript'); self.assertEqual(p['details']['pages'],2); self.assertEqual(p,self.api.import_source(self.root/'source.pdf','manuscript')); self.assertEqual(self.api.import_source(self.root/'eva.txt','transcription')['details']['loci'],1)
+        with self.assertRaises(Exception): self.api.import_source(image,'manuscript')
+        image.write_bytes(b'changed')
+        with self.assertRaises(ValueError): self.api.catalog(r['path'])
+        with self.assertRaises(ValueError): safe(self.root,'../outside')
+
+    def test_manifest_verification_without_ml_import(self):
+        p=self.f.file('manifest.json',self.f.m)['path']; code='import sys; from vrs_desktop_api import Desktop; a=Desktop(sys.argv[1]); a.manifest_info(sys.argv[2]); assert not any(x in sys.modules for x in ("torch","numpy","fitz"))'
+        proc=subprocess.run([sys.executable,'-S','-c',code,str(self.root),p],capture_output=True,text=True,timeout=30); self.assertEqual(proc.returncode,0,proc.stderr)
+
+    def test_manifest_builder_and_sources_registry(self):
+        roles={k:v['path'] for k,v in self.f.m['inputs'].items()}; trans=[r['path'] for r in self.f.m['transcriptions']]
+        info=self.api.make_manifest(roles,trans); self.assertEqual(info['inventories'],{'Eva-':2,'STA1':2}); self.assertFalse(info['approved']); self.assertEqual(self.api.manifest_info(info['path'])['run_id'],info['run_id'])
+        self.assertEqual(self.api.command(sys.executable,'register',info['path'])['run_id'],info['run_id'])
+        one=self.api.import_source(self.root/'source.pdf','manuscript'); two=self.api.import_source(self.root/'eva.txt','transcription'); self.assertEqual({r['sha256'] for r in self.api.sources()},{one['sha256'],two['sha256']})
+        (self.root/one['path']).write_bytes(b'corrupt')
+        with self.assertRaises(ValueError): self.api.sources()
+
+    def test_catalog_builder_and_draft_replay(self):
+        import fitz
+        path=self.root/'visual.pdf'
+        with fitz.open() as doc:
+            page=doc.new_page(width=100,height=100); page.draw_rect(fitz.Rect(30,20,40,70),color=None,fill=(0,0,0)); doc.save(path)
+        plan=self.f.file('catalog-plan.json',dict(schema=1,source='fixture PDF',source_sha256=sha(path),version='fixture',rights='synthetic',reviewed=False,entries=[dict(scheme='basic-eva',label='a',page=1,box=[20,10,60,80])]))
+        with self.assertRaises(ValueError): self.api.build_catalog('visual.pdf',plan['path'],False)
+        built=self.api.build_catalog('visual.pdf',plan['path'],True); catalog=self.api.catalog(built['path']); self.assertTrue(catalog['basic-eva']['preview'])
+        run=self.f.run_to_review(); q=self.api.review(run); rel=self.api.stage_decision(q['items'][0],q['snapshot'],q['inventory'],'fixture','false_positive',{}); self.assertEqual(self.api.drafts()[0]['path'],rel)
+        self.assertEqual(self.api.submit_draft(sys.executable,rel)['resolved'],1)
+        with self.assertRaises(ValueError): self.api.submit_draft(sys.executable,'source.pdf')
+
+    def test_isolated_review_process_without_compute_packages(self):
+        import PIL, shutil
+        run=self.f.run_to_review()
+        with tempfile.TemporaryDirectory() as d:
+            lib=Path(d); source=Path(PIL.__file__).parent; shutil.copytree(source,lib/'PIL',ignore=shutil.ignore_patterns('__pycache__'))
+            if (source.parent/'pillow.libs').exists(): shutil.copytree(source.parent/'pillow.libs',lib/'pillow.libs')
+            code="import sys; sys.path.insert(0,sys.argv[1]); import tkinter as tk; from vrs_desktop_api import Desktop; from PIL import ImageTk; a=Desktop(sys.argv[2]); q=a.review(sys.argv[3]); im,_=a.crop(q['items'][0]); w=tk.Tk(); p=ImageTk.PhotoImage(im); w.destroy(); assert not any(x in sys.modules for x in ('torch','numpy','fitz')); print('ISOLATED_REVIEW_PASS')"
+            proc=subprocess.run([sys.executable,'-S','-c',code,d,str(self.root),run],capture_output=True,text=True,timeout=30); self.assertEqual(proc.returncode,0,proc.stderr); self.assertIn('ISOLATED_REVIEW_PASS',proc.stdout)
+
+    def test_actual_gui(self):
+        import tkinter as tk
+        from vrs_desktop import App
+        run=self.f.run_to_review();image=self.root/'visual-fixture.png';Image.new('RGB',(40,30),'white').save(image);catalog=self.f.file('visual-fixture.json',dict(schema=1,preview=True,schemes=[dict(id='Eva-',name='EVA',version='fixture',source='synthetic',coverage='subset',entries=[dict(label='a',samples=[dict(file=image.name,sha256=sha(image),source='synthetic fixture')])])]))
+        cfg=self.api.settings(); cfg.update(reviewer='fixture',interpreter=sys.executable,catalog=catalog['path']); self.api.save_settings(cfg)
+        w=tk.Tk(); app=App(w,self.root)
+        def settle():
+            until=time.monotonic()+15
+            while time.monotonic()<until:
+                w.update(); time.sleep(.015)
+                if app.future is None: w.update(); return
+            self.fail('UI task timeout')
+        try:
+            settle(); self.assertIn(run,app.tree.get_children()); self.assertEqual(app.homecount.cget('text'),'1');self.assertEqual(app.homepending.cget('text'),'1');self.assertEqual(app.homecomplete.cget('text'),'0');app.tree.selection_set(run); app.open_selected(); settle(); self.assertTrue(app.items); self.assertIsNotNone(app.image)
+            from vrs_build_portable import RELEASE_VERSION
+            self.assertIn(RELEASE_VERSION,w.title());self.assertEqual(float(app.reviewprogress.cget('value')),0)
+            app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
+            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only)
+            app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
+            app.show('Settings'); app.fields['theme'].set('light'); app.fields['language'].set('en'); app.apply(); settle(); self.assertEqual(app.cfg['theme'],'light'); self.assertEqual(app.cfg['language'],'en')
+            w.geometry('1024x650'); w.update(); app.show('Review'); settle(); self.assertGreater(app.canvas.winfo_width(),150);self.assertTrue(app.kindbox.winfo_ismapped());self.assertTrue(app.review_side.winfo_ismapped())
+            for widget in [app.draft_button,app.submit_button,*app.zoom_controls]:
+                self.assertTrue(widget.winfo_ismapped());self.assertGreaterEqual(widget.winfo_width(),widget.winfo_reqwidth());self.assertGreaterEqual(widget.winfo_height(),widget.winfo_reqheight())
+            app.show('Home');settle();self.assertTrue(app.home_review.winfo_ismapped());self.assertGreaterEqual(app.home_review.winfo_height(),app.home_review.winfo_reqheight())
+        finally:
+            if not app.closing: app.close()
+
+if __name__=='__main__': unittest.main()

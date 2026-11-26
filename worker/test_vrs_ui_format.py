@@ -1,0 +1,31 @@
+import unittest
+from unittest.mock import patch
+from vrs_ui_format import human,parse_gpu,review_fraction,gpu_telemetry,brand_icon,log_line
+
+class UiFormatTests(unittest.TestCase):
+    def test_human_preserves_denominators_and_status(self):
+        text=human(dict(scientific_status='UNADJUDICATED',comparisons=[dict(compared=3,unresolved=0)],review=None))
+        for x in ('UNADJUDICATED','compared:  3','unresolved:  0','review:  —'):self.assertIn(x,text)
+        self.assertNotIn('{',text)
+        self.assertEqual(review_fraction(dict(pending=3,resolved=4,deferred=2)),(4,9))
+        self.assertIsNone(review_fraction(None))
+        with self.assertRaises(ValueError):review_fraction(dict(pending=-1,resolved=4,deferred=2))
+
+    def test_gpu_parser_denies_missing_or_invalid_telemetry(self):
+        self.assertEqual(parse_gpu('0, 12, 512, 16384')[0],dict(index=0,util=12,used_mib=512,total_mib=16384))
+        for x in ('','0, N/A, 0, 10','0, 110, 0, 10','0, 10, 11, 10','0, nan, 1, 10','0, 0, 1, 2\n0, 0, 1, 2'):
+            with self.assertRaises(ValueError):parse_gpu(x)
+        with patch('vrs_ui_format.Path.is_file',return_value=False):self.assertIsNone(gpu_telemetry())
+
+    def test_brand_and_log_presentation(self):
+        self.assertEqual(brand_icon(64).size,(64,64));self.assertEqual(brand_icon(32).mode,'RGBA')
+        self.assertIn('ERROR',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',event='WORKER_FAILED',state='FAILED')))
+        self.assertIn('state: FAILED',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',event='WORKER_FAILED',state='FAILED')))
+
+    def test_log_formatter_actual_schema(self):
+        import tempfile
+        from pathlib import Path
+        from vrs_portable_logs import event,records
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);event(root,'setup','INFO','COMMAND_OK',action='setup');rows=records(root)
+            self.assertEqual(len(rows),1);self.assertIn('COMMAND_OK',log_line(rows[0]));self.assertIn('action: setup',log_line(rows[0]))
