@@ -5,13 +5,15 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from PIL import ImageTk, Image
-from vrs_desktop_api import Desktop, VERSION
+from vrs_desktop_api import Desktop
+from vrs_build_portable import RELEASE_VERSION as VERSION
 
 PALETTES={
- 'dark': dict(bg='#10151d',panel='#192330',card='#202d3c',line='#344459',fg='#e9edf4',muted='#a8b7c9',accent='#59d6c2',ink='#0e2426'),
- 'light':dict(bg='#edf2f6',panel='#ffffff',card='#e5edf3',line='#c3d1dd',fg='#192a38',muted='#52677b',accent='#127d75',ink='#ffffff')}
+ 'dark': dict(bg='#101722',panel='#172231',card='#202e40',line='#3a4b60',fg='#edf3fa',muted='#a9b9cc',accent='#5de2ca',ink='#102822',success='#86d6a4',warning='#f4c278',danger='#ff999d'),
+ 'light':dict(bg='#edf2f7',panel='#ffffff',card='#e2eaf2',line='#aebdce',fg='#172b3c',muted='#465d73',accent='#096a61',ink='#ffffff',success='#17643d',warning='#875000',danger='#a62938')}
 DE={'Home':'Start','Review':'Glyphen-Review','Sources':'Quellen','Settings':'Einstellungen','Refresh':'Aktualisieren','Project':'Projekt','Open workspace':'Workspace öffnen','Local only':'Nur lokal','Ready':'Bereit','No runs yet':'Noch keine Runs','Select run':'Run wählen','Previous':'Zurück','Next':'Weiter','Context':'Kontext','Glyph':'Glyphe','Fit':'Einpassen','References':'Referenzen','Decisions':'Entscheidungen','Save draft':'Entwurf speichern','Submit':'Übernehmen','Reviewer':'Reviewer:in','No catalog':'Kein visueller Katalog','No candidate':'Kein Kandidat','No queue':'Keine offene Warteschlange','Pending':'Offen','Resolved':'Bearbeitet','Deferred':'Zurückgestellt','Inventory':'Inventar','Label':'Zeichen','Disposition':'Zuordnung','Import source':'Quelle importieren','Verify manifest':'Manifest prüfen','Register run':'Run registrieren','Choose file':'Datei wählen','Compute Python':'Compute-Python','Catalog file':'Katalogdatei','Theme':'Design','Language':'Sprache','Apply':'Übernehmen','Overview':'Übersicht','Source management':'Quellenverwaltung','Offline drafts':'Offline-Entwürfe','Worker connected':'Worker konfiguriert','No auto-acceptance claim':'Keine validierte Erkennungsfreigabe','Busy':'Lädt …','Draft saved':'Entwurf gespeichert','Decision saved':'Entscheidung übernommen','Workspace path':'Workspace-Pfad','Reference scheme':'Referenzschema','Sample':'Beispiel','No visual sample':'Kein visuelles Beispiel','Unreviewed proposals':'Unvalidierte Vorschläge','Revision':'Revision','Browse':'Auswählen','No prediction hints':'Keine Modellvorschläge im Review','Manual selection':'Manuelle Auswahl','No automatic publication':'Keine automatische Veröffentlichung','Source role':'Quellentyp','Pinned file':'Gebundene Datei','glyph':'Glyphe','false_positive':'False Positive','compound':'Compound','deferred':'Zurückstellen','mapped':'Zugeordnet','absent':'Nicht im Inventar','unknown':'Unbekannt','unreviewed':'Nicht geprüft','Create manifest':'Manifest erstellen','Build reference catalog':'Referenzkatalog erstellen','Pinned existing local files; optional second transcription':'Vorhandene lokale Dateien; zweite Transkription optional','Reviewed plan JSON':'Geprüfter Plan (JSON)','Preview only (not reviewed)':'Nur Vorschau (nicht geprüft)','No automatic catalog approval':'Keine automatische Freigabe des Katalogs'}
 
+DE.update({'Total runs':'Runs gesamt','Review required':'Review erforderlich','Completed runs':'Abgeschlossen','Research runs':'Forschungsläufe','Select a run to inspect':'Run auswählen, um ihn zu prüfen','Status':'Status','Stage':'Phase'})
 
 class App:
     def __init__(self, window, root):
@@ -26,14 +28,26 @@ class App:
     def build(self):
         for child in self.w.winfo_children(): child.destroy()
         self.p=PALETTES[self.cfg['theme']]; p=self.p; self.w.configure(bg=p['bg']); s=ttk.Style(self.w); s.theme_use('clam')
-        s.configure('.',font=('TkDefaultFont',10),background=p['bg'],foreground=p['fg'],fieldbackground=p['card'],bordercolor=p['line'],troughcolor=p['panel'],lightcolor=p['line'],darkcolor=p['line'])
-        s.configure('TFrame',background=p['bg']); s.configure('Panel.TFrame',background=p['panel']); s.configure('TLabel',background=p['bg'],foreground=p['fg']); s.configure('Panel.TLabel',background=p['panel']); s.configure('Muted.TLabel',foreground=p['muted']); s.configure('Title.TLabel',font=('TkDefaultFont',19,'bold')); s.configure('Card.TLabel',background=p['card'],padding=10); s.configure('TButton',background=p['card'],padding=(10,7)); s.map('TButton',background=[('active',p['line'])]); s.configure('Accent.TButton',background=p['accent'],foreground=p['ink']); s.map('Accent.TButton',background=[('active',p['accent']),('disabled',p['card'])]); s.configure('Treeview',background=p['panel'],fieldbackground=p['panel'],foreground=p['fg'],rowheight=31); s.map('Treeview',background=[('selected',p['line'])]); s.configure('Treeview.Heading',background=p['card'],foreground=p['fg']); s.configure('TCombobox',padding=4); s.map('TCombobox',fieldbackground=[('readonly',p['card'])],foreground=[('readonly',p['fg'])]); self.w.option_add('*TCombobox*Listbox.background',p['card']); self.w.option_add('*TCombobox*Listbox.foreground',p['fg'])
-        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); ttk.Label(top,text='VRS',font=('TkDefaultFont',22,'bold'),foreground=p['accent']).pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=('TkDefaultFont',11,'bold')).pack(side='left'); ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
+        from tkinter import font as tkfont
+        family='Segoe UI' if 'Segoe UI' in tkfont.families(self.w) else tkfont.nametofont('TkDefaultFont').actual('family')
+        self.family=family; scale=float(self.w.tk.call('tk','scaling')); rowheight=max(30,round(25*scale))
+        s.configure('.',font=(family,10),background=p['bg'],foreground=p['fg'],fieldbackground=p['card'],bordercolor=p['line'],troughcolor=p['panel'],lightcolor=p['line'],darkcolor=p['line'])
+        for style,background in [('TFrame',p['bg']),('Panel.TFrame',p['panel']),('Card.TFrame',p['card'])]:s.configure(style,background=background)
+        s.configure('TLabel',background=p['bg'],foreground=p['fg']);s.configure('Panel.TLabel',background=p['panel']);s.configure('Muted.TLabel',foreground=p['muted'])
+        s.configure('Title.TLabel',font=(family,21,'bold'));s.configure('Section.TLabel',font=(family,12,'bold'));s.configure('Metric.TLabel',background=p['card'],foreground=p['fg'],font=(family,22,'bold'));s.configure('MetricCaption.TLabel',background=p['card'],foreground=p['muted'],font=(family,10))
+        s.configure('Card.TLabel',background=p['card'],padding=10);s.configure('TButton',background=p['card'],padding=(10,6));s.map('TButton',background=[('active',p['line'])],foreground=[('disabled',p['muted'])])
+        s.configure('Nav.TButton',background=p['panel'],anchor='w',padding=(12,7),borderwidth=0);s.map('Nav.TButton',background=[('active',p['card']),('focus',p['line'])])
+        s.configure('Accent.TButton',background=p['accent'],foreground=p['ink']);s.map('Accent.TButton',background=[('disabled',p['card']),('active',p['accent'])],foreground=[('disabled',p['muted'])])
+        s.configure('NavActive.TButton',background=p['accent'],foreground=p['ink'],anchor='w',padding=(12,7),borderwidth=0);s.map('NavActive.TButton',background=[('active',p['accent']),('focus',p['accent'])])
+        s.configure('Treeview',background=p['panel'],fieldbackground=p['panel'],foreground=p['fg'],rowheight=rowheight,borderwidth=0);s.map('Treeview',background=[('selected',p['line'])],foreground=[('selected',p['fg'])]);s.configure('Treeview.Heading',background=p['card'],foreground=p['fg'],font=(family,10,'bold'),padding=(6,7))
+        s.configure('TCombobox',padding=4);s.map('TCombobox',fieldbackground=[('readonly',p['card'])],foreground=[('readonly',p['fg'])]);s.configure('Horizontal.TProgressbar',background=p['accent'],troughcolor=p['line'],bordercolor=p['line'])
+        self.w.option_add('*TCombobox*Listbox.background',p['card']);self.w.option_add('*TCombobox*Listbox.foreground',p['fg'])
+        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); ttk.Label(top,text='VRS',font=(family,24,'bold'),foreground=p['accent']).pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=(family,12,'bold')).pack(side='left'); ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
         ttk.Separator(self.w).pack(fill='x'); self.status=tk.StringVar(value=self.t('Ready')); ttk.Label(self.w,textvariable=self.status,style='Card.TLabel',anchor='w').pack(fill='x',side='bottom'); area=ttk.Frame(self.w); area.pack(fill='both',expand=True); nav=ttk.Frame(area,style='Panel.TFrame',padding=12); nav.pack(side='left',fill='y'); ttk.Label(nav,text=self.t('Project').upper(),style='Panel.TLabel').pack(anchor='w',pady=(4,8)); ttk.Label(nav,text=self.api.root.name[:22],style='Panel.TLabel',wraplength=145).pack(anchor='w',pady=(0,14)); ttk.Button(nav,text=self.t('Open workspace'),command=self.switch).pack(fill='x',pady=(0,20)); self.nav={}
         for name in ('Home','Review','Sources','Settings'):
-            b=ttk.Button(nav,text=self.t(name),command=lambda n=name:self.show(n)); b.pack(fill='x',pady=4); self.nav[name]=b
+            b=ttk.Button(nav,text=self.t(name),style='Nav.TButton',command=lambda n=name:self.show(n)); b.pack(fill='x',pady=2); self.nav[name]=b
         ttk.Label(nav,text='PRIVATE WORKSPACE',style='Panel.TLabel',foreground=p['muted']).pack(side='bottom',pady=10)
-        self.body=ttk.Frame(area,padding=16); self.body.pack(side='left',fill='both',expand=True)
+        self.body=ttk.Frame(area,padding=(22,18)); self.body.pack(side='left',fill='both',expand=True)
 
     def task(self,fn,done):
         if self.future is not None: return
@@ -49,23 +63,43 @@ class App:
     def show(self,name):
         if self.future is not None: return
         self.view=name
-        for n,b in self.nav.items(): b.configure(style='Accent.TButton' if n==name else 'TButton')
+        for n,b in self.nav.items(): b.configure(style='NavActive.TButton' if n==name else 'Nav.TButton')
         for child in self.body.winfo_children(): child.destroy()
         getattr(self,'page_'+name.lower())()
 
     def title(self,name,subtitle):
         ttk.Label(self.body,text=self.t(name),style='Title.TLabel').pack(anchor='w'); ttk.Label(self.body,text=subtitle,style='Muted.TLabel',wraplength=760).pack(anchor='w',pady=(4,15))
 
+    def metric(self,parent,label):
+        card=ttk.Frame(parent,style='Card.TFrame',padding=(12,10));card.pack(side='left',fill='both',expand=True,padx=(0,8))
+        ttk.Label(card,text=label,style='MetricCaption.TLabel').pack(anchor='w')
+        value=ttk.Label(card,text='—',style='Metric.TLabel');value.pack(anchor='w',pady=(3,0));return value
+
     def page_home(self):
-        self.title('Overview',self.t('No automatic publication')); bar=ttk.Frame(self.body); bar.pack(fill='x'); self.homecount=ttk.Label(bar,text='—',style='Card.TLabel'); self.homecount.pack(side='left',fill='x',expand=True,padx=(0,5)); ttk.Label(bar,text=self.t('Worker connected' if self.cfg['interpreter'] else 'Offline drafts'),style='Card.TLabel').pack(side='left',fill='x',expand=True,padx=5); ttk.Button(bar,text=self.t('Refresh'),command=self.refresh).pack(side='right'); self.tree=ttk.Treeview(self.body,columns=('state','stage'),show='tree headings'); self.tree.heading('#0',text='Run ID'); self.tree.heading('state',text='Status'); self.tree.heading('stage',text='Stage'); self.tree.column('#0',width=210); self.tree.column('state',width=100); self.tree.column('stage',width=190); self.tree.pack(fill='both',expand=True,pady=12); self.tree.bind('<Double-1>',lambda e:self.open_selected()); ttk.Button(self.body,text=self.t('Review'),command=self.open_selected).pack(anchor='e'); self.refresh()
+        self.title('Overview',self.t('No automatic publication')+'  ·  '+self.t('Local only'))
+        cards=ttk.Frame(self.body);cards.pack(fill='x',pady=(0,14))
+        self.homecount=self.metric(cards,self.t('Total runs'));self.homepending=self.metric(cards,self.t('Review required'));self.homecomplete=self.metric(cards,self.t('Completed runs'))
+        heading=ttk.Frame(self.body);heading.pack(fill='x',pady=(0,6));ttk.Label(heading,text=self.t('Research runs'),style='Section.TLabel').pack(side='left')
+        ttk.Button(heading,text=self.t('Refresh'),command=self.refresh).pack(side='right')
+        ttk.Label(heading,text=self.t('Worker connected' if self.cfg['interpreter'] else 'Offline drafts'),style='Muted.TLabel').pack(side='right',padx=10)
+        table=ttk.Frame(self.body);table.pack(fill='both',expand=True)
+        self.tree=ttk.Treeview(table,columns=('state','stage'),show='tree headings');self.tree.heading('#0',text='Run ID');self.tree.heading('state',text=self.t('Status'));self.tree.heading('stage',text=self.t('Stage'));self.tree.column('#0',width=210);self.tree.column('state',width=110);self.tree.column('stage',width=190)
+        sb=ttk.Scrollbar(table,orient='vertical',command=self.tree.yview);sb.pack(side='right',fill='y');self.tree.configure(yscrollcommand=sb.set);self.tree.pack(fill='both',expand=True)
+        for state,color in [('COMPLETED','success'),('BLOCKED','warning'),('FAILED','danger'),('CANCELLED','muted')]:self.tree.tag_configure(state,foreground=self.p[color])
+        self.tree.bind('<Double-1>',lambda e:self.open_selected())
+        self.homehint=ttk.Label(self.body,text=self.t('No runs yet'),style='Muted.TLabel');self.homehint.pack(anchor='w',pady=(8,0))
+        ttk.Button(self.body,text=self.t('Review'),command=self.open_selected,style='Accent.TButton').pack(anchor='e',pady=(8,0));self.refresh()
 
     def refresh(self):
         if self.view=='Home': self.task(self.api.runs,self.fill_runs)
         elif self.view=='Review' and self.run: self.load_review(self.offset)
 
     def fill_runs(self,rows):
-        self.tree.delete(*self.tree.get_children()); self.homecount.configure(text=f'{len(rows)} RUNS  ·  '+(self.t('No runs yet') if not rows else 'LOCAL'))
-        for row in rows: self.tree.insert('', 'end',iid=row['id'],text=row['id'][:16]+'…',values=(row['control'],row['stage'] or 'DONE'))
+        selected=self.tree.selection();self.tree.delete(*self.tree.get_children())
+        self.homecount.configure(text=str(len(rows)));self.homepending.configure(text=str(sum(r['control']=='BLOCKED' and r['stage']=='exception_review' for r in rows)));self.homecomplete.configure(text=str(sum(r['control']=='COMPLETED' for r in rows)))
+        for row in rows:self.tree.insert('','end',iid=row['id'],text=row['id'][:16]+'…',values=(row['control'],row['stage'] or 'DONE'),tags=(row['control'],))
+        if selected and self.tree.exists(selected[0]):self.tree.selection_set(selected[0])
+        self.homehint.configure(text=self.t('Select a run to inspect') if rows else self.t('No runs yet'))
 
     def open_selected(self):
         sel=self.tree.selection()

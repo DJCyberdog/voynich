@@ -10,9 +10,9 @@ from tkinter import ttk, messagebox
 
 import vrs_desktop
 from vrs_desktop import App, DE
-from vrs_operations import Operations, VERSION
+from vrs_operations import Operations
+from vrs_build_portable import RELEASE_VERSION as VERSION
 
-vrs_desktop.VERSION=VERSION
 DE.update({'Jobs':'Jobs & Ressourcen','Evidence':'Evidenz','Start worker':'Worker starten','Stop worker':'Worker stoppen','Pause':'Pausieren','Resume':'Fortsetzen','Cancel':'Abbrechen','Resource ceilings':'Ressourcengrenzen','Save ceilings':'Grenzen speichern','CPU threads':'CPU-Threads','RAM estimate MiB':'RAM-Schätzung MiB','Disk estimate MiB':'Speicherschätzung MiB','Export local preview':'Lokale Vorschau speichern','Enable tray':'Tray aktivieren','Hide to tray':'In Tray minimieren','Open':'Öffnen','Exit desktop':'Oberfläche beenden','No automatic accuracy claim':'Keine automatische Genauigkeitsaussage','Actual checkpoint progress':'Tatsächlicher Checkpoint-Fortschritt','Local managed worker':'Lokal verwalteter Worker','Review required':'Review erforderlich','No GPU telemetry':'Keine GPU-Messung','Ceilings apply after worker restart; 0 = default':'Grenzen gelten nach Worker-Neustart; 0 = Standard','Refresh evidence':'Evidenz aktualisieren','Diagnostics':'Diagnose'})
 
 
@@ -35,7 +35,7 @@ class Monitor(App):
         # Reuse the original shell rather than duplicate UI design.
         nav=self.nav['Home'].master
         for name in ('Jobs','Evidence'):
-            b=ttk.Button(nav,text=self.t(name),command=lambda n=name:self.show(n)); b.pack(fill='x',pady=4,before=self.nav['Settings']); self.nav[name]=b
+            b=ttk.Button(nav,text=self.t(name),style='Nav.TButton',command=lambda n=name:self.request_view(n)); b.pack(fill='x',pady=2,before=self.nav['Settings']); self.nav[name]=b
         for name,button in self.nav.items():button.configure(command=lambda n=name:self.request_view(n))
         ttk.Button(nav,text=self.t('Enable tray'),command=self.enable_tray).pack(fill='x',pady=4)
         ttk.Button(nav,text=self.t('Hide to tray'),command=self.hide).pack(fill='x',pady=4)

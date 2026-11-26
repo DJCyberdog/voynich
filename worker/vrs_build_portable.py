@@ -10,7 +10,7 @@ from pathlib import Path
 from vrs_portable import local, need, load, plan, acquire, digest, extract
 
 
-RELEASE_VERSION='0.14.0-rc.1'
+RELEASE_VERSION='0.14.1-rc.1'
 
 
 def source_payload(root):
