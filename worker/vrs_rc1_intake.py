@@ -17,8 +17,15 @@ from vrs_rc_snapshot import existing_directory,destination,private_directory
 SCOPES=('REAL_RESEARCH','SYNTHETIC_TEST')
 SCHEMES=('Eva-','STA1')
 JSON_ROLES={'groups','references','model_bundle','recognition_policy','inventory','model','model_report','mapping','run_manifest','visual_catalog','historical_result'}
-ROLES=JSON_ROLES|{'manuscript','transcription','reference_pdf','reference_sample','historical_report'}
+ROLES=JSON_ROLES|{'manuscript','transcription','transcription_archive','reference_pdf','reference_sample','historical_report'}
 CORE={'manuscript','transcription','reference_pdf'}
+ARCHIVE_SCHEMES=('EvaT',)
+KNOWN_SOURCES=(
+ ('manuscript-beinecke-408','voynich.pdf','manuscript',None,'d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c',127121031,'Owner copy; matches repository LFS declaration','exact PDF object'),
+ ('zl3b-sta1','ZL3b.txt','transcription','STA1','8438ba1c45f47fe1d06b5262cbcdf60ce69158a0edbd4dd802612896f3217e2a',472861,'Zandbergen–Landini; owner copy','ZL3b, IVTFF STA1 2.0 M 5'),
+ ('eva-font-reference','eva2_reference.pdf','reference_pdf','Eva-','2f9a9c7e81dedfbd934e49eeac47de07e7e0855eda46f063a0624958d3e524fc',170416,'G. Landini; owner copy','EVA Alphabet Font Version 2 Reference'),
+ ('sta-definition-reference','STA1_def.pdf','reference_pdf','STA1','85a595aa61936fa103a0f2c11d980e9970e11f98d1f35038f9fc268cc433ada2',1159908,'R. Zandbergen; owner copy','STA definition 1.03, 2025-09-13; includes reduced-STA markers'),
+)
 MAX_BYTES=16*1024**3
 MAX_ENTRIES=5000
 ID=re.compile(r'[a-z0-9][a-z0-9._-]{0,95}')
@@ -47,11 +54,11 @@ def validate_plan(plan):
         total+=row['bytes'];need(total<=MAX_BYTES,'Intake byte quota')
         for key in ('origin','edition','rights_basis'):need(type(row[key]) is str and 0<len(row[key].strip())<=512,'Missing provenance or rights basis')
         need(row['rights'] in ('LOCAL_USE_ATTESTED','UNKNOWN','DENIED'),'Invalid local-use declaration')
-        need(scheme in SCHEMES if role in ('transcription','reference_pdf','inventory') else scheme is None or scheme in SCHEMES,'Invalid scheme binding')
+        need(scheme in ARCHIVE_SCHEMES if role=='transcription_archive' else scheme in SCHEMES if role in ('transcription','reference_pdf','inventory') else scheme is None or scheme in SCHEMES,'Invalid scheme binding')
         if role=='historical_report':need(path.lower().endswith(('.md','.txt')),'Historical report format')
         if role in JSON_ROLES:need(path.lower().endswith('.json'),'JSON role requires JSON path')
         if role in ('manuscript','reference_pdf'):need(path.lower().endswith('.pdf'),'PDF role requires PDF path')
-        if role=='transcription':need(path.lower().endswith(('.txt','.ivtff')),'Transcription path')
+        if role in ('transcription','transcription_archive'):need(path.lower().endswith(('.txt','.ivtff')),'Transcription path')
         paths[path.casefold()]=row;roles.setdefault(role,[]).append(row)
     need(len(roles.get('manuscript',[]))<=1,'Ambiguous manuscript')
     for role,key in [('run_manifest','run_manifest'),('visual_catalog','catalog')]:
@@ -87,13 +94,20 @@ def inspect(root,plan):
     """Read-only, compute dependencies imported only when needed for validation."""
     root=existing_directory(root);paths,roles=validate_plan(plan);blocked=[];details={}
     for row in plan['sources']:
-        if row['rights']!='LOCAL_USE_ATTESTED':blocked.append(dict(id=row['id'],reason='LOCAL_USE_NOT_ATTESTED'));continue
+        if row['rights']!='LOCAL_USE_ATTESTED':blocked.append(dict(id=row['id'],reason='LOCAL_USE_NOT_ATTESTED'))
         try:
             p=pin_row(root,row);role=row['role'];info={}
             if role in ('manuscript','reference_pdf'):
                 import fitz
                 with fitz.open(p,filetype='pdf') as d:need(d.is_pdf and not d.needs_pass and 0<len(d)<=10000,'Invalid PDF');info={'pages':len(d)}
+            elif role=='transcription_archive':
+                # Preserve unsupported source notation literally; never feed it into alignment.
+                need(row['bytes']<=64*1024**2,'Archive transcription quota')
+                with p.open(encoding='utf-8-sig') as f:header=f.readline(1024).strip()
+                need(re.fullmatch(r'#=IVTFF '+re.escape(row['scheme'])+r' 2\.0 M\s*[0-9]+',header),'Archive header mismatch')
+                info=dict(header=header,runtime_eligible=False)
             elif role=='transcription':
+                need(row['bytes']<=64*1024**2,'Transcription quota')
                 import alignment
                 scheme,_,info=alignment.load_source(p,row['sha256']);need(scheme==row['scheme'],'Transcription scheme mismatch')
             elif role in JSON_ROLES:
@@ -140,7 +154,7 @@ def inspect(root,plan):
         except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError) as exc:
             blocked.append(dict(id='dependencies',reason='DEPENDENCY_VALIDATION_FAILED',error_type=type(exc).__name__))
     return dict(schema=1,scope=plan['scope'],plan_sha256=c.digest(plan),status='BLOCKED' if blocked else 'INVENTORY_INCOMPLETE' if missing else 'INVENTORY_PASS',
-                sources=len(paths),bytes=sum(r['bytes'] for r in paths.values()),blocked=blocked,missing=missing,
+                sources=len(paths),verified_sources=len(details),bytes=sum(r['bytes'] for r in paths.values()),blocked=blocked,missing=missing,
                 run_contract_checked=plan['run_manifest'] is not None and not blocked,execution_authorized=False,scientific_status='UNADJUDICATED'),details
 
 def copy_input(root,target,row):
@@ -203,13 +217,28 @@ def verify(root,approved,scope):
             need(c.load(regular(root,path)[0])==dict(role=row['role'],path=row['path'],sha256=row['sha256'],details=details[row['id']]),'Source registry mismatch')
     return dict(status='VERIFIED',scope=scope,plan_sha256=approved,sources=report['sources'],missing=report['missing'],application_changed=digest(local(root,'portable_sources.json'))!=plan['application_sha256'],execution_authorized=False,scientific_status='UNADJUDICATED')
 
+def starter(source,intake):
+    source=existing_directory(source);intake=existing_directory(intake);source_payload(source)
+    rows=[]
+    def entry(rid,name,role,scheme,h,size,origin,edition):
+        return dict(id=rid,path='data/rc1/'+name,role=role,scheme=scheme,sha256=h,bytes=size,origin=origin,edition=edition,rights='UNKNOWN',rights_basis='Owner local-use attestation required; no redistribution claim')
+    for args in KNOWN_SOURCES:rows.append(entry(*args))
+    path=local(intake,'data/rc1/IT2a-n.txt')
+    if path.exists():
+        p,s=regular(intake,'data/rc1/IT2a-n.txt');need(0<s.st_size<=64*1024**2,'Archive transcription quota')
+        rows.append(entry('takahashi-it2a-original','IT2a-n.txt','transcription_archive','EvaT',digest(p),s.st_size,'Local copy; candidate origin https://voynich.nu/data/IT2a-n.txt','IT 2a; source edition to be verified'))
+    result=dict(schema=1,scope='REAL_RESEARCH',application_sha256=digest(local(source,'portable_sources.json')),sources=rows,run_manifest=None,catalog=None)
+    validate_plan(result);return result
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='action',required=True)
+    q=sub.add_parser('starter');q.add_argument('intake',type=Path);q.add_argument('--source',type=Path,default=Path(__file__).resolve().parent)
     q=sub.add_parser('inspect');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path)
     q=sub.add_parser('provision');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path);q.add_argument('destination',type=Path);q.add_argument('--source',type=Path,default=Path(__file__).resolve().parent);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     q=sub.add_parser('verify');q.add_argument('root',type=Path);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     a=p.parse_args()
     try:
+        if a.action=='starter':print(json.dumps(starter(a.source,a.intake),indent=2,sort_keys=True));return 0
         if a.action=='inspect':value=inspect(a.intake,c.load(a.plan))[0]
         elif a.action=='provision':value=provision(a.source,a.intake,a.destination,c.load(a.plan),a.approve,a.scope)
         else:value=verify(a.root,a.approve,a.scope)

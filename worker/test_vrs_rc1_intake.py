@@ -112,3 +112,24 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(ledger(out/'app'),before);i.verify(out/'app',approved,'SYNTHETIC_TEST')
         restored=Runtime(out/'app');self.assertEqual(restored.review_items(run),app.review_items(run))
         self.assertEqual(restored.ledger.outbox(),[])
+
+    def test_archive_not_runtime_and_unknown_rights_readonly(self):
+        p=self.path('IT2a-n.txt');p.write_text('#=IVTFF EvaT 2.0 M 3\n<f1r.1,@P0> a\n',encoding='utf-8');self.add('transcription_archive','EvaT',p.name)
+        self.rows[0]['rights']='UNKNOWN'
+        report,details=i.inspect(self.intake,self.plan)
+        self.assertEqual(report['status'],'BLOCKED');self.assertEqual(report['verified_sources'],6)
+        self.assertFalse(details['it2a-n.txt']['runtime_eligible'])
+        self.rows[0]['rights']='LOCAL_USE_ATTESTED'
+        self.rows.pop(3)
+        report,_=i.inspect(self.intake,self.plan)
+        self.assertIn('transcription:Eva-',report['missing'])
+        self.assertEqual(self.provision()['status'],'PROVISIONED_INCOMPLETE')
+        self.assertEqual(len(Desktop(self.out).sources()),4)
+        self.assertEqual((self.out/'data/rc1/IT2a-n.txt').read_bytes(),p.read_bytes())
+    def test_starter_never_authorizes_rights_or_fabricates_eva(self):
+        seed=i.starter(self.source,self.intake)
+        self.assertEqual(seed['scope'],'REAL_RESEARCH');self.assertEqual(len(seed['sources']),4)
+        self.assertTrue(all(row['rights']=='UNKNOWN' for row in seed['sources']))
+        self.assertEqual(seed['application_sha256'],sha(self.source/'portable_sources.json'))
+        report,_=i.inspect(self.intake,seed)
+        self.assertEqual(report['status'],'BLOCKED');self.assertIn('transcription:Eva-',report['missing'])
