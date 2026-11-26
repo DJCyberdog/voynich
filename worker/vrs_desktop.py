@@ -22,7 +22,7 @@ class App:
         self.run=None; self.data=None; self.items=[]; self.offset=0; self.index=0; self.image=None; self.box=None; self.photo=None; self.refphoto=None; self.factor=1.; self.glyph_only=False; self.catalog={}; self.view='Home'; self.maps={}
         self.window_icon=ImageTk.PhotoImage(brand_icon(64),master=self.w);self.w.iconphoto(True,self.window_icon)
         self.w.title('Voynich Research Studio · '+VERSION); self.w.geometry(self.cfg['geometry']); self.w.minsize(1024,650); self.w.protocol('WM_DELETE_WINDOW',self.close)
-        self.w.bind('<Control-r>',lambda e:self.refresh()); self.w.bind('<Control-Return>',lambda e:self.submit()); self.w.bind('<Alt-Left>',lambda e:self.move(-1)); self.w.bind('<Alt-Right>',lambda e:self.move(1)); self.w.bind('<Control-plus>',lambda e:self.zoom(1.25)); self.w.bind('<Control-minus>',lambda e:self.zoom(.8))
+        self.w.bind('<Control-r>',lambda e:self.refresh()); self.w.bind('<Control-Return>',lambda e:self.submit()); self.w.bind('<Alt-Left>',lambda e:self.move(-1)); self.w.bind('<Alt-Right>',lambda e:self.move(1)); self.w.bind('<Control-plus>',lambda e:self.zoom(1.25)); self.w.bind('<Control-minus>',lambda e:self.zoom(.8));self.w.bind('<F1>',lambda e:self.keyboard_help());self.w.bind('<FocusIn>',self.reveal_review_focus,add='+')
         self.build(); self.show('Home'); self.refresh()
 
     def t(self,text): return DE.get(text,text) if self.cfg['language']=='de' else text
@@ -44,7 +44,7 @@ class App:
         s.configure('Treeview',background=p['panel'],fieldbackground=p['panel'],foreground=p['fg'],rowheight=rowheight,borderwidth=0);s.map('Treeview',background=[('selected',p['line'])],foreground=[('selected',p['fg'])]);s.configure('Treeview.Heading',background=p['card'],foreground=p['fg'],font=(family,10,'bold'),padding=(6,7))
         s.configure('TCombobox',padding=4);s.map('TCombobox',fieldbackground=[('readonly',p['card'])],foreground=[('readonly',p['fg'])]);s.configure('Horizontal.TProgressbar',background=p['accent'],troughcolor=p['line'],bordercolor=p['line'])
         self.w.option_add('*TCombobox*Listbox.background',p['card']);self.w.option_add('*TCombobox*Listbox.foreground',p['fg'])
-        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); ttk.Label(top,text='VRS',font=(family,24,'bold'),foreground=p['accent']).pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=(family,12,'bold')).pack(side='left'); ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
+        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); ttk.Label(top,text='VRS',font=(family,24,'bold'),foreground=p['accent']).pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=(family,12,'bold')).pack(side='left'); ttk.Button(top,text='F1',command=self.keyboard_help,width=4).pack(side='right',padx=(12,0));ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
         ttk.Separator(self.w).pack(fill='x'); self.status=tk.StringVar(value=self.t('Ready')); ttk.Label(self.w,textvariable=self.status,style='Card.TLabel',anchor='w').pack(fill='x',side='bottom'); area=ttk.Frame(self.w); area.pack(fill='both',expand=True); nav=ttk.Frame(area,style='Panel.TFrame',padding=12); nav.pack(side='left',fill='y'); ttk.Label(nav,text=self.t('Project').upper(),style='Panel.TLabel').pack(anchor='w',pady=(4,8)); ttk.Label(nav,text=self.api.root.name[:22],style='Panel.TLabel',wraplength=145).pack(anchor='w',pady=(0,14)); ttk.Button(nav,text=self.t('Open workspace'),command=self.switch).pack(fill='x',pady=(0,20)); self.nav={}
         for name in ('Home','Review','Sources','Settings'):
             b=ttk.Button(nav,text=self.t(name),style='Nav.TButton',command=lambda n=name:self.show(n)); b.pack(fill='x',pady=2); self.nav[name]=b
@@ -68,6 +68,24 @@ class App:
         for n,b in self.nav.items(): b.configure(style='NavActive.TButton' if n==name else 'Nav.TButton')
         for child in self.body.winfo_children(): child.destroy()
         getattr(self,'page_'+name.lower())()
+
+    def reveal_review_focus(self,event):
+        canvas=getattr(self,'review_side',None)
+        if self.view!='Review' or canvas is None or not canvas.winfo_exists():return
+        widget=event.widget
+        if not str(widget).startswith(str(canvas)+'.'):return
+        bounds=canvas.bbox('all')
+        if not bounds:return
+        height=max(1,bounds[3]-bounds[1]);top=widget.winfo_rooty()-canvas.winfo_rooty()+canvas.canvasy(0);bottom=top+widget.winfo_height();visible=canvas.canvasy(0)
+        if top<visible:canvas.yview_moveto(max(0,top/height))
+        elif bottom>visible+canvas.winfo_height():canvas.yview_moveto(max(0,(bottom-canvas.winfo_height())/height))
+
+    def keyboard_help(self):
+        if self.cfg['language']=='de':
+            text='Tab / Umschalt+Tab  ·  Fokus wechseln\nStrg+R  ·  Aktualisieren\nAlt+Links / Rechts  ·  Kandidat wechseln\nStrg+Plus / Minus  ·  Zoom\nEnter in Referenzliste  ·  Zeichen übernehmen\nStrg+Enter  ·  Entscheidung übernehmen'
+        else:text='Tab / Shift+Tab  ·  Move focus\nCtrl+R  ·  Refresh\nAlt+Left / Right  ·  Change candidate\nCtrl+Plus / Minus  ·  Zoom\nEnter in reference list  ·  Assign label\nCtrl+Enter  ·  Submit decision'
+        if hasattr(self,'request_view'):text+='\nCtrl+1–7  ·  '+('Arbeitsbereiche' if self.cfg['language']=='de' else 'Workspaces')
+        messagebox.showinfo(self.t('Keyboard help'),text,parent=self.w)
 
     def title(self,name,subtitle):
         ttk.Label(self.body,text=self.t(name),style='Title.TLabel').pack(anchor='w'); ttk.Label(self.body,text=subtitle,style='Muted.TLabel',wraplength=760).pack(anchor='w',pady=(4,15))
@@ -257,7 +275,7 @@ class App:
     def submit(self): self.save(True)
 
     def page_sources(self):
-        self.title('Source management',self.t('Local only')+' · SHA-256'); form=ttk.Frame(self.body); form.pack(fill='x'); self.role=tk.StringVar(value='manuscript'); ttk.Label(form,text=self.t('Source role')).pack(side='left'); ttk.Combobox(form,textvariable=self.role,values=('manuscript','reference_pdf','transcription','json'),state='readonly',width=17).pack(side='left',padx=8); ttk.Button(form,text=self.t('Import source'),command=self.import_source,style='Accent.TButton').pack(side='left'); ttk.Button(form,text=self.t('Sources'),command=lambda:self.task(self.api.sources,self.result)).pack(side='left',padx=5); ttk.Separator(self.body).pack(fill='x',pady=14); f=ttk.Frame(self.body); f.pack(fill='x'); self.manifest=tk.StringVar(); ttk.Entry(f,textvariable=self.manifest).pack(side='left',fill='x',expand=True); ttk.Button(f,text=self.t('Choose file'),command=lambda:self.choose_relative(self.manifest)).pack(side='left',padx=5); ttk.Button(f,text=self.t('Verify manifest'),command=lambda:self.check_manifest(False)).pack(side='left'); ttk.Button(f,text=self.t('Register run'),command=lambda:self.check_manifest(True)).pack(side='left',padx=5); self.output=tk.Text(self.body,bg=self.p['panel'],fg=self.p['fg'],height=12,wrap='word',relief='flat',padx=12,pady=12); self.output.pack(fill='both',expand=True,pady=12); self.output.configure(state='disabled'); self.source_value=None; tools=ttk.Frame(self.body); tools.pack(fill='x'); ttk.Button(tools,text=self.t('Create manifest'),command=self.manifest_dialog).pack(side='left'); ttk.Button(tools,text=self.t('Build reference catalog'),command=self.catalog_dialog).pack(side='left',padx=6); ttk.Button(tools,text=self.t('Offline drafts'),command=self.draft_dialog).pack(side='left');ttk.Button(tools,text=self.t('Raw JSON'),command=lambda:self.raw_dialog(self.source_value)).pack(side='right')
+        self.title('Source management',self.t('Local only')+' · SHA-256'); form=ttk.Frame(self.body); form.pack(fill='x'); self.role=tk.StringVar(value='manuscript'); ttk.Label(form,text=self.t('Source role')).pack(side='left'); ttk.Combobox(form,textvariable=self.role,values=('manuscript','reference_pdf','transcription','json'),state='readonly',width=17).pack(side='left',padx=8); ttk.Button(form,text=self.t('Import source'),command=self.import_source,style='Accent.TButton').pack(side='left'); ttk.Button(form,text=self.t('Sources'),command=lambda:self.task(self.api.sources,self.result)).pack(side='left',padx=5); ttk.Separator(self.body).pack(fill='x',pady=14); f=ttk.Frame(self.body); f.pack(fill='x'); self.manifest=tk.StringVar(); ttk.Entry(f,textvariable=self.manifest).pack(side='left',fill='x',expand=True); ttk.Button(f,text=self.t('Choose file'),command=lambda:self.choose_relative(self.manifest)).pack(side='left',padx=5); actions=ttk.Frame(self.body);actions.pack(fill='x',pady=(5,0));ttk.Button(actions,text=self.t('Verify manifest'),command=lambda:self.check_manifest(False)).pack(side='left'); ttk.Button(actions,text=self.t('Register run'),command=lambda:self.check_manifest(True)).pack(side='left',padx=5); self.output=tk.Text(self.body,bg=self.p['panel'],fg=self.p['fg'],height=12,wrap='word',relief='flat',padx=12,pady=12); self.output.pack(fill='both',expand=True,pady=12); self.output.configure(state='disabled'); self.source_value=None; tools=ttk.Frame(self.body); tools.pack(fill='x'); ttk.Button(tools,text=self.t('Create manifest'),command=self.manifest_dialog).pack(side='left'); ttk.Button(tools,text=self.t('Build reference catalog'),command=self.catalog_dialog).pack(side='left',padx=6); ttk.Button(tools,text=self.t('Offline drafts'),command=self.draft_dialog).pack(side='left');ttk.Button(tools,text=self.t('Raw JSON'),command=lambda:self.raw_dialog(self.source_value)).pack(side='right')
     def result(self,value):
         self.source_value=value;self.output.configure(state='normal');self.output.delete('1.0','end');self.output.insert('end',human(value));self.output.configure(state='disabled')
     def raw_dialog(self,value):

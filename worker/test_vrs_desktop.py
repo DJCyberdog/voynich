@@ -91,7 +91,8 @@ class DesktopTests(unittest.TestCase):
     def test_actual_gui(self):
         import tkinter as tk
         from vrs_desktop import App
-        run=self.f.run_to_review(); cfg=self.api.settings(); cfg.update(reviewer='fixture',interpreter=sys.executable); self.api.save_settings(cfg)
+        run=self.f.run_to_review();image=self.root/'visual-fixture.png';Image.new('RGB',(40,30),'white').save(image);catalog=self.f.file('visual-fixture.json',dict(schema=1,preview=True,schemes=[dict(id='Eva-',name='EVA',version='fixture',source='synthetic',coverage='subset',entries=[dict(label='a',samples=[dict(file=image.name,sha256=sha(image),source='synthetic fixture')])])]))
+        cfg=self.api.settings(); cfg.update(reviewer='fixture',interpreter=sys.executable,catalog=catalog['path']); self.api.save_settings(cfg)
         w=tk.Tk(); app=App(w,self.root)
         def settle():
             until=time.monotonic()+15
@@ -104,7 +105,7 @@ class DesktopTests(unittest.TestCase):
             from vrs_build_portable import RELEASE_VERSION
             self.assertIn(RELEASE_VERSION,w.title());self.assertEqual(float(app.reviewprogress.cget('value')),0)
             app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
-            self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only)
+            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only)
             app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
             app.show('Settings'); app.fields['theme'].set('light'); app.fields['language'].set('en'); app.apply(); settle(); self.assertEqual(app.cfg['theme'],'light'); self.assertEqual(app.cfg['language'],'en')
             w.geometry('1024x650'); w.update(); app.show('Review'); settle(); self.assertGreater(app.canvas.winfo_width(),150);self.assertTrue(app.kindbox.winfo_ismapped());self.assertTrue(app.review_side.winfo_ismapped())

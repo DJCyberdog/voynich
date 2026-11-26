@@ -59,6 +59,8 @@ def run(out):
                     app.request_view('Sources');settle();app.task(app.api.sources,app.result);capture('sources')
                     app.request_view('Logs');capture('logs')
                     app.request_view('Settings');capture('settings')
+                    w.geometry('1024x650+10+10');app.run=pending;app.request_view('Review');settle();capture('review-compact')
+                    assert app.kindbox.winfo_ismapped() and app.canvas.winfo_width()>150
                 finally:
                     settle();app.close()
             # Actual portable UI classes and generated data; only installed-profile
