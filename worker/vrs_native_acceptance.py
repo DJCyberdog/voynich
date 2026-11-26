@@ -139,6 +139,11 @@ with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercis
 assert not any(x['event']=='CRASH' for x in records(Path.cwd()))
 """)
         step('actual_desktop_log_view',desktop)
+        if profile!='review':
+            def runtime_benchmark():
+                result=subprocess.run([str(exe(root,profile)),'-s',str(local(root,'vrs_benchmark.py')),'--runtime-candidate','--device',profile,'--repeats','2','--boxes','256'],cwd=root,env=environment(root),capture_output=True,text=True,check=True,timeout=240)
+                value=json.loads(result.stdout);need(value['parity'] is True,'Classifier parity failed');return value
+            result['runtime_classifier_benchmark']=step('runtime_classifier_benchmark',runtime_benchmark)
         step('native_dpapi',lambda:run("from pathlib import Path; from vrs_portable_secrets import store,read,path; r=Path.cwd(); s='VRS_GITHUB_TOKEN_FIXTURE'; v='synthetic-test-value'; store(r,s,v); assert v.encode() not in path(r,s).read_bytes(); assert read(r,s)==v; path(r,s).unlink()"))
         def test(names):
             env=environment(root);env.pop('VRS_NATIVE_CUDA_TEST',None)
