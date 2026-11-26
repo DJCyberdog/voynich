@@ -64,7 +64,11 @@ def outcomes(root, run, manifest, receipts):
     for data, stage in ((regions,'script_regions'),(seg,'glyph_segmentation'),(result,'glyph_classification')):
         require(type(data['schema']) is int and data['schema'] == 1 and data['run_id'] == run and data['stage'] == stage and data['scientific_status'] == 'UNADJUDICATED', 'Outcome stage binding mismatch')
     require(regions['kind'] == 'INK_PROPOSALS_ONLY' and seg['kind'] == 'UNREVIEWED_BOX_PROPOSALS_ONLY', 'Unsupported proposal contract')
-    c.fields(result, ('schema','run_id','stage','scientific_status','kind','source','model_sha256','policy_sha256','references_sha256','pages'))
+    provenance=('cuda_binding',) if 'cuda_binding' in result else ()
+    c.fields(result, ('schema','run_id','stage','scientific_status','kind','source','model_sha256','policy_sha256','references_sha256','pages')+provenance)
+    if provenance:
+        require(manifest['backend']=='cuda' and result['kind']=='OCCURRENCE_OUTCOMES_V2','Unexpected CUDA provenance')
+        c.digest_ok(result['cuda_binding'])
     require(result['kind'] in ('OCCURRENCE_OUTCOMES_V1','OCCURRENCE_OUTCOMES_V2') and seg['source'] == r['artifact'] and result['source'] == s['artifact'], 'Outcome source binding mismatch')
     for key, role in (('model_sha256','model'),('policy_sha256','recognition_policy'),('references_sha256','references')):
         require(result[key] == manifest['inputs'][role]['sha256'], 'Outcome model/policy/reference binding mismatch')

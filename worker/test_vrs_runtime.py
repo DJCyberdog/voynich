@@ -195,6 +195,16 @@ class RuntimeTests(unittest.TestCase):
         b=copy.deepcopy(a);b[0]['Eva-']['distance']+=.0000001
         with self.assertRaisesRegex(ValueError,'routing parity'):rec.compare_candidate(a,b,inv)
 
+    def test_cuda_binding_rejects_missing_and_distinguishes_devices(self):
+        import vrs_hardware as h
+        gpu=dict(ok=True,index=0,device_uuid='GPU-12345678-1234-1234-1234-123456789abc',
+                 name='fixture',capability=[12,0],total=16*h.GIB,free=4*h.GIB,torch='fixture',cuda_build='12.8')
+        a=h.cuda_binding({'gpu':gpu})
+        self.assertEqual(a,h.cuda_binding({'gpu':dict(gpu,free=1)}))
+        self.assertNotEqual(a,h.cuda_binding({'gpu':dict(gpu,device_uuid='12345678-1234-1234-1234-123456789abd')}))
+        self.assertNotEqual(a,h.cuda_binding({'gpu':dict(gpu,torch='different')}))
+        with self.assertRaises(h.ResourceBlocked):h.cuda_binding({'gpu':dict(gpu,device_uuid='')})
+
     def test_native_cuda_candidate(self):
         if os.environ.get('VRS_NATIVE_CUDA_TEST')!='1':
             self.skipTest('Explicit native CUDA qualification required')
@@ -208,6 +218,8 @@ class RuntimeTests(unittest.TestCase):
         with self.app.ledger._tx() as conn:
             row=self.app.ledger._row(conn,'runs',run)
             self.assertEqual(row['backend'],'cuda')
+        index=c.load(c.artifact(self.root,st['receipts']['glyph_classification']['artifact']))
+        c.digest_ok(index['cuda_binding'])
         q=self.app.review_items(run,limit=1000)
         for item in q['items']:self.app.submit(self.decision(run,item,'false_positive'))
         self.assertEqual(self.app.sweep()[0]['stage'],'exception_review')

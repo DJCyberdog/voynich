@@ -14,7 +14,7 @@ from vrs_exceptions import load_page, outcomes, candidate_id, box_key
 from vrs_service import Service
 from vrs_decisions import Decisions
 
-VERSION='0.13.1-cuda-candidate.1'
+VERSION='0.13.1-cuda-candidate.2'
 
 
 class Runtime(Service):
@@ -51,7 +51,7 @@ class Runtime(Service):
         si=load_page(c.artifact(self.root,receipts['glyph_segmentation']['artifact']))
         return ri,si
 
-    def _page_outcome(self,run,rr,ss,inv,models,approval,attempt,backend='cpu'):
+    def _page_outcome(self,run,rr,ss,inv,models,approval,attempt,backend='cpu',cuda_binding=None):
         from PIL import Image
         mp=c.artifact(self.root,rr['manifest']); m=load_page(mp); proposals=load_page(c.artifact(self.root,ss['proposals']))
         rows=[]; total=ss['candidates']; largest=max(len(x[0]) for x in inv.values())
@@ -67,6 +67,7 @@ class Runtime(Service):
                         core.require(approval is None,'CUDA policy must abstain without separate calibration')
                         # Estimates are incremental, not hard driver/OS quotas.
                         info=h.snapshot(self.home,'cuda',0)
+                        core.require(h.cuda_binding(info)==cuda_binding,'CUDA device/build changed during classification')
                         ram_base=256*h.MIB+len(rows)*4096
                         ram_item=max(4096,largest*1024*16)
                         vram_base=64*h.MIB+largest*1024*4
@@ -116,8 +117,11 @@ class Runtime(Service):
 
     def _classify(self,run,token,status,manifest,receipts,inv,models,approval):
         stage='glyph_classification'; backend=self._backend(manifest); ri,si=self._classification_pages(receipts); pages=[]; counts=dict(total=0,accepted=0,abstained=0,failed=0)
+        binding=h.cuda_binding(h.snapshot(self.home,'cuda',0)) if backend=='cuda' else None
+        provenance={'cuda_binding':binding} if binding is not None else {}
         if status['checkpoint']:
-            cp=c.load(c.artifact(self.root,status['checkpoint']['artifact'])); c.fields(cp,('schema','worker','run_id','stage','pages'))
+            cp=c.load(c.artifact(self.root,status['checkpoint']['artifact'])); c.fields(cp,('schema','worker','run_id','stage','pages')+tuple(provenance))
+            core.require(cp.get('cuda_binding')==binding,'CUDA checkpoint device/build changed')
             core.require(cp['schema']==1 and cp['worker']==self.identity and cp['run_id']==run and cp['stage']==stage,'Classification checkpoint mismatch'); pages=cp['pages']
             core.require(len(pages)<=len(ri['pages']),'Checkpoint exceeds scope')
         attempt=self._attempt(run,stage,status['generation'])
@@ -128,17 +132,19 @@ class Runtime(Service):
             for idx,(rr,ss) in enumerate(zip(ri['pages'],si['pages'])):
                 self._boundary(run)
                 if idx>=len(pages):
-                    pages.append(self._page_outcome(run,rr,ss,inv,models,approval,attempt,backend))
+                    pages.append(self._page_outcome(run,rr,ss,inv,models,approval,attempt,backend,binding))
                     self._verify_page(run,rr,ss,pages[idx],inv,approval,models)
                     path=attempt/f'checkpoint-{rr["page"]:04d}.json'
-                    write_new(path,dict(schema=1,worker=self.identity,run_id=run,stage=stage,pages=pages))
+                    write_new(path,dict(schema=1,worker=self.identity,run_id=run,stage=stage,pages=pages,**provenance))
                     self.ledger.checkpoint(run,token,stage,ref(self.root,path))
                 for k,n in self._verify_page(run,rr,ss,pages[idx],inv,approval,models).items(): counts[k]+=n
         finally: torch.set_num_threads(previous)
-        # Recheck nested dependency bytes and current policy approval before publication.
+        # Recheck device binding and nested dependency bytes before publication.
+        if binding is not None:
+            core.require(h.cuda_binding(h.snapshot(self.home,'cuda',0))==binding,'CUDA device/build changed before receipt')
         rec.inputs(self.root,manifest)
         path=attempt/'index.json'; i=manifest['inputs']
-        write_new(path,dict(schema=1,run_id=run,stage=stage,scientific_status='UNADJUDICATED',kind='OCCURRENCE_OUTCOMES_V2',source=receipts['glyph_segmentation']['artifact'],model_sha256=i['model']['sha256'],policy_sha256=i['recognition_policy']['sha256'],references_sha256=i['references']['sha256'],pages=pages))
+        write_new(path,dict(schema=1,run_id=run,stage=stage,scientific_status='UNADJUDICATED',kind='OCCURRENCE_OUTCOMES_V2',source=receipts['glyph_segmentation']['artifact'],model_sha256=i['model']['sha256'],policy_sha256=i['recognition_policy']['sha256'],references_sha256=i['references']['sha256'],pages=pages,**provenance))
         item=self._item(run,stage,'COMPLETED','NONE',ref(self.root,path)); item['counts']=counts
         self._verify_classification(run,manifest,{**receipts,stage:item},inv,approval,models)
         return item

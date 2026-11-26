@@ -42,11 +42,33 @@ def cuda_probe(torch, index=0):
             del x, y
             free, total = torch.cuda.mem_get_info(index)
         p = torch.cuda.get_device_properties(index)
-        return dict(ok=True, index=index, name=p.name, capability=list(torch.cuda.get_device_capability(index)),
+        return dict(ok=True, index=index, name=p.name, device_uuid=str(getattr(p,'uuid','')), capability=list(torch.cuda.get_device_capability(index)),
                     free=int(free), total=int(total), torch=str(torch.__version__), cuda_build=torch.version.cuda,
                     build_arches=list(torch.cuda.get_arch_list()), reason=None)
     except Exception as exc:
         return dict(ok=False, index=index, reason=type(exc).__name__ + ': ' + str(exc))
+
+
+def cuda_binding(info):
+    """Stable local device/build fingerprint; never use free memory as identity."""
+    import hashlib
+    import uuid
+    gpu=info.get('gpu') or {}
+    try:
+        if gpu.get('ok') is not True or gpu.get('index')!=0:
+            raise ValueError('GPU unavailable')
+        device=uuid.UUID(str(gpu['device_uuid']).removeprefix('GPU-'))
+        if device.int==0: raise ValueError('Nil UUID')
+        cap=gpu['capability']
+        if type(cap) is not list or len(cap)!=2 or any(type(x) is not int or x<0 for x in cap):
+            raise ValueError('Invalid capability')
+        binding=dict(uuid=str(device),index=0,name=gpu['name'],capability=cap,
+                     total=positive(gpu['total'],'VRAM'),torch=gpu['torch'],cuda_build=gpu['cuda_build'])
+        if any(type(binding[k]) is not str or not binding[k] for k in ('name','torch','cuda_build')):
+            raise ValueError('Missing build identity')
+        return hashlib.sha256(json.dumps(binding,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    except (KeyError,TypeError,ValueError) as error:
+        raise ResourceBlocked('Stable CUDA identity unavailable; no CPU fallback') from error
 
 
 def snapshot(workspace, request='auto', index=0):
