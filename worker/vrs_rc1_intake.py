@@ -191,6 +191,7 @@ def provision(source,intake,out,plan,approved,scope):
 
 def verify(root,approved,scope):
     root=existing_directory(root);c.digest_ok(approved)
+    source_payload(root)
     plan=c.load(regular(root,PLAN)[0]);receipt=c.load(regular(root,RECEIPT)[0])
     need(plan['scope']==scope and c.digest(plan)==approved,'Admission identity mismatch')
     report,details=inspect(root,plan);need(not report['blocked'],'Admitted source or dependency changed')

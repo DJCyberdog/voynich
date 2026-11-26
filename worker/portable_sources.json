@@ -169,8 +169,8 @@
     "test_vrs_ui_format.py": "86ce72dc4085a8b044123f23f4349ab80b39afa7",
     "vrs_ui_gallery.py": "c933c719b0d1290bbc46ed3b6a4e7c2c9422931b",
     "VRS-142.md": "2f056e5327cfff75dcbd460ef419fc4029c7c752",
-    "VRS-RC1.md": "001875f6a59d74a0b1e96bcf0dd224fc2166a544",
-    "vrs_rc1_intake.py": "477892b7f48e1316c314745b129c6884dd17bbb2",
-    "test_vrs_rc1_intake.py": "bf1e54f4d02d5946d714e4f0b3419f2735953ee1"
+    "VRS-RC1.md": "8c1fad9a3d1c459623221989eb757911da94d448",
+    "vrs_rc1_intake.py": "483f539c748dc320fd5aad711083541d6867e065",
+    "test_vrs_rc1_intake.py": "5d9d77d62e3413194130fa1bbbd78725d21e387d"
   }
 }

@@ -65,3 +65,15 @@ jobs:
           path: ${{ runner.temp }}/vrs-ui-gallery/*.png
           if-no-files-found: warn
           retention-days: 14
+      - name: Build exact source-only RC1 candidate (no data or runtime assets)
+        if: github.ref == 'refs/heads/development/vrs-0.14.1-rc1'
+        run: |
+          python -B vrs_build_portable.py
+          sha256sum dist/VRS-0.14.1-rc.1-source.zip
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/development/vrs-0.14.1-rc1'
+        with:
+          name: vrs-rc1-source-candidate-unfrozen
+          path: worker/dist/VRS-0.14.1-rc.1-source.zip
+          if-no-files-found: error
+          retention-days: 14

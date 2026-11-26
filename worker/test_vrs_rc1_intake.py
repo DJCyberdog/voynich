@@ -60,3 +60,55 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(i.verify(restored/'app',c.digest(self.plan),'SYNTHETIC_TEST')['status'],'VERIFIED')
         (self.out/self.rows[0]['path']).write_bytes(b'changed')
         with self.assertRaises(ValueError):i.verify(self.out,c.digest(self.plan),'SYNTHETIC_TEST')
+
+    def test_full_runtime_review_and_snapshot_replay(self):
+        import json,shutil
+        from PIL import Image
+        from test_vrs_runtime import RuntimeTests
+        from vrs_runtime import Runtime
+        from vrs_rc_snapshot import snapshot,restore
+        from vrs_rc_preflight import inspect as ledger
+        f=RuntimeTests();f.setUp();self.addCleanup(f.doCleanups)
+        # Replace the simple source-only fixture with a dependency-complete intake.
+        shutil.rmtree(self.intake/'data/rc1');self.rows.clear()
+        def raw(role,scheme,name,src):
+            p=self.path(name);shutil.copyfile(src,p);self.add(role,scheme,name)
+            return dict(path=self.rows[-1]['path'],sha256=self.rows[-1]['sha256'])
+        def obj(role,scheme,name,value):
+            atomic_json(self.path(name),value);self.add(role,scheme,name)
+            return dict(path=self.rows[-1]['path'],sha256=self.rows[-1]['sha256'])
+        original=raw('manuscript',None,'original.pdf',f.root/'source.pdf')
+        groups=raw('groups',None,'groups.json',f.root/'groups.json')
+        trans=[raw('transcription',scheme,name,f.root/name) for scheme,name in [('Eva-','eva.txt'),('STA1','sta.txt')]]
+        inventories=[];models=[];catalog=[]
+        for name,label in [('Eva-','a'),('STA1','A1')]:
+            inv=raw('inventory',name,name+'-alphabet.json',f.root/(name+'-alphabet.json'));inventories.append(dict(alphabet=inv))
+            model=raw('model',name,name+'-model.json',f.root/(name+'-model.json'))
+            report=raw('model_report',name,name+'-report.json',f.root/(name+'-report.json'))
+            models.append(dict(convention=name,model=model,report=report))
+            p=self.path(name+'-ref.pdf')
+            with fitz.open() as d:page=d.new_page();page.insert_text((50,50),name);d.save(p)
+            self.add('reference_pdf',name,p.name)
+            p=self.path(name+'-sample.png');Image.new('RGB',(20,30),'white' if name=='Eva-' else 'black').save(p);self.add('reference_sample',name,p.name)
+            catalog.append(dict(id=name,name=name,version='fixture',source='synthetic',coverage='subset',entries=[dict(label=label,samples=[dict(file=p.name,sha256=sha(p),source='fixture')])]))
+        refs=obj('references',None,'references.json',dict(schema=1,inventories=inventories))
+        bundle=obj('model_bundle',None,'models.json',dict(schema=1,models=models))
+        mapping=raw('mapping',None,'map.json',f.root/'map.json')
+        policy=obj('recognition_policy',None,'policy.json',dict(schema=1,approval=None,mapping=mapping))
+        run_manifest=dict(f.m,inputs=dict(manuscript=original,groups=groups,references=refs,model=bundle,recognition_policy=policy),transcriptions=trans)
+        obj('run_manifest',None,'run.json',run_manifest);self.plan['run_manifest']='run.json'
+        obj('visual_catalog',None,'catalog.json',dict(schema=1,preview=True,schemes=catalog));self.plan['catalog']='catalog.json'
+        self.assertEqual(i.inspect(self.intake,self.plan)[0]['status'],'INVENTORY_PASS')
+        self.assertEqual(self.provision()['status'],'PROVISIONED')
+        self.assertEqual(set(Desktop(self.out).catalog(Desktop(self.out).settings()['catalog'])),set(i.SCHEMES))
+        app=Runtime(self.out);run=app.register(run_manifest)
+        for stage in c.STAGES[:4]:self.assertEqual(app.sweep()[0]['stage'],stage)
+        self.assertEqual(app.ledger.status(run)['receipts']['glyph_classification']['counts']['accepted'],0)
+        item=app.review_items(run)['items'][0];f.app=app;app.submit(f.decision(run,item,'deferred'))
+        item=app.review_items(run)['items'][0];app.submit(f.decision(run,item,'glyph'))
+        before=ledger(self.out);self.assertEqual(before['counts']['decision_revisions'],2)
+        approved=c.digest(self.plan);i.verify(self.out,approved,'SYNTHETIC_TEST')
+        b=self.home/'reviewed-backup';out=self.home/'reviewed-restore';h=snapshot(self.out,b)['manifest_sha256'];restore(b,out,h)
+        self.assertEqual(ledger(out/'app'),before);i.verify(out/'app',approved,'SYNTHETIC_TEST')
+        restored=Runtime(out/'app');self.assertEqual(restored.review_items(run),app.review_items(run))
+        self.assertEqual(restored.ledger.outbox(),[])
