@@ -1,0 +1,124 @@
+"""Hash-bound component and license inventory for an approved local install plan.
+
+Inventory only: declared metadata is not an independent license or provenance
+determination. Never use this report alone to authorize redistribution.
+"""
+import argparse
+import hashlib
+import re
+import zipfile
+from email.parser import BytesParser
+from pathlib import Path
+from vrs_portable import acquire, digest, local, need, plan, save, PROFILES
+from vrs_prepare_plan import wheel_identity
+
+NOTICE_LIMIT=4*1024**2
+TOTAL_NOTICE_LIMIT=64*1024**2
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+def bounded(z,i,limit=NOTICE_LIMIT):
+    need(0<=i.file_size<=limit,'Notice or metadata size quota')
+    with z.open(i) as f:
+        data=f.read(limit+1)
+    need(len(data)==i.file_size,'Archive member size mismatch')
+    return data
+
+def member_inventory(z):
+    items=z.infolist()
+    need(len(items)<=100000,'Archive member quota')
+    seen=set()
+    for i in items:
+        n=i.filename
+        need(i.orig_filename==n and n and not any(ord(c)<32 for c in n)
+             and '\\' not in n and ':' not in n and not n.startswith('/')
+             and all(x not in ('','.','..') for x in n.rstrip('/').split('/')),
+             'Unsafe archive member')
+        key=n.rstrip('/').casefold()
+        need(key not in seen,'Archive member collision')
+        seen.add(key)
+    return items
+
+def notices(z,items):
+    rows=[]; total=0
+    for i in items:
+        if i.is_dir():continue
+        parts=i.filename.lower().split('/')
+        leaf=parts[-1]
+        if not (any(x in ('licenses','licences') for x in parts[:-1])
+                or re.fullmatch(r'(?:licen[cs]e|copying|notice|copyright|third[-_ ]party(?:[-_ ]notices?)?)(?:[-_. ].*)?',leaf)):
+            continue
+        total+=i.file_size
+        need(total<=TOTAL_NOTICE_LIMIT and len(rows)<2048,'Notice inventory quota')
+        data=bounded(z,i)
+        rows.append(dict(member=i.filename,bytes=len(data),sha256=sha(data)))
+    return sorted(rows,key=lambda r:r['member'])
+
+def clean(text):
+    return ' '.join(str(text).split())[:512]
+
+def wheel(path,item,expected):
+    name,version=wheel_identity(path)
+    need((name,version)==expected,'Wheel identity differs from locked requirement')
+    with zipfile.ZipFile(path) as z:
+        items=member_inventory(z)
+        metas=[i for i in items if re.fullmatch(r'[^/]+\.dist-info/METADATA',i.filename)]
+        need(len(metas)==1,'Metadata cardinality')
+        data=bounded(z,metas[0]); m=BytesParser().parsebytes(data)
+        expression=[clean(x) for x in m.get_all('License-Expression',[])]
+        legacy=[sha(str(x).encode('utf-8')) for x in m.get_all('License',[])]
+        classifiers=[clean(x) for x in m.get_all('Classifier',[]) if str(x).startswith('License ::')]
+        declared_files=[clean(x) for x in m.get_all('License-File',[])]
+        need(len(expression)<=1 and len(legacy)<=1 and len(classifiers)<=128 and len(declared_files)<=2048,'License metadata quota')
+        files=notices(z,items)
+    need(digest(path)==item['sha256'],'Asset changed during inventory')
+    return dict(name=name,version=version,file=item['file'],sha256=item['sha256'],
+                bytes=item['size'],metadata_sha256=sha(data),
+                declared_license_expression=expression,legacy_license_field_sha256=legacy,
+                license_classifiers=classifiers,declared_license_files=declared_files,
+                notice_files=files,requires_dist=[clean(x) for x in m.get_all('Requires-Dist',[])][:256],
+                license_review='PENDING_MANUAL_REVIEW',
+                missing_declared_license=not bool(expression or legacy or classifiers),
+                missing_notice_files=not bool(files))
+
+def inventory(root,profile,rel,approved):
+    root=Path(root).resolve(strict=True)
+    v=plan(root,profile,rel,approved)
+    # The existing lock is the single authority for identities and asset hashes.
+    expected={}
+    for line in v['requirements']:
+        pkg,h=line.split(' --hash=sha256:')
+        name,version=pkg.split('==')
+        expected[h]=(re.sub(r'[-_.]+','-',name).lower(),version)
+    runtime=acquire(root,v['runtime'])
+    with zipfile.ZipFile(runtime) as z:
+        items=member_inventory(z)
+        runtime_notices=notices(z,items)
+        embedded=[i.filename for i in items if i.filename.endswith('.whl')]
+    need(digest(runtime)==v['runtime']['sha256'],'Runtime changed during inventory')
+    rows=[]
+    for item in v['wheels']:
+        rows.append(wheel(acquire(root,item),item,expected[item['sha256']]))
+    return dict(schema=1,kind='VRS_COMPONENT_LICENSE_INVENTORY',profile=profile,
+                plan_sha256=approved,source_manifest_sha256=digest(local(root,'portable_sources.json')),
+                status='REVIEW_REQUIRED',redistribution_approved=False,
+                runtime=dict(file=v['runtime']['file'],sha256=v['runtime']['sha256'],
+                             bytes=v['runtime']['size'],notice_files=runtime_notices,
+                             embedded_wheels=embedded,bundled_component_review='PENDING'),
+                wheels=sorted(rows,key=lambda r:r['name']),
+                limitations=['Declared metadata only; no independent license determination.',
+                             'Runtime embedded wheels, native libraries and vendored components require separate review.',
+                             'Source and research asset redistribution rights require separate owner review.',
+                             'No source or wheel publisher attestation inferred from locally generated hashes.'])
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('profile',choices=PROFILES);p.add_argument('--plan',required=True)
+    p.add_argument('--approve',required=True);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parent)
+    a=p.parse_args();root=a.root.resolve(strict=True)
+    r=inventory(root,a.profile,a.plan,a.approve)
+    out=local(root,'workspace/distribution/license-inventory-'+a.profile+'-'+a.approve+'.json')
+    save(out,r);print(out)
+
+if __name__=='__main__':main()
