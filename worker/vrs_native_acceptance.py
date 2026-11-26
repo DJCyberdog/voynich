@@ -61,10 +61,13 @@ def batch(root,name,*args,timeout=1800):
     subprocess.run(command,cwd=root.parent,env=environment(root),check=True,timeout=timeout)
 
 
-def qualify(source,profile,report):
+def qualify(source,profile,report,owner_interactive=False):
     need(os.name=='nt' and sys.version_info[:2]==(3,13),'Native Windows CPython 3.13 required')
+    import ctypes
+    elevated=bool(ctypes.windll.shell32.IsUserAnAdmin())
+    if owner_interactive:need(not elevated,'Owner qualification requires a standard non-elevated Windows process')
     source=source.resolve(strict=True); report=report.resolve(); report.parent.mkdir(parents=True,exist_ok=True)
-    result={'schema':1,'profile':profile,'scope':'DISPOSABLE_NATIVE_CANDIDATE','production_approved':False,'checks':{},'elapsed_seconds':{}}
+    result={'schema':1,'profile':profile,'scope':'DISPOSABLE_NATIVE_CANDIDATE','production_approved':False,'checks':{},'elapsed_seconds':{},'windows_process_elevated':elevated,'owner_interactive_requested':owner_interactive}
     def step(name,fn):
         t=time.monotonic(); result['checks'][name]='RUNNING'; save(report,result); print('VRS native check: '+name,flush=True)
         try:value=fn()
@@ -139,6 +142,67 @@ with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercis
 assert not any(x['event']=='CRASH' for x in records(Path.cwd()))
 """)
         step('actual_desktop_log_view',desktop)
+        def ui_profile():
+            report_path=local(root,'workspace/ui-qualification.json')
+            code="""import tkinter as tk,time,json,statistics,os
+from pathlib import Path
+from unittest.mock import patch
+from vrs_monitor import Monitor
+from vrs_portable_ui import launch
+from vrs_portable import save
+from vrs_operations import Operations
+captured=[];original=Monitor.__init__
+def init(self,*args,**kwargs):
+    original(self,*args,**kwargs);captured.append(self)
+def exercise(w):
+    app=captured[0]
+    def settle():
+        deadline=time.monotonic()+20
+        while app.future is not None and time.monotonic()<deadline:
+            w.update();time.sleep(.01)
+        assert app.future is None,'UI request timeout'
+    def until(fn):
+        deadline=time.monotonic()+15
+        while not fn() and time.monotonic()<deadline:
+            w.update();time.sleep(.01)
+        assert fn(),'UI state timeout'
+    settle();w.geometry('1024x650');w.update()
+    geometry=[w.winfo_width(),w.winfo_height()]
+    assert geometry==[1024,650]
+    pages=[]
+    for page in ('Sources','Settings','Review','Jobs','Evidence','Logs','Home'):
+        start=time.perf_counter();app.request_view(page);settle();w.update()
+        assert app.view==page
+        pages.append(dict(page=page,seconds=time.perf_counter()-start,body_width=w.body.winfo_width() if hasattr(w,'body') else app.body.winfo_width()))
+    # Keep the UI event loop active during real asynchronous background work.
+    gaps=[];previous=time.perf_counter()
+    def pulse():
+        nonlocal previous
+        now=time.perf_counter();gaps.append((now-previous)*1000);previous=now
+        if len(gaps)<25:w.after(20,pulse)
+    app.quiet_task(lambda:time.sleep(.65),lambda _:None);w.after(20,pulse);until(lambda:len(gaps)==25);settle()
+    timing=dict(samples=len(gaps),p95_ms=sorted(gaps)[23],max_ms=max(gaps))
+    assert timing['max_ms']<500,'Event loop stall exceeds synthetic budget'
+    result=dict(scope='SYNTHETIC_UI_MEASUREMENT',geometry=geometry,screen=[w.winfo_screenwidth(),w.winfo_screenheight()],tk_scaling=float(w.tk.call('tk','scaling')),pages=pages,event_loop=timing,keyboard_bindings=all(bool(w.bind('<Control-'+str(i)+'>')) for i in range(1,8)),tray='NOT_RUN')
+    assert result['keyboard_bindings']
+    if os.environ.get('VRS_OWNER_TRAY_TEST')=='1':
+        app.enable_tray();until(lambda:app.tray_ready);assert app.tray.visible
+        app.hide();w.update();assert w.state()=='withdrawn'
+        app.events.put('show');until(lambda:w.state()!='withdrawn')
+        app.notice_done((1,'synthetic-qualification'))
+        app.events.put('review');until(lambda:app.view=='Review');settle()
+        result['tray']='API_LIFECYCLE_PASS_VISUAL_CONFIRMATION_REQUIRED'
+        app.events.put('exit');until(lambda:app.closing)
+    else:app.close()
+    save(Path.cwd()/'workspace/ui-qualification.json',result)
+with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercise):
+    launch(Path.cwd(),'start')
+"""
+            env=environment(root)
+            if owner_interactive:env['VRS_OWNER_TRAY_TEST']='1'
+            subprocess.run([str(exe(root,profile)),'-s','-c',code],cwd=root,env=env,check=True,timeout=180)
+            return json.loads(report_path.read_text(encoding='utf-8'))
+        result['ui_measurements']=step('ui_responsiveness_and_keyboard',ui_profile)
         if profile!='review':
             def runtime_benchmark():
                 result=subprocess.run([str(exe(root,profile)),'-s',str(local(root,'vrs_benchmark.py')),'--runtime-candidate','--device',profile,'--repeats','2','--boxes','256'],cwd=root,env=environment(root),capture_output=True,text=True,check=True,timeout=240)
@@ -165,4 +229,4 @@ assert not any(x['event']=='CRASH' for x in records(Path.cwd()))
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--profile',choices=('review','cpu','cuda'),required=True);p.add_argument('--report',type=Path,required=True);p.add_argument('--disposable-test',action='store_true',required=True);a=p.parse_args();qualify(Path(__file__).resolve().parent,a.profile,a.report)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--profile',choices=('review','cpu','cuda'),required=True);p.add_argument('--report',type=Path,required=True);p.add_argument('--disposable-test',action='store_true',required=True);p.add_argument('--owner-interactive',action='store_true');a=p.parse_args();qualify(Path(__file__).resolve().parent,a.profile,a.report,a.owner_interactive)
