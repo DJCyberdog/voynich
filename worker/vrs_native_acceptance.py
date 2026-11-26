@@ -222,7 +222,7 @@ with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercis
             env=environment(root);env.pop('VRS_NATIVE_CUDA_TEST',None)
             if profile=='cuda':env['VRS_NATIVE_CUDA_TEST']='1'
             subprocess.run([str(exe(root,profile)),'-s','-m','unittest','-v',*names],cwd=root,env=env,check=True,timeout=1200)
-        step('portable_regression',lambda:test(['test_vrs_portable','test_vrs_prepare_plan','test_vrs_worker_log','test_vrs_native_acceptance','test_vrs_source_update','test_vrs_license_inventory']))
+        step('portable_regression',lambda:test(['test_vrs_portable','test_vrs_prepare_plan','test_vrs_worker_log','test_vrs_native_acceptance','test_vrs_source_update','test_vrs_license_inventory','test_vrs_ui_format']))
         if profile=='cuda':step('native_cuda_candidate',lambda:test(['test_vrs_runtime.RuntimeTests.test_native_cuda_candidate','test_vrs_runtime.RuntimeTests.test_native_cuda_checkpoint_resume','test_vrs_learning.LearningTests.test_native_cuda_training_and_cpu_replay']))
         if profile=='cpu':step('cpu_integration',lambda:test(['test_vrs_runtime','test_vrs_desktop','test_vrs_operations','test_vrs_learning','test_vrs_repository','test_vrs_coordinator','test_vrs_service','test_vrs_exceptions','test_vrs_modules','test_vrs_rc_preflight','test_vrs_rc_snapshot']))
         if profile=='cpu' and compat_source is not None:

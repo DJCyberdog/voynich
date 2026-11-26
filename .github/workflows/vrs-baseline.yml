@@ -55,3 +55,13 @@ jobs:
       - name: Immutable 0.13.x source upgrade, rollback and replay
         if: startsWith(github.ref, 'refs/heads/development/vrs-0.14.')
         run: python -B vrs_rc_cross_version.py --old-source ../immutable-rc-base/worker
+      - name: Capture actual synthetic GUI gallery (dark and light)
+        if: startsWith(github.ref, 'refs/heads/development/vrs-0.14.1')
+        run: xvfb-run -a -s "-screen 0 1600x1000x24" python -B vrs_ui_gallery.py --output "${{ runner.temp }}/vrs-ui-gallery"
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/heads/development/vrs-0.14.1') && always()
+        with:
+          name: vrs-ui-gallery-synthetic
+          path: ${{ runner.temp }}/vrs-ui-gallery/*.png
+          if-no-files-found: warn
+          retention-days: 14

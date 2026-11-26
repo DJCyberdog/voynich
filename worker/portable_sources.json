@@ -130,7 +130,7 @@
     "vrs_coordinator.py": "7cabc7bc317975c8cc6d92c46de30e74fd624043",
     "vrs_core.py": "f2ca427212c8ffd9455a2f2ebf649062b1ecd1e7",
     "vrs_decisions.py": "a9f7d560a8197bae7ad7858e5b72249230571995",
-    "vrs_desktop.py": "8e13de05cd8c3bd7ff2c1bdafd9439058805fbb8",
+    "vrs_desktop.py": "1d4f25c4f0963f27e7996a93181d6e848dcf6970",
     "vrs_desktop_api.py": "9cf6c63a77877ccc34180be7c7e66c7857d09645",
     "vrs_diagnostics.py": "8f94ce3054ab4969a5bfd62cf4d207fa0b976604",
     "vrs_dxgi.py": "eabb1da67bbb64a24b238e967a279cc431008395",
@@ -142,7 +142,7 @@
     "vrs_license_inventory.py": "466415ec0fd96f33903263f53ad176260b690008",
     "vrs_modules.py": "cb39b66a71a2bf2d41e28fe7cdc20a1eadb343e6",
     "vrs_monitor.py": "a14f9a6e4fcea122b20db99e3971593c55c089fb",
-    "vrs_native_acceptance.py": "67de68c73666d6f23eef5b48a69c7ea5a405a138",
+    "vrs_native_acceptance.py": "7d028e9e28c05044cc17051e4f59c271a82e1de3",
     "vrs_operations.py": "83093f9281e2a832b51ef4c6fa01717af654c26d",
     "vrs_portable.py": "cd2723257784c8bd5b458c5eb40864ca4f7f9429",
     "vrs_portable_logs.py": "ae718781bdcbf859062af494d6a1c1b272973167",
@@ -166,6 +166,8 @@
     "test_vrs_rc_snapshot.py": "8a80f2e2f1409ca94a447cdc60e42c23d3ff8f2f",
     "vrs_rc_cross_version.py": "d1792fc7fe2403d5981112d26196ad9beaff460b",
     "vrs_ui_format.py": "fa404fb17d56351e8dad8473e33d58a1d7e6703f",
-    "test_vrs_ui_format.py": "82d1f35c2a0126502a4678ec5a8f7d8c29f41d21"
+    "test_vrs_ui_format.py": "82d1f35c2a0126502a4678ec5a8f7d8c29f41d21",
+    "vrs_ui_gallery.py": "d0e08d51eecba998ef3ceadb4a0d67467b98bbce",
+    "VRS-142.md": "f2881681eeddd17196906d92d24e90dc15c662fc"
   }
 }
