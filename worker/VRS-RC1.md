@@ -1,6 +1,6 @@
 # VRS RC1 — production workspace entry contract
 
-Status: PLANNED; owner-authorized requirement after 0.14.1 closure, not a production import or release. First frozen candidate target: 0.14.1-rc.1. No automatic network, publication, training, scientific promotion, or arbitrary schema conversion.
+Status: IN_PROGRESS — RC1-01/02 implementation entry; owner-authorized requirement after 0.14.1 closure, not a production import or release. First frozen candidate target: 0.14.1-rc.1. No automatic network, publication, training, scientific promotion, or arbitrary schema conversion.
 
 ## S-tier implementation and entry gates
 
@@ -20,3 +20,12 @@ The public tree at 6aef917 contains EXP-0038 through 0038g reports, protocols an
 - 0.13.x to 0.14.1 synthetic immutable source migration/rollback: hosted TECH_PASS, not proof of real-data transfer.
 - Actual independent manuscript recognition/geometry/generalization: NOT_MET (EXP-0038g). Technical 1.0 cannot certify decipherment, accuracy or semantics.
 - No production data in source archive or CI artifacts; local backup remains private. Keep production source and data distinct from release distribution.
+
+## Actual source discovery at RC1 entry (2026-11-26)
+
+- Repository `voynich.pdf` is a Git LFS pointer, not the actual PDF in the Git tree: declared SHA-256 `d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c`, 127121031 bytes. Original object availability and rights still require local verification.
+- Owner-uploaded `STA1_def.pdf`: bytes verified locally in the isolated working environment, 1159908 bytes, SHA-256 `85a595aa61936fa103a0f2c11d980e9970e11f98d1f35038f9fc268cc433ada2`. René Zandbergen STA definition v1.03 (2025-09-13); STA-1 subset markers are not the entire STA alphabet.
+- Owner-uploaded `eva2_reference.pdf`: 170416 bytes, SHA-256 `2f9a9c7e81dedfbd934e49eeac47de07e7e0855eda46f063a0624958d3e524fc`. G. Landini EVA Alphabet Font v2 reference, copyright 1997–2004. No rights or scientific validation inferred. PDFs stay private, not in source distribution.
+- No original IVTFF transcription bytes in the inspected Git tree. Exact source editions, original model/physical mapping and reviewed crop plan are not established by these PDF references. No owner-key admitted.
+
+`vrs_rc1_intake.py inspect INTAKE PLAN.json` reports missing roles and blocked files without mutation. `provision INTAKE PLAN.json NEW_APP --approve PLAN_SHA256 --scope REAL_RESEARCH` uses exact local byte inventory and source manifest, no overwrite, no execution. `verify APP --approve PLAN_SHA256 --scope REAL_RESEARCH` validates admitted data and registry independently of later source upgrades. Synthetic test scope is separate and cannot claim real provenance. Input metadata is owner-attested, not independent legal verification. Unknown/denied rights and invalid files block provision; missing roles allow explicitly incomplete local staging but not release readiness. All initial recognition policies abstain; only preview visual catalogs accepted at intake; actual review uses existing APIs. No network, auto-publication or model training. Local source-only app requires normal portable Setup or Repair before use. No live data imported yet.

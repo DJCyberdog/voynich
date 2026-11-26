@@ -16,7 +16,7 @@
     "REGIONS.md": "e5eeaf765ff10d86591c881f899f9570020d3ed4",
     "REVIEW_CLIENT.md": "6ecd3987bef563240edd07f452e8ecfad0292314",
     "Repair.bat": "a29051366513b110cd650598d0893e7750041eda",
-    "Roadmap.md": "e593d38c133c413e436ff85562a3bd2da5d0312b",
+    "Roadmap.md": "6665727cc4dd7d01be88cacdbc1c894e278edb7e",
     "Setup.bat": "8fa00d7afcb31811169f75dd6d5d8e1b2341f111",
     "Start.bat": "cf875983f7f2c777197c7a7c4952eafee2ec695f",
     "Stop.bat": "b7a415e26ecbb0c98468c240bdeb779a57142a25",
@@ -169,6 +169,8 @@
     "test_vrs_ui_format.py": "86ce72dc4085a8b044123f23f4349ab80b39afa7",
     "vrs_ui_gallery.py": "c933c719b0d1290bbc46ed3b6a4e7c2c9422931b",
     "VRS-142.md": "82521ce87a4b6144d994be0826c131dab612154b",
-    "VRS-RC1.md": "decd00c15b550ea842c7d7fc468bf85ad9a55a97"
+    "VRS-RC1.md": "001875f6a59d74a0b1e96bcf0dd224fc2166a544",
+    "vrs_rc1_intake.py": "477892b7f48e1316c314745b129c6884dd17bbb2",
+    "test_vrs_rc1_intake.py": "bf1e54f4d02d5946d714e4f0b3419f2735953ee1"
   }
 }
