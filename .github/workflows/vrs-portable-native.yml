@@ -1,7 +1,7 @@
 name: VRS portable Windows candidate
 on:
   push:
-    branches: [development/vrs-0.13.0, development/vrs-0.13.1]
+    branches: [development/vrs-0.13.0, development/vrs-0.13.1, development/vrs-0.14.0]
     paths:
       - 'worker/**'
       - '.github/workflows/vrs-portable-native.yml'
