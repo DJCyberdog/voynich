@@ -61,6 +61,9 @@ def run(out):
                     app.request_view('Settings');capture('settings')
                     w.geometry('1024x650+10+10');app.run=pending;app.request_view('Review');settle();capture('review-compact')
                     assert app.kindbox.winfo_ismapped() and app.canvas.winfo_width()>150
+                    for widget in [app.draft_button,app.submit_button,*app.zoom_controls]:
+                        assert widget.winfo_ismapped() and widget.winfo_width()>=widget.winfo_reqwidth() and widget.winfo_height()>=widget.winfo_reqheight(),str(widget)
+                    app.request_view('Home');settle();assert app.home_review.winfo_height()>=app.home_review.winfo_reqheight()
                 finally:
                     settle();app.close()
             # Actual portable UI classes and generated data; only installed-profile
