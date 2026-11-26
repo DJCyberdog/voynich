@@ -36,6 +36,8 @@ def build_candidate(root,profile,rel,approved):
     need(rel=='config/install-'+profile+'.json','Canonical candidate plan required')
     v=plan(root,profile,rel,approved); sources=source_payload(root)
     assets=[(item,acquire(root,item)) for item in [v['runtime'],*v['wheels']]]
+    from vrs_license_inventory import inventory,cyclonedx
+    component_report=inventory(root,profile,rel,approved)
     home=local(root,'dist');home.mkdir(exist_ok=True)
     out=local(root,'dist/VRS-0.13.0-'+profile+'-candidate.zip')
     need(not out.exists(),'Existing candidate; remove explicitly')
@@ -57,6 +59,8 @@ def build_candidate(root,profile,rel,approved):
             z.writestr(info(rel,zipfile.ZIP_DEFLATED),raw)
             z.writestr(info('CANDIDATE.json',zipfile.ZIP_DEFLATED),json.dumps(
                 dict(schema=1,profile=profile,plan_sha256=approved,redistribution_approved=False),sort_keys=True))
+            z.writestr(info('COMPONENTS.json',zipfile.ZIP_DEFLATED),json.dumps(component_report,sort_keys=True,ensure_ascii=True))
+            z.writestr(info('SBOM.cdx.json',zipfile.ZIP_DEFLATED),json.dumps(cyclonedx(component_report),sort_keys=True,ensure_ascii=True))
             for item,path in assets:
                 h=hashlib.sha256()
                 name='cache/downloads/'+item['sha256']+'/'+item['file']

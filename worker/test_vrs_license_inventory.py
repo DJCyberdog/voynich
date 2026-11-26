@@ -33,6 +33,10 @@ class LicenseInventory(unittest.TestCase):
             self.assertTrue(r['wheels'][1]['missing_declared_license'])
             self.assertTrue(r['wheels'][1]['missing_notice_files'])
             self.assertEqual(len(r['runtime']['embedded_wheels']),1)
+            self.assertTrue(any(x['member']=='python.exe' for x in r['runtime']['native_components']))
+            from vrs_license_inventory import cyclonedx
+            bom=cyclonedx(r);self.assertEqual(bom['bomFormat'],'CycloneDX')
+            self.assertTrue(any(x['name']=='Lib/ensurepip/_bundled/pip.whl' for x in bom['components'][0]['components']))
             self.assertEqual(r,inventory(root,'review',p['plan'],p['sha256']))
     def test_tampered_asset_and_approval(self):
         with tempfile.TemporaryDirectory() as d:
@@ -73,6 +77,8 @@ class LicenseInventory(unittest.TestCase):
                 self.assertNotIn(prefix+'private.txt',z.namelist())
                 self.assertEqual(z.read(prefix+'bootstrap/python.exe'),b'fixture')
                 self.assertFalse(json.loads(z.read(prefix+'CANDIDATE.json'))['redistribution_approved'])
+                self.assertEqual(json.loads(z.read(prefix+'SBOM.cdx.json'))['bomFormat'],'CycloneDX')
+                self.assertFalse(json.loads(z.read(prefix+'COMPONENTS.json'))['redistribution_approved'])
                 lock=json.loads(z.read(prefix+p['plan']))
                 for asset in [lock['runtime'],*lock['wheels']]:
                     name=prefix+'cache/downloads/'+asset['sha256']+'/'+asset['file']
