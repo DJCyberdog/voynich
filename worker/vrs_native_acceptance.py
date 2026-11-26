@@ -81,6 +81,12 @@ def qualify(source,profile,report):
     with tempfile.TemporaryDirectory(prefix='vrs-native-') as d:
         home=Path(d); root=home/'VRS space \u00fc'; root.mkdir(); root=root.resolve(); assets=home/'assets';assets.mkdir(); wheels=assets/'wheels';wheels.mkdir(); rt=assets/'python-runtime.zip'
         step('source_manifest',lambda:source_copy(source,root))
+        def source_syntax():
+            manifest=json.loads(local(root,'portable_sources.json').read_text(encoding='utf-8'))
+            for name in manifest['files']:
+                if name.endswith(('.py','.pyw')):
+                    compile(local(root,name).read_bytes(),name,'exec')
+        step('source_syntax',source_syntax)
         from vrs_build_portable import build
         def source_zip():
             z=build(root); h=digest(z);z.unlink();z=build(root);need(digest(z)==h,'Nondeterministic source ZIP');z.unlink();return h
