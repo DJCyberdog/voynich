@@ -27,7 +27,7 @@ class Notifications:
 
 class Monitor(App):
     def __init__(self,window,root):
-        self.tray=None; self.tray_ready=False; self.events=queue.Queue(); self.notices=Notifications(); self.last_tick=0; self.last_detail=0
+        self.tray=None; self.tray_ready=False; self.events=queue.Queue(); self.notices=Notifications(); self.last_tick=0; self.last_detail=0; self.close_pending=False; self.pending_view=None
         super().__init__(window,root); self.api=Operations(root); self.w.title('Voynich Research Studio · '+VERSION); self.w.after(250,self.tick)
 
     def build(self):
@@ -38,7 +38,20 @@ class Monitor(App):
             b=ttk.Button(nav,text=self.t(name),command=lambda n=name:self.show(n)); b.pack(fill='x',pady=4,before=self.nav['Settings']); self.nav[name]=b
         ttk.Button(nav,text=self.t('Enable tray'),command=self.enable_tray).pack(fill='x',pady=4)
         ttk.Button(nav,text=self.t('Hide to tray'),command=self.hide).pack(fill='x',pady=4)
-        self.w.bind('<Control-j>',lambda e:self.show('Jobs')); self.w.bind('<Control-e>',lambda e:self.show('Evidence'))
+        self.w.bind('<Control-j>',lambda e:self.request_view('Jobs')); self.w.bind('<Control-e>',lambda e:self.request_view('Evidence'))
+        for index,name in enumerate(('Home','Review','Sources','Jobs','Evidence','Settings'),1):
+            self.w.bind('<Control-'+str(index)+'>',lambda e,n=name:self.request_view(n))
+
+    def request_view(self,name):
+        if self.close_pending or self.closing:return 'break'
+        if self.future is not None:self.pending_view=name
+        else:
+            self.show(name)
+            if name in self.nav:self.nav[name].focus_set()
+        return 'break'
+
+    def page_home(self):
+        super().page_home();self.tree.bind('<Return>',lambda e:self.open_selected())
 
     def switch(self):
         super().switch(); self.api=Operations(self.api.root); self.notices=Notifications()
@@ -90,11 +103,14 @@ class Monitor(App):
 
     def jobs_loaded(self,result):
         rows,data,detail=result; selected=self.selected_job(); tree=self.jobs_tree
+        present={r['id'] for r in rows}
         for iid in tree.get_children():
-            if not any(r['id']==iid for r in rows): tree.delete(iid)
+            if iid not in present: tree.delete(iid)
         for row in rows:
             iid=row['id']; values=(row['control']+(' *' if row['locked'] else ''),row['stage'] or 'DONE',f"{row['completed']}/{row['total']}",row['reason']); kw=dict(text=iid[:12]+'…',values=values)
-            if tree.exists(iid): tree.item(iid,**kw)
+            if tree.exists(iid):
+                # Avoid Tcl updates for unchanged rows, preserving selection and scroll.
+                if tree.item(iid,'text')!=kw['text'] or tuple(tree.item(iid,'values'))!=values:tree.item(iid,**kw)
             else: tree.insert('','end',iid=iid,**kw)
         if selected and tree.exists(selected) and tree.selection()!=(selected,): tree.selection_set(selected)
         ram=(data['ram_total']-data['ram_available'])/1024**3; total=data['ram_total']/1024**3; disk=data['disk_free']/1024**3
@@ -163,7 +179,9 @@ class Monitor(App):
             im=Image.new('RGB',(64,64),'#192330'); d=ImageDraw.Draw(im); d.polygon([(12,12),(30,52),(52,12),(42,12),(30,39),(22,12)],fill='#59d6c2')
             menu=pystray.Menu(pystray.MenuItem(self.t('Open'),lambda *_:self.events.put('show'),default=True),pystray.MenuItem(self.t('Review'),lambda *_:self.events.put('review')),pystray.MenuItem(self.t('Exit desktop'),lambda *_:self.events.put('exit')))
             icon=pystray.Icon('VRS',im,'Voynich Research Studio',menu)
-            def setup(icon): icon.visible=True; self.events.put('ready')
+            def setup(icon):
+                try:icon.visible=True;self.events.put('ready')
+                except Exception:self.events.put('tray_failed')
             self.tray=icon; icon.run_detached(setup=setup)
         except Exception:
             self.tray=None; messagebox.showerror('VRS','Optional Windows tray unavailable',parent=self.w)
@@ -184,11 +202,22 @@ class Monitor(App):
             try: action=self.events.get_nowait()
             except queue.Empty:break
             if action=='ready':self.tray_ready=True
-            elif action in ('show','review'):
+            elif action=='tray_failed':
+                self.tray_ready=False;self.w.deiconify();self.status.set('Notification area unavailable')
+                if self.tray is not None:
+                    try:self.tray.stop()
+                    except Exception:pass
+                    self.tray=None
+            elif action in ('show','review') and not self.close_pending:
                 self.w.deiconify(); self.w.lift()
-                if action=='review':self.show('Review')
+                if action=='review':self.request_view('Review')
             elif action=='exit':self.close()
-        if self.closing:return
+            if self.closing:return
+        if self.close_pending:
+            if self.future is None:self.close();return
+            self.w.after(250,self.tick);return
+        if self.pending_view is not None and self.future is None:
+            name=self.pending_view;self.pending_view=None;self.request_view(name)
         now=time.monotonic()
         if self.future is None and now-self.last_tick>=3:
             self.last_tick=now
@@ -197,8 +226,14 @@ class Monitor(App):
         self.w.after(250,self.tick)
 
     def close(self):
-        if self.future is not None: self.status.set(self.t('Busy'));return
-        if self.tray is not None: self.tray.stop(); self.tray=None; self.tray_ready=False
+        if self.closing:return
+        if self.future is not None:
+            self.close_pending=True;self.pending_view=None;self.w.deiconify();self.status.set(self.t('Busy'));return
+        self.close_pending=True;self.pending_view=None
+        if self.tray is not None:
+            try:self.tray.stop()
+            except Exception:self.status.set('Tray stop unavailable')
+            finally:self.tray=None;self.tray_ready=False
         super().close()
 
 

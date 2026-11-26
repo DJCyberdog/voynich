@@ -34,3 +34,28 @@ class NativeHarness(unittest.TestCase):
             original=Path.is_symlink
             with patch.object(Path,'is_symlink',lambda p:p==base/'python.exe' or original(p)):
                 with self.assertRaisesRegex(ValueError,'Runtime link refused: python.exe'):assemble_runtime(base,root/'bad.zip')
+
+    def test_monitor_deferred_actions(self):
+        from unittest.mock import Mock,patch
+        from vrs_monitor import Monitor,App
+        import queue
+        app=Monitor.__new__(Monitor);app.w=Mock();app.status=Mock();app.nav={};app.events=queue.Queue();app.closing=False;app.close_pending=False;app.pending_view=None;app.future=object();app.tray=Mock();app.tray_ready=True
+        app.t=lambda text:text;app.show=Mock()
+        app.events.put('review');app.tick()
+        self.assertEqual(app.pending_view,'Review');app.show.assert_not_called()
+        app.events.put('exit');app.tick();self.assertTrue(app.close_pending);self.assertIsNone(app.pending_view)
+        app.tray.stop.assert_not_called();app.future=None
+        with patch.object(App,'close') as close:
+            app.tick();close.assert_called_once_with()
+        self.assertIsNone(app.tray);self.assertFalse(app.tray_ready)
+
+    def test_monitor_unchanged_job_rows(self):
+        from unittest.mock import Mock
+        from vrs_monitor import Monitor
+        app=Monitor.__new__(Monitor);app.jobs_tree=Mock();app.telemetry=Mock();app.tray_ready=False;app.t=lambda text:text
+        app.selected_job=lambda:None;tree=app.jobs_tree;tree.get_children.return_value=('a'*64,'stale');tree.exists.return_value=True
+        row=dict(id='a'*64,control='READY',locked=False,stage='glyph_classification',completed=2,total=5,reason='NONE')
+        tree.item.side_effect=lambda iid,field=None,**kwargs: ('a'*12+'…' if field=='text' else ('READY','glyph_classification','2/5','NONE'))
+        app.jobs_loaded(([row],dict(ram_total=16*1024**3,ram_available=8*1024**3,disk_free=32*1024**3,worker=dict(state='STOPPED'),cpu_percent=0,allowed=4),None))
+        tree.delete.assert_called_once_with('stale');tree.insert.assert_not_called()
+        self.assertTrue(all(not call.kwargs for call in tree.item.call_args_list))
