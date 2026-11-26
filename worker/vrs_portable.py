@@ -142,6 +142,7 @@ def extract(archive, target):
     with zipfile.ZipFile(archive) as z:
         seen=set(); total=0; need(len(z.infolist())<=100000,'Archive member quota')
         for i in z.infolist():
+            need(i.orig_filename==i.filename,'Normalized archive member refused')
             name=i.filename.rstrip('/'); key=name.casefold(); local(target,name)
             mode=(i.external_attr>>16)&0xffff
             need(key not in seen and stat.S_IFMT(mode) in (0,stat.S_IFREG,stat.S_IFDIR) and not i.flag_bits&1 and not i.external_attr&1024, 'Unsafe archive member'); seen.add(key)
@@ -187,7 +188,7 @@ def invoke(root,args,slots=(),**kw):
 
 
 @contextmanager
-def exclusive(root):
+def exclusive(root,allow_source_recovery=False):
     p=local(root,'workspace/portable.lock'); p.parent.mkdir(parents=True,exist_ok=True)
     with p.open('a+b') as f:
         if f.tell()==0:f.write(b'0');f.flush()
@@ -196,13 +197,15 @@ def exclusive(root):
             import msvcrt
             try:msvcrt.locking(f.fileno(),msvcrt.LK_NBLCK,1)
             except OSError:raise ValueError('Portable launcher busy') from None
-            try:yield
+            try:
+                need(allow_source_recovery or not local(root,"workspace/source-update/journal.json").exists(),"Interrupted source update; recover first");yield
             finally:f.seek(0);msvcrt.locking(f.fileno(),msvcrt.LK_UNLCK,1)
         else:
             import fcntl
             try:fcntl.flock(f.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
             except OSError:raise ValueError('Portable launcher busy') from None
-            try:yield
+            try:
+                need(allow_source_recovery or not local(root,"workspace/source-update/journal.json").exists(),"Interrupted source update; recover first");yield
             finally:fcntl.flock(f.fileno(),fcntl.LOCK_UN)
 
 
@@ -251,12 +254,21 @@ def worker_stopped(root):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__); p.add_argument('action',choices=('probe','setup','repair','update','start','stop','diagnostics','logs','repository','collaboration','learning','modules','secret-set','secret-delete')); p.add_argument('--root',type=Path,default=Path(__file__).resolve().parent); p.add_argument('--profile',choices=('auto',*PROFILES),default='auto'); p.add_argument('--plan'); p.add_argument('--approve'); p.add_argument('--online',action='store_true'); p.add_argument('--slot',action='append',default=[]); a,extra=p.parse_known_args(); need(not extra or a.action in ('repository','collaboration','learning','modules') and extra[0]=='--','Unexpected arguments'); extra=extra[1:]; root=a.root.resolve(strict=True)
+    p=argparse.ArgumentParser(description=__doc__); p.add_argument('action',choices=('probe','setup','repair','update','start','stop','diagnostics','logs','repository','collaboration','learning','modules','secret-set','secret-delete')); p.add_argument('--root',type=Path,default=Path(__file__).resolve().parent); p.add_argument('--profile',choices=('auto',*PROFILES),default='auto'); p.add_argument('--plan'); p.add_argument('--approve'); p.add_argument('--online',action='store_true'); p.add_argument('--source',type=Path); p.add_argument('--recover-source',action='store_true'); p.add_argument('--slot',action='append',default=[]); a,extra=p.parse_known_args(); need(not extra or a.action in ('repository','collaboration','learning','modules') and extra[0]=='--','Unexpected arguments'); extra=extra[1:]; root=a.root.resolve(strict=True)
     environment(root)
     from vrs_portable_logs import event, export
     event(root,'setup' if a.action in ('setup','repair','update') else 'application','INFO','COMMAND_START',action=a.action)
     try:
-        if a.action=='probe':
+        from vrs_source_update import pending,update as source_update,recover as source_recover
+        need(not (a.source or a.recover_source) or a.action=='update','Source maintenance requires update action')
+        need(not pending(root) or a.action in ('probe','diagnostics','logs','stop') or a.action=='update' and a.recover_source,'Interrupted source update; recover first')
+        if a.action=='update' and (a.source or a.recover_source):
+            need(not a.plan and a.profile=='auto' and not a.online and not a.slot and not (a.source and a.recover_source),'Conflicting source update arguments')
+            if a.recover_source:
+                need(not a.approve,'Recovery uses recorded hashes'); print(json.dumps(source_recover(root)))
+            else:
+                need(a.approve,'Explicit source ZIP SHA256 approval required'); print(json.dumps(source_update(root,a.source,a.approve)))
+        elif a.action=='probe':
             info=probe(root); event(root,'gpu','INFO','HARDWARE_PROBE',count=int(info['nvidia']!='NOT_MEASURED')); print(json.dumps(info,indent=2))
         elif a.action in ('setup','repair','update'):
             if a.action=='repair' and not a.plan:

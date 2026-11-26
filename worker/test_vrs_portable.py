@@ -31,10 +31,17 @@ class TestPortable(unittest.TestCase):
         (self.root/'link').symlink_to(self.root/'temp',target_is_directory=True)
         with self.assertRaises(ValueError):p.local(self.root,'link/file')
     def test_archive_guards(self):
-        for name in ('../outside','/outside','CON','a\\b'):
+        for name in ('../outside','/outside','CON'):
             z=self.root/'bad.zip'; out=self.root/'out';out.mkdir(exist_ok=True)
             with zipfile.ZipFile(z,'w') as f:f.writestr(name,b'a')
-            with self.assertRaises(ValueError):p.extract(z,out)
+            with self.subTest(name=name),self.assertRaises(ValueError):p.extract(z,out)
+        # ZipInfo normalizes backslashes on Windows when writing; create the raw
+        # hostile member in both ZIP headers instead of testing a sanitized name.
+        for raw in (b'a\\b',b'a\x00b'):
+            with zipfile.ZipFile(z,'w') as f:f.writestr('a/b',b'x')
+            data=z.read_bytes();self.assertEqual(data.count(b'a/b'),2);z.write_bytes(data.replace(b'a/b',raw))
+            with self.subTest(raw=raw),self.assertRaises(ValueError):p.extract(z,out)
+        self.assertEqual(list(out.iterdir()),[])
         with zipfile.ZipFile(z,'w') as f:f.writestr('A',b'a');f.writestr('a',b'b')
         with self.assertRaises(ValueError):p.extract(z,out)
         with zipfile.ZipFile(z,'w',zipfile.ZIP_DEFLATED) as f:f.writestr('bomb',b'\0'*2*1024**2)

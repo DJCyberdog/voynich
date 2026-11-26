@@ -317,6 +317,10 @@ Added disposable native Windows CPython 3.13 qualification driver, complete runt
 
 Native CI 45847969798 failed both review and CPU jobs after source verification/ZIP at runtime assembly: setup-python creates an optional python3.exe symlink. Explicit root runtime executable allowlist excludes it without relaxing required-file or archive link protections. Failure report now records check/type and bounded redacted log tail. 16/16 local portable tests PASS, including alias exclusion and required link refusal. Native retest required; do not advance gates or publish an installation ZIP yet. See VRS-130-131.md and VRS-132-134.md.
 
+### VRS-130–134 — native CI attempt 2 and source maintenance
+
+Native CI 45848880928: both hosted Windows x64 profiles passed source ZIP, actual portable runtime assembly/extraction, hardware probe, real wheel resolution (review 4, CPU 16), offline Setup with hashes, dependency checks, Tcl/Tk, actual desktop log view and DPAPI. Each failed the archive guard fixture (15/16), stopping CPU integration and relocation/delete. Correct raw-name normalization and malformed archive tests without weakening security. Add explicit source-only update with whole archive approval, exact managed files, backup/journal, rollback, recovery gate and bytecode invalidation. Restrict recovery/launcher/dependency changes to full package migration; no state migration. 22/22 local tests, exact tested source verified. Native rerun needed. All earlier G7, owner CUDA, live sandbox and usability gates remain open. See VRS-130-131.md.
+
 ## 8. Original starting action (historical)
 
 VRS-090: freeze v0.8.1 interfaces and exact baseline, enumerate imports and existing GitHub bridge policies, rerun available tests, define private-fixture and actual Windows/GPU gaps, and prepare migration adapters. Follow with VRS-091 and the automation/exception milestones VRS-095–097 before UI migration; do not start remote publication or new scientific scoring merely because this roadmap exists.
