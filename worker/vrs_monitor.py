@@ -12,8 +12,9 @@ import vrs_desktop
 from vrs_desktop import App, DE
 from vrs_operations import Operations
 from vrs_build_portable import RELEASE_VERSION as VERSION
+from vrs_ui_format import human,gpu_telemetry,review_fraction
 
-DE.update({'Jobs':'Jobs & Ressourcen','Evidence':'Evidenz','Start worker':'Worker starten','Stop worker':'Worker stoppen','Pause':'Pausieren','Resume':'Fortsetzen','Cancel':'Abbrechen','Resource ceilings':'Ressourcengrenzen','Save ceilings':'Grenzen speichern','CPU threads':'CPU-Threads','RAM estimate MiB':'RAM-Schätzung MiB','Disk estimate MiB':'Speicherschätzung MiB','Export local preview':'Lokale Vorschau speichern','Enable tray':'Tray aktivieren','Hide to tray':'In Tray minimieren','Open':'Öffnen','Exit desktop':'Oberfläche beenden','No automatic accuracy claim':'Keine automatische Genauigkeitsaussage','Actual checkpoint progress':'Tatsächlicher Checkpoint-Fortschritt','Local managed worker':'Lokal verwalteter Worker','Review required':'Review erforderlich','No GPU telemetry':'Keine GPU-Messung','Ceilings apply after worker restart; 0 = default':'Grenzen gelten nach Worker-Neustart; 0 = Standard','Refresh evidence':'Evidenz aktualisieren','Diagnostics':'Diagnose'})
+DE.update({'Jobs':'Jobs & Ressourcen','Evidence':'Evidenz','Start worker':'Worker starten','Stop worker':'Worker stoppen','Pause':'Pausieren','Resume':'Fortsetzen','Cancel':'Abbrechen','Resource ceilings':'Ressourcengrenzen','Save ceilings':'Grenzen speichern','CPU threads':'CPU-Threads','RAM estimate MiB':'RAM-Schätzung MiB','Disk estimate MiB':'Speicherschätzung MiB','Export local preview':'Lokale Vorschau speichern','Enable tray':'Tray aktivieren','Hide to tray':'In Tray minimieren','Open':'Öffnen','Exit desktop':'Oberfläche beenden','No automatic accuracy claim':'Keine automatische Genauigkeitsaussage','Actual checkpoint progress':'Tatsächlicher Checkpoint-Fortschritt','Local managed worker':'Lokal verwalteter Worker','Review required':'Review erforderlich','No GPU telemetry':'Keine GPU-Messung','Ceilings apply after worker restart; 0 = default':'Grenzen gelten nach Worker-Neustart; 0 = Standard','Refresh evidence':'Evidenz aktualisieren','Diagnostics':'Diagnose','Compared regions':'Verglichene Regionen','Unresolved regions':'Ungeklärte Regionen'})
 
 
 class Notifications:
@@ -76,16 +77,17 @@ class Monitor(App):
 
     def page_jobs(self):
         self.title('Jobs',self.t('Actual checkpoint progress')+' · '+self.t('Local managed worker'))
-        bar=ttk.Frame(self.body); bar.pack(fill='x'); self.telemetry=tk.StringVar(value='—'); ttk.Label(bar,textvariable=self.telemetry,style='Card.TLabel',wraplength=740).pack(fill='x')
+        bar=ttk.Frame(self.body);bar.pack(fill='x',pady=(0,6));self.cpu_metric=self.metric(bar,'CPU');self.ram_metric=self.metric(bar,'RAM');self.gpu_metric=self.metric(bar,'GPU / VRAM')
+        self.telemetry=tk.StringVar(value='—');ttk.Label(self.body,textvariable=self.telemetry,style='Muted.TLabel',wraplength=740).pack(fill='x')
         tools=ttk.Frame(self.body); tools.pack(fill='x',pady=6)
         for text,action in [('Start worker',self.start_worker),('Stop worker',self.stop_worker),('Refresh',self.load_jobs),('Diagnostics',self.diagnostics)]: ttk.Button(tools,text=self.t(text),command=action).pack(side='left',padx=(0,5))
         self.jobs_tree=ttk.Treeview(self.body,columns=('state','stage','progress','reason'),show='tree headings',height=6)
         for key,label,width in [('#0','Run',105),('state','Status',105),('stage','Stage',150),('progress','Stages',65),('reason','Reason',150)]: self.jobs_tree.heading(key,text=label); self.jobs_tree.column(key,width=width,minwidth=45)
-        self.jobs_tree.pack(fill='both',expand=True); self.jobs_tree.bind('<<TreeviewSelect>>',lambda e:self.job_detail()); self.jobs_tree.bind('<Return>',lambda e:self.job_detail()); self.jobs_tree.bind('<Double-1>',lambda e:self.job_detail())
+        self.jobs_tree.pack(fill='both',expand=True);self.job_progress=ttk.Progressbar(self.body,mode='determinate',maximum=1,value=0);self.job_progress.pack(fill='x',pady=(4,0)); self.jobs_tree.bind('<<TreeviewSelect>>',lambda e:self.job_detail()); self.jobs_tree.bind('<Return>',lambda e:self.job_detail()); self.jobs_tree.bind('<Double-1>',lambda e:self.job_detail())
         ctrl=ttk.Frame(self.body); ctrl.pack(fill='x',pady=5)
         for name,action in [('Pause','pause'),('Resume','resume'),('Cancel','cancel')]: ttk.Button(ctrl,text=self.t(name),command=lambda a=action:self.run_control(a)).pack(side='left',padx=(0,5))
         ttk.Button(ctrl,text=self.t('Review'),command=self.review_job).pack(side='right')
-        self.job_text=tk.Text(self.body,height=5,bg=self.p['panel'],fg=self.p['fg'],wrap='word',relief='flat'); self.job_text.pack(fill='both',expand=True); self.job_text.configure(state='disabled')
+        self.job_text=tk.Text(self.body,height=5,bg=self.p['panel'],fg=self.p['fg'],wrap='word',relief='flat'); self.job_text.pack(fill='both',expand=True); self.job_text.configure(state='disabled');self.job_value=None;ttk.Button(ctrl,text=self.t('Raw JSON'),command=lambda:self.raw_dialog(self.job_value)).pack(side='right',padx=6)
         ceilings=ttk.Frame(self.body); ceilings.pack(fill='x',pady=4); self.capvars={}; cfg=self.api.settings_ops()
         for key,label in [('cpu_threads','CPU threads'),('ram_mib','RAM estimate MiB'),('disk_mib','Disk estimate MiB')]:
             v=tk.StringVar(value=str(cfg[key])); self.capvars[key]=v; ttk.Label(ceilings,text=self.t(label)).pack(side='left'); ttk.Entry(ceilings,textvariable=v,width=6).pack(side='left',padx=(3,7))
@@ -99,7 +101,7 @@ class Monitor(App):
         selected=self.selected_job(); api=self.api; read_detail=not automatic or time.monotonic()-self.last_detail>=15
         if read_detail:self.last_detail=time.monotonic()
         def work():
-            rows=api.jobs(); data=api.resources(); detail=api.detail(selected) if selected and read_detail and any(r['id']==selected for r in rows) else None
+            rows=api.jobs(); data=api.resources();data['gpu_telemetry']=gpu_telemetry(); detail=api.detail(selected) if selected and read_detail and any(r['id']==selected for r in rows) else None
             return rows,data,detail
         (self.quiet_task if automatic else self.task)(work,self.jobs_loaded)
 
@@ -118,14 +120,19 @@ class Monitor(App):
         ram=(data['ram_total']-data['ram_available'])/1024**3; total=data['ram_total']/1024**3; disk=data['disk_free']/1024**3
         rss=data['worker'].get('rss'); rss_text=f' · RSS {rss/1024**2:.0f} MiB' if rss is not None else ''
         self.telemetry.set(f"CPU {data['cpu_percent']:.1f}% · {data['allowed']} threads | RAM {ram:.1f}/{total:.1f} GiB | Disk free {disk:.1f} GiB\nWorker: {data['worker']['state']}{rss_text} · {self.t('No GPU telemetry')}")
+        if hasattr(self,'cpu_metric'):
+            self.cpu_metric.configure(text=f"{data['cpu_percent']:.0f}%");self.ram_metric.configure(text=f'{ram:.1f} / {total:.1f} GiB')
+            devices=data.get('gpu_telemetry');self.gpu_metric.configure(text=(f"{devices[0]['util']:.0f}% · {devices[0]['used_mib']/1024:.1f}/{devices[0]['total_mib']/1024:.1f} GiB" if devices else '—'))
+            if devices:self.telemetry.set(self.telemetry.get().replace(self.t('No GPU telemetry'),'NVIDIA · device '+str(devices[0]['index'])+' · device-wide'))
+            row=next((r for r in rows if r['id']==selected),None);self.job_progress.configure(maximum=row['total'] if row else 1,value=row['completed'] if row else 0)
         if detail: self.write_text(self.job_text,detail)
         if self.tray_ready:
             from vrs_contract import digest
             waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED'); self.notice_done((len(waiting),digest(waiting)))
 
-    @staticmethod
-    def write_text(widget,value):
-        widget.configure(state='normal'); widget.delete('1.0','end'); widget.insert('end',json.dumps(value,indent=2,ensure_ascii=False)); widget.configure(state='disabled')
+    def write_text(self,widget,value):
+        if widget is self.job_text:self.job_value=value
+        widget.configure(state='normal');widget.delete('1.0','end');widget.insert('end',human(value));widget.configure(state='disabled')
 
     def job_detail(self):
         if self.view!='Jobs' or self.future is not None:return
@@ -157,7 +164,7 @@ class Monitor(App):
         self.task(lambda:self.api.save_ops(value),lambda v:self.status.set(self.t('Ceilings apply after worker restart; 0 = default')))
 
     def page_evidence(self):
-        self.title('Evidence',self.t('No automatic accuracy claim')+' · UNADJUDICATED'); bar=ttk.Frame(self.body); bar.pack(fill='x'); self.ev_run=tk.StringVar(value=self.run or ''); self.ev_combo=ttk.Combobox(bar,textvariable=self.ev_run,state='readonly',width=55); self.ev_combo.pack(side='left',fill='x',expand=True); self.ev_combo.bind('<<ComboboxSelected>>',lambda e:self.load_evidence()); ttk.Button(bar,text=self.t('Refresh evidence'),command=self.load_evidence).pack(side='left',padx=5); ttk.Button(bar,text=self.t('Export local preview'),command=self.export).pack(side='left'); self.ev_text=tk.Text(self.body,bg=self.p['panel'],fg=self.p['fg'],wrap='word',relief='flat',padx=10,pady=10); self.ev_text.pack(fill='both',expand=True,pady=10); self.ev_text.configure(state='disabled')
+        self.title('Evidence',self.t('No automatic accuracy claim')+' · UNADJUDICATED'); bar=ttk.Frame(self.body); bar.pack(fill='x'); self.ev_run=tk.StringVar(value=self.run or ''); self.ev_combo=ttk.Combobox(bar,textvariable=self.ev_run,state='readonly',width=55); self.ev_combo.pack(side='left',fill='x',expand=True); self.ev_combo.bind('<<ComboboxSelected>>',lambda e:self.load_evidence()); ttk.Button(bar,text=self.t('Refresh evidence'),command=self.load_evidence).pack(side='left',padx=5); ttk.Button(bar,text=self.t('Export local preview'),command=self.export).pack(side='left'); self.ev_value=None;ttk.Button(bar,text=self.t('Raw JSON'),command=lambda:self.raw_dialog(self.ev_value)).pack(side='left',padx=5);cards=ttk.Frame(self.body);cards.pack(fill='x',pady=(12,0));self.ev_review=self.metric(cards,self.t('Resolved'));self.ev_compared=self.metric(cards,self.t('Compared regions'));self.ev_unresolved=self.metric(cards,self.t('Unresolved regions'));self.ev_text=tk.Text(self.body,bg=self.p['panel'],fg=self.p['fg'],wrap='word',relief='flat',padx=10,pady=10); self.ev_text.pack(fill='both',expand=True,pady=10); self.ev_text.configure(state='disabled')
         def loaded(rows):
             ids=[r['id'] for r in rows]; self.ev_combo.configure(values=ids)
             if ids and self.ev_run.get() not in ids: self.ev_run.set(ids[0])
@@ -166,7 +173,11 @@ class Monitor(App):
 
     def load_evidence(self):
         run=self.ev_run.get()
-        if run and self.future is None:self.task(lambda:self.api.evidence(run),lambda v:self.write_text(self.ev_text,v))
+        if run and self.future is None:self.task(lambda:self.api.evidence(run),self.evidence_loaded)
+
+    def evidence_loaded(self,value):
+        self.ev_value=value;fraction=review_fraction(value['review']);self.ev_review.configure(text=f'{fraction[0]} / {fraction[1]}' if fraction else '—')
+        comparisons=value['comparisons'];self.ev_compared.configure(text=str(sum(x['compared'] for x in comparisons)) if comparisons else '—');self.ev_unresolved.configure(text=str(sum(x['unresolved'] for x in comparisons)) if comparisons else '—');self.write_text(self.ev_text,value)
 
     def export(self):
         run=self.ev_run.get()

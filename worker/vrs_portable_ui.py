@@ -32,11 +32,11 @@ def launch(root,action):
     DE.update({'Logs':'Protokolle','Log export':'Diagnose exportieren'})
     class Portable(Monitor):
         def build(self):
-            super().build(); nav=self.nav['Home'].master; b=ttk.Button(nav,text=self.t('Logs'),command=lambda:self.show('Logs')); b.pack(fill='x',pady=4,before=self.nav['Settings']); self.nav['Logs']=b;self.w.bind('<Control-7>',lambda e:self.request_view('Logs'))
+            super().build(); nav=self.nav['Home'].master; b=ttk.Button(nav,text=self.t('Logs'),style='Nav.TButton',command=lambda:self.request_view('Logs')); b.pack(fill='x',pady=2,before=self.nav['Settings']); self.nav['Logs']=b;self.w.bind('<Control-7>',lambda e:self.request_view('Logs'))
         def page_logs(self):
             self.title('Logs','Technical logs only / keine wissenschaftliche Evidenz'); bar=ttk.Frame(self.body); bar.pack(fill='x'); self.log_level=tk.StringVar(value='TRACE'); self.log_module=tk.StringVar(value='all'); self.log_query=tk.StringVar()
             ttk.Combobox(bar,textvariable=self.log_level,values=LEVELS,state='readonly',width=10).pack(side='left'); ttk.Combobox(bar,textvariable=self.log_module,values=('all',*MODULES),state='readonly',width=14).pack(side='left'); ttk.Entry(bar,textvariable=self.log_query,width=20).pack(side='left'); ttk.Button(bar,text=self.t('Refresh'),command=self.load_logs).pack(side='left'); ttk.Button(bar,text=self.t('Log export'),command=self.log_export).pack(side='left')
-            self.log_text=tk.Text(self.body,wrap='word'); self.log_text.pack(fill='both',expand=True); self.load_logs()
+            self.log_text=tk.Text(self.body,wrap='word',bg=self.p['panel'],fg=self.p['fg'],insertbackground=self.p['fg'],relief='flat',padx=10,pady=10); self.log_text.pack(fill='both',expand=True); self.load_logs()
         def load_logs(self):
             import json
             level=self.log_level.get(); module=self.log_module.get(); search=self.log_query.get()
