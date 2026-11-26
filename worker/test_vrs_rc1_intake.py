@@ -133,3 +133,25 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(seed['application_sha256'],sha(self.source/'portable_sources.json'))
         report,_=i.inspect(self.intake,seed)
         self.assertEqual(report['status'],'BLOCKED');self.assertIn('transcription:Eva-',report['missing'])
+
+    def test_native_preview_catalog_provenance(self):
+        from PIL import Image
+        from vrs_rc1_catalog import merge_catalogs
+        # Two distinct visual schemes may reference identical image bytes without
+        # collapsing notation IDs or claiming a runtime-equivalent inventory.
+        root=self.home/'parts';root.mkdir();parts=[]
+        for idx,(sid,scheme) in enumerate([('basic-eva','Eva-'),('sta1r','STA1')]):
+            p=root/str(idx);p.mkdir();img=p/'sample.png';Image.new('RGB',(20,20),'white').save(img)
+            source=next(x for x in self.rows if x['role']=='reference_pdf' and x['scheme']==scheme)
+            plan=self.path(sid+'-plan.json');atomic_json(plan,dict(schema=1,reviewed=False,source_sha256=source['sha256'],entries=[dict(scheme=sid,label='a',page=1,box=[1,1,10,10])]))
+            self.add('catalog_plan',None,plan.name)
+            atomic_json(p/'references.json',dict(schema=1,preview=True,plan_sha256=sha(plan),schemes=[dict(id=sid,name=sid,version='fixture',source='synthetic',source_sha256=source['sha256'],entries=[dict(label='a',samples=[dict(file='sample.png',sha256=sha(img),source='synthetic p1',page=1,box=[1,1,10,10])])])]))
+            parts.append((p,plan))
+        p,images=merge_catalogs(parts,self.path('native'))
+        self.assertEqual(len(images),1)
+        self.add('visual_catalog',None,'native/references.json');self.rows[-1]['id']='native-catalog';self.plan['catalog']='native-catalog'
+        for path in images.values():self.add('reference_sample',None,path.relative_to(self.intake/'data/rc1').as_posix());self.rows[-1]['id']='native-sample'
+        report,_=i.inspect(self.intake,self.plan);self.assertEqual(report['status'],'INVENTORY_INCOMPLETE');self.assertIn('visual_catalog:Eva-',report['missing']);self.assertIn('visual_catalog:STA1',report['missing'])
+        self.provision();catalog=Desktop(self.out).catalog(Desktop(self.out).settings()['catalog'])
+        self.assertEqual(set(catalog),{'basic-eva','sta1r'})
+        self.assertTrue(all(v['preview'] for v in catalog.values()))

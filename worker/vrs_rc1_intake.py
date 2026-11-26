@@ -16,10 +16,11 @@ from vrs_rc_snapshot import existing_directory,destination,private_directory
 
 SCOPES=('REAL_RESEARCH','SYNTHETIC_TEST')
 SCHEMES=('Eva-','STA1')
-JSON_ROLES={'groups','references','model_bundle','recognition_policy','inventory','model','model_report','mapping','run_manifest','visual_catalog','historical_result'}
+JSON_ROLES={'groups','references','model_bundle','recognition_policy','inventory','model','model_report','mapping','run_manifest','visual_catalog','catalog_plan','historical_result'}
 ROLES=JSON_ROLES|{'manuscript','transcription','transcription_archive','reference_pdf','reference_sample','historical_report'}
 CORE={'manuscript','transcription','reference_pdf'}
 ARCHIVE_SCHEMES=('EvaT',)
+VISUAL_SCHEMES={'basic-eva':'Eva-','extended-eva':'Eva-','sta1':'STA1','sta1r':'STA1','eva-from-sta':'STA1','v101-from-sta':'STA1'}
 KNOWN_SOURCES=(
  ('manuscript-beinecke-408','voynich.pdf','manuscript',None,'d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c',127121031,'Owner copy; matches repository LFS declaration','exact PDF object'),
  ('zl3b-sta1','ZL3b.txt','transcription','STA1','8438ba1c45f47fe1d06b5262cbcdf60ce69158a0edbd4dd802612896f3217e2a',472861,'Zandbergen–Landini; owner copy','ZL3b, IVTFF STA1 2.0 M 5'),
@@ -115,6 +116,7 @@ def inspect(root,plan):
                 if role!='historical_result':linked(value,paths)
                 if role=='inventory':need(value.get('convention')==row['scheme'],'Inventory scheme mismatch')
                 if role=='recognition_policy':need(value.get('approval') is None,'RC1 intake may not authorize recognition')
+                if role=='catalog_plan':need(value.get('reviewed') is False and any(x['sha256']==value.get('source_sha256') for x in roles.get('reference_pdf',[])),'Catalog plan lacks admitted PDF binding')
             elif role=='reference_sample':
                 from PIL import Image
                 with Image.open(p) as im:need(im.width*im.height<=4_000_000,'Reference image quota');im.verify()
@@ -128,8 +130,18 @@ def inspect(root,plan):
             if plan['catalog'] is not None:
                 row=roles['visual_catalog'][0];cat=api.catalog(row['path'])
                 need(cat and all(v['preview'] is True for v in cat.values()),'Only explicitly preview catalogs admitted at RC1 entry')
+                raw=c.load(local(root,row['path']));scheme_rows={s['id']:s for s in raw['schemes']}
                 for name,info in cat.items():
-                    need(name in SCHEMES,'Unsupported catalog scheme')
+                    need(name in SCHEMES or name in VISUAL_SCHEMES,'Unsupported catalog scheme')
+                    # Source-native previews can be browsed but never auto-map to runtime inventory IDs.
+                    if name in VISUAL_SCHEMES or plan['scope']=='REAL_RESEARCH':
+                        raw_scheme=scheme_rows[name];source_scheme=VISUAL_SCHEMES.get(name,name)
+                        need(any(x['scheme']==source_scheme and x['sha256']==raw_scheme.get('source_sha256') for x in roles.get('reference_pdf',[])),'Catalog PDF provenance missing')
+                        plans=[x for x in roles.get('catalog_plan',[]) if x['sha256']==raw_scheme.get('plan_sha256')]
+                        need(len(plans)==1,'Catalog plan provenance missing')
+                        source_plan=c.load(local(root,plans[0]['path']));need(source_plan['source_sha256']==raw_scheme['source_sha256'],'Catalog plan/PDF mismatch')
+                        cells={(e['scheme'],e['label'],e['page'],tuple(e['box'])) for e in source_plan['entries']}
+                        need(all((name,e['label'],s['page'],tuple(s['box'])) in cells for e in raw_scheme['entries'] for s in e['samples']),'Catalog sample not in source plan')
                     for samples in info['entries'].values():
                         for ref,_ in samples:need(ref['path'] in paths and paths[ref['path']]['role']=='reference_sample' and paths[ref['path']]['sha256']==ref['sha256'],'Unadmitted catalog sample')
                 for scheme in SCHEMES:
@@ -234,12 +246,16 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='action',required=True)
     q=sub.add_parser('starter');q.add_argument('intake',type=Path);q.add_argument('--source',type=Path,default=Path(__file__).resolve().parent)
     q=sub.add_parser('inspect');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path)
+    q=sub.add_parser('preview-catalog');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path);q.add_argument('destination',type=Path);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     q=sub.add_parser('provision');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path);q.add_argument('destination',type=Path);q.add_argument('--source',type=Path,default=Path(__file__).resolve().parent);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     q=sub.add_parser('verify');q.add_argument('root',type=Path);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     a=p.parse_args()
     try:
         if a.action=='starter':print(json.dumps(starter(a.source,a.intake),indent=2,sort_keys=True));return 0
         if a.action=='inspect':value=inspect(a.intake,c.load(a.plan))[0]
+        elif a.action=='preview-catalog':
+            from vrs_rc1_catalog import build_preview
+            value=build_preview(a.intake,a.destination,c.load(a.plan),a.approve,a.scope)
         elif a.action=='provision':value=provision(a.source,a.intake,a.destination,c.load(a.plan),a.approve,a.scope)
         else:value=verify(a.root,a.approve,a.scope)
     except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError) as exc:
