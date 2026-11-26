@@ -19,5 +19,13 @@ class UiFormatTests(unittest.TestCase):
 
     def test_brand_and_log_presentation(self):
         self.assertEqual(brand_icon(64).size,(64,64));self.assertEqual(brand_icon(32).mode,'RGBA')
-        self.assertIn('ERROR',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',code='WORKER_FAILED',state='FAILED')))
-        self.assertIn('state: FAILED',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',code='WORKER_FAILED',state='FAILED')))
+        self.assertIn('ERROR',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',event='WORKER_FAILED',state='FAILED')))
+        self.assertIn('state: FAILED',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',event='WORKER_FAILED',state='FAILED')))
+
+    def test_log_formatter_actual_schema(self):
+        import tempfile
+        from pathlib import Path
+        from vrs_portable_logs import event,records
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);event(root,'setup','INFO','COMMAND_OK',action='setup');rows=records(root)
+            self.assertEqual(len(rows),1);self.assertIn('COMMAND_OK',log_line(rows[0]));self.assertIn('action: setup',log_line(rows[0]))

@@ -62,5 +62,5 @@ def brand_icon(size=64):
     return im.resize((size,size),Image.Resampling.LANCZOS)
 
 def log_line(row):
-    extra=' · '.join(f"{k}: {v}" for k,v in row.items() if k not in ('utc','level','module','code','schema'))
-    return f"{row['utc']}  |  {row['level']}  |  {row['module']}  |  {row['code']}"+('  ·  '+extra if extra else '')
+    extra=' · '.join(f"{k}: {v}" for k,v in row.items() if k not in ('utc','level','module','event'))
+    return f"{row['utc']}  |  {row['level']}  |  {row['module']}  |  {row['event']}"+('  ·  '+extra if extra else '')

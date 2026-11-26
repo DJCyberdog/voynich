@@ -165,8 +165,8 @@
     "vrs_rc_snapshot.py": "514ff3edeffe5e71106338cf655b13adf96d3383",
     "test_vrs_rc_snapshot.py": "8a80f2e2f1409ca94a447cdc60e42c23d3ff8f2f",
     "vrs_rc_cross_version.py": "d1792fc7fe2403d5981112d26196ad9beaff460b",
-    "vrs_ui_format.py": "c4c1bcb19e19256f655fbdc7e250c2dffd6e2380",
-    "test_vrs_ui_format.py": "f92919a96ac2f19e5fbda789c7e3e207d1bedacf",
+    "vrs_ui_format.py": "aaff07b521713ab092ceca8025019c56b40552af",
+    "test_vrs_ui_format.py": "86ce72dc4085a8b044123f23f4349ab80b39afa7",
     "vrs_ui_gallery.py": "d0e08d51eecba998ef3ceadb4a0d67467b98bbce",
     "VRS-142.md": "f2881681eeddd17196906d92d24e90dc15c662fc"
   }
