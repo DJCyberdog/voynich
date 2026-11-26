@@ -94,6 +94,39 @@ class LearningTests(unittest.TestCase):
         self.approve(); r=learn.evaluate(self.root,self.plan); model=learn.read(self.root,r)['model']; (self.root/model['path']).write_text('{}')
         with self.assertRaisesRegex(ValueError,'hash mismatch'): learn.compare(self.root,self.plan,r)
 
+    def test_native_cuda_training_and_cpu_replay(self):
+        import os
+        if os.environ.get('VRS_NATIVE_CUDA_TEST')!='1':
+            self.skipTest('Explicit native CUDA training qualification required')
+        import torch
+        import vrs_hardware as h
+        self.assertTrue(torch.cuda.is_available(),'CUDA required')
+        binding=h.cuda_binding(dict(gpu=h.cuda_probe(torch,0)))
+        self.approve()
+        original=self.app.ledger.status(self.run)['receipts']
+        torch.cuda.reset_peak_memory_stats(0)
+        import time
+        start=time.perf_counter()
+        rr=learn.evaluate(self.root,self.plan,'cuda')
+        torch.cuda.synchronize(0)
+        seconds=time.perf_counter()-start
+        peak=torch.cuda.max_memory_allocated(0)
+        report=learn.read(self.root,rr)
+        self.assertEqual(report['backend']['device'],'cuda')
+        self.assertEqual(report['gate'],'ELIGIBLE_FOR_MANUAL_REVIEW')
+        self.assertEqual(report['partitions']['holdout']['candidate']['eligible'],3)
+        self.assertGreater(peak,0)
+        for backend in ('cuda','cpu'):
+            result=learn.compare(self.root,self.plan,rr,backend)
+            self.assertEqual(result['status'],'PASS',result)
+            self.assertGreater(result['rows'],0)
+        self.assertEqual(binding,h.cuda_binding(dict(gpu=h.cuda_probe(torch,0))))
+        self.assertEqual(original,self.app.ledger.status(self.run)['receipts'])
+        self.assertFalse((self.root/'config/vrs120-approved.json').exists())
+        print(json.dumps(dict(scope='SYNTHETIC_NATIVE_TRAINING_ONLY',cuda_binding=binding,
+            seconds=seconds,peak_allocated_bytes=peak,report_sha256=rr['sha256'],
+            scientific_status='UNADJUDICATED'),sort_keys=True))
+
     def test_cpu_cuda_is_explicit(self):
         import torch
         if not torch.cuda.is_available():
