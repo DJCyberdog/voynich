@@ -28,11 +28,12 @@ def settings(root):
 
 
 def valid(row):
-    if not isinstance(row,dict) or set(row)-{'utc','module','level','event','action','run','state','count','exception','frames'}: return False
+    if not isinstance(row,dict) or set(row)-{'utc','module','level','event','action','run','state','count','exception','frames','stage'}: return False
     if not (isinstance(row.get('utc'),str) and re.fullmatch(r'\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?\+00:00',row['utc']) and row.get('module') in MODULES and row.get('level') in LEVELS and row.get('event') in CODES): return False
     if 'action' in row and row['action'] not in ACTIONS:return False
     if 'run' in row and not re.fullmatch(r'[a-f0-9]{64}',str(row['run'])):return False
     if 'state' in row and row['state'] not in ('RUNNING','STOPPED','FAILED','BLOCKED','READY','COMPLETED','PAUSED','CANCELLED','STOP_REQUESTED','NOT_MANAGED'):return False
+    if 'stage' in row and row['stage'] not in ('script_regions','glyph_segmentation','glyph_classification','exception_review','transcription_alignment'):return False
     if 'count' in row and not(type(row['count']) is int and 0<=row['count']<=10**9):return False
     if 'exception' in row and row['exception'] not in ('ValueError','OSError','RuntimeError','CalledProcessError','TimeoutExpired','KeyError','TypeError','PermissionError','FileNotFoundError','OtherError'):return False
     if 'frames' in row:

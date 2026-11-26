@@ -184,13 +184,16 @@ def serve(root,ident):
                 if stop.exists(): app.stop.set(); return
         thread=threading.Thread(target=poll,daemon=True); thread.start(); atomic_json(path,session)
         state='STOPPED'
+        from vrs_worker_log import WorkerLog
+        journal=WorkerLog(root); journal.start()
         try:
             while not app.stop.is_set() and not stop.exists():
-                app.sweep(); app.stop.wait(1)
-        except BaseException:
-            state='FAILED'; raise
+                journal.sweep(app.sweep()); app.stop.wait(1)
+        except BaseException as error:
+            state='FAILED'; journal.failed(error); raise
         finally:
             app.stop.set(); thread.join(timeout=1); atomic_json(path,{**session,'state':state}); stop.unlink(missing_ok=True)
+            if state=='STOPPED':journal.stop()
 
 
 def main():
