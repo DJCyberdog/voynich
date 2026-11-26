@@ -407,6 +407,10 @@ CI 45861195891 at 7cf6eca6ff089dbe21a2f3c12b0c2205ed670664 completed SUCCESS for
 
 The existing Runtime/ledger/coordinator now admit explicit CUDA manifests only following an actual device probe; auto remains CPU. Bounded adaptive CUDA classification uses the existing feature extractor and prototype scorer, checks CPU parity (labels, routing, 1e-6 score tolerance), and pauses on failure without fallback. CPU calibration cannot authorize CUDA acceptance; all CUDA candidates remain abstained. CPU proposals/segmentation/alignment and review still run on CPU. Explicit CUDA native smoke and fixture end-to-end test added; not executed on owner device. New runtime identity intentionally fences older runs, preserve original packages and artifacts until an explicit validated migration. Native throughput, resume/device provenance, GPU calibration, GUI backend selection and owner acceptance remain open. See VRS-132-134.md. No scientific experiment or milestone completion claimed.
 
+### VRS-132 — expanded native regression and cooperative stop correction
+
+CI 45863959751: native Review SUCCESS with component inventory and 26/26 portable tests; CPU inventory and 26/26 portable PASS, expanded integration 76 pass / 1 fail / 1 private-fixture skip (78 total). Service headless wait/review test used Windows hard process termination then asserted graceful zero exit. Add explicitly scoped local cooperative stop sentinel to existing service watch CLI and require clean exit and no locked runs. Timeout still fails. No native test pass claimed for new code. Continue 0.13.x; real CUDA and owner acceptance remain open. See VRS-130-131.md.
+
 ## 8. Original starting action (historical)
 
 VRS-090: freeze v0.8.1 interfaces and exact baseline, enumerate imports and existing GitHub bridge policies, rerun available tests, define private-fixture and actual Windows/GPU gaps, and prepare migration adapters. Follow with VRS-091 and the automation/exception milestones VRS-095–097 before UI migration; do not start remote publication or new scientific scoring merely because this roadmap exists.

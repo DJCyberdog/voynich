@@ -278,7 +278,7 @@ def main():
     for name in ('register','register-plan'):
         q=sub.add_parser(name); q.add_argument('path',type=Path)
     sub.add_parser('list'); sub.add_parser('once')
-    q=sub.add_parser('watch'); q.add_argument('--interval',type=int,default=5); q.add_argument('--plan',type=Path)
+    q=sub.add_parser('watch'); q.add_argument('--interval',type=int,default=5); q.add_argument('--plan',type=Path); q.add_argument('--stop-file',type=Path,help='Explicit root-local cooperative stop sentinel')
     for name in ('status','pause','cancel','resume','recover','queue'):
         q=sub.add_parser(name); q.add_argument('run')
         if name=='recover': q.add_argument('generation',type=int); q.add_argument('--confirm-stopped',action='store_true')
@@ -293,9 +293,26 @@ def main():
             h.positive(a.interval,'interval'); core.require(a.interval<=3600,'Interval too long')
             if a.plan is not None: app.register_plan(c.load(inside(app.root,a.plan)))
             for sig in (signal.SIGINT,signal.SIGTERM): signal.signal(sig,lambda *_:app.stop.set())
-            while not app.stop.is_set():
-                for row in app.sweep(): print(json.dumps(row,sort_keys=True),flush=True)
-                app.stop.wait(a.interval)
+            stopper=None
+            if a.stop_file is not None:
+                # Same cooperative boundary semantics as managed desktop stop.
+                # The caller owns this explicit local sentinel and its lifecycle.
+                sentinel=inside(app.root,a.stop_file)
+                core.require(not sentinel.exists(),'Stale stop sentinel')
+                def poll_stop():
+                    while not app.stop.wait(.2):
+                        try:
+                            if inside(app.root,a.stop_file).exists(): app.stop.set(); return
+                        except (OSError,ValueError):
+                            app.stop.set(); return
+                stopper=threading.Thread(target=poll_stop,daemon=True); stopper.start()
+            try:
+                while not app.stop.is_set():
+                    for row in app.sweep(): print(json.dumps(row,sort_keys=True),flush=True)
+                    app.stop.wait(a.interval)
+            finally:
+                app.stop.set()
+                if stopper is not None: stopper.join(timeout=1)
             return 0
         elif action=='status': result=app.ledger.status(a.run)
         elif action=='queue': result=app.queue.summary(a.run)

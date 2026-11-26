@@ -74,7 +74,8 @@ class ServiceTests(unittest.TestCase):
     def test_real_headless_waiting_review_and_independent_pages(self):
         a=self.register('1',[1]); self.proposals(a)
         counts=self.fixture_outcomes(a,'ABSTAINED'); self.assertGreater(counts['abstained'],0)
-        b=self.register('2',[2]); proc=subprocess.Popen([sys.executable,str(Path(__file__).with_name('vrs_service.py').resolve()),str(self.root),'watch','--interval','1'],cwd=self.root,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        b=self.register('2',[2]); sentinel=self.root/'workspace'/'fixture-stop'
+        proc=subprocess.Popen([sys.executable,str(Path(__file__).with_name('vrs_service.py').resolve()),str(self.root),'watch','--interval','1','--stop-file',sentinel.relative_to(self.root).as_posix()],cwd=self.root,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         try:
             deadline=time.monotonic()+20
             while time.monotonic()<deadline and proc.poll() is None:
@@ -89,8 +90,13 @@ class ServiceTests(unittest.TestCase):
             generation=sa['generation']; time.sleep(1.2)
             self.assertEqual(self.status(a)['generation'],generation)
         finally:
-            proc.terminate(); _,err=proc.communicate(timeout=10)
-        self.assertEqual(proc.returncode,0,err.decode())
+            sentinel.touch()
+            try: _,err=proc.communicate(timeout=15)
+            except subprocess.TimeoutExpired:
+                proc.kill(); proc.communicate()
+                self.fail('Cooperative watch stop timed out')
+        self.assertEqual(proc.returncode,0,err.decode(errors='replace'))
+        self.assertFalse(self.status(a)['locked']); self.assertFalse(self.status(b)['locked'])
         self.assertEqual(self.app.ledger.outbox(),[])
         with self.assertRaisesRegex(ValueError,'correction handoff'): self.app.ledger.resume_service(a,self.app.identity)
 
