@@ -85,8 +85,9 @@ class CoordinatorLedger(Ledger):
     def context(self, run, token, identity):
         with self._tx() as conn:
             row = self._owned(conn,run,token)
-            core.require(row['worker']==identity and row['backend']=='cpu','Coordinator identity/backend changed')
+            core.require(row['worker']==identity and row['backend'] in ('cpu','cuda'),'Coordinator identity/backend changed')
             manifest,receipts,_ = self._validate(row)
+            core.require(row['backend']==('cuda' if manifest['backend']=='cuda' else 'cpu'),'Frozen backend mismatch')
             return manifest,receipts
 
 

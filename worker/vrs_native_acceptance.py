@@ -97,7 +97,8 @@ def qualify(source,profile,report):
         def run(code):subprocess.run([str(exe(root,profile)),'-s','-c',code],cwd=root,env=environment(root),check=True,timeout=90)
         smoke="import sys, pathlib, tkinter as t; r=pathlib.Path.cwd().resolve(strict=True); assert pathlib.Path(sys.base_prefix).resolve()==r/'runtime'/'"+profile+"', 'base_prefix'; assert pathlib.Path(sys.prefix).resolve()==r/'.venv'/'"+profile+"', 'prefix'; w=t.Tk(); w.update(); assert pathlib.Path(w.tk.eval('info library')).resolve().is_relative_to(r), 'Tcl library'; w.destroy(); import PIL,psutil,pystray"
         if profile=='review':smoke+="; import importlib.util as u; assert all(u.find_spec(x) is None for x in ('torch','numpy','fitz'))"
-        else:smoke+="; import torch; assert torch.ones(4).sum().item()==4"
+        elif profile=='cuda':smoke+="; import torch; assert torch.cuda.is_available(); assert torch.ones(4,device='cuda:0').sum().item()==4; torch.cuda.synchronize(0)"
+        else:smoke+="; import torch; assert torch.version.cuda is None; assert torch.ones(4).sum().item()==4"
         step('native_gui_and_profile',lambda:run(smoke))
         def desktop():
             run("""import tkinter as tk, time
@@ -121,8 +122,12 @@ assert not any(x['event']=='CRASH' for x in records(Path.cwd()))
 """)
         step('actual_desktop_log_view',desktop)
         step('native_dpapi',lambda:run("from pathlib import Path; from vrs_portable_secrets import store,read,path; r=Path.cwd(); s='VRS_GITHUB_TOKEN_FIXTURE'; v='synthetic-test-value'; store(r,s,v); assert v.encode() not in path(r,s).read_bytes(); assert read(r,s)==v; path(r,s).unlink()"))
-        def test(names):subprocess.run([str(exe(root,profile)),'-s','-m','unittest','-v',*names],cwd=root,env=environment(root),check=True,timeout=1200)
+        def test(names):
+            env=environment(root);env.pop('VRS_NATIVE_CUDA_TEST',None)
+            if profile=='cuda':env['VRS_NATIVE_CUDA_TEST']='1'
+            subprocess.run([str(exe(root,profile)),'-s','-m','unittest','-v',*names],cwd=root,env=env,check=True,timeout=1200)
         step('portable_regression',lambda:test(['test_vrs_portable','test_vrs_prepare_plan','test_vrs_worker_log','test_vrs_native_acceptance','test_vrs_source_update','test_vrs_license_inventory']))
+        if profile=='cuda':step('native_cuda_candidate',lambda:test(['test_vrs_runtime.RuntimeTests.test_native_cuda_candidate']))
         if profile=='cpu':step('cpu_integration',lambda:test(['test_vrs_runtime','test_vrs_desktop','test_vrs_operations','test_vrs_learning','test_vrs_repository','test_vrs_coordinator','test_vrs_service','test_vrs_exceptions','test_vrs_modules']))
         step('stop_idle_worker',lambda:batch(root,'Stop'))
         step('diagnostics',lambda:batch(root,'Diagnostics'))

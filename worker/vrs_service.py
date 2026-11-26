@@ -19,14 +19,14 @@ PAGE_STAGES = c.STAGES[:2]
 
 
 class ServiceLedger(CoordinatorLedger):
-    def register_many(self, manifests, identity):
+    def register_many(self, manifests, identity, *, allow_cuda=False):
         c.digest_ok(identity)
         rows = []
         for manifest in manifests:
             run = c.manifest(self.root, manifest)
-            core.require(manifest['backend'] in ('cpu', 'auto'), 'CUDA stage adapter not yet enabled')
+            core.require(manifest['backend'] in ('cpu', 'auto') or allow_cuda and manifest['backend']=='cuda', 'CUDA stage adapter not yet enabled')
             receipts = {s: dict(schema=1, run_id=run, stage=s, state='PENDING', reason='NOT_STARTED', artifact=None, counts=None) for s in c.STAGES}
-            rows.append((run, self._encode(manifest), 'cpu', identity, self._encode(receipts), 'READY'))
+            rows.append((run, self._encode(manifest), 'cuda' if manifest['backend']=='cuda' else 'cpu', identity, self._encode(receipts), 'READY'))
         core.require(len({r[0] for r in rows}) == len(rows), 'Duplicate planned run')
         with self._tx() as conn:
             for row in rows:

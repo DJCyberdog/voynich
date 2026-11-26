@@ -1,4 +1,4 @@
-"""VRS-096: real CPU prototype scoring; owner-approved selective policy, otherwise abstain."""
+"""Prototype scoring: CPU selective policy; explicit CUDA candidate with CPU parity only."""
 import math
 from pathlib import Path
 import vrs_contract as c
@@ -26,6 +26,7 @@ def inputs(root, manifest):
         models[name]=p
     approval=None
     if policy['approval'] is not None:
+        require(manifest['backend']!='cuda','CPU calibration cannot authorize CUDA candidate acceptance')
         approval=read(policy['approval']); c.fields(approval,('schema','model_sha256','references_sha256','classifier_sha256','backend','calibration','geometry','limits'))
         require(approval['schema']==1 and approval['model_sha256']==i['model']['sha256'] and approval['references_sha256']==i['references']['sha256'] and approval['classifier_sha256']==sha(g.__file__) and approval['backend']=='cpu','Approval binding mismatch')
         # Local owner-maintained trust file, never supplied by a manifest/remote request.
@@ -80,15 +81,41 @@ def route(predictions, inventories, approval, key):
     return 'ACCEPTED','NONE'
 
 
-def classify(boxes, image, inventories, models):
+def classify(boxes, image, inventories, models, backend='cpu'):
     import glyphs as g
     import torch
     from numpy import stack
+    require(backend in ('cpu','cuda'),'Explicit supported classifier backend required')
+    if not boxes: return []
     with torch.inference_mode():
         features=torch.from_numpy(stack([g.feature(image.crop(b)) for b in boxes]))
+        if backend=='cuda': features=features.to('cuda:0')
+        device='cuda:0' if backend=='cuda' else 'cpu'
         out=[{} for _ in boxes]
         for name,proto in models.items():
-            p=torch.tensor(proto,dtype=torch.float32,device='cpu')
+            p=torch.tensor(proto,dtype=torch.float32,device=device)
             for row,(i,d,m) in zip(out,g.classify(features,p)):
                 row[name]=dict(label=inventories[name][0][i],distance=d,margin=m)
         return out
+
+
+# Candidate GPU scoring never inherits the CPU calibration. Require exact label
+# and abstention-reason parity plus the existing replay numerical tolerance.
+def compare_candidate(cpu,gpu,inventories):
+    require(len(cpu)==len(gpu),'CUDA parity denominator mismatch')
+    for a,b in zip(cpu,gpu):
+        require(set(a)==set(b),'CUDA parity convention mismatch')
+        for name in a:
+            x,y=a[name],b[name]
+            score(x['distance'],x['margin']); score(y['distance'],y['margin'])
+            require(x['label']==y['label'] and abs(x['distance']-y['distance'])<=1e-6
+                    and abs(x['margin']-y['margin'])<=1e-6,'CUDA numerical/label parity mismatch')
+        require(route(a,inventories,None,None)==route(b,inventories,None,None),'CUDA routing parity mismatch')
+    return gpu
+
+
+def candidate(boxes,image,inventories,models):
+    # Same frozen feature extractor and classifier; GPU is not a fallback.
+    cpu=classify(boxes,image,inventories,models,'cpu')
+    gpu=classify(boxes,image,inventories,models,'cuda')
+    return compare_candidate(cpu,gpu,inventories)

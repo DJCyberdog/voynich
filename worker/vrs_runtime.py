@@ -14,7 +14,7 @@ from vrs_exceptions import load_page, outcomes, candidate_id, box_key
 from vrs_service import Service
 from vrs_decisions import Decisions
 
-VERSION='0.9.6'
+VERSION='0.13.1-cuda-candidate.1'
 
 
 class Runtime(Service):
@@ -24,15 +24,25 @@ class Runtime(Service):
         self.identity=c.digest(dict(parent=self.identity,version=VERSION,torch=importlib.metadata.version('torch'),sources={n:core.sha(path/n) for n in ('vrs_runtime.py','vrs_recognition.py','vrs_decisions.py','alignment.py')}))
         self.decisions=Decisions(self.ledger)
 
+    def _backend(self,manifest):
+        if manifest['backend']!='cuda': return 'cpu'
+        info=h.snapshot(self.home,'cuda',0)
+        if not (info.get('gpu') or {}).get('ok'):
+            raise h.ResourceBlocked('Explicit CUDA unavailable; no CPU fallback')
+        return 'cuda'
+
     def register(self,manifest):
         c.manifest(self.root,manifest); rec.inputs(self.root,manifest)
-        return super().register(manifest)
+        backend=self._backend(manifest)
+        return self.ledger.register(manifest,backend,self.identity)
 
     def register_plan(self,plan):
         c.fields(plan,('schema','manifests')); core.require(type(plan['schema']) is int and plan['schema']==1 and type(plan['manifests']) is list and 1<=len(plan['manifests'])<=213,'Invalid local schedule')
+        manifests=[]
         for entry in plan['manifests']:
             manifest=c.load(c.artifact(self.root,entry)); c.manifest(self.root,manifest); rec.inputs(self.root,manifest)
-        return super().register_plan(plan)
+            self._backend(manifest); manifests.append(manifest)
+        return self.ledger.register_many(manifests,self.identity,allow_cuda=True)
 
     def _classification_pages(self,receipts):
         self._validate_output(receipts['script_regions']['run_id'],receipts['script_regions'],receipts)
@@ -41,7 +51,7 @@ class Runtime(Service):
         si=load_page(c.artifact(self.root,receipts['glyph_segmentation']['artifact']))
         return ri,si
 
-    def _page_outcome(self,run,rr,ss,inv,models,approval,attempt):
+    def _page_outcome(self,run,rr,ss,inv,models,approval,attempt,backend='cpu'):
         from PIL import Image
         mp=c.artifact(self.root,rr['manifest']); m=load_page(mp); proposals=load_page(c.artifact(self.root,ss['proposals']))
         rows=[]; total=ss['candidates']; largest=max(len(x[0]) for x in inv.values())
@@ -49,10 +59,25 @@ class Runtime(Service):
         for region,proposal in zip(m['regions'],proposals['regions']):
             self._boundary(run); crop=mp.parent/region['file']
             with Image.open(c.artifact(self.root,dict(path=crop.relative_to(self.root).as_posix(),sha256=region['sha256']))) as im:
-                for start in range(0,len(proposal['boxes']),64):
-                    self._boundary(run); boxes=proposal['boxes'][start:start+64]
-                    self._admit(256*h.MIB+64*largest*1024*8+len(rows)*4096,h.MIB)
-                    results=h.bounded_call(rec.classify,boxes,im,inv,models)
+                start=0
+                while start<len(proposal['boxes']):
+                    self._boundary(run)
+                    batch=min(64,len(proposal['boxes'])-start)
+                    if backend=='cuda':
+                        core.require(approval is None,'CUDA policy must abstain without separate calibration')
+                        # Estimates are incremental, not hard driver/OS quotas.
+                        info=h.snapshot(self.home,'cuda',0)
+                        ram_base=256*h.MIB+len(rows)*4096
+                        ram_item=max(4096,largest*1024*16)
+                        vram_base=64*h.MIB+largest*1024*4
+                        vram_item=max(4096,largest*1024*16)
+                        selected=h.plan(info,dict(ram_base=ram_base,ram_item=ram_item,vram_base=vram_base,vram_item=vram_item,disk=h.MIB,items=batch),'cuda')
+                        batch=selected['batch_ceiling']
+                        h.admit_next(info,selected,ram_base+batch*ram_item,vram_base+batch*vram_item,h.MIB)
+                    boxes=proposal['boxes'][start:start+batch]
+                    self._admit(256*h.MIB+batch*largest*1024*16+len(rows)*4096,h.MIB)
+                    results=h.bounded_call(rec.candidate if backend=='cuda' else rec.classify,boxes,im,inv,models)
+                    start+=len(boxes)
                     core.require(len(results)==len(boxes),'Classifier denominator mismatch')
                     for box,pred in zip(boxes,results):
                         key=(rr['page'],region['id'],region['sha256'],box_key(box))
@@ -90,7 +115,7 @@ class Runtime(Service):
         return ri,si,data
 
     def _classify(self,run,token,status,manifest,receipts,inv,models,approval):
-        stage='glyph_classification'; ri,si=self._classification_pages(receipts); pages=[]; counts=dict(total=0,accepted=0,abstained=0,failed=0)
+        stage='glyph_classification'; backend=self._backend(manifest); ri,si=self._classification_pages(receipts); pages=[]; counts=dict(total=0,accepted=0,abstained=0,failed=0)
         if status['checkpoint']:
             cp=c.load(c.artifact(self.root,status['checkpoint']['artifact'])); c.fields(cp,('schema','worker','run_id','stage','pages'))
             core.require(cp['schema']==1 and cp['worker']==self.identity and cp['run_id']==run and cp['stage']==stage,'Classification checkpoint mismatch'); pages=cp['pages']
@@ -103,7 +128,7 @@ class Runtime(Service):
             for idx,(rr,ss) in enumerate(zip(ri['pages'],si['pages'])):
                 self._boundary(run)
                 if idx>=len(pages):
-                    pages.append(self._page_outcome(run,rr,ss,inv,models,approval,attempt))
+                    pages.append(self._page_outcome(run,rr,ss,inv,models,approval,attempt,backend))
                     self._verify_page(run,rr,ss,pages[idx],inv,approval,models)
                     path=attempt/f'checkpoint-{rr["page"]:04d}.json'
                     write_new(path,dict(schema=1,worker=self.identity,run_id=run,stage=stage,pages=pages))

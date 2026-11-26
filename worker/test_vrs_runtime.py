@@ -169,4 +169,50 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(self.status(run)['control'],'BLOCKED')
 
 
+    def test_cuda_explicit_unavailable_never_falls_back(self):
+        m=dict(self.m,backend='cuda')
+        with patch('vrs_runtime.h.snapshot',return_value={'gpu':{'ok':False}}):
+            with self.assertRaisesRegex(RuntimeError,'no CPU fallback'):self.app.register(m)
+            entry=self.file('cuda-run.json',m)
+            with self.assertRaisesRegex(RuntimeError,'no CPU fallback'):self.app.register_plan({'schema':1,'manifests':[entry]})
+        self.assertEqual(self.app.ledger.registered(),[])
+
+    def test_cuda_rejects_cpu_calibration(self):
+        m=dict(self.approve(),backend='cuda')
+        with self.assertRaisesRegex(ValueError,'CPU calibration'):self.app.register(m)
+        self.assertEqual(self.app.ledger.registered(),[])
+
+    def test_cuda_candidate_parity_guards(self):
+        inv={'Eva-':(['a','b'],'0'*64)}
+        a=[{'Eva-':dict(label='a',distance=.1,margin=.02)}]
+        b=copy.deepcopy(a)
+        b[0]['Eva-']['distance']+=.0000001
+        self.assertEqual(rec.compare_candidate(a,b,inv),b)
+        for change in (dict(label='b'),dict(distance=.11),dict(margin=.01)):
+            b=copy.deepcopy(a);b[0]['Eva-'].update(change)
+            with self.assertRaises(ValueError):rec.compare_candidate(a,b,inv)
+        a[0]['Eva-']['distance']=.12
+        b=copy.deepcopy(a);b[0]['Eva-']['distance']+=.0000001
+        with self.assertRaisesRegex(ValueError,'routing parity'):rec.compare_candidate(a,b,inv)
+
+    def test_native_cuda_candidate(self):
+        if os.environ.get('VRS_NATIVE_CUDA_TEST')!='1':
+            self.skipTest('Explicit native CUDA qualification required')
+        import torch
+        self.assertTrue(torch.cuda.is_available(),'CUDA required, no skip or CPU fallback')
+        m=dict(self.m,backend='cuda')
+        run=self.run_to_review(m)
+        st=self.status(run)
+        self.assertEqual(st['receipts']['glyph_classification']['counts']['accepted'],0)
+        self.assertGreater(st['receipts']['glyph_classification']['counts']['abstained'],0)
+        with self.app.ledger._tx() as conn:
+            row=self.app.ledger._row(conn,'runs',run)
+            self.assertEqual(row['backend'],'cuda')
+        q=self.app.review_items(run,limit=1000)
+        for item in q['items']:self.app.submit(self.decision(run,item,'false_positive'))
+        self.assertEqual(self.app.sweep()[0]['stage'],'exception_review')
+        self.assertEqual(self.app.sweep()[0]['control'],'COMPLETED')
+        self.assertEqual(self.app.ledger.outbox(),[])
+
+
 if __name__=='__main__': unittest.main()
