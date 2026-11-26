@@ -1,0 +1,42 @@
+name: VRS portable Windows candidate
+on:
+  push:
+    branches: [development/vrs-0.13.0, development/vrs-0.13.1]
+    paths:
+      - 'worker/**'
+      - '.github/workflows/vrs-portable-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: windows-2025
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [review, cpu]
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - name: Preserve Git blob line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.5'
+          architecture: x64
+      - name: Assemble and qualify disposable native package
+        working-directory: worker
+        run: python -B vrs_native_acceptance.py --profile ${{ matrix.profile }} --disposable-test --report "${{ runner.temp }}/vrs-native-${{ matrix.profile }}.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vrs-native-${{ matrix.profile }}-evidence
+          path: ${{ runner.temp }}/vrs-native-${{ matrix.profile }}.json
+          if-no-files-found: warn
+          retention-days: 14

@@ -12,3 +12,7 @@ Source only; not an accepted self-installing distribution. Native assets and qua
 8. Build.bat builds deterministic source-only ZIP against portable_sources.json from clean source. No runtime, wheelhouse, private research input or workspace included.
 
 Native installation, DPAPI, full GUI/worker/tray, actual source ZIP build, complete lock/license provenance, clean relocation/resume/delete, all external write checks and full regression remain open. No admin/global registration intended; OS/driver traces, unmanaged direct entry points and external publications outside wrapper scope. No secure erasure or general sandbox. Source updates, comprehensive inner-stage logging and general artifact quotas remain unfinished. Do not use production data until acceptance.
+
+## Disposable qualification (developer only)
+
+On trusted Windows x64 CPython 3.13 with Tcl/Tk, venv and ensurepip, run from worker/: `python -B vrs_native_acceptance.py --profile review --disposable-test --report native-review.json` (or cpu; cuda only on an appropriate NVIDIA device). This explicitly permits candidate dependency resolution/downloads in a disposable directory and test-only installation, not installation of production data. Results include candidate hashes and individual checks. Do not copy the test approval to an owner installation. Full source and dependency licensing review is required before distributing any binary bundle. See [native acceptance checklist](VRS-132-134.md).
