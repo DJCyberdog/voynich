@@ -2,7 +2,8 @@ import tempfile,unittest,zipfile
 from pathlib import Path
 from vrs_prepare_plan import prepare
 from vrs_portable import save,local
-from vrs_license_inventory import inventory,member_inventory
+from vrs_license_inventory import inventory,member_inventory,clean,dependency_fields,unresolved_license_files
+from email.parser import BytesParser
 
 class LicenseInventory(unittest.TestCase):
     def fixture(self,root):
@@ -28,6 +29,7 @@ class LicenseInventory(unittest.TestCase):
             self.assertEqual(len(r['wheels']),2)
             self.assertEqual(r['wheels'][0]['declared_license_expression'],['MIT'])
             self.assertTrue(r['wheels'][0]['notice_files'])
+            self.assertEqual(r['wheels'][0]['unresolved_declared_license_files'],[])
             self.assertTrue(r['wheels'][1]['missing_declared_license'])
             self.assertTrue(r['wheels'][1]['missing_notice_files'])
             self.assertEqual(len(r['runtime']['embedded_wheels']),1)
@@ -47,5 +49,18 @@ class LicenseInventory(unittest.TestCase):
                     for n in names:z.writestr(n,b'x')
                 with zipfile.ZipFile(p) as z:
                     with self.assertRaises(ValueError):member_inventory(z)
+
+    def test_metadata_not_silently_truncated(self):
+        value='package; extra == "'+('x'*600)+'"'
+        message=BytesParser().parsebytes(('Requires-Dist: '+value+'\n').encode())
+        self.assertEqual(dependency_fields(message),[value])
+        with self.assertRaises(ValueError):clean('x'*4097)
+        message=BytesParser().parsebytes(b'Requires-Dist: dep\n'*257)
+        with self.assertRaisesRegex(ValueError,'Dependency metadata quota'):dependency_fields(message)
+
+    def test_unresolved_license_file_declarations(self):
+        rows=[dict(member='example-1.dist-info/licenses/LICENSE.txt')]
+        self.assertEqual(unresolved_license_files('example-1.dist-info/METADATA',
+            ['LICENSE.txt','MISSING.txt','../LICENSE.txt'],rows),['MISSING.txt','../LICENSE.txt'])
 
 if __name__=='__main__':unittest.main()

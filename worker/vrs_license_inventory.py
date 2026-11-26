@@ -56,7 +56,24 @@ def notices(z,items):
     return sorted(rows,key=lambda r:r['member'])
 
 def clean(text):
-    return ' '.join(str(text).split())[:512]
+    # Unfold email metadata without silently clipping licensing or dependency facts.
+    value=re.sub(r'\r?\n[ \t]+',' ',str(text)).strip()
+    need(len(value)<=4096 and not any(ord(ch)<32 and ch!='\t' for ch in value),'Metadata value quota or control character')
+    return value
+
+
+def dependency_fields(message):
+    values=message.get_all('Requires-Dist',[])
+    need(len(values)<=256,'Dependency metadata quota')
+    return [clean(value) for value in values]
+
+
+def unresolved_license_files(metadata_member,declared,notice_rows):
+    # Core metadata License-File paths are relative to .dist-info/licenses.
+    # Do not extract or resolve an untrusted declaration as a filesystem path.
+    prefix=metadata_member.rsplit('/',1)[0]+'/licenses/'
+    present={row['member'] for row in notice_rows}
+    return [value for value in declared if prefix+value not in present]
 
 def wheel(path,item,expected):
     name,version=wheel_identity(path)
@@ -72,12 +89,15 @@ def wheel(path,item,expected):
         declared_files=[clean(x) for x in m.get_all('License-File',[])]
         need(len(expression)<=1 and len(legacy)<=1 and len(classifiers)<=128 and len(declared_files)<=2048,'License metadata quota')
         files=notices(z,items)
+        dependencies=dependency_fields(m)
+        unresolved=unresolved_license_files(metas[0].filename,declared_files,files)
     need(digest(path)==item['sha256'],'Asset changed during inventory')
     return dict(name=name,version=version,file=item['file'],sha256=item['sha256'],
                 bytes=item['size'],metadata_sha256=sha(data),
                 declared_license_expression=expression,legacy_license_field_sha256=legacy,
                 license_classifiers=classifiers,declared_license_files=declared_files,
-                notice_files=files,requires_dist=[clean(x) for x in m.get_all('Requires-Dist',[])][:256],
+                notice_files=files,requires_dist=dependencies,
+                unresolved_declared_license_files=unresolved,
                 license_review='PENDING_MANUAL_REVIEW',
                 missing_declared_license=not bool(expression or legacy or classifiers),
                 missing_notice_files=not bool(files))
