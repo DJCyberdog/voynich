@@ -58,6 +58,27 @@ class LicenseInventory(unittest.TestCase):
         message=BytesParser().parsebytes(b'Requires-Dist: dep\n'*257)
         with self.assertRaisesRegex(ValueError,'Dependency metadata quota'):dependency_fields(message)
 
+    def test_locked_candidate_archive(self):
+        from vrs_build_portable import build_candidate
+        import hashlib,json
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d).resolve();p=self.fixture(root)
+            (root/'README.md').write_bytes(b'synthetic source')
+            data=(root/'README.md').read_bytes()
+            save(root/'portable_sources.json',dict(schema=1,files={'README.md':hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()}))
+            (root/'private.txt').write_bytes(b'never bundle')
+            output=build_candidate(root,'review',p['plan'],p['sha256'])
+            with zipfile.ZipFile(output) as z:
+                prefix='Voynich Research Studio/'
+                self.assertNotIn(prefix+'private.txt',z.namelist())
+                self.assertEqual(z.read(prefix+'bootstrap/python.exe'),b'fixture')
+                self.assertFalse(json.loads(z.read(prefix+'CANDIDATE.json'))['redistribution_approved'])
+                lock=json.loads(z.read(prefix+p['plan']))
+                for asset in [lock['runtime'],*lock['wheels']]:
+                    name=prefix+'cache/downloads/'+asset['sha256']+'/'+asset['file']
+                    self.assertEqual(hashlib.sha256(z.read(name)).hexdigest(),asset['sha256'])
+            with self.assertRaises(ValueError):build_candidate(root,'review',p['plan'],p['sha256'])
+
     def test_unresolved_license_file_declarations(self):
         rows=[dict(member='example-1.dist-info/licenses/LICENSE.txt')]
         self.assertEqual(unresolved_license_files('example-1.dist-info/METADATA',

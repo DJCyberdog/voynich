@@ -92,6 +92,12 @@ def qualify(source,profile,report):
         plan=step('lock_candidate',lambda:prepare(root,profile,rt,wheels));result['plan_sha256']=plan['sha256'];result['wheel_count']=plan['wheels'];result['lock']=json.loads((root/plan['plan']).read_text())
         from vrs_license_inventory import inventory
         result['component_license_inventory']=step('component_license_inventory',lambda:inventory(root,profile,plan['plan'],plan['sha256']))
+        from vrs_build_portable import build_candidate
+        def candidate_zip():
+            candidate=build_candidate(root,profile,plan['plan'],plan['sha256'])
+            value=dict(sha256=digest(candidate),bytes=candidate.stat().st_size,redistribution_approved=False)
+            candidate.unlink();return value
+        result['candidate_zip']=step('locked_candidate_zip',candidate_zip)
         # Consent is limited to this disposable test, not a transferable owner approval.
         step('offline_setup',lambda:batch(root,'Setup','--profile',profile,'--plan',plan['plan'],'--approve',plan['sha256']))
         def run(code):subprocess.run([str(exe(root,profile)),'-s','-c',code],cwd=root,env=environment(root),check=True,timeout=90)
