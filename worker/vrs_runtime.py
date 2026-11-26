@@ -9,7 +9,7 @@ import vrs_contract as c
 import vrs_core as core
 import vrs_hardware as h
 import vrs_recognition as rec
-from vrs_coordinator import StopRequested, inside, ref, scheduler_lock, write_new
+from vrs_coordinator import StopRequested, inside, ref, write_new
 from vrs_exceptions import load_page, outcomes, candidate_id, box_key
 from vrs_service import Service
 from vrs_decisions import Decisions
@@ -206,15 +206,16 @@ class Runtime(Service):
             if owned: self.ledger.release(run,token)
 
     def submit(self,decision):
+        # A decision for a parked run must not acquire the scheduler-wide lock.
+        # The ledger transaction and compare-and-swap revision fence mutations.
         run=decision['run_id']
-        with scheduler_lock(self.lock):
-            with self.ledger._tx() as conn:
-                row=self.ledger._row(conn,'runs',run); manifest,receipts,_=self.ledger._validate(row)
-            inv,models,approval,_=rec.inputs(self.root,manifest); self._verify_classification(run,manifest,receipts,inv,approval,models)
-            return self.decisions.submit(decision,inv,self.identity)
+        with self.ledger._tx() as conn:
+            row=self.ledger._row(conn,'runs',run); manifest,receipts,_=self.ledger._validate(row)
+        inv,models,approval,_=rec.inputs(self.root,manifest); self._verify_classification(run,manifest,receipts,inv,approval,models)
+        return self.decisions.submit(decision,inv,self.identity)
 
     def resume(self,run):
-        with scheduler_lock(self.lock),self.ledger._tx() as conn:
+        with self.ledger._tx() as conn:
             row=self.ledger._row(conn,'runs',run); _,receipts,_=self.ledger._validate(row)
             core.require(row['worker']==self.identity and row['token'] is None and row['control'] in ('PAUSED','BLOCKED'),'Run not resumable')
             if receipts['exception_review']['reason']=='REVIEW_PENDING':

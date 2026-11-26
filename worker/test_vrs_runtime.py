@@ -159,5 +159,14 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(self.app.review_items(run)['snapshot']['deferred'],1)
         self.assertEqual(sum(r['kind']=='REVIEW_DECISION' for r in self.app.ledger.history(run)),1)
 
+    def test_review_submission_while_unrelated_scheduler_lock_held(self):
+        from vrs_coordinator import scheduler_lock
+        run=self.run_to_review(); item=self.app.review_items(run)['items'][0]
+        with scheduler_lock(self.app.lock):
+            other=Runtime(self.root)
+            snap=other.submit(self.decision(run,item,'false_positive'))
+        self.assertEqual(snap['resolved'],1)
+        self.assertEqual(self.status(run)['control'],'BLOCKED')
+
 
 if __name__=='__main__': unittest.main()
