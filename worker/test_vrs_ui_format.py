@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from vrs_ui_format import human,parse_gpu,review_fraction,gpu_telemetry
+from vrs_ui_format import human,parse_gpu,review_fraction,gpu_telemetry,brand_icon,log_line
 
 class UiFormatTests(unittest.TestCase):
     def test_human_preserves_denominators_and_status(self):
@@ -16,3 +16,8 @@ class UiFormatTests(unittest.TestCase):
         for x in ('','0, N/A, 0, 10','0, 110, 0, 10','0, 10, 11, 10','0, nan, 1, 10','0, 0, 1, 2\n0, 0, 1, 2'):
             with self.assertRaises(ValueError):parse_gpu(x)
         with patch('vrs_ui_format.Path.is_file',return_value=False):self.assertIsNone(gpu_telemetry())
+
+    def test_brand_and_log_presentation(self):
+        self.assertEqual(brand_icon(64).size,(64,64));self.assertEqual(brand_icon(32).mode,'RGBA')
+        self.assertIn('ERROR',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',code='WORKER_FAILED',state='FAILED')))
+        self.assertIn('state: FAILED',log_line(dict(utc='2026-01-01T00:00:00Z',level='ERROR',module='worker',code='WORKER_FAILED',state='FAILED')))

@@ -7,7 +7,7 @@ from tkinter import ttk, filedialog, messagebox
 from PIL import ImageTk, Image
 from vrs_desktop_api import Desktop
 from vrs_build_portable import RELEASE_VERSION as VERSION
-from vrs_ui_format import human,review_fraction
+from vrs_ui_format import human,review_fraction,brand_icon
 
 PALETTES={
  'dark': dict(bg='#101722',panel='#172231',card='#202e40',line='#3a4b60',fg='#edf3fa',muted='#a9b9cc',accent='#5de2ca',ink='#102822',success='#86d6a4',warning='#f4c278',danger='#ff999d'),
@@ -20,6 +20,7 @@ class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
         self.run=None; self.data=None; self.items=[]; self.offset=0; self.index=0; self.image=None; self.box=None; self.photo=None; self.refphoto=None; self.factor=1.; self.glyph_only=False; self.catalog={}; self.view='Home'; self.maps={}
+        self.window_icon=ImageTk.PhotoImage(brand_icon(64),master=self.w);self.w.iconphoto(True,self.window_icon)
         self.w.title('Voynich Research Studio · '+VERSION); self.w.geometry(self.cfg['geometry']); self.w.minsize(1024,650); self.w.protocol('WM_DELETE_WINDOW',self.close)
         self.w.bind('<Control-r>',lambda e:self.refresh()); self.w.bind('<Control-Return>',lambda e:self.submit()); self.w.bind('<Alt-Left>',lambda e:self.move(-1)); self.w.bind('<Alt-Right>',lambda e:self.move(1)); self.w.bind('<Control-plus>',lambda e:self.zoom(1.25)); self.w.bind('<Control-minus>',lambda e:self.zoom(.8))
         self.build(); self.show('Home'); self.refresh()
@@ -187,7 +188,7 @@ class App:
     def render_sample(self):
         if not self.sample_refs: self.samplelabel.configure(image='',text=self.t('No visual sample')); self.samplemeta.configure(text=''); return
         ref,source=self.sample_refs[self.sample_index]; self.task(lambda:self.api.reference_image(ref),lambda im:self.sample_loaded(im,source))
-    def sample_loaded(self,im,source): self.refphoto=ImageTk.PhotoImage(im); self.samplelabel.configure(image=self.refphoto,text=''); self.samplemeta.configure(text=source)
+    def sample_loaded(self,im,source): self.refphoto=ImageTk.PhotoImage(im); self.samplelabel.configure(image=self.refphoto,text=''); self.samplemeta.configure(text=source+'  ·  '+str(self.sample_index+1)+' / '+str(len(self.sample_refs)))
     def kind_changed(self):
         for _,_,a,b in self.maps.values(): a.configure(state='readonly' if self.kind.get()=='glyph' else 'disabled'); b.configure(state='readonly' if self.kind.get()=='glyph' else 'disabled')
     def save(self,send):

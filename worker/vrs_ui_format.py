@@ -50,3 +50,17 @@ def review_fraction(snapshot):
     counts=[snapshot[k] for k in ('pending','resolved','deferred')]
     if any(type(x) is not int or x<0 for x in counts):raise ValueError('Invalid review denominator')
     return counts[1],sum(counts)
+
+def brand_icon(size=64):
+    # Local deterministic V monogram; no downloaded font, asset or native dependency.
+    from PIL import Image,ImageDraw
+    if type(size) is not int or not 16<=size<=256:raise ValueError('Invalid icon size')
+    im=Image.new('RGBA',(256,256),(0,0,0,0));d=ImageDraw.Draw(im)
+    d.rounded_rectangle((4,4,252,252),radius=52,fill='#172231',outline='#3a4b60',width=5)
+    d.polygon([(46,59),(85,59),(128,173),(171,59),(210,59),(146,210),(110,210)],fill='#5de2ca')
+    d.line((190,175,212,175),fill='#86d6a4',width=7)
+    return im.resize((size,size),Image.Resampling.LANCZOS)
+
+def log_line(row):
+    extra=' · '.join(f"{k}: {v}" for k,v in row.items() if k not in ('utc','level','module','code','schema'))
+    return f"{row['utc']}  |  {row['level']}  |  {row['module']}  |  {row['code']}"+('  ·  '+extra if extra else '')

@@ -12,7 +12,7 @@ import vrs_desktop
 from vrs_desktop import App, DE
 from vrs_operations import Operations
 from vrs_build_portable import RELEASE_VERSION as VERSION
-from vrs_ui_format import human,gpu_telemetry,review_fraction
+from vrs_ui_format import human,gpu_telemetry,review_fraction,brand_icon
 
 DE.update({'Jobs':'Jobs & Ressourcen','Evidence':'Evidenz','Start worker':'Worker starten','Stop worker':'Worker stoppen','Pause':'Pausieren','Resume':'Fortsetzen','Cancel':'Abbrechen','Resource ceilings':'Ressourcengrenzen','Save ceilings':'Grenzen speichern','CPU threads':'CPU-Threads','RAM estimate MiB':'RAM-Schätzung MiB','Disk estimate MiB':'Speicherschätzung MiB','Export local preview':'Lokale Vorschau speichern','Enable tray':'Tray aktivieren','Hide to tray':'In Tray minimieren','Open':'Öffnen','Exit desktop':'Oberfläche beenden','No automatic accuracy claim':'Keine automatische Genauigkeitsaussage','Actual checkpoint progress':'Tatsächlicher Checkpoint-Fortschritt','Local managed worker':'Lokal verwalteter Worker','Review required':'Review erforderlich','No GPU telemetry':'Keine GPU-Messung','Ceilings apply after worker restart; 0 = default':'Grenzen gelten nach Worker-Neustart; 0 = Standard','Refresh evidence':'Evidenz aktualisieren','Diagnostics':'Diagnose','Compared regions':'Verglichene Regionen','Unresolved regions':'Ungeklärte Regionen'})
 
@@ -131,7 +131,10 @@ class Monitor(App):
             waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED'); self.notice_done((len(waiting),digest(waiting)))
 
     def write_text(self,widget,value):
-        if widget is getattr(self,'job_text',None):self.job_value=value
+        if widget is getattr(self,'job_text',None):
+            self.job_value=value
+            if 'receipts' in value:
+                receipts=value['receipts'];self.job_progress.configure(maximum=max(1,len(receipts)),value=sum(r['state']=='COMPLETED' for r in receipts.values()))
         widget.configure(state='normal');widget.delete('1.0','end');widget.insert('end',human(value));widget.configure(state='disabled')
 
     def job_detail(self):
@@ -188,8 +191,7 @@ class Monitor(App):
         if os.name!='nt': messagebox.showinfo('VRS','Native tray requires Windows; worker remains independent.',parent=self.w);return
         try:
             import pystray
-            from PIL import Image,ImageDraw
-            im=Image.new('RGB',(64,64),'#192330'); d=ImageDraw.Draw(im); d.polygon([(12,12),(30,52),(52,12),(42,12),(30,39),(22,12)],fill='#59d6c2')
+            im=brand_icon(64)
             menu=pystray.Menu(pystray.MenuItem(self.t('Open'),lambda *_:self.events.put('show'),default=True),pystray.MenuItem(self.t('Review'),lambda *_:self.events.put('review')),pystray.MenuItem(self.t('Exit desktop'),lambda *_:self.events.put('exit')))
             icon=pystray.Icon('VRS',im,'Voynich Research Studio',menu)
             def setup(icon):
