@@ -13,3 +13,16 @@ crops/
 dataset/
 run*/
 private/
+
+/bootstrap/
+/runtime/
+/cache/
+/config/
+/data/
+/logs/
+/models/
+/temp/
+/workspace/
+/dist/
+*.dpapi
+*.part
