@@ -1,7 +1,9 @@
 name: VRS baseline CPU regression
 on:
   push:
-    branches: [development/gpu-worker-v0.1.0]
+    branches:
+      - development/gpu-worker-v0.1.0
+      - codex/security-hardening-vrs-ci
     paths:
       - 'worker/**'
       - '.github/workflows/vrs-baseline.yml'
