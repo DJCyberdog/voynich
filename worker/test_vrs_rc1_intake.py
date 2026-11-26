@@ -202,3 +202,30 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(details['extra.docx']['paragraphs'],1)
         self.provision()
         self.assertEqual(len(Desktop(self.out).sources()),7)
+
+    def test_audit_does_not_infer_independence_or_rights(self):
+        self.rows[0]['rights']='UNKNOWN'
+        result=i.audit(self.intake,self.plan)
+        self.assertEqual(result['report']['status'],'BLOCKED')
+        self.assertEqual(len(result['sources']),5)
+        self.assertTrue(all(row['validated'] for row in result['sources']))
+        self.assertTrue(all(row['edition_family_hint'] is None for row in result['sources']))
+        self.assertFalse(result['independence_established'])
+        self.assertFalse(result['alignment_authorized'])
+        self.assertFalse(self.out.exists())
+
+    def test_bad_archive_is_structured_blocked(self):
+        import zipfile
+        p=self.path('invalid.zip');p.write_bytes(b'not a zip')
+        self.add('transcription_archive','EVT-EVA',p.name)
+        report,_=i.inspect(self.intake,self.plan)
+        self.assertEqual(report['status'],'BLOCKED')
+        self.assertEqual(report['blocked'][0]['reason'],'SOURCE_VALIDATION_FAILED')
+        self.rows.pop()
+        p=self.path('unsafe.docx')
+        with zipfile.ZipFile(p,'w') as z:
+            z.writestr('[Content_Types].xml','<Types/>')
+            z.writestr('word/document.xml','<!DOCTYPE x [<!ENTITY a "unsafe">]><x>&a;</x>'.encode('utf-16'))
+        self.add('supplementary_document',None,p.name)
+        report,_=i.inspect(self.intake,self.plan)
+        self.assertEqual(report['status'],'BLOCKED')

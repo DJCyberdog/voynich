@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import stat
+import zipfile
 from pathlib import Path
 
 import vrs_contract as c
@@ -135,7 +136,7 @@ def inspect(root,plan):
                 from PIL import Image
                 with Image.open(p) as im:need(im.width*im.height<=4_000_000,'Reference image quota');im.verify()
             details[row['id']]=info
-        except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError) as exc:
+        except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError,zipfile.BadZipFile) as exc:
             blocked.append(dict(id=row['id'],reason='SOURCE_VALIDATION_FAILED',error_type=type(exc).__name__))
     missing=missing_roles(roles)
     if not blocked:
@@ -177,7 +178,7 @@ def inspect(root,plan):
                 groups=c.load(local(root,v['inputs']['groups']['path']))
                 pages=details[paths[v['inputs']['manuscript']['path']]['id']]['pages']
                 need(type(groups) is dict and 1<=len(groups)<=213 and all(type(k) is str and k.isdecimal() and str(int(k))==k and 0<int(k)<=pages and type(g) is str and g.strip() for k,g in groups.items()),'Invalid physical page scope')
-        except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError) as exc:
+        except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError,zipfile.BadZipFile) as exc:
             blocked.append(dict(id='dependencies',reason='DEPENDENCY_VALIDATION_FAILED',error_type=type(exc).__name__))
     return dict(schema=1,scope=plan['scope'],plan_sha256=c.digest(plan),status='BLOCKED' if blocked else 'INVENTORY_INCOMPLETE' if missing else 'INVENTORY_PASS',
                 sources=len(paths),verified_sources=len(details),bytes=sum(r['bytes'] for r in paths.values()),blocked=blocked,missing=missing,
@@ -254,23 +255,37 @@ def starter(source,intake):
     result=dict(schema=1,scope='REAL_RESEARCH',application_sha256=digest(local(source,'portable_sources.json')),sources=rows,run_manifest=None,catalog=None)
     validate_plan(result);return result
 
+def audit(root,plan):
+    report,details=inspect(root,plan)
+    # Edition-family hints are bound to exact known source bytes, not filenames.
+    families={'zl3b-sta1':'ZL3b','zl3b-eva':'ZL3b','rf1b-e':'RF1b','rf1b-er':'RF1b','gc2a-v101':'v101','v101-legacy':'v101','takahashi-it2a-original':'Takahashi','fsg-fg2a':'FSG','currier-cd2a':'Currier','stolfi-evt-16e6':'historical_composite'}
+    known={row[4]:row[0] for row in (*KNOWN_SOURCES,*OPTIONAL_SOURCES)}
+    sources=[]
+    for row in plan['sources']:
+        identity=known.get(row['sha256']);d=details.get(row['id'])
+        sources.append(dict(id=row['id'],role=row['role'],scheme=row['scheme'],sha256=row['sha256'],bytes=row['bytes'],rights=row['rights'],known_source=identity,edition_family_hint=families.get(identity),validated=d is not None,details=d))
+    return dict(report=report,sources=sources,independence_established=False,alignment_authorized=False,scope='LOCAL_SOURCE_AUDIT')
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='action',required=True)
     q=sub.add_parser('starter');q.add_argument('intake',type=Path);q.add_argument('--source',type=Path,default=Path(__file__).resolve().parent)
-    q=sub.add_parser('inspect');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path)
+    for action in ('inspect','audit'):
+        q=sub.add_parser(action);q.add_argument('intake',type=Path);q.add_argument('plan',type=Path)
     q=sub.add_parser('preview-catalog');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path);q.add_argument('destination',type=Path);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     q=sub.add_parser('provision');q.add_argument('intake',type=Path);q.add_argument('plan',type=Path);q.add_argument('destination',type=Path);q.add_argument('--source',type=Path,default=Path(__file__).resolve().parent);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     q=sub.add_parser('verify');q.add_argument('root',type=Path);q.add_argument('--approve',required=True);q.add_argument('--scope',required=True,choices=SCOPES)
     a=p.parse_args()
     try:
         if a.action=='starter':print(json.dumps(starter(a.source,a.intake),indent=2,sort_keys=True));return 0
+        if a.action=='audit':
+            value=audit(a.intake,c.load(a.plan));print(json.dumps(value,indent=2,sort_keys=True));return int(value['report']['status']=='BLOCKED')
         if a.action=='inspect':value=inspect(a.intake,c.load(a.plan))[0]
         elif a.action=='preview-catalog':
             from vrs_rc1_catalog import build_preview
             value=build_preview(a.intake,a.destination,c.load(a.plan),a.approve,a.scope)
         elif a.action=='provision':value=provision(a.source,a.intake,a.destination,c.load(a.plan),a.approve,a.scope)
         else:value=verify(a.root,a.approve,a.scope)
-    except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError) as exc:
+    except (ValueError,OSError,RuntimeError,KeyError,TypeError,ImportError,zipfile.BadZipFile) as exc:
         print(json.dumps(dict(status='BLOCKED',error_type=type(exc).__name__,execution_authorized=False)));return 1
     print(json.dumps(value,indent=2,sort_keys=True));return int(value['status']=='BLOCKED')
 

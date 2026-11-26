@@ -169,10 +169,10 @@
     "test_vrs_ui_format.py": "86ce72dc4085a8b044123f23f4349ab80b39afa7",
     "vrs_ui_gallery.py": "c933c719b0d1290bbc46ed3b6a4e7c2c9422931b",
     "VRS-142.md": "2f056e5327cfff75dcbd460ef419fc4029c7c752",
-    "VRS-RC1.md": "933770f80b138c8e8d280ba4e358e6f7e03798f9",
-    "vrs_rc1_intake.py": "e0cf667e9c5f1f977bc26af6b69949711070d206",
-    "test_vrs_rc1_intake.py": "ad747753d69072c0ac8b96c0e30d2cd6fdea8fa2",
+    "VRS-RC1.md": "7c8f707208c2a436a2c6782e1fbd9ef3eda5decd",
+    "vrs_rc1_intake.py": "e5645305733b88f3f143398563765d9149ec9c1a",
+    "test_vrs_rc1_intake.py": "4d0743da5684718623e84c1a6ffd703aeb356bbd",
     "vrs_rc1_catalog.py": "11117e6264361014a0f4e3fce6e470915df294cf",
-    "vrs_rc1_archive.py": "6d94d29c6399f2267e0d8bf54b8c2f1b0b7a7cde"
+    "vrs_rc1_archive.py": "302029c9ba4297cda6ca5d60023e6868aa23e0f5"
   }
 }

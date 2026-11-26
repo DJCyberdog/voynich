@@ -16,7 +16,8 @@ PAGE=re.compile(rb'<f(?:\d+[rv]\d*|Ros)>\s*.*')
 
 def checked_zip(path):
     """Return opened bounded archive. Never extract, follow links or load macros."""
-    z=zipfile.ZipFile(path)
+    try:z=zipfile.ZipFile(path)
+    except zipfile.BadZipFile as exc:raise ValueError('Invalid ZIP container') from exc
     try:
         seen=set();total=0;files={}
         for i in z.infolist():
@@ -76,8 +77,11 @@ def inspect_evt(path):
     return dict(format='EVT interlinear',scheme='EVT-EVA',member=name,member_sha256=hashlib.sha256(raw).hexdigest(),records=sum(rows.values()),unique_loci=len(loci),unique_locus_variant_pairs=len(pairs),page_identifiers=len(pages),header_records=headers,comment_lines=comments,variant_counts=dict(sorted(rows.items())),non_ascii_records=nonascii,runtime_eligible=False,independent_sources_established=False)
 
 def xml(z,name):
-    raw=z.read(name);need(b'<!DOCTYPE' not in raw.upper() and b'<!ENTITY' not in raw.upper(),'XML declaration refused')
-    return ET.fromstring(raw)
+    raw=z.read(name)
+    # OOXML inputs in this intake are UTF-8. Refuse alternate encodings and DTDs.
+    text=raw.decode('utf-8-sig');need('\x00' not in text and '<!DOCTYPE' not in text.upper() and '<!ENTITY' not in text.upper(),'XML declaration refused')
+    try:return ET.fromstring(text)
+    except ET.ParseError as exc:raise ValueError('Malformed OOXML part') from exc
 
 def inspect_document(path,role):
     z,files=checked_zip(path)
