@@ -25,7 +25,7 @@ class OperationsTests(unittest.TestCase):
         while time.monotonic()<deadline:
             if fn():return
             time.sleep(.1)
-        self.fail('Condition timed out')
+        self.fail('Condition timed out; managed session state: '+self.api.session()['state'])
 
     def test_empty_resources_and_caps(self):
         with tempfile.TemporaryDirectory() as d:
@@ -46,6 +46,25 @@ class OperationsTests(unittest.TestCase):
             self.assertFalse(self.f.status(run)['locked']); self.assertEqual(self.f.app.ledger.outbox(),[])
         finally:
             if self.api.session()['state'] in ('RUNNING','STOP_REQUESTED'):self.api.stop(); self.wait(lambda:self.api.session()['state']=='STOPPED')
+
+    def test_terminal_acknowledgement_waits_for_process_exit(self):
+        import psutil
+        from vrs_desktop_api import atomic_json
+        from vrs_operations import BASE
+        p=self.root/BASE/'session.json';ident='a'*32
+        atomic_json(p,dict(id=ident,pid=os.getpid(),created=psutil.Process().create_time(),state='STOPPED',limits=self.api.settings_ops()))
+        self.assertEqual(self.api.session()['state'],'STOP_REQUESTED')
+        # Reused or absent PID cannot impersonate the original process.
+        data=c.load(p);data['created']-=100;atomic_json(p,data)
+        self.assertEqual(self.api.session()['state'],'STOPPED')
+
+    def test_bounded_session_write_retry(self):
+        from vrs_operations import write_session
+        p=self.root/'session-fixture.json';value={'state':'STOPPED'}
+        with patch('vrs_operations.os.name','nt'),patch('vrs_operations.atomic_json',side_effect=[PermissionError('sharing violation'),None]) as write,patch('vrs_operations.time.sleep'):
+            write_session(p,value);self.assertEqual(write.call_count,2)
+        with patch('vrs_operations.os.name','nt'),patch('vrs_operations.atomic_json',side_effect=PermissionError('persistent')),patch('vrs_operations.time.monotonic',side_effect=[0,4]):
+            with self.assertRaises(PermissionError):write_session(p,value)
 
     def test_resource_ceiling_pauses_and_resume(self):
         run=self.f.app.register(self.f.m); self.api.save_ops(dict(cpu_threads=1,ram_mib=1,disk_mib=0))

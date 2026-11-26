@@ -30,6 +30,17 @@ def limits(value):
     return value
 
 
+def write_session(path,value):
+    # Windows readers/antivirus can temporarily prevent an atomic replace.
+    # Retry only PermissionError, bounded; never report a successful write otherwise.
+    deadline=time.monotonic()+3
+    while True:
+        try:atomic_json(path,value);return
+        except PermissionError:
+            if os.name!='nt' or time.monotonic()>=deadline:raise
+            time.sleep(.05)
+
+
 class Operations(Desktop):
     def settings_ops(self):
         p=safe(self.root,'config/vrs-operations.json')
@@ -112,7 +123,7 @@ class Operations(Desktop):
             if active: rss=proc.memory_info().rss
         except psutil.Error: pass
         state='RUNNING' if active else (s['state'] if s.get('state') in ('STOPPED','FAILED') else 'NOT_RUNNING')
-        if active and safe(self.root,f'{BASE}/stop-{s["id"]}').exists(): state='STOP_REQUESTED'
+        if active and (s.get('state') in ('STOPPED','FAILED') or safe(self.root,f'{BASE}/stop-{s["id"]}').exists()): state='STOP_REQUESTED'
         return dict(state=state,id=s['id'],pid=s['pid'] if active else None,rss=rss,limits=s['limits'])
 
     def resources(self):
@@ -182,7 +193,7 @@ def serve(root,ident):
         def poll():
             while not app.stop.wait(.2):
                 if stop.exists(): app.stop.set(); return
-        thread=threading.Thread(target=poll,daemon=True); thread.start(); atomic_json(path,session)
+        thread=threading.Thread(target=poll,daemon=True); thread.start(); write_session(path,session)
         state='STOPPED'
         from vrs_worker_log import WorkerLog
         journal=WorkerLog(root); journal.start()
@@ -192,8 +203,11 @@ def serve(root,ident):
         except BaseException as error:
             state='FAILED'; journal.failed(error); raise
         finally:
-            app.stop.set(); thread.join(timeout=1); atomic_json(path,{**session,'state':state}); stop.unlink(missing_ok=True)
+            app.stop.set(); thread.join(timeout=1)
             if state=='STOPPED':journal.stop()
+            # Final acknowledgement follows the last runtime/log write. The
+            # reader still requires the process to exit before reporting STOPPED.
+            write_session(path,{**session,'state':state}); stop.unlink(missing_ok=True)
 
 
 def main():
