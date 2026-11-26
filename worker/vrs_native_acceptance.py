@@ -93,7 +93,7 @@ def qualify(source,profile,report):
         # Consent is limited to this disposable test, not a transferable owner approval.
         step('offline_setup',lambda:batch(root,'Setup','--profile',profile,'--plan',plan['plan'],'--approve',plan['sha256']))
         def run(code):subprocess.run([str(exe(root,profile)),'-s','-c',code],cwd=root,env=environment(root),check=True,timeout=90)
-        smoke="import sys, pathlib, tkinter as t; r=pathlib.Path.cwd(); assert pathlib.Path(sys.base_prefix).resolve().is_relative_to(r); assert pathlib.Path(sys.prefix).resolve().is_relative_to(r); w=t.Tk(); w.update(); assert pathlib.Path(w.tk.eval('info library')).resolve().is_relative_to(r); w.destroy(); import PIL,psutil,pystray"
+        smoke="import sys, pathlib, tkinter as t; r=pathlib.Path.cwd().resolve(strict=True); assert pathlib.Path(sys.base_prefix).resolve()==r/'runtime'/'"+profile+"', 'base_prefix'; assert pathlib.Path(sys.prefix).resolve()==r/'.venv'/'"+profile+"', 'prefix'; w=t.Tk(); w.update(); assert pathlib.Path(w.tk.eval('info library')).resolve().is_relative_to(r), 'Tcl library'; w.destroy(); import PIL,psutil,pystray"
         if profile=='review':smoke+="; import importlib.util as u; assert all(u.find_spec(x) is None for x in ('torch','numpy','fitz'))"
         else:smoke+="; import torch; assert torch.ones(4).sum().item()==4"
         step('native_gui_and_profile',lambda:run(smoke))
@@ -124,7 +124,7 @@ assert not any(x['event']=='CRASH' for x in records(Path.cwd()))
         if profile=='cpu':step('cpu_integration',lambda:test(['test_vrs_runtime','test_vrs_desktop','test_vrs_operations','test_vrs_learning','test_vrs_repository']))
         step('stop_idle_worker',lambda:batch(root,'Stop'))
         step('diagnostics',lambda:batch(root,'Diagnostics'))
-        marker=root/'workspace'/'preserve.txt';marker.parent.mkdir(exist_ok=True);marker.write_text('synthetic-state'); moved=home/'VRS relocated';root.rename(moved);root=moved
+        marker=root/'workspace'/'preserve.txt';marker.parent.mkdir(exist_ok=True);marker.write_text('synthetic-state'); moved=home/'VRS relocated';root.rename(moved);root=moved.resolve(strict=True)
         def moved_check():
             try:active(root)
             except ValueError:return

@@ -94,4 +94,22 @@ class TestPortable(unittest.TestCase):
     def test_logs_config(self):
         p.save(self.root/'config/logging.json',{'schema':1,'level':'WARNING','days':2});logs.event(self.root,'setup','INFO','COMMAND_START',action='setup');logs.event(self.root,'setup','ERROR','CRASH');self.assertEqual(len(logs.records(self.root)),1)
 
+
+    def test_repair_checks_interpreter_before_install_receipt(self):
+        v,h=self.make_plan()
+        seen=[]
+        def fake(root,args,**kw):
+            seen.append(args)
+            if 'venv' in args:
+                self.assertIn('-I',args)
+                x=Path(args[-1])/'Scripts/python.exe';x.parent.mkdir(parents=True);x.write_bytes(b'fixture')
+            if '-c' in args and 'VRS interpreter provenance' in args[args.index('-c')+1]:
+                raise RuntimeError('simulated provenance refusal')
+        with patch.object(p,'invoke',side_effect=fake):
+            with self.assertRaisesRegex(RuntimeError,'provenance refusal'):p.install_plan(self.root,'review',v,'config/plan.json',h,False)
+        self.assertFalse((self.root/'config/portable.json').exists())
+        self.assertFalse(any('pip' in args for args in seen))
+        with patch.dict(os.environ,{'__PYVENV_LAUNCHER__':'outside.exe'}):
+            self.assertNotIn('__PYVENV_LAUNCHER__',p.environment(self.root))
+
 if __name__=='__main__':unittest.main()

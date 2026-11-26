@@ -75,7 +75,7 @@ def save(path, value):
 def environment(root):
     env = os.environ.copy()
     for k in list(env):
-        if k.startswith(('PYTHON', 'PIP_', 'HF_', 'TORCH_', 'XDG_', 'VIRTUAL_ENV', 'CONDA_')) or k in ('TCL_LIBRARY','TK_LIBRARY') or SLOTS.fullmatch(k):
+        if k.startswith(('PYTHON', 'PIP_', 'HF_', 'TORCH_', 'XDG_', 'VIRTUAL_ENV', 'CONDA_')) or k in ('TCL_LIBRARY','TK_LIBRARY','__PYVENV_LAUNCHER__') or SLOTS.fullmatch(k):
             env.pop(k)
     for k, rel in {'TEMP':'temp','TMP':'temp','TMPDIR':'temp','PIP_CACHE_DIR':'cache/pip','HF_HOME':'cache/hf','TORCH_HOME':'cache/torch','XDG_CACHE_HOME':'cache/xdg','XDG_CONFIG_HOME':'config/xdg','XDG_DATA_HOME':'data/xdg','XDG_STATE_HOME':'workspace/xdg','CUDA_CACHE_PATH':'cache/cuda','MPLCONFIGDIR':'cache/matplotlib','TRITON_CACHE_DIR':'cache/triton','TORCHINDUCTOR_CACHE_DIR':'cache/inductor','NUMBA_CACHE_DIR':'cache/numba','UV_CACHE_DIR':'cache/uv','PYTHONPYCACHEPREFIX':'cache/pyc','HOME':'data/home','USERPROFILE':'data/home','APPDATA':'config/appdata','LOCALAPPDATA':'data/localappdata'}.items():
         p=local(root,rel); p.mkdir(parents=True,exist_ok=True); env[k]=str(p)
@@ -234,7 +234,9 @@ def install_plan(root,profile,v,rel,approved,online):
             backup=p.with_name(p.name+'.rollback'); need(not backup.exists(),'Unresolved prior installation backup')
             if p.exists(): p.rename(backup); backups.append((p,backup))
             replaced.append(p)
-        payload.rename(runtime); py=runtime/'python.exe'; invoke(root,[py,'-s','-m','venv',ven]); vp=exe(root,profile)
+        payload.rename(runtime); py=runtime/'python.exe'; invoke(root,[py,'-I','-B','-m','venv',ven]); vp=exe(root,profile)
+        # Verify exact interpreter origins before pip or successful installation receipt.
+        verify_interpreter(root,profile)
         invoke(root,[vp,'-s','-m','pip','install','--no-index','--no-deps','--only-binary=:all:','--require-hashes','--find-links',wheelhouse,'-r',lock]); invoke(root,[vp,'-s','-m','pip','check'])
         test='import sys,struct,tkinter,PIL,psutil; assert sys.version_info[:2]==(3,13) and struct.calcsize("P")==8; t=tkinter.Tcl(); print(t.eval("info patchlevel"))'
         if profile!='review': test+='; import fitz,numpy,torch; assert '+('torch.cuda.is_available(); print(torch.zeros(1,device="cuda").item())' if profile=='cuda' else 'torch.version.cuda is None')
@@ -246,6 +248,21 @@ def install_plan(root,profile,v,rel,approved,online):
         raise
     finally: shutil.rmtree(stage,ignore_errors=True)
     for _,b in backups: shutil.rmtree(b)
+
+
+def verify_interpreter(root,profile):
+    runtime=local(root,f'runtime/{profile}')
+    ven=local(root,f'.venv/{profile}')
+    code="""import pathlib,sys
+base,ven=map(lambda s:pathlib.Path(s).resolve(strict=True),sys.argv[1:3])
+checks={'base_prefix':pathlib.Path(sys.base_prefix).resolve()==base,
+        'prefix':pathlib.Path(sys.prefix).resolve()==ven,
+        'base_executable':pathlib.Path(sys._base_executable).resolve()==base/'python.exe',
+        'executable':pathlib.Path(sys.executable).resolve()==ven/'Scripts/python.exe'}
+print('VRS interpreter provenance: '+repr(checks),flush=True)
+if not all(checks.values()):raise SystemExit('Interpreter provenance mismatch')
+"""
+    invoke(root,[exe(root,profile),'-s','-c',code,runtime,ven])
 
 
 def worker_stopped(root):
