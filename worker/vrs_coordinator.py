@@ -154,6 +154,8 @@ class Coordinator:
                 manifest=core.read(c.artifact(self.root,prior['manifest']))
                 import vrs_segmentation as segmentation
                 segmentation.validate(manifest,value)
+                import vrs_hybrid_page as hybrid
+                hybrid.validate_ref(self.root,value,manifest,required=getattr(self,'hybrid_evidence',False))
                 core.require([r['id'] for r in value['regions']]==[r['id'] for r in manifest['regions']],'Region coverage mismatch')
                 core.require(all(r['status']=='unreviewed' for r in value['regions']),'Unexpected review status')
                 core.require(sum(len(r['boxes']) for r in value['regions'])==row['candidates'],'Candidate count mismatch')
