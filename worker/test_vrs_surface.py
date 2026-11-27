@@ -16,7 +16,7 @@ import worker
 class SurfaceTests(unittest.TestCase):
     def setUp(self):
         tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup)
-        self.root=Path(tmp.name)
+        self.root=Path(tmp.name).resolve(strict=True)
         self.pdf=self.root/'source.pdf'
         self.make_pdf(self.pdf)
         self.sha=worker.sha(self.pdf)
