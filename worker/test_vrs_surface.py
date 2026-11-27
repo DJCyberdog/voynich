@@ -176,6 +176,14 @@ class SurfaceTests(unittest.TestCase):
         si=c.load(c.artifact(self.root,restarted.ledger.status(run)['receipts']['glyph_segmentation']['artifact']))
         self.assertEqual(si['pages'][0]['candidates'],0)
         self.assertGreater(si['pages'][1]['candidates'],0)
+        import vrs_segmentation as segmentation
+        for rr,ss in zip(ri['pages'],si['pages']):
+            raw=worker.read(c.artifact(self.root,ss['proposals']))
+            m=worker.read(c.artifact(self.root,rr['manifest']))
+            segmentation.validate(m,raw,required=True)
+            self.assertEqual(ss['candidates'],raw['dedup']['counts']['retained'])
+            self.assertEqual(raw['dedup']['counts']['raw'],raw['dedup']['counts']['retained']+raw['dedup']['counts']['exact_duplicates'])
+
 
     def test_yale_scope_admits_all_pdf_pages_without_inferred_folios(self):
         # Count limit is source-specific, not a general increase for unverified PDFs.

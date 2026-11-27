@@ -124,6 +124,8 @@ class Service(Coordinator):
                 value=load_page(c.artifact(self.root,row['proposals']))
                 core.require(value['source']==prior['manifest'],'Page source mismatch')
                 m=load_page(c.artifact(self.root,prior['manifest']))
+                import vrs_segmentation as segmentation
+                segmentation.validate(m,value,required=True)
                 core.require([r['id'] for r in value['regions']]==[r['id'] for r in m['regions']],'Region coverage mismatch')
                 count=0
                 for r, original in zip(value['regions'],m['regions']):
@@ -152,19 +154,16 @@ class Service(Coordinator):
                            isolate_yale=expected_sha==surface.YALE_SHA256)
             path=dest/'manifest.json'; m=core.read(path)
             return dict(page=page,manifest=ref(self.root,path),regions=len(m['regions']))
-        import glyphs
+        import vrs_segmentation as segmentation
         from PIL import Image
         row=next(r for r in source['pages'] if r['page']==page)
         _,path,m=next(self._page_manifests({'pages':[row]}))
         n=len(m['regions']); width=max((r['pixel_box'][2]-r['pixel_box'][0] for r in m['regions']),default=1)
         self._admit(256*h.MIB+n*width*256,max(h.MIB,n*width*128))
-        proposals=[]
-        for region in m['regions']:
-            self._boundary(run)
-            with Image.open(path.parent/region['file']) as im: boxes=h.bounded_call(glyphs.boxes,im)
-            proposals.append(dict(id=region['id'],status='unreviewed',boxes=boxes))
+        proposals,lineage=h.bounded_call(segmentation.generate,m,
+            lambda region:Image.open(path.parent/region['file']),lambda:self._boundary(run))
         dest=attempt/f'page-{page:04d}.json'
-        write_new(dest,dict(source=row['manifest'],regions=proposals))
+        write_new(dest,dict(source=row['manifest'],regions=proposals,dedup=lineage))
         return dict(page=page,proposals=ref(self.root,dest),candidates=sum(len(r['boxes']) for r in proposals))
 
     def _attempt(self,run,stage,generation):

@@ -40,8 +40,8 @@ def box_key(box):
     return tuple(box)
 
 
-def pages(data):
-    require(type(data) is list and 1 <= len(data) <= 213, 'Invalid page index')
+def pages(data,limit=213):
+    require(type(data) is list and 1 <= len(data) <= limit, 'Invalid page index')
     ids = [r['page'] for r in data]
     require(all(type(p) is int and p > 0 for p in ids) and ids == sorted(set(ids)), 'Invalid page order')
     return ids
@@ -72,12 +72,16 @@ def outcomes(root, run, manifest, receipts):
     require(result['kind'] in ('OCCURRENCE_OUTCOMES_V1','OCCURRENCE_OUTCOMES_V2') and seg['source'] == r['artifact'] and result['source'] == s['artifact'], 'Outcome source binding mismatch')
     for key, role in (('model_sha256','model'),('policy_sha256','recognition_policy'),('references_sha256','references')):
         require(result[key] == manifest['inputs'][role]['sha256'], 'Outcome model/policy/reference binding mismatch')
-    require(pages(regions['pages']) == pages(seg['pages']) == pages(result['pages']), 'Page coverage mismatch')
+    import vrs_surface as surface
+    import vrs_segmentation as segmentation
+    limit=surface.YALE_PAGES if manifest['inputs']['manuscript']['sha256']==surface.YALE_SHA256 else 213
+    require(pages(regions['pages'],limit) == pages(seg['pages'],limit) == pages(result['pages'],limit), 'Page coverage mismatch')
     for rr, ss, pp in zip(regions['pages'],seg['pages'],result['pages']):
         page = rr['page']
         c.fields(pp, ('page','outcomes'))
         mp = c.artifact(root,rr['manifest']); m = load_page(mp)
         a = read(ss['proposals']); b = read(pp['outcomes'])
+        segmentation.validate(m,a)
         c.fields(b, ('schema','run_id','page','source','rows'))
         require(type(b['schema']) is int and b['schema'] == 1 and b['run_id'] == run and type(b['page']) is int and b['page'] == page and b['source'] == ss['proposals'], 'Outcome page binding mismatch')
         require(a['source'] == rr['manifest'] and set(m['page_dimensions']) == {str(page)}, 'Proposal page binding mismatch')

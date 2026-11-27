@@ -17,7 +17,7 @@ from vrs_ledger import Ledger
 
 VERSION = '0.9.5-alpha.1'
 SOURCE_FILES = ('vrs_coordinator.py', 'vrs_ledger.py', 'vrs_contract.py', 'vrs_core.py',
-                'vrs_hardware.py', 'regions.py', 'vrs_surface.py', 'glyphs.py', 'worker.py')
+                'vrs_hardware.py', 'regions.py', 'vrs_surface.py', 'vrs_segmentation.py', 'glyphs.py', 'worker.py')
 
 
 class StopRequested(Exception):
@@ -152,6 +152,8 @@ class Coordinator:
                 value=core.read(c.artifact(self.root,row['proposals']))
                 core.require(value['source']==prior['manifest'],'Page source mismatch')
                 manifest=core.read(c.artifact(self.root,prior['manifest']))
+                import vrs_segmentation as segmentation
+                segmentation.validate(manifest,value)
                 core.require([r['id'] for r in value['regions']]==[r['id'] for r in manifest['regions']],'Region coverage mismatch')
                 core.require(all(r['status']=='unreviewed' for r in value['regions']),'Unexpected review status')
                 core.require(sum(len(r['boxes']) for r in value['regions'])==row['candidates'],'Candidate count mismatch')
@@ -191,7 +193,7 @@ class Coordinator:
         return {'kind':'INK_PROPOSALS_ONLY','pages':output}
 
     def _segment(self, run, receipts, attempt):
-        import glyphs
+        import vrs_segmentation as segmentation
         from PIL import Image
         source=receipts['script_regions']['artifact']
         index=core.read(c.artifact(self.root,source)); output=[]
@@ -200,14 +202,10 @@ class Coordinator:
             # A page is the unit of temporary work. Each box is only a proposal.
             n=len(m['regions']); max_width=max((r['pixel_box'][2]-r['pixel_box'][0] for r in m['regions']),default=1)
             self._admit(256*h.MIB+n*max_width*256,max(h.MIB,n*max_width*128))
-            proposals=[]
-            for region in m['regions']:
-                self._boundary(run)
-                with Image.open(path.parent/region['file']) as im:
-                    boxes=h.bounded_call(glyphs.boxes,im)
-                proposals.append({'id':region['id'],'status':'unreviewed','boxes':boxes})
+            proposals,lineage=h.bounded_call(segmentation.generate,m,
+                lambda region:Image.open(path.parent/region['file']),lambda:self._boundary(run))
             dest=attempt/f'page-{row["page"]:04d}.json'
-            write_new(dest,{'source':row['manifest'],'regions':proposals})
+            write_new(dest,{'source':row['manifest'],'regions':proposals,'dedup':lineage})
             output.append({'page':row['page'],'proposals':ref(self.root,dest),'candidates':sum(len(r['boxes']) for r in proposals)})
         return {'kind':'UNREVIEWED_BOX_PROPOSALS_ONLY','source':source,'pages':output}
 
