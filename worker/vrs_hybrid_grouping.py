@@ -3,6 +3,7 @@ import hashlib
 import json
 from collections import defaultdict
 import numpy as np
+import vrs_hybrid_alternatives as alternatives
 
 POLICY = 'native-hybrid-grouping-v1'
 MASKS = ('union', 'majority', 'intersection')
@@ -41,6 +42,7 @@ def build(votes, n, *, source_sha256, page, image_sha256, origin, page_size,
     scope = digest(context)
     masks = dict(union=v > 0, majority=v > n/2, intersection=v == n)
     outputs = {}
+    labels_by_mask = {}
     for name in MASKS:
         boundary()
         mask = masks[name]
@@ -114,9 +116,11 @@ def build(votes, n, *, source_sha256, page, image_sha256, origin, page_size,
             for gy in range(t//cell,(b-1)//cell+1):
                 for gx in range(l//cell,(r-1)//cell+1):
                     grid[(gx,gy)].append(i)
+        labels_by_mask[name] = lab
         outputs[name] = dict(mask_sha256=hash_bytes(mask.astype(np.uint8).tobytes()),
                              pixels=int(mask.sum()), components=rows, pairs=pairs)
-    record = dict(context=context, masks=outputs, scientific_status='UNADJUDICATED',
+    extra = alternatives.build(outputs, labels_by_mask, origin, boundary=boundary)
+    record = dict(context=context, masks=outputs, alternatives=extra, scientific_status='UNADJUDICATED',
                   exclusion_authorized=False)
     record['id'] = digest(record)
     return record

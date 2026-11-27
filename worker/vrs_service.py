@@ -77,7 +77,7 @@ class Service(Coordinator):
         source = Path(__file__).resolve().parent
         self.identity = c.digest(dict(version=VERSION, parent=self.identity,
                                       hybrid_evidence=hybrid_evidence,
-                                      sources={n:core.sha(source/n) for n in ('vrs_service.py','vrs_exceptions.py','vrs_hybrid_page.py','vrs_hybrid_grouping.py','vrs_ink.py','vrs_binarize.py','vrs_artifacts.py','vrs_region_evidence.py','vrs_vectors.py')}))
+                                      sources={n:core.sha(source/n) for n in ('vrs_service.py','vrs_exceptions.py','vrs_hybrid_page.py','vrs_hybrid_grouping.py','vrs_hybrid_alternatives.py','vrs_ink.py','vrs_binarize.py','vrs_artifacts.py','vrs_region_evidence.py','vrs_vectors.py')}))
         self.ledger = ServiceLedger(self.root, self.ledger.db)
         self.queue = ExceptionQueue(self.ledger)
         self.stop = threading.Event()

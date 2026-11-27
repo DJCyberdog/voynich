@@ -38,6 +38,9 @@ class GroupingTests(unittest.TestCase):
         v=np.zeros((12,14),np.uint16);v[3:6,2:4]=6;v[3:6,6:8]=4;v[3,10]=1
         old=v.copy();r=h.build(v,6,**args());u=r['masks']['union'];m=r['masks']['majority'];i=r['masks']['intersection']
         self.assertEqual([u['pixels'],m['pixels'],i['pixels']],[13,12,6]);self.assertEqual([len(u['components']),len(m['components']),len(i['components'])],[3,2,1]);self.assertEqual(len(u['pairs']),2);self.assertEqual(u['components'][0]['box'],[12,23,14,26]);self.assertFalse(r['exclusion_authorized']);np.testing.assert_array_equal(v,old)
+        extra=r['alternatives'];self.assertEqual(len(extra['by_mask']['union']['compounds']),1)
+        self.assertEqual(len(extra['lineage']['union_to_majority']['links']),2)
+        self.assertEqual(extra['lineage']['union_to_majority']['parents_without_child'],[u['components'][2]['id']])
     def test_replay_and_identity(self):
         v=np.ones((5,5),np.uint16);r=h.build(v,6,**args());h.validate(json.loads(json.dumps(r)),v,6,**args());kw=args();kw['page']=5;self.assertNotEqual(r['id'],h.build(v,6,**kw)['id']);bad=copy.deepcopy(r);bad['masks']['union']['pixels']=0;bad.pop('id');bad['id']=h.digest(bad)
         with self.assertRaises(ValueError):h.validate(bad,v,6,**args())
