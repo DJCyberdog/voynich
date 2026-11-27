@@ -15,7 +15,7 @@ JOURNAL='workspace/source-update/journal.json'
 CAP=64*1024**2
 FILE_CAP=8*1024**2
 BLOB=re.compile('[a-f0-9]{40}')
-NAME=re.compile(r'(?:[A-Za-z0-9_.-]+\.(?:py|pyw|md|txt|cmd|bat)|module_assets/[A-Za-z0-9_.-]+\.(?:py|md|json|csv))')
+NAME=re.compile(r'(?:[A-Za-z0-9_.-]+\.(?:py|pyw|md|txt|cmd|bat)|Setup-Auto\.ps1|module_assets/[A-Za-z0-9_.-]+\.(?:py|md|json|csv))')
 
 
 def blob(data):return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
@@ -97,13 +97,16 @@ def rollback(root):
     # Backup intentionally retained until next explicitly approved update, for manual audit.
 
 
+def launcher_critical(n):
+    return n in ('vrs_portable.py','vrs_source_update.py','vrs_portable_logs.py','vrs_auto_setup.py') or n.endswith(('.bat','.cmd','.ps1')) or n.startswith('requirements') and n.endswith('.txt')
+
+
 def update(root,bundle,approved):
     root=Path(root).resolve(strict=True)
     with exclusive(root):
         maintenance(root);need(not pending(root),'Source recovery required');old,om=installed(root);new,nm=read_bundle(bundle,approved)
         # A dependency or launcher change needs an explicit new environment/package.
-        stable=lambda n:n in ('vrs_portable.py','vrs_source_update.py','vrs_portable_logs.py') or n.endswith(('.bat','.cmd')) or n.startswith('requirements') and n.endswith('.txt')
-        need(all(old.get(n)==new.get(n) for n in set(old)|set(new) if stable(n)),'Recovery/launcher/dependency change requires full package migration')
+        need(all(old.get(n)==new.get(n) for n in set(old)|set(new) if launcher_critical(n)),'Recovery/launcher/dependency change requires full package migration')
         names=set(old)|set(new);need(len({n.casefold() for n in names})==len(names),'Cross-version case collision')
         changed={n:{'old':blob(old[n]) if n in old else None,'new':blob(new[n]) if n in new else None} for n in names if old.get(n)!=new.get(n)}
         if not changed:return {'status':'UNCHANGED','files':0}

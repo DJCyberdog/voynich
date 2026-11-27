@@ -33,6 +33,17 @@ class SourceUpdate(unittest.TestCase):
         with self.assertRaises(ValueError):u.update(self.root,p,h)
         (self.root/'a.py').write_bytes(b'user changed');p,h=self.package()
         with self.assertRaises(ValueError):u.update(self.root,p,h)
+    def test_bootstrap_launcher_fence(self):
+        files=dict(self.new,**{'Setup-Auto.ps1':b'# fixture','vrs_auto_setup.py':b'# fixture'})
+        p,h=self.package(files)
+        self.assertIn('Setup-Auto.ps1',u.read_bundle(p,h)[1])
+        with self.assertRaisesRegex(ValueError,'full package migration'):u.update(self.root,p,h)
+        self.assertFalse(u.pending(self.root))
+        self.assertEqual((self.root/'workspace/state').read_bytes(),b'preserve')
+        files['Other.ps1']=b'# unmanaged'
+        p,h=self.package(files)
+        with self.assertRaises(ValueError):u.read_bundle(p,h)
+
     def test_rollback_on_failure(self):
         p,h=self.package();original=u.write;failed=[False]
         def fail_once(path,data):
