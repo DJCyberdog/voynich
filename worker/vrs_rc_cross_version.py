@@ -26,12 +26,19 @@ def fixture_package_copy(state,source,target):
     """Test-only full-package migration on disposable state; never used as updater."""
     old_files,_=installed(state)
     source_copy(source,target)
-    for p in state.iterdir():
-        if p.name in old_files or p.name in ('dist','__pycache__'):continue
-        dest=target/p.name
-        need(not p.is_symlink() and not dest.exists(),'Fixture state collision')
-        if p.is_dir():shutil.copytree(p,dest)
-        else:shutil.copyfile(p,dest)
+    # Source manifests contain relative nested paths, e.g. module_assets/*.
+    # Copy only unmanaged fixture leaves, not entire source-containing folders.
+    for parent,dirs,names in os.walk(state,followlinks=False):
+        base=Path(parent)
+        for d in dirs:
+            need(not (base/d).is_symlink() and not getattr((base/d),'is_junction',lambda:False)(),'Fixture link refused')
+        dirs[:]=[d for d in dirs if d!='__pycache__' and not (base==state and d=='dist')]
+        for name in names:
+            p=base/name;rel=p.relative_to(state).as_posix()
+            if rel in old_files:continue
+            dest=target/rel
+            need(not p.is_symlink() and p.is_file() and not dest.exists(),'Fixture state collision: '+rel)
+            dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
     return target
 
 
