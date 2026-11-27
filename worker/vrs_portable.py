@@ -167,7 +167,7 @@ def plan(root, profile, rel, approved):
     need(len(hashes)==len(wheels) and {x['sha256'] for x in wheels}==hashes and all(x['file'].endswith('.whl') for x in wheels),'Wheel lock mismatch')
     need({'pillow','psutil'}<=names and (profile=='review' and not names&{'torch','numpy','pymupdf'} or profile!='review' and {'torch','numpy','pymupdf'}<=names),'Profile mismatch')
     pins={'pillow':'13.0.0','psutil':'7.2.2'}
-    if profile!='review':pins.update(numpy='2.3.5',pymupdf='1.26.7',torch='2.10.0+'+('cpu' if profile=='cpu' else 'cu128'))
+    if profile!='review':pins.update(numpy='2.3.5',pymupdf='1.26.7',torch='2.13.0+'+('cpu' if profile=='cpu' else 'cu130'))
     need(all(versions.get(k)==v for k,v in pins.items()),'Core package pin mismatch')
     return v
 

@@ -31,3 +31,25 @@ jobs:
       - name: Resolve and audit declared profile (not full native lock)
         working-directory: worker
         run: python -m pip_audit --strict --vulnerability-service pypi -r requirements-${{ matrix.profile }}.txt
+  installed-cpu-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Resolve separate actual CPU environment
+        run: |
+          python -m venv "${RUNNER_TEMP}/vrs-cpu-audit"
+          "${RUNNER_TEMP}/vrs-cpu-audit/bin/python" -m pip install --only-binary=:all: -r worker/requirements-cpu.txt
+          "${RUNNER_TEMP}/vrs-cpu-audit/bin/python" -m pip install --only-binary=:all: -r worker/requirements-compute.txt -r worker/requirements-tray.txt
+          "${RUNNER_TEMP}/vrs-cpu-audit/bin/python" -m pip check
+          "${RUNNER_TEMP}/vrs-cpu-audit/bin/python" -c "import torch,PIL; assert torch.__version__=='2.13.0+cpu' and PIL.__version__=='13.0.0'; assert torch.version.cuda is None; assert torch.ones(4).sum().item()==4"
+      - name: Audit installed CPU packages including transitive dependencies
+        run: |
+          python -m pip install --only-binary=:all: pip-audit==2.10.1
+          site_path=$("${RUNNER_TEMP}/vrs-cpu-audit/bin/python" -c "import sysconfig; print(sysconfig.get_path('purelib'))")
+          python -m pip_audit --strict --vulnerability-service pypi --path "$site_path"

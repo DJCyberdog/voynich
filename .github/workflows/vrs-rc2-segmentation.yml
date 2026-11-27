@@ -36,7 +36,7 @@ jobs:
       - name: Install CPU geometry dependencies
         run: |
           python -m pip install Pillow==13.0.0 PyMuPDF==1.26.7 numpy==2.3.5 psutil
-          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.13.0+cpu
       - name: Run segmentation and resumable runtime surface controls
         working-directory: worker
         run: python -B -m unittest -v test_vrs_segmentation test_vrs_surface test_glyphs

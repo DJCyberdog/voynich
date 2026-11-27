@@ -47,8 +47,8 @@ def fetch_wheels(profile, folder, root):
     def get(args):subprocess.run(base+args,cwd=root,env=env,check=True,timeout=1800)
     req=['Pillow==13.0.0','psutil==7.2.2','pystray==0.19.5']
     if profile!='review':
-        backend='cpu' if profile=='cpu' else 'cu128'
-        get(['--no-deps','--index-url','https://download.pytorch.org/whl/'+backend,'torch==2.10.0+'+backend]); torch=list(folder.glob('torch-*.whl')); need(len(torch)==1,'Torch wheel cardinality')
+        backend='cpu' if profile=='cpu' else 'cu130'
+        get(['--no-deps','--index-url','https://download.pytorch.org/whl/'+backend,'torch==2.13.0+'+backend]); torch=list(folder.glob('torch-*.whl')); need(len(torch)==1,'Torch wheel cardinality')
         req+=['numpy==2.3.5','PyMuPDF==1.26.7',str(torch[0])]
     get(['--index-url','https://pypi.org/simple',*req])
 
