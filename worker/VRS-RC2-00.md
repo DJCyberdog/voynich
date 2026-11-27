@@ -1,6 +1,6 @@
 # RC2-00 — exact-base portable source patch transaction
 
-Status: IMPLEMENTED / qualification pending. No owner ZIP, release or scientific approval.
+Status: IMPLEMENTED / HOSTED TECH_PASS (RC2-00 closed for engineering scope; RC2-10 native owner acceptance remains mandatory). No owner ZIP, release or scientific approval.
 
 ## Design
 
@@ -29,3 +29,7 @@ Existing source updater tests plus wrong base/target/archive/staged code, space,
 ### First hosted execution and remediation
 
 At ba590ec0a4bf3bed97f385eebc4e20ca9e4afd4c, run 45963314522: Ubuntu job 140385983972 SUCCESS, 14/14 tests and exact RC1 source apply/rollback (180 base, 182 target files including manifests, eight private/runtime sentinels, Python 3.13.18). Exact base manifest SHA-256 35f9f58ed3d0b1e3b1850a80270696b90cf0b6dc9e01e21e654c3c1fbb37fdbf. Windows job 140385983555 FAIL, 11/14 passed; three failure-injection tests did not raise their expected OSError (two pre-existing and one new). Actual update/retained rollback, wrong base/target/archive, lock, space and backup checks passed; exact-source Windows test skipped because suite failed. Normalize the test root and match the intended injected write via filesystem identity (samefile parent and exact filename), not textual path spelling. No production safety check weakened. Root-cause attribution remains provisional until Windows rerun. No native owner claim.
+
+### Hosted requalification PASS
+
+Exact tested commit 6c870fbb39325c6217f87a166c48ccbe9e47beef, run [45963485254](https://github.com/DJCyberdog/voynich/actions/runs/45963485254). Both Ubuntu 24.04 (job 140386539100, Python 3.13.18) and Windows 2025 (job 140386539235, Python 3.13.17) passed 14/14 transaction tests, including the three formerly missed fault injections, and the exact immutable RC1 -> tested candidate -> RC1 staged CLI integration. All 180 base and 182 tested target files (including manifests) compared byte-for-byte; eight private/runtime marker files preserved per platform; base manifest SHA-256 35f9f58ed3d0b1e3b1850a80270696b90cf0b6dc9e01e21e654c3c1fbb37fdbf, tested target manifest SHA-256 6225c7f3511f7c2a0a5c75966d64cbade295880ff465721e291194c4b4d523d3. The marker tests do not certify actual installed Python/CUDA state, full workspace migration, unmanaged process control, or power-loss durability. The evidence-only follow-up updates the documentation and source manifest, not the tested code. Final cumulative target identity will differ and must be requalified at RC2-10. No intermediate owner patch ZIP was created or distributed; CI temporary archives are qualification fixtures only. Full baseline/native regression remains separately tracked, and no stable/scientific gate is closed. RC2-01 is next.
