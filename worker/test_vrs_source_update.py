@@ -6,7 +6,7 @@ from vrs_portable import save,digest
 
 class SourceUpdate(unittest.TestCase):
     def setUp(self):
-        self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)/'app';self.root.mkdir();self.old={'a.py':b'old','old.py':b'remove','Update.bat':b'fixed','requirements-review.txt':b'fixed'};self.new={'a.py':b'new','new.py':b'added','Update.bat':b'fixed','requirements-review.txt':b'fixed'}
+        self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)/'app';self.root.mkdir();self.root=self.root.resolve(strict=True);self.old={'a.py':b'old','old.py':b'remove','Update.bat':b'fixed','requirements-review.txt':b'fixed'};self.new={'a.py':b'new','new.py':b'added','Update.bat':b'fixed','requirements-review.txt':b'fixed'}
         for n,b in self.old.items():(self.root/n).write_bytes(b)
         save(self.root/u.MANIFEST,{'schema':1,'files':{n:u.blob(b) for n,b in self.old.items()}})
         (self.root/'workspace').mkdir();(self.root/'workspace/state').write_bytes(b'preserve');(self.root/'config').mkdir();(self.root/'config/secret').write_bytes(b'private')
@@ -47,7 +47,7 @@ class SourceUpdate(unittest.TestCase):
     def test_rollback_on_failure(self):
         p,h=self.package();original=u.write;failed=[False]
         def fail_once(path,data):
-            if path==self.root/'new.py' and not failed[0]:failed[0]=True;raise OSError('simulated failure')
+            if path.name=='new.py' and path.parent.samefile(self.root) and not failed[0]:failed[0]=True;raise OSError('simulated failure')
             original(path,data)
         with patch.object(u,'write',side_effect=fail_once):
             with self.assertRaises(OSError):u.update(self.root,p,h)
@@ -55,7 +55,7 @@ class SourceUpdate(unittest.TestCase):
     def test_interrupted_recovery_and_external_edit(self):
         p,h=self.package();original=u.write
         def fail(path,data):
-            if path==self.root/'new.py':raise OSError('failure')
+            if path.name=='new.py' and path.parent.samefile(self.root):raise OSError('failure')
             original(path,data)
         with patch.object(u,'write',side_effect=fail),patch.object(u,'rollback',side_effect=OSError('interrupted rollback')):
             with self.assertRaises(OSError):u.update(self.root,p,h)
@@ -151,7 +151,7 @@ class SourceUpdate(unittest.TestCase):
     def test_rc2_interrupted_transaction_recover_and_retry(self):
         a=self.rc2_fixture();original=u.write
         def fail(path,data):
-            if path==self.root/'new.py':raise OSError('simulated disk failure')
+            if path.name=='new.py' and path.parent.samefile(self.root):raise OSError('simulated disk failure')
             original(path,data)
         with patch.object(u,'write',side_effect=fail),patch.object(u,'rollback',side_effect=OSError('interrupted recovery')):
             with self.assertRaises(OSError):u.apply_rc2(self.root,*a)
