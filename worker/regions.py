@@ -14,43 +14,94 @@ def starts(size, window):
     return sorted(set(range(0, size-window+1, max(1, window//2))) | {size-window})
 
 
-def propose(pdf, expected_sha, groups, out, pages=None, max_regions=30000):
-    import fitz
+def screened_boxes(img,bounds):
+    """Original ink thresholds, with edge-complete windows inside the envelope."""
     import numpy as np
+    width,height=img.size
+    if bounds is None:return
+    x0,y0,x1,y1=bounds
+    w.require(0<=x0<x1<=width and 0<=y0<y1<=height,'Invalid surface envelope')
+    ink=np.asarray(img.convert('L'))<160
+    integral=np.pad(ink.cumsum(0,dtype=np.int64).cumsum(1,dtype=np.int64),((1,0),(1,0)))
+    seen=set()
+    for scale,(wf,hf) in enumerate(SCALES):
+        bw,bh=min(x1-x0,max(1,round(width*wf))),min(y1-y0,max(1,round(height*hf)))
+        for dy in starts(y1-y0,bh):
+            for dx in starts(x1-x0,bw):
+                x,y=x0+dx,y0+dy
+                box=(x,y,x+bw,y+bh)
+                if box in seen:continue
+                seen.add(box)
+                count=int(integral[y+bh,x+bw]-integral[y,x+bw]-integral[y+bh,x]+integral[y,x])
+                yield scale,box,.015<=count/(bw*bh)<=.35
+
+
+def audit_yale(pdf,expected_sha):
+    """Exact full-corpus isolation and ink screening, no crop or model output."""
+    import fitz
     from PIL import Image
+    import vrs_surface as surface
+    w.require(w.sha(pdf)==expected_sha==surface.YALE_SHA256,'Yale PDF SHA256 mismatch')
+    rows=[]
+    with fitz.open(pdf) as doc:
+        w.require(len(doc)==surface.YALE_PAGES,'Yale PDF page count mismatch')
+        for page in doc:
+            pix,row=surface.isolate_page(page,expected_sha)
+            img=Image.frombytes('RGB',(pix.width,pix.height),pix.samples)
+            row['page_dimensions']=[pix.width,pix.height]
+            row['screened']=row['proposals']=0
+            for _,box,selected in screened_boxes(img,row['pixel_box']):
+                b=row['pixel_box']
+                w.require(b[0]<=box[0]<box[2]<=b[2] and b[1]<=box[1]<box[3]<=b[3],'Proposal outside surface')
+                row['screened']+=1;row['proposals']+=int(selected)
+            rows.append(row)
+    return dict(schema=1,policy=surface.POLICY,source_sha256=expected_sha,renderer=fitz.VersionBind,
+                page_count=len(rows),screened=sum(x['screened'] for x in rows),
+                proposals=sum(x['proposals'] for x in rows),pages=rows,scientific_status='UNADJUDICATED')
+
+
+def propose(pdf, expected_sha, groups, out, pages=None, max_regions=30000, isolate_yale=False):
+    import fitz
+    from PIL import Image
+    import vrs_surface as surface
     w.require(w.sha(pdf) == expected_sha, "PDF SHA256 mismatch")
+    w.require(type(isolate_yale) is bool and (not isolate_yale or expected_sha==surface.YALE_SHA256),'Unapproved Yale surface source')
     w.require(type(max_regions) is int and 1 <= max_regions <= 100000, "Invalid region budget")
     mapping = w.read(groups); out = Path(out)
     w.require(not out.exists(), "Output directory already exists")
     with fitz.open(pdf) as doc:
         pages = sorted(int(k) for k in mapping) if pages is None else pages
-        w.require(isinstance(pages, list) and 0 < len(pages) <= 213 and len(set(pages)) == len(pages), "Invalid pages")
+        w.require(isinstance(pages, list) and 0 < len(pages) <= (surface.YALE_PAGES if isolate_yale else 213) and len(set(pages)) == len(pages), "Invalid pages")
         w.require(all(type(p) is int and 1 <= p <= len(doc) and isinstance(mapping.get(str(p)), str) and mapping[str(p)].strip() for p in pages), "Invalid page or leaf group")
         # Incomplete runs never publish a manifest. Existing output cannot be overwritten.
         out.mkdir(parents=True); (out/'crops').mkdir()
-        records = []; screened = 0; dimensions = {}
+        records = []; screened = 0; dimensions = {}; surfaces={}
         for page in sorted(pages):
-            pix = doc[page-1].get_pixmap(dpi=200, colorspace=fitz.csRGB, alpha=False)
-            img = Image.frombytes('RGB', (pix.width,pix.height),pix.samples)
-            width,height = img.size; dimensions[str(page)] = [width,height]
-            ink = np.asarray(img.convert('L')) < 160
-            integral = np.pad(ink.cumsum(0,dtype=np.int64).cumsum(1,dtype=np.int64), ((1,0),(1,0)))
-            seen = set()
-            for scale,(wf,hf) in enumerate(SCALES):
-                bw,bh = max(1,round(width*wf)),max(1,round(height*hf))
-                for y in starts(height,bh):
-                    for x in starts(width,bw):
-                        box=(x,y,x+bw,y+bh)
-                        if box in seen: continue
-                        seen.add(box); screened += 1
-                        count=int(integral[y+bh,x+bw]-integral[y,x+bw]-integral[y+bh,x]+integral[y,x])
-                        if not .015 <= count/(bw*bh) <= .35: continue
-                        w.require(len(records)<max_regions, "Region budget exhausted; no complete manifest")
-                        rid=f'M{page:04d}-{scale}-{x}-{y}'; name=f'crops/{rid}.png'
-                        img.crop(box).save(out/name)
-                        records.append(dict(id=rid,page=page,group=mapping[str(page)],box=[x/width,y/height,(x+bw)/width,(y+bh)/height],pixel_box=list(box),file=name,sha256=w.sha(out/name)))
+            if isolate_yale:
+                pix,surface_row=surface.isolate_page(doc[page-1],expected_sha)
+                surfaces[str(page)]=surface_row
+                bounds=surface_row['pixel_box']
+            else:
+                pix=doc[page-1].get_pixmap(dpi=200,colorspace=fitz.csRGB,alpha=False)
+                bounds=[0,0,pix.width,pix.height]
+            img=Image.frombytes('RGB',(pix.width,pix.height),pix.samples)
+            width,height=img.size;dimensions[str(page)]=[width,height]
+            count=0;selected_count=0
+            for scale,box,selected in screened_boxes(img,bounds):
+                count+=1;screened+=1
+                if not selected:continue
+                w.require(len(records)<max_regions, "Region budget exhausted; no complete manifest")
+                x,y,x1,y1=box
+                rid=f'M{page:04d}-{scale}-{x}-{y}';name=f'crops/{rid}.png'
+                img.crop(box).save(out/name)
+                records.append(dict(id=rid,page=page,group=mapping[str(page)],box=[x/width,y/height,x1/width,y1/height],pixel_box=list(box),file=name,sha256=w.sha(out/name)))
+                selected_count+=1
+            if isolate_yale:
+                surface_row.update(screened=count,proposals=selected_count)
     manifest=dict(version=VERSION,source_sha256=expected_sha,groups_sha256=w.sha(groups),dpi=200,renderer=fitz.VersionBind,
                   proposal_method='multiscale-dark-pixel-v1',scales=SCALES,screened=screened,page_dimensions=dimensions,regions=records)
+    if isolate_yale:
+        manifest.update(proposal_method='multiscale-dark-pixel-yale-envelope-v1',surface_policy=surface.POLICY,surfaces=surfaces)
     w.write(out/'manifest.json',manifest)
     return {'screened':screened,'proposals':len(records),'scientific_status':'UNADJUDICATED'}
 
@@ -115,10 +166,18 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__); sub=parser.add_subparsers(dest='action',required=True)
     p=sub.add_parser('propose')
     for k in ('pdf','expected_sha','groups','out'): p.add_argument(k)
-    p.add_argument('--pages',nargs='+',type=int); p.add_argument('--max-regions',type=int,default=30000)
+    p.add_argument('--pages',nargs='+',type=int); p.add_argument('--max-regions',type=int,default=30000); p.add_argument('--isolate-yale',action='store_true')
+    p=sub.add_parser('audit-yale')
+    for k in ('pdf','expected_sha','out'):p.add_argument(k)
     p=sub.add_parser('evaluate')
     for k in ('manifest','reference','out'): p.add_argument(k)
-    args=vars(parser.parse_args()); action=args.pop('action'); print(json.dumps({'propose':propose,'evaluate':evaluate}[action](**args),indent=2))
+    args=vars(parser.parse_args()); action=args.pop('action')
+    if action=='audit-yale':
+        out=Path(args.pop('out'));w.require(not out.exists(),'Audit output already exists')
+        result=audit_yale(**args)
+        w.write(out,result)
+        print(json.dumps({k:v for k,v in result.items() if k!='pages'},indent=2))
+    else:print(json.dumps({'propose':propose,'evaluate':evaluate}[action](**args),indent=2))
 
 
 if __name__=='__main__': main()
