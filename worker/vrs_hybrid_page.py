@@ -1,10 +1,13 @@
 """Native hybrid sidecar: bounded geometry comparison, no occurrence migration."""
+import gzip
 import hashlib
 import json
+import zlib
 import numpy as np
 
 POLICY = 'native-hybrid-page-evidence-v1'
 MAX_BYTES = 32 * 1024 * 1024
+MAX_DECODED_BYTES = 96 * 1024 * 1024
 MASKS = ('union', 'majority', 'intersection')
 
 
@@ -75,7 +78,7 @@ def assemble(source, page, manifest_ref, manifest, proposals, meta, hybrid, mapp
         counts=comparison(manifest,proposals,meta,hybrid,mapper)
     record=dict(policy=POLICY,source=source,page=page,manifest=manifest_ref,legacy_sha256=digest(proposals),native=meta,hybrid=hybrid,comparison=counts,scientific_status='UNADJUDICATED',exclusion_authorized=False)
     record['id']=digest(record)
-    require(len(canonical(record))+1<=MAX_BYTES,'hybrid page artifact budget exceeded')
+    require(len(canonical(record))+1<=MAX_DECODED_BYTES,'hybrid decoded page budget exceeded')
     return record
 
 
@@ -106,11 +109,41 @@ def check(record, source, page, manifest_ref, manifest, proposals, mapper):
 
 
 def write(path, record):
+    """Write immutable plain legacy JSON or deterministic bounded gzip JSON."""
     import os
     data=canonical(record)+b'\n'
-    require(len(data)<=MAX_BYTES,'hybrid page artifact budget exceeded')
+    require(len(data)<=MAX_DECODED_BYTES,'hybrid decoded page budget exceeded')
+    if path.suffix=='.gz':
+        data=gzip.compress(data,compresslevel=3,mtime=0)
+    require(len(data)<=MAX_BYTES,'hybrid stored page budget exceeded')
     with path.open('xb') as stream:
         stream.write(data);stream.flush();os.fsync(stream.fileno())
+
+
+def read(path):
+    """Bound compressed and decoded input, reject ambiguous JSON; old JSON readable."""
+    require(path.stat().st_size<=MAX_BYTES,'hybrid stored page budget exceeded')
+    with path.open('rb') as f:
+        magic=f.read(2);f.seek(0)
+        if magic==b'\x1f\x8b':
+            try:
+                with gzip.GzipFile(fileobj=f,mode='rb') as g:
+                    data=g.read(MAX_DECODED_BYTES+1)
+            except (OSError,EOFError,zlib.error) as exc:
+                raise ValueError('invalid hybrid gzip') from exc
+        else:
+            data=f.read(MAX_BYTES+1)
+            require(len(data)<=MAX_BYTES,'hybrid stored page budget exceeded')
+    require(len(data)<=MAX_DECODED_BYTES,'hybrid decoded page budget exceeded')
+    def unique(pairs):
+        result={}
+        for key,value in pairs:
+            require(key not in result,'duplicate hybrid JSON key')
+            result[key]=value
+        return result
+    def reject(value):
+        raise ValueError('invalid hybrid JSON constant')
+    return json.loads(data.decode('utf-8'),object_pairs_hook=unique,parse_constant=reject)
 
 
 def validate_ref(root, value, manifest, *, expected_source=None, required=False):
@@ -125,8 +158,7 @@ def validate_ref(root, value, manifest, *, expected_source=None, required=False)
     import fitz
     import vrs_contract as c
     import vrs_ink as ink
-    from vrs_exceptions import load_page
-    record=load_page(c.artifact(root,value['hybrid_evidence']))
+    record=read(c.artifact(root,value['hybrid_evidence']))
     source=record['source']
     require(source['sha256']==ink.SOURCE_SHA256 and (expected_source is None or source==expected_source),'hybrid evidence source mismatch')
     pdf=c.artifact(root,source)
@@ -140,3 +172,15 @@ def validate_ref(root, value, manifest, *, expected_source=None, required=False)
         for item in (h,h['grouping'],h['region']):
             require(item['id']==digest({k:v for k,v in item.items() if k!='id'}),'hybrid nested digest mismatch')
     check(record,source,page,value['source'],manifest,value['regions'],ink.native_box)
+    return record
+
+
+def qualify_ref(root, value, manifest, *, expected_source, boundary=lambda:None):
+    """Explicit full pixel-to-evidence replay for qualification, not normal resume."""
+    import vrs_contract as c
+    old=validate_ref(root,value,manifest,expected_source=expected_source,required=True)
+    expected=digest(old); page=old['page']; del old
+    pdf=c.artifact(root,expected_source)
+    actual=produce(pdf,expected_source,page,value['source'],manifest,value['regions'],boundary)
+    require(digest(actual)==expected,'full hybrid replay mismatch')
+    return actual['id']

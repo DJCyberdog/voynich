@@ -180,7 +180,7 @@ class Service(Coordinator):
             # Provisional conservative admission estimate, not a hard process cap.
             self._admit(1536*h.MIB,64*h.MIB)
             evidence=h.bounded_call(hybrid.produce,pdf,native_source,page,row['manifest'],m,proposals,lambda:self._boundary(run))
-            side=attempt/f'hybrid-{page:04d}.json'; hybrid.write(side,evidence)
+            side=attempt/f'hybrid-{page:04d}.json.gz'; hybrid.write(side,evidence)
             value['hybrid_evidence']=ref(self.root,side)
             self._boundary(run)
         write_new(dest,value)

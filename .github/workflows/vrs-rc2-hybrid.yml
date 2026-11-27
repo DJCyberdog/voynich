@@ -1,0 +1,41 @@
+name: VRS RC2 hybrid real-source qualification
+on:
+  push:
+    branches: [development/vrs-0.14.1-rc1]
+    paths:
+      - 'worker/vrs_hybrid*.py'
+      - 'worker/test_vrs_hybrid*.py'
+      - 'worker/vrs_service.py'
+      - '.github/workflows/vrs-rc2-hybrid.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          persist-credentials: false
+      - name: Verify existing LFS source bytes before running
+        run: |
+          test -f voynich.pdf
+          echo "d095900be761dd8702a63cf79f83a09e832f98e4abd0d4ea394d6c47e8d35a7c  voynich.pdf" | sha256sum -c -
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: CPU dependencies
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+          python -m pip install Pillow==12.3.0 PyMuPDF==1.26.7 numpy==2.3.5 psutil
+      - name: Real source, geometry, persistence and full replay
+        working-directory: worker
+        env:
+          VRS_RC2_PRIVATE_YALE_PDF: ${{ github.workspace }}/voynich.pdf
+        run: python -B -m unittest -v test_vrs_hybrid_storage test_vrs_hybrid_page test_vrs_hybrid_grouping test_vrs_hybrid_alternatives test_vrs_hybrid_runtime_private
