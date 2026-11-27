@@ -52,7 +52,7 @@ def fetch_wheels(root,profile,folder):
     env=environment(root);env.pop('PIP_NO_INDEX',None)
     base=[sys.executable,'-I','-B','-m','pip','--isolated','--no-cache-dir','--disable-pip-version-check','--no-input','download','--only-binary=:all:','--dest',str(folder)]
     def get(args):subprocess.run(base+args,cwd=root,env=env,check=True,timeout=3600)
-    req=['Pillow==12.3.0','psutil==7.2.2','pystray==0.19.5']
+    req=['Pillow==13.0.0','psutil==7.2.2','pystray==0.19.5']
     if profile!='review':
         backend='cpu' if profile=='cpu' else 'cu128'
         get(['--no-deps','--index-url','https://download.pytorch.org/whl/'+backend,'torch==2.10.0+'+backend])

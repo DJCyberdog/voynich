@@ -21,7 +21,7 @@ class TestPortable(unittest.TestCase):
     def make_plan(self):
         z=self.root/'runtime-fixture.zip'
         with zipfile.ZipFile(z,'w') as f:f.writestr('python.exe',b'fixture')
-        runtime=self.asset('python.zip',z.read_bytes()); wheels=[self.asset(n+'.whl',n.encode()) for n in ('pillow','psutil')]; v=dict(schema=1,profile='review',runtime=runtime,wheels=wheels,requirements=[f'{n}=={ver} --hash=sha256:{w["sha256"]}' for n,ver,w in zip(('pillow','psutil'),('12.3.0','7.2.2'),wheels)],runtime_python='python.exe'); path=self.root/'config/plan.json'; p.save(path,v); return v,p.digest(path)
+        runtime=self.asset('python.zip',z.read_bytes()); wheels=[self.asset(n+'.whl',n.encode()) for n in ('pillow','psutil')]; v=dict(schema=1,profile='review',runtime=runtime,wheels=wheels,requirements=[f'{n}=={ver} --hash=sha256:{w["sha256"]}' for n,ver,w in zip(('pillow','psutil'),('13.0.0','7.2.2'),wheels)],runtime_python='python.exe'); path=self.root/'config/plan.json'; p.save(path,v); return v,p.digest(path)
     def test_paths_environment(self):
         with patch.dict(os.environ,{'PYTHONPATH':'outside','VRS_GITHUB_TOKEN_TEST':'SECRET','PIP_INDEX_URL':'evil'}):e=p.environment(self.root)
         for k in ('TEMP','HF_HOME','TORCH_HOME','CUDA_CACHE_PATH','PYTHONPYCACHEPREFIX','HOME'):self.assertTrue(Path(e[k]).is_relative_to(self.root))

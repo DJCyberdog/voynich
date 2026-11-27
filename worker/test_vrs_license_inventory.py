@@ -12,7 +12,7 @@ class LicenseInventory(unittest.TestCase):
             z.writestr('python.exe',b'fixture')
             z.writestr('LICENSE.txt',b'runtime notice')
             z.writestr('Lib/ensurepip/_bundled/pip.whl',b'embedded fixture')
-        for name,version in [('pillow','12.3.0'),('psutil','7.2.2')]:
+        for name,version in [('pillow','13.0.0'),('psutil','7.2.2')]:
             prefix=f'{name}-{version}.dist-info/'
             with zipfile.ZipFile(w/f'{name}-{version}-cp313-cp313-win_amd64.whl','w') as z:
                 meta=f'Name: {name}\nVersion: {version}\n'
