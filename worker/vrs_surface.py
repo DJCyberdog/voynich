@@ -17,10 +17,11 @@ def close_box(a,b):
 
 
 def pixel_box(box,width,height):
-    # Cover every pixel intersecting the original source image rectangle.
+    # Include a one-pixel rasterization guard around the source image.
+    # The isolated page has no wrapper, so this cannot reintroduce wrapper ink.
     s=DPI/72
-    return [max(0,math.floor(box[0]*s)),max(0,math.floor(box[1]*s)),
-            min(width,math.ceil(box[2]*s)),min(height,math.ceil(box[3]*s))]
+    return [max(0,math.floor(box[0]*s)-1),max(0,math.floor(box[1]*s)-1),
+            min(width,math.ceil(box[2]*s)+1),min(height,math.ceil(box[3]*s)+1)]
 
 
 def isolate_page(page,source_sha256):
@@ -83,6 +84,11 @@ def isolate_page(page,source_sha256):
         pix=q.get_pixmap(dpi=DPI,colorspace=fitz.csRGB,alpha=False)
         bounds=pixel_box(box,pix.width,pix.height)
         require(bounds==pixel_box(copied[0]['bbox'],pix.width,pix.height),'Raster envelope mismatch')
+        import numpy as np
+        a=np.frombuffer(pix.samples_mv,dtype=np.uint8).reshape(pix.height,pix.width,3)
+        x0,y0,x1,y1=bounds
+        require(all(np.all(part==255) for part in (a[:y0],a[y1:],a[y0:y1,:x0],a[y0:y1,x1:])),
+                'Rendered image ink outside envelope; independent review required')
         record.update(status='IMAGE_ENVELOPE',image_box_pt=list(box),pixel_box=bounds,
                       source_image_sha256=hashlib.sha256(image['image']).hexdigest(),
                       source_image_size=[image['width'],image['height']],

@@ -16,14 +16,14 @@ The audit uses exactly the same isolation/screening routines without saving crop
 
 ## Actual local source observations and validation
 
-Exact module blob 5ce3aa0170619c40e1d6efecfe9e31a503284e0f was executed against SHA256-verified original PDF in isolated Linux development environment, PyMuPDF 1.26.7. All 214 pages passed wrapper structure, image-only reconstruction and geometry checks: 213 image envelopes with exact extracted bytes preserved, 1 metadata-only, 896 visible text objects, 1 invisible text object, 426 border stroke objects excluded. Source image geometry checked including f1r (PDF 4), foldout pages 127 and 159 and back cover 214. A local reproduction of the new screening loop over all 214 pages checked 916507 windows and selected 445895 ink proposals, all inside image bounds; 4 pages had zero selected regions. These are overlapping proposal windows, not glyphs or validated writing. No crop files or model predictions were generated for this full-corpus audit.
+Exact module blob f88990b765eb362e0728e83e5ad3a66bad60ef2e was executed against SHA256-verified original PDF in isolated Linux development environment, PyMuPDF 1.26.7. All 214 pages passed wrapper structure, image-only reconstruction and geometry checks: 213 image envelopes with exact extracted bytes preserved, 1 metadata-only, 896 visible text objects, 1 invisible text object, 426 border stroke objects excluded. Source image geometry checked including f1r (PDF 4), foldout pages 127 and 159 and back cover 214. A local reproduction of the new screening loop over all 214 pages checked 917603 windows and selected 446494 ink proposals, all inside image bounds; 4 pages had zero selected regions. These are overlapping proposal windows, not glyphs or validated writing. No crop files or model predictions were generated for this full-corpus audit.
 
 Selected page comparisons of old full-page and new image-only screening (not ground truth or precision):
 | PDF page | Legacy proposals | Legacy outside/crossing new envelope | New proposals |
 |---|---:|---:|---:|
 | 1 (catalog) | 1531 | 1531 | 0 |
-| 4 (f1r) | 2161 | 558 | 1639 |
-| 127 (foldout image) | 1165 | 286 | 878 |
+| 4 (f1r) | 2161 | 558 | 1633 |
+| 127 (foldout image) | 1165 | 286 | 875 |
 | 159 (foldout image) | 2615 | 341 | 2311 |
 | 214 (back cover) | 423 | 419 | 4 |
 
@@ -32,3 +32,7 @@ The grids are reanchored at the true image edges; counts are not a set-subtracti
 ## Engineering qualification
 
 Synthetic control tests exercise source hash, no text on catalog, image-only raster, preservation of marks at edges, exact crop hashes, proposal bounds and counts, old CLI route, overlap and unexpected vector refusal, actual coordinator selection. Hosted Linux/Windows test run is required. Full private real-source audit repeated on local owner PC at RC2-10. Broader manuscript script/background discrimination within the image and independent reference validation remain open (RC2-01 partial until explicit separate evidence or agreed scope, not a scientific claim).
+
+### First hosted execution and edge remediation
+
+Initial Ubuntu run 45965975369 found actual one-pixel rasterization bleed beyond the mathematical floor/ceil image envelope on a synthetic edge fixture. Do not crop it away: expand the image-only envelope by one pixel, clipped to page bounds, and fail closed unless the entire exterior is white. This cannot restore wrapper content because the isolated display list only contains the source image. The original full-corpus audit (916507 windows, 445895 selected) is superseded by the repeated audit after the guard; all 214 pages passed again with the exact updated surface module and screening loop, 917603 windows, 446494 proposals, all inside their envelope. The original image bytes, counts of excluded PDF objects and other conclusions are unchanged. Existing test_regions imports torch via test_worker; add the same CPU wheel dependency used by existing baseline CI. No successful hosted requalification claimed yet.
