@@ -92,13 +92,16 @@ class Service(Coordinator):
     def _scope(self, stage, manifest, receipts):
         if stage == 'script_regions':
             import fitz
+            import vrs_surface as surface
             groups = c.artifact(self.root, manifest['inputs']['groups'])
             pdf = c.artifact(self.root, manifest['inputs']['manuscript'])
             mapping = c.load(groups)
-            core.require(type(mapping) is dict and 1<=len(mapping)<=213,'Invalid page scope')
+            isolate=manifest['inputs']['manuscript']['sha256']==surface.YALE_SHA256
+            core.require(type(mapping) is dict and 1<=len(mapping)<=(surface.YALE_PAGES if isolate else 213),'Invalid page scope')
             pages = sorted(int(k) for k in mapping)
             core.require(set(mapping)=={str(p) for p in pages} and all(type(v) is str and v.strip() for v in mapping.values()),'Invalid page mapping')
             with fitz.open(pdf) as doc:
+                core.require(not isolate or len(doc)==surface.YALE_PAGES,'Yale PDF page count mismatch')
                 core.require(all(1<=p<=len(doc) for p in pages),'Page outside PDF')
             return pages, (pdf, groups, manifest['inputs']['manuscript']['sha256'])
         self._validate_output(receipts['script_regions']['run_id'],receipts['script_regions'],receipts)
@@ -108,7 +111,13 @@ class Service(Coordinator):
     def _check_prefix(self, stage, pages, expected, source):
         core.require(type(pages) is list and len(pages)<=len(expected) and [x['page'] for x in pages]==expected[:len(pages)],'Invalid checkpoint page prefix')
         if stage=='script_regions':
-            for _ in self._page_manifests({'pages':pages}): pass
+            import vrs_surface as surface
+            _,groups,expected_sha=source
+            group_sha=core.sha(groups)
+            for _,_,m in self._page_manifests({'pages':pages}):
+                core.require(m['source_sha256']==expected_sha and m['groups_sha256']==group_sha,'Checkpoint source or groups mismatch')
+                if expected_sha==surface.YALE_SHA256:
+                    core.require(m.get('surface_policy')==surface.POLICY,'Yale checkpoint missing mandatory surface isolation')
         else:
             for row,prior in zip(pages,source['pages']):
                 c.fields(row,('page','proposals','candidates'))
@@ -128,6 +137,7 @@ class Service(Coordinator):
         if stage=='script_regions':
             import fitz
             import regions
+            import vrs_surface as surface
             pdf,groups,expected_sha=source
             with fitz.open(pdf) as doc:
                 rect=doc[page-1].rect
@@ -138,7 +148,8 @@ class Service(Coordinator):
                 disk+=len(regions.starts(width,bw))*len(regions.starts(height,bh))*(4*bw*bh+4096)
             self._admit(ram,disk)
             dest=attempt/f'page-{page:04d}'
-            h.bounded_call(regions.propose,pdf,expected_sha,groups,dest,pages=[page])
+            h.bounded_call(regions.propose,pdf,expected_sha,groups,dest,pages=[page],
+                           isolate_yale=expected_sha==surface.YALE_SHA256)
             path=dest/'manifest.json'; m=core.read(path)
             return dict(page=page,manifest=ref(self.root,path),regions=len(m['regions']))
         import glyphs

@@ -119,5 +119,81 @@ class SurfaceTests(unittest.TestCase):
         self.assertEqual(rows[1][2]['surface_policy'],surface.POLICY)
         self.assertGreater(rows[1][0]['regions'],0)
 
+    def test_runtime_resumable_service_route_and_legacy_checkpoint_refusal(self):
+        # The owner desktop runs Runtime -> Service, not Coordinator._regions.
+        # Exercise both stages through the actual durable page-stage scheduler.
+        import vrs_runtime as rt
+        import vrs_contract as c
+        from vrs_coordinator import ref
+        from vrs_service import Service
+        from unittest.mock import Mock
+        app=rt.Runtime(self.root)
+        app._admit=Mock()
+        for name in ('references','model','recognition_policy','transcription'):
+            (self.root/name).write_text('fixture '+name,encoding='utf-8')
+        inputs={'manuscript':ref(self.root,self.pdf),'groups':ref(self.root,self.groups)}
+        inputs.update({name:ref(self.root,self.root/name) for name in ('references','model','recognition_policy')})
+        manifest=dict(schema=1,module=c.MODULE,protocol=c.PROTOCOL,backend='cpu',seed=7,run_nonce='a'*32,
+                      inputs=inputs,transcriptions=[ref(self.root,self.root/'transcription')])
+        # Bypass only model validation (unused in these two stages), not scheduler/receipt checks.
+        run=app.ledger.register(manifest,'cpu',app.identity)
+        orig=app.ledger.checkpoint
+        def stop_after_first(*args):
+            orig(*args)
+            app.stop.set()
+        with patch.object(app.ledger,'checkpoint',side_effect=stop_after_first):
+            app.sweep()
+        state=app.ledger.status(run)
+        self.assertIsNotNone(state['checkpoint'])
+        self.assertFalse(state['locked'])
+        saved=c.load(c.artifact(self.root,state['checkpoint']['artifact']))
+        self.assertEqual([x['page'] for x in saved['pages']],[1])
+        first=next(app._page_manifests({'pages':saved['pages']}))[2]
+        self.assertEqual(first['surface_policy'],surface.POLICY)
+        self.assertEqual(first['regions'],[])
+        # Even a correctly hash-bound legacy artifact is not a valid new Yale checkpoint.
+        old=self.root/'legacy-service'
+        regions.propose(self.pdf,self.sha,self.groups,old,[1])
+        prior={'page':1,'manifest':ref(self.root,old/'manifest.json'),
+               'regions':len(worker.read(old/'manifest.json')['regions'])}
+        _,source=app._scope('script_regions',manifest,state['receipts'])
+        with self.assertRaisesRegex(ValueError,'mandatory surface isolation'):
+            app._check_prefix('script_regions',[prior],[1,2],source)
+        restarted=rt.Runtime(self.root);restarted._admit=Mock()
+        original=restarted._page
+        calls=[]
+        def observe(*args):
+            calls.append(args[2]);return original(*args)
+        with patch.object(restarted,'_page',side_effect=observe):
+            self.assertEqual(restarted.sweep()[0]['stage'],'script_regions')
+        self.assertEqual(calls,[2])
+        status=restarted.ledger.status(run)
+        ri=c.load(c.artifact(self.root,status['receipts']['script_regions']['artifact']))
+        self.assertEqual(ri['pages'][0],saved['pages'][0])
+        self.assertEqual([r['page'] for r in ri['pages']],[1,2])
+        self.assertTrue(all(m['surface_policy']==surface.POLICY for _,_,m in restarted._page_manifests(ri)))
+        self.assertEqual(restarted.sweep()[0]['stage'],'glyph_segmentation')
+        si=c.load(c.artifact(self.root,restarted.ledger.status(run)['receipts']['glyph_segmentation']['artifact']))
+        self.assertEqual(si['pages'][0]['candidates'],0)
+        self.assertGreater(si['pages'][1]['candidates'],0)
+
+    def test_yale_scope_admits_all_pdf_pages_without_inferred_folios(self):
+        # Count limit is source-specific, not a general increase for unverified PDFs.
+        from vrs_service import Service
+        from vrs_coordinator import ref
+        pdf=self.root/'long.pdf'
+        with fitz.open() as doc:
+            for _ in range(214):doc.new_page(width=40,height=40)
+            doc.save(pdf)
+        groups=self.root/'long-groups.json'
+        worker.write(groups,{str(i):f'fixture-page-{i}' for i in range(1,215)})
+        app=Service(self.root)
+        m={'inputs':{'manuscript':ref(self.root,pdf),'groups':ref(self.root,groups)}}
+        with patch.object(surface,'YALE_PAGES',214),patch.object(surface,'YALE_SHA256',worker.sha(pdf)):
+            pages,_=app._scope('script_regions',m,{})
+            self.assertEqual(pages,list(range(1,215)))
+        with self.assertRaisesRegex(ValueError,'Invalid page scope'):
+            app._scope('script_regions',m,{})
+
 
 if __name__=='__main__':unittest.main()

@@ -6,6 +6,7 @@ on:
       - 'worker/regions.py'
       - 'worker/vrs_surface.py'
       - 'worker/vrs_coordinator.py'
+      - 'worker/vrs_service.py'
       - 'worker/test_vrs_surface.py'
       - '.github/workflows/vrs-rc2-surface.yml'
   workflow_dispatch:
