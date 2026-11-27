@@ -1,6 +1,10 @@
 schema_version: 1
 updated: '2026-11-25'
 priorities:
+  - id: RM-062
+    title: 'EXP-0038g1 disproves sufficiency of ink gates for script detection'
+    status: ACTIVE
+    next: 'Independent blinded script and non-script annotations on real regions, fixed folio-heldout evaluation and unknown rejection; retain original EXP-0038g thresholds and failures; separate ink proposals from script classification. See research/experiments/2026-11-25_EXP-0038g1_report.md.'
   - id: RM-061
     title: 'EXP-0038b-g integrated evidence checkpoint; semantic validation blocked'
     status: ACTIVE

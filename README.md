@@ -1,5 +1,11 @@
 # PROJECT VOYNICH
 
+## EXP-0038g1 — synthetic specificity follow-up (2026-11-25)
+
+EXP-0038g1: fixed synthetic specificity counterexample, 12/12 known nonwriting settings (rings, stylized leaves, squares) accepted, 3/4 synthetic AB settings accepted, sanity 3/3. Two byte-identical Python runs with unchanged SHA-pinned parent. Universal writing-region guarantee CONTRADICTED; evidence DOCUMENTED, not independent external replication. No real-image specificity estimate. Parent 59/74 NOT_MET, semantics BLOCKED; separate ink proposal from script discrimination; next independent real-image labels and folio holdouts. No GPU or new manuscript processing.
+
+[Protocol](research/experiments/2026-11-25_EXP-0038g1_prereg.md) · [Report](research/experiments/2026-11-25_EXP-0038g1_report.md) · [Results](research/results/2026-11-25_EXP-0038g1_specificity.json) · [Code](research/scripts/exp0038g1_specificity.py). Work-package progress: scoped A/W 4/40 (10%); owner-canonical canvas IDs inventoried 213/213 (100%, not physical folio validation or live Yale authentication); decipherment gates 0/5 (0%). No global decipherment percentage. PR integration pending until verified.
+
 ## Current integration checkpoint — 2026-11-25
 
 This consolidated branch contains the complete reviewed research stack #65–#91 (including historical PASS and NOT_MET results). The earlier proposed-status sections below are retained as dated history; this checkpoint supersedes their progress/next-step statements once merged to main. No experiment is independently rerun by the integration itself.

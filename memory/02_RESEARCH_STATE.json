@@ -3,8 +3,8 @@
   "updated": "2026-11-25",
   "repo": "DJCyberdog/voynich",
   "initial_bootstrap_main": "01ec8257cfaa9cd75e8fe008d9e1da8bf7182d7a",
-  "cycle": "Owner-authorized PR stack consolidation through EXP-0038g",
-  "status": "RESEARCH_DOCUMENTED_SEMANTIC_VALIDATION_BLOCKED",
+  "cycle": "EXP-0038g1 synthetic specificity counterexample",
+  "status": "RESEARCH_COMPLETED_SCOPED_SEMANTIC_VALIDATION_BLOCKED",
   "decipherment": "UNKNOWN",
   "corpus_ingested": false,
   "source_rights_verified": false,
@@ -19,7 +19,7 @@
     "descriptive_labels": 9,
     "distinct_labels": 210
   },
-  "next": "Independent blinded annotation, certified script/non-script specificity controls and separate region-locus mapping; preserve NOT_MET thresholds; other A/W tasks may continue.",
+  "next": "Keep EXP-0038g as ink proposal only; independently annotate real script/non-script regions and use heldout folio controls before scoring script discrimination or comparing CPU/GPU. No threshold retuning or semantic scoring.",
   "notes": [
     "Owner-designated canonical working manifest is distinct from independent live provenance verification",
     "Repeated direct URL authentication SATURATED and not a research blocker",
@@ -772,5 +772,26 @@
     "scientific_reproduction": "NOT_RUN_IN_INTEGRATION",
     "semantic_validation": "BLOCKED",
     "automation_changed": false
+  },
+  "exp0038g1": {
+    "id": "EXP-0038g1",
+    "question": "Do all original ink-readiness gates guarantee a writing region?",
+    "evidence_status": "DOCUMENTED",
+    "operational_status": "WATCHING",
+    "scope": "12/12 known synthetic nonwriting parameter settings accepted; 3/4 synthetic AB settings accepted; sanity 3/3. Universal sufficiency contradicted.",
+    "preregistration": "research/experiments/2026-11-25_EXP-0038g1_prereg.md",
+    "report": "research/experiments/2026-11-25_EXP-0038g1_report.md",
+    "script": "research/scripts/exp0038g1_specificity.py",
+    "result": "research/results/2026-11-25_EXP-0038g1_specificity.json",
+    "decision": "CONTRADICTED",
+    "semantic_readiness": "BLOCKED",
+    "caveat": "Synthetic stress test only, correlated variants; no manuscript specificity estimate or independent external replication. Parent readiness NOT_MET unchanged.",
+    "nontext_passed": 12,
+    "nontext_total": 12,
+    "synthetic_text_passed": 3,
+    "synthetic_text_total": 4,
+    "sanity_passed": 3,
+    "sanity_total": 3,
+    "identical_runs": 2
   }
 }
