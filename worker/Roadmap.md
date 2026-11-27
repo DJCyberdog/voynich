@@ -437,3 +437,7 @@ After 0.14.1 closes, create an owner-approved production research workspace from
 ### RC1 first private owner-test increment
 
 See VRS-RC1.md and README-RC1-TEST-DE.md. Real f1r technical run and private snapshot/restore passed. Historical code identities are fenced after glyphs 0.5.1 extreme-aspect fix; no automatic relabel or migration of existing evidence. 0.14.1 was integrated into main by PR #113; RC1 remains separate draft PR #114. Source-only candidate and local setup do not certify release distribution or native CUDA. No new checkpoint credit, no release freeze, G1–G8 and VRS-116 unchanged.
+
+### RC1 portability correction (owner reaffirmation)
+
+Mandatory self-bootstrap without preinstalled system Python. One setup entry, pinned local Python, profile-specific wheel resolution/lock and root-local install; no admin, system PATH, global pip or separate CUDA toolkit. Existing NVIDIA driver required. Preserve private workspace and explicit publication boundaries. Hosted automatic clean-start check added; native owner/non-admin and external-write/delete audit still binding, not waived. No separate milestone or release claim.

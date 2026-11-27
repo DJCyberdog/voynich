@@ -1,4 +1,8 @@
-# VRS 0.13.0 portable development candidate
+# VRS portable development candidate
+
+## RC1 automatic first-run setup
+
+Double-click Setup.bat without arguments. Setup-Auto.ps1 obtains the pinned full CPython 3.13.18 Windows x64 distribution from Astral python-build-standalone, verifies exact size and SHA-256, and extracts it locally. Explicit download consent covers profile-specific wheel resolution from PyPI/PyTorch and installation using the locally generated hashed lock. No system Python or CUDA toolkit; compatible NVIDIA driver required for CUDA. All VRS-managed files remain root-local. The manual offline commands below remain supported, not prerequisites of first-run setup. See README-RC1-TEST-DE.md. This is a test candidate, not a signed release or certified zero external OS traces.
 
 Source only; not an accepted self-installing distribution. Native assets and qualification are pending.
 

@@ -55,3 +55,36 @@ jobs:
           path: ${{ runner.temp }}/vrs-native-${{ matrix.profile }}*.json
           if-no-files-found: warn
           retention-days: 14
+  auto-first-run:
+    if: github.ref == 'refs/heads/development/vrs-0.14.1-rc1'
+    runs-on: windows-2025
+    timeout-minutes: 35
+    steps:
+      - name: Preserve Git blob line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fresh standalone CPU setup without Python on PATH
+        shell: powershell
+        run: |
+          $app = Join-Path "${{ runner.temp }}" "VRS auto owner trial"
+          Copy-Item -LiteralPath worker -Destination $app -Recurse
+          $env:Path = "$env:SystemRoot\System32;$env:SystemRoot;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+          & "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "$app\Setup-Auto.ps1" -Profile cpu -AcceptDownloads
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $py = Join-Path $app ".venv\cpu\Scripts\python.exe"
+          if (-not (Test-Path -LiteralPath $py)) { throw "Local interpreter absent" }
+          & $py -E -s -B -c "import sys, pathlib, torch, tkinter; r=pathlib.Path(sys.argv[1]).resolve(); assert pathlib.Path(sys.prefix).resolve()==r/'.venv'/'cpu'; assert pathlib.Path(sys.base_prefix).resolve()==r/'runtime'/'cpu'; assert torch.version.cuda is None; print(torch.ones(4).sum().item()); print(tkinter.Tcl().eval('info patchlevel'))" $app
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item "$app\config\bootstrap-origin.json" "${{ runner.temp }}\vrs-auto-origin.json"
+          Copy-Item "$app\config\portable.json" "${{ runner.temp }}\vrs-auto-installed.json"
+          Remove-Item -LiteralPath $app -Recurse -Force
+          if (Test-Path -LiteralPath $app) { throw "Local app not removable" }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vrs-auto-first-run-evidence
+          path: ${{ runner.temp }}/vrs-auto-*.json
+          if-no-files-found: warn
+          retention-days: 14
