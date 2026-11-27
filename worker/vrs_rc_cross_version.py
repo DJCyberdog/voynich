@@ -64,10 +64,19 @@ finally:f.doCleanups()
         need(installed(old)[1]==new_pins and inspect(old,worker)==baseline,'Source upgrade altered historical ledger')
         need(cli(old,'status',run_id)==baseline_status and cli(old,'queue',run_id)==baseline_queue,'Historical CLI mismatch')
         registered=cli(old,'list');need(len(registered)==1 and registered[0]['worker']==worker,'Worker binding changed')
+        current=command(old,'-c',"import json; from pathlib import Path; from vrs_runtime import Runtime; print(json.dumps(Runtime(Path.cwd()).identity))")
+        changed=current!=worker
+        if changed:
+            # Changed scientific code must not resume or relabel the old run.
+            need(inspect(old,current)['counts']['foreign_worker']==1,'Foreign worker not detected')
+            need(cli(old,'once')==[] and inspect(old,worker)==baseline,'Changed worker executed historical evidence')
+            need(update(old,old_archive,old_digest)['status']=='UPDATED','Source rollback failed')
+            need(installed(old)[1]==old_pins and inspect(old,worker)==baseline,'Rollback changed historical ledger')
         need(cli(old,'once')[0]['stage']=='exception_review','Review resume failed')
         need(cli(old,'once')[0]['control']=='COMPLETED','Alignment resume failed')
         upgraded=cli(old,'status',run_id);completed=inspect(old,worker)
-        need(update(old,old_archive,old_digest)['status']=='UPDATED','Source rollback failed')
+        if not changed:
+            need(update(old,old_archive,old_digest)['status']=='UPDATED','Source rollback failed')
         need(installed(old)[1]==old_pins and inspect(old,worker)==completed and cli(old,'status',run_id)==upgraded,'Source rollback lost new decisions or receipts')
         restore(backup,rollback,h);restored=rollback/'app'
         need(installed(restored)[1]==old_pins and inspect(restored,worker)==baseline,'Snapshot rollback mismatch')
@@ -79,7 +88,7 @@ finally:f.doCleanups()
         return dict(status='PASS',scope='SYNTHETIC_IMMUTABLE_013_UPGRADE_ROLLBACK_REPLAY',old_commit=OLD_COMMIT,
                     old_source_zip_sha256=old_digest,new_source_zip_sha256=new_digest,snapshot_sha256=h,
                     initial_ledger_sha256=baseline['ledger_sha256'],completed_ledger_sha256=completed['ledger_sha256'],
-                    worker_identity=worker,decision_revisions=baseline['counts']['decision_revisions'],
+                    worker_identity=worker,current_worker_identity=current,worker_identity_changed=changed,foreign_worker_fenced=changed,resume_requires_rollback=changed,decision_revisions=baseline['counts']['decision_revisions'],
                     historical_cli_parity=True,receipt_parity=True,scientific_status='UNADJUDICATED')
 
 if __name__=='__main__':

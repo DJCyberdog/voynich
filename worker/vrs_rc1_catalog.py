@@ -12,14 +12,14 @@ from vrs_desktop_api import atomic_json
 import vrs_rc1_intake as intake
 import reference_import
 
-def merge_catalogs(parts,out):
+def merge_catalogs(parts,out,*,runtime_subset=False):
     """Deduplicate identical PNG bytes without merging notation IDs or source cells."""
     out=Path(out);out.mkdir();(out/'refs').mkdir();schemes=[];seen=set();unique={}
     for home,plan_path in parts:
         home=Path(home);plan_path=Path(plan_path);obj=c.load(home/'references.json')
         need(obj['preview'] is True and obj['plan_sha256']==digest(plan_path),'Preview plan mismatch')
         for scheme in obj['schemes']:
-            sid=scheme['id'];need(sid in intake.VISUAL_SCHEMES and sid not in seen,'Unexpected catalog scheme');seen.add(sid)
+            sid=scheme['id'];need((sid in intake.VISUAL_SCHEMES or runtime_subset and sid in intake.SCHEMES) and sid not in seen,'Unexpected catalog scheme');seen.add(sid)
             scheme['plan_sha256']=obj['plan_sha256']
             for entry in scheme['entries']:
                 for sample in entry['samples']:
@@ -33,7 +33,7 @@ def merge_catalogs(parts,out):
     path=out/'references.json';atomic_json(path,dict(schema=1,schemes=schemes,preview=True))
     return path,unique
 
-def build_preview(root,out,plan,approved,scope):
+def build_preview(root,out,plan,approved,scope,*,runtime_subset=False):
     root=existing_directory(root);out=destination(out,root);c.digest_ok(approved)
     need(scope==plan['scope']=='REAL_RESEARCH' and c.digest(plan)==approved,'Explicit real-source preview approval required')
     need(plan['catalog'] is None,'Existing catalog; create a distinct curated plan instead')
@@ -59,10 +59,16 @@ def build_preview(root,out,plan,approved,scope):
             for kind,row,edition in selected:
                 src=local(out,row['path']);draft=parent/(kind+'-plan.json')
                 reference_import.discover(src,row['sha256'],kind,draft)
-                value=c.load(draft);value['version']=edition;value['reviewed']=False;atomic_json(draft,value)
+                value=c.load(draft);value['version']=edition;value['reviewed']=False
+                if runtime_subset:
+                    # Explicit literal-label preview subsets, never calibrated mappings.
+                    original='basic-eva' if kind=='eva' else 'sta1r'
+                    target='Eva-' if kind=='eva' else 'STA1'
+                    value['entries'] += [dict(e,scheme=target) for e in value['entries'] if e['scheme']==original]
+                atomic_json(draft,value)
                 add(draft,'catalog_plan','preview-'+kind+'-plan',row['origin'],edition)
                 home=temp/kind;reference_import.build(src,draft,home,preview=True);parts.append((home,draft))
-            path,unique=merge_catalogs(parts,parent/'catalog')
+            path,unique=merge_catalogs(parts,parent/'catalog',runtime_subset=runtime_subset)
         for h,p in sorted(unique.items()):add(p,'reference_sample','preview-'+h,'PDF cells; see source-bound catalog entries','Unreviewed preview')
         add(path,'visual_catalog','preview-catalog','Exact EVA/STA PDF preview plans','Unreviewed, source-native schemes')
         generated['catalog']='preview-catalog'

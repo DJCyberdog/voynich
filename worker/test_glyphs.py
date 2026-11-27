@@ -28,6 +28,19 @@ class GlyphTests(unittest.TestCase):
         path=self.root/'template.json'; g.propose(self.manifest,path,'reviewer',self.alphabet)
         self.assertTrue(all(r['status']=='unreviewed' and all(x['label']=='unknown' for x in r['glyphs']) for r in w.read(path)['regions'].values()))
 
+    def test_extreme_aspect_feature_and_ordinary_parity(self):
+        import numpy as np
+        from PIL import ImageOps
+        for size in ((1,64),(1,1000),(64,1),(1000,1)):
+            result=g.feature(Image.new('L',size,0))
+            self.assertEqual(result.shape,(1024,));self.assertTrue(np.isfinite(result).all())
+            self.assertEqual(float(result.sum()),32.0)
+        for size in ((2,40),(40,2),(32,32),(71,33),(7,19)):
+            image=Image.new('L',size,255);ImageDraw.Draw(image).line((0,0,size[0]-1,size[1]-1),fill=0)
+            legacy=(1-np.asarray(ImageOps.pad(image,(32,32),color=255),dtype=np.float32)/255).reshape(-1)
+            np.testing.assert_array_equal(g.feature(image),legacy)
+        with self.assertRaises(ValueError):g.feature(Image.new('L',(0,10)))
+
     def test_inventory_binding(self):
         w.write(self.alphabet,dict(convention='different-convention',labels=['X','Y']))
         with self.assertRaisesRegex(ValueError,'inventory mismatch'): g.cohorts(self.manifest,self.a,self.b,self.alphabet,self.split)
