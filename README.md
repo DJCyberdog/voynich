@@ -1,5 +1,9 @@
 # PROJECT VOYNICH
 
+## Public research status — 26 November 2026
+
+[Read the current research progress report](research/synthesis/2026-11-26_research_status.md): structural evidence across EVA and native STA1, negative findings, semantic-validation limitations, separately identified pending EXP-0038g1 and VRS development. No decipherment claim. This dated synthesis does not change any scientific gate or supersede the experiment register.
+
 ## Current integration checkpoint — 2026-11-25
 
 This consolidated branch contains the complete reviewed research stack #65–#91 (including historical PASS and NOT_MET results). The earlier proposed-status sections below are retained as dated history; this checkpoint supersedes their progress/next-step statements once merged to main. No experiment is independently rerun by the integration itself.
