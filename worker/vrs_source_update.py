@@ -7,11 +7,29 @@ import stat
 import tempfile
 import zipfile
 from pathlib import Path
+# The final patch runs this exact, independently hash-verified module from a
+# staging directory, using the already installed RC1 bootstrap and portable lock.
+if __name__=='__main__':
+    import argparse
+    import sys
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action',choices=('apply-rc2','rollback-rc2','recover'))
+    parser.add_argument('--root',type=Path,required=True)
+    parser.add_argument('--source',type=Path)
+    parser.add_argument('--approve')
+    parser.add_argument('--base')
+    parser.add_argument('--target')
+    args=parser.parse_args()
+    args.root=args.root.resolve(strict=True)
+    sys.path.insert(0,str(args.root))
 from vrs_portable import local, need, load, save, digest, exclusive, worker_stopped, HEX
 
 PREFIX='Voynich Research Studio/'
 MANIFEST='portable_sources.json'
 JOURNAL='workspace/source-update/journal.json'
+RECEIPT='workspace/source-update/rc2-receipt.json'
+RC1_COMMIT='8121427f4612eee3d95de58c685015de84bb3491'
+RC1_BASE_BLOB='34327354cce8d4d72069812593ac49bd3cb35184'
 CAP=64*1024**2
 FILE_CAP=8*1024**2
 BLOB=re.compile('[a-f0-9]{40}')
@@ -101,37 +119,138 @@ def launcher_critical(n):
     return n in ('vrs_portable.py','vrs_source_update.py','vrs_portable_logs.py','vrs_auto_setup.py') or n.endswith(('.bat','.cmd','.ps1')) or n.startswith('requirements') and n.endswith('.txt')
 
 
-def update(root,bundle,approved):
+def sha256(data):return hashlib.sha256(data).hexdigest()
+
+
+def changes_between(old,new):
+    return {n:{'old':blob(old[n]) if n in old else None,
+               'new':blob(new[n]) if n in new else None}
+            for n in set(old)|set(new) if old.get(n)!=new.get(n)}
+
+
+def receipt(root):
+    p=local(root,RECEIPT)
+    if not p.exists():return None
+    v=load(p)
+    need(type(v) is dict and set(v)=={'schema','base_commit','base','target','archive','journal'}
+         and v['schema']==1 and v['base_commit']==RC1_COMMIT
+         and all(isinstance(v[k],str) and HEX.fullmatch(v[k]) for k in ('base','target','archive'))
+         and v['base']!=v['target'] and type(v['journal']) is dict,'Invalid RC2 receipt')
+    return v
+
+
+def update(root,bundle,approved,*,rc2=None):
     root=Path(root).resolve(strict=True)
     with exclusive(root):
         maintenance(root);need(not pending(root),'Source recovery required');old,om=installed(root);new,nm=read_bundle(bundle,approved)
-        # A dependency or launcher change needs an explicit new environment/package.
-        need(all(old.get(n)==new.get(n) for n in set(old)|set(new) if launcher_critical(n)),'Recovery/launcher/dependency change requires full package migration')
+        prior=receipt(root)
+        if prior is not None:
+            need(sha256(old[MANIFEST])==prior['base'],'Retained RC2 rollback: use explicit rollback or finalization before another source update')
+        if rc2 is not None:
+            base,target=rc2
+            need(all(isinstance(h,str) and HEX.fullmatch(h) for h in (base,target)) and base!=target,'Exact base and target manifest SHA256 required')
+            need(blob(old[MANIFEST])==RC1_BASE_BLOB and sha256(old[MANIFEST])==base,'Wrong RC1 base manifest')
+            need(sha256(new[MANIFEST])==target,'Wrong RC2 target manifest')
+            # Only this staged transaction implementation may replace itself.
+            # The legacy recovery journal stays schema 1, so RC1 recovery works
+            # even when interruption occurs before this module is replaced.
+            need('vrs_source_update.py' in old and new.get('vrs_source_update.py')==Path(__file__).read_bytes(),'Staged updater does not match approved target')
+        # Other dependency/launcher changes still require full-package migration.
+        need(all(old.get(n)==new.get(n) for n in set(old)|set(new)
+                 if launcher_critical(n) and not (rc2 is not None and n=='vrs_source_update.py')),
+             'Recovery/launcher/dependency change requires full package migration')
         names=set(old)|set(new);need(len({n.casefold() for n in names})==len(names),'Cross-version case collision')
-        changed={n:{'old':blob(old[n]) if n in old else None,'new':blob(new[n]) if n in new else None} for n in names if old.get(n)!=new.get(n)}
+        changed=changes_between(old,new)
         if not changed:return {'status':'UNCHANGED','files':0}
         need(MANIFEST in changed and len(changed)<=1001,'Manifest change or update cardinality')
         for n in changed:
             if n not in old:need(not local(root,n).exists(),'Unmanaged file collision')
         import shutil
         backup=local(root,'workspace/source-update/backup')
+        # Account for the complete backup plus the largest atomic replacement
+        # and a metadata margin. Replacing files may grow the installed tree.
+        reserve=sum(len(old[n]) for n in changed if n in old)+sum(len(new[n]) for n in changed if n in new)+2*1024**2
+        need(shutil.disk_usage(root).free>=reserve,'Insufficient free space for source transaction')
         if backup.exists():shutil.rmtree(backup)
         backup.mkdir(parents=True)
         for n in changed:
-            if n in old:write(local(root,'workspace/source-update/backup/'+n),old[n])
-        save(local(root,JOURNAL),{'schema':1,'changes':changed,'backup':'workspace/source-update/backup'})
+            if n in old:
+                p=local(root,'workspace/source-update/backup/'+n);write(p,old[n])
+                need(blob(p.read_bytes())==changed[n]['old'],'Source backup verification failed')
+        journal={'schema':1,'changes':changed,'backup':'workspace/source-update/backup'}
+        # Receipt first, then journal, then managed writes. An interrupted
+        # preparation leaves the exact old installation and is safe to retry.
+        if rc2 is not None:
+            save(local(root,RECEIPT),{'schema':1,'base_commit':RC1_COMMIT,'base':base,
+                 'target':target,'archive':approved,'journal':journal})
+        save(local(root,JOURNAL),journal)
         try:
             for n in sorted(changed,key=lambda n:(n==MANIFEST,n)):
                 p=local(root,n)
                 if n in new:write(p,new[n])
                 else:p.unlink()
-            _,verified=installed(root);need(verified==nm,'Updated manifest mismatch');invalidate_bytecode(root);local(root,JOURNAL).unlink()
+            actual,verified=installed(root);need(verified==nm and actual[MANIFEST]==new[MANIFEST],'Updated manifest mismatch')
+            if rc2 is not None:need(sha256(actual[MANIFEST])==target,'Target manifest verification failed')
+            invalidate_bytecode(root);local(root,JOURNAL).unlink()
         except BaseException:
             rollback(root);raise
-        return {'status':'UPDATED','files':len(changed)-1,'sha256':approved}
+        result={'status':'UPDATED','files':len(changed)-1,'sha256':approved}
+        if rc2 is not None:result.update(base_commit=RC1_COMMIT,base_manifest_sha256=base,target_manifest_sha256=target,rollback_retained=True)
+        return result
 
 
 def recover(root):
     root=Path(root).resolve(strict=True)
     with exclusive(root,allow_source_recovery=True):maintenance(root);need(pending(root),'No interrupted source update');rollback(root)
     return {'status':'ROLLED_BACK'}
+
+
+def apply_rc2(root,bundle,approved,base,target):
+    """Run only the independently verified RC2 updater from local staging."""
+    return update(root,bundle,approved,rc2=(base,target))
+
+
+def rollback_rc2(root):
+    """Restore the exact RC1 managed source after a successful RC2 activation.
+
+    Private data is not rolled back or migrated by this operation.
+    """
+    root=Path(root).resolve(strict=True)
+    with exclusive(root):
+        maintenance(root);need(not pending(root),'Source recovery required')
+        v=receipt(root);need(v is not None,'No retained RC2 receipt')
+        current,cm=installed(root)
+        if sha256(current[MANIFEST])==v['base']:
+            need(blob(current[MANIFEST])==RC1_BASE_BLOB,'Wrong restored base identity')
+            return {'status':'ALREADY_ROLLED_BACK'}
+        need(sha256(current[MANIFEST])==v['target'],'RC2 target changed; rollback refused')
+        j=v['journal'];need(set(j)=={'schema','changes','backup'} and j['schema']==1
+              and j['backup']=='workspace/source-update/backup','Invalid RC2 rollback journal')
+        backup=local(root,j['backup']+'/'+MANIFEST)
+        need(backup.is_file() and backup.stat().st_size<=2*1024**2,'RC1 backup manifest missing')
+        raw=backup.read_bytes()
+        need(sha256(raw)==v['base'] and blob(raw)==RC1_BASE_BLOB,'RC1 backup manifest mismatch')
+        bm=manifest(raw)
+        # The journal must be the exact difference of the two pinned manifests.
+        expected={n:{'old':bm.get(n),'new':cm.get(n)} for n in set(bm)|set(cm)
+                  if bm.get(n)!=cm.get(n)}
+        expected[MANIFEST]={'old':blob(raw),'new':blob(current[MANIFEST])}
+        need(j['changes']==expected,'RC2 rollback journal does not match pinned manifests')
+        save(local(root,JOURNAL),j)
+        rollback(root)
+        need(digest(local(root,MANIFEST))==v['base'],'RC1 rollback identity mismatch')
+    return {'status':'ROLLED_BACK','base_commit':RC1_COMMIT,'base_manifest_sha256':v['base']}
+
+
+if __name__=='__main__':
+    try:
+        if args.action=='apply-rc2':
+            need(all((args.source,args.approve,args.base,args.target)),'Apply requires source, archive SHA256 and both manifest SHA256 values')
+            result=apply_rc2(args.root,args.source,args.approve,args.base,args.target)
+        else:
+            need(not any((args.source,args.approve,args.base,args.target)),'Unexpected recovery arguments')
+            result=rollback_rc2(args.root) if args.action=='rollback-rc2' else recover(args.root)
+        print(json.dumps(result,sort_keys=True))
+    except (ValueError,OSError,zipfile.BadZipFile) as exc:
+        print('VRS source transaction refused: '+str(exc),file=sys.stderr)
+        sys.exit(1)
