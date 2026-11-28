@@ -51,8 +51,7 @@ class App:
 
     def t(self,text): return DE.get(text,text) if self.cfg['language']=='de' else text
 
-    def build(self):
-        for child in self.w.winfo_children(): child.destroy()
+    def apply_palette(self):
         self.p=PALETTES[self.cfg['theme']]; p=self.p; self.w.configure(bg=p['bg']); s=ttk.Style(self.w); s.theme_use('clam')
         from tkinter import font as tkfont
         family='Segoe UI' if 'Segoe UI' in tkfont.families(self.w) else tkfont.nametofont('TkDefaultFont').actual('family')
@@ -68,11 +67,14 @@ class App:
         s.configure('Treeview',background=p['panel'],fieldbackground=p['panel'],foreground=p['fg'],rowheight=rowheight,borderwidth=0);s.map('Treeview',background=[('selected',p['line'])],foreground=[('selected',p['fg'])]);s.configure('Treeview.Heading',background=p['card'],foreground=p['fg'],font=(family,10,'bold'),padding=(6,7))
         s.configure('TCombobox',padding=4);s.map('TCombobox',fieldbackground=[('readonly',p['card'])],foreground=[('readonly',p['fg'])]);s.configure('Horizontal.TProgressbar',background=p['accent'],troughcolor=p['line'],bordercolor=p['line'])
         self.w.option_add('*TCombobox*Listbox.background',p['card']);self.w.option_add('*TCombobox*Listbox.foreground',p['fg'])
-        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); ttk.Label(top,text='VRS',font=(family,24,'bold'),foreground=p['accent']).pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=(family,12,'bold')).pack(side='left'); ttk.Button(top,text='F1',command=self.keyboard_help,width=4).pack(side='right',padx=(12,0));ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
+    def build(self):
+        for child in self.w.winfo_children(): child.destroy()
+        self.apply_palette();p=self.p;family=self.family
+        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); self.brand_label=ttk.Label(top,text='VRS',font=(family,24,'bold'),foreground=p['accent']);self.brand_label.pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=(family,12,'bold')).pack(side='left'); ttk.Button(top,text='F1',command=self.keyboard_help,width=4).pack(side='right',padx=(12,0));ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
         ttk.Separator(self.w).pack(fill='x'); self.status=tk.StringVar(value=self.t('Ready')); ttk.Label(self.w,textvariable=self.status,style='Card.TLabel',anchor='w').pack(fill='x',side='bottom'); area=ttk.Frame(self.w); area.pack(fill='both',expand=True); nav=ttk.Frame(area,style='Panel.TFrame',padding=12); nav.pack(side='left',fill='y'); ttk.Label(nav,text=self.t('Project').upper(),style='Panel.TLabel').pack(anchor='w',pady=(4,8)); ttk.Label(nav,text=self.api.root.name[:22],style='Panel.TLabel',wraplength=145).pack(anchor='w',pady=(0,14)); ttk.Button(nav,text=self.t('Open workspace'),command=self.switch).pack(fill='x',pady=(0,20)); self.nav={}
         for name in ('Home','Review','Sources','Settings'):
             b=ttk.Button(nav,text=self.t(name),style='Nav.TButton',command=lambda n=name:self.show(n)); b.pack(fill='x',pady=2); self.nav[name]=b
-        ttk.Label(nav,text='PRIVATE WORKSPACE',style='Panel.TLabel',foreground=p['muted']).pack(side='bottom',pady=10)
+        self.private_label=ttk.Label(nav,text='PRIVATE WORKSPACE',style='Panel.TLabel',foreground=p['muted']);self.private_label.pack(side='bottom',pady=10)
         self.body=ttk.Frame(area,padding=(22,18)); self.body.pack(side='left',fill='both',expand=True)
 
     def task(self,fn,done):
@@ -168,7 +170,16 @@ class App:
         scrollhost=ttk.Frame(right_shell,style='Panel.TFrame');scrollhost.pack(fill='both',expand=True)
         self.review_side=tk.Canvas(scrollhost,bg=self.p['panel'],highlightthickness=0,width=300);ys=ttk.Scrollbar(scrollhost,orient='vertical',command=self.review_side.yview);ys.pack(side='right',fill='y');self.review_side.configure(yscrollcommand=ys.set);self.review_side.pack(side='left',fill='both',expand=True)
         right=ttk.Frame(self.review_side,style='Panel.TFrame',padding=(0,0,6,0));right_id=self.review_side.create_window(0,0,anchor='nw',window=right)
-        right.bind('<Configure>',lambda e:self.review_side.configure(scrollregion=self.review_side.bbox('all')));self.review_side.bind('<Configure>',lambda e:self.review_side.itemconfigure(right_id,width=e.width))
+        def scroll_layout(event=None):
+            if not self.review_side.winfo_exists():return
+            if event is not None and event.widget is self.review_side:
+                self.review_side.itemconfigure(right_id,width=event.width)
+            self.review_side.configure(scrollregion=self.review_side.bbox('all'))
+            needs=right.winfo_reqheight()>self.review_side.winfo_height()
+            if needs and not ys.winfo_manager():ys.pack(side='right',fill='y',before=self.review_side)
+            elif not needs and ys.winfo_manager():ys.pack_forget();self.review_side.yview_moveto(0)
+        self.review_scrollbar=ys
+        right.bind('<Configure>',scroll_layout);self.review_side.bind('<Configure>',scroll_layout)
         self.review_side.bind('<MouseWheel>',lambda e:self.review_side.yview_scroll(-1 if e.delta>0 else 1,'units'));self.review_side.bind('<Button-4>',lambda e:self.review_side.yview_scroll(-1,'units'));self.review_side.bind('<Button-5>',lambda e:self.review_side.yview_scroll(1,'units'))
         metadata=ttk.Frame(left,style='Panel.TFrame');metadata.pack(fill='x',pady=5)
         self.locus_button=ttk.Button(metadata,text=self.t('Locus'),command=self.open_locus);self.locus_button.pack(side='right')
@@ -178,7 +189,7 @@ class App:
             button=ttk.Button(controls,text=self.t(label),command=fn,width=0);button.pack(side='left',padx=(0,4));self.zoom_controls.append(button)
         modes=ttk.Frame(left,style='Panel.TFrame');modes.pack(fill='x',pady=(4,0))
         self.page_button=ttk.Button(modes,text=self.t('Full page'),command=self.open_page_context);self.page_button.pack(side='left')
-        self.locate_button=ttk.Button(controls,text=self.t('Locate glyph'),command=self.locate_glyph,width=0);self.locate_button.pack(side='left',padx=(0,4))
+        locate=ttk.Frame(left,style='Panel.TFrame');locate.pack(fill='x');self.locate_button=ttk.Button(locate,text=self.t('Locate glyph'),command=self.locate_glyph,width=0);self.locate_button.pack(side='left')
         self.vector_mask=tk.StringVar(value='majority');self.vector_button=ttk.Button(modes,text=self.t('Vectors'),command=self.open_vectors);self.vector_button.pack(side='left',padx=4)
         ttk.Combobox(modes,textvariable=self.vector_mask,values=('union','majority','intersection'),state='readonly',width=12).pack(side='left',fill='x',expand=True)
         layers=ttk.Frame(left,style='Panel.TFrame');layers.pack(fill='x')
@@ -483,7 +494,17 @@ class App:
             if value['catalog']!=self.cfg['catalog']:self.api.catalog(value['catalog'])
             return self.api.save_settings(value)
         self.task(work,self.settings_done)
-    def settings_done(self,value): self.cfg=value; self.build(); self.show('Settings')
+    def settings_done(self,value):
+        previous=self.cfg; self.cfg=value
+        changed={k for k in value if value[k]!=previous.get(k)}
+        if changed<= {'theme','geometry'}:
+            # Settings contains ttk widgets only. Keep window, controls and focus intact.
+            if 'theme' in changed:
+                self.apply_palette()
+                self.brand_label.configure(foreground=self.p['accent'])
+                self.private_label.configure(foreground=self.p['muted'])
+            return
+        self.build(); self.show('Settings')
     def switch(self):
         if self.future is not None:return
         p=dialogs.choose(filedialog.askdirectory,parent=self.w,workspace=self.api.root,mustexist=True)

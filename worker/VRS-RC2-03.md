@@ -11,3 +11,7 @@ Increment 3 at fb193e8: PR 46138350295, CPU 46138349317 and Windows portable 461
 67e582e PR/CPU/Windows portable PASS, real-source preview FAIL (see RC2-02g). Corrective local viewport clipping keeps original evidence, adds explicit clipped-view marker; exact CI pending.
 
 8942ac0: all four workflows PASS; 18/18 real persisted-sidecar previews. Added pointer/viewport-centered zoom using actual rounded image geometry and clamped canvas scroll extent; locate-glyph zooms and centers the candidate in the current context, without new raster or coordinate inference. Fit resets the view. Synthetic anchor/clamp and actual Tk smoke assertions added; exact current CI pending. No line/word alignment inferred.
+
+### Coordinated RC2-03/04/12 desktop increment
+
+The existing theme-only settings save rebuilt the full application. Split palette application from widget construction; theme/geometry-only settings updates on the Settings view preserve the shell, controls, and focus, without catalog validation or resetting unrelated tray state. Language and other settings still rebuild. Moved locate-glyph to its own row to reduce compact toolbar clipping and show the reference scrollbar only when needed. Added actual Tk regression exercising five theme saves/repaints, preserving widget identity and refusing unexpected catalog reload, reporting hosted-fixture p50/p95 including persistence/poll. No native latency or DPI acceptance claimed. Owner decision 2026-11-28 requires RC2-02h independently evidenced PASS before RC2-10; other engineering proceeds.

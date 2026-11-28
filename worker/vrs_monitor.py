@@ -67,7 +67,9 @@ class Monitor(App):
         super().switch(); self.api=Operations(self.api.root); self.notices=Notifications(); self.reset_tray_context()
 
     def settings_done(self,value):
-        super().settings_done(value); self.reset_tray_context()
+        changed=any(value[k]!=self.cfg.get(k) for k in ('interpreter','evidence_mode','language'))
+        super().settings_done(value)
+        if changed:self.reset_tray_context()
 
     def reset_tray_context(self):
         self.tray_context=(str(self.api.root),self.cfg['interpreter'],tray_controls.Snapshot())

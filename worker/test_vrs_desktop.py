@@ -216,7 +216,16 @@ class DesktopTests(unittest.TestCase):
             app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
             app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only); app.open_page_context(); settle(); self.assertTrue(app.page_active); self.assertEqual(app.page_image.size,(250,250)); app.locate_glyph(); self.assertGreaterEqual(app.factor,4); app.zoom(1.25); self.assertGreaterEqual(app.factor,5); app.fit(); self.assertEqual(app.factor,1); app.mode(False); self.assertFalse(app.page_active); app.vectors_loaded((Image.new('RGB',(30,30),'white'),[1,1,5,5],[],1,dict(skeleton=[[(1.5,1.5),(2.5,2.5)]],nodes=[(2.5,2.5,3)],fallback=0,hypotheses={'splits':[('s1',[[1,1,3,5],[3,1,5,5]]),('s2',[[1,1,5,3],[1,3,5,5]])],'pairs':[],'compounds':[]})),'majority'); app.vector_layer.set(app.t('Skeleton')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-node')),1); app.vector_layer.set(app.t('Splits')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-hypothesis')),2); app.step_hypothesis(1); self.assertEqual(app.vector_index,1); app.mode(False); self.assertFalse(app.vector_active)
             app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
-            app.show('Settings'); app.fields['theme'].set('light'); app.fields['language'].set('en'); app.apply(); settle(); self.assertEqual(app.cfg['theme'],'light'); self.assertEqual(app.cfg['language'],'en')
+            app.show('Settings'); original_body=app.body; original_theme=app.fields['theme']
+            from unittest.mock import patch
+            with patch.object(app.api,'catalog',side_effect=AssertionError('Unchanged catalog must not reload')):
+                timings=[]
+                for theme in ('light','dark','light','dark','light'):
+                    started=time.perf_counter();app.fields['theme'].set(theme);app.apply();settle();timings.append((time.perf_counter()-started)*1000)
+                    self.assertIs(app.body,original_body);self.assertIs(app.fields['theme'],original_theme);self.assertEqual(app.cfg['theme'],theme)
+                ordered=sorted(timings)
+                print('RC2-04 theme save + repaint hosted fixture n=5 p50_ms=%.2f p95_ms=%.2f'%(ordered[2],ordered[-1]),flush=True)
+            app.fields['language'].set('en');app.apply();settle();self.assertEqual(app.cfg['language'],'en')
             w.geometry('1024x650'); w.update(); app.show('Review'); settle(); self.assertGreater(app.canvas.winfo_width(),150);self.assertTrue(app.kindbox.winfo_ismapped());self.assertTrue(app.review_side.winfo_ismapped())
             for widget in [app.draft_button,app.submit_button,*app.zoom_controls]:
                 self.assertTrue(widget.winfo_ismapped());self.assertGreaterEqual(widget.winfo_width(),widget.winfo_reqwidth());self.assertGreaterEqual(widget.winfo_height(),widget.winfo_reqheight())
