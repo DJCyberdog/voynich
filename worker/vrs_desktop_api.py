@@ -130,6 +130,51 @@ class Desktop:
             box=item['box']; require(0<=box[0]<box[2]<=source.width and 0<=box[1]<box[3]<=source.height,'Invalid glyph geometry')
             return source.convert('RGB'),box
 
+    def page_context(self, item):
+        """Opt-in full page; exact region replay or fail closed. No alignment inference."""
+        from PIL import Image
+        import fitz
+        import vrs_surface as surface
+        run=item['run_id']; c.digest_ok(run)
+        ledger=ReadLedger(self.root)
+        with ledger._tx() as conn:
+            row=ledger._row(conn,'runs',run); manifest,receipts,_=ledger._validate(row)
+            stored=conn.execute('SELECT payload FROM vrs095_queue_items WHERE run_id=? AND id=?',(run,item['id'])).fetchone()
+            require(stored is not None,'Unknown review candidate')
+            payload=json.loads(stored['payload'])
+            require(all(item.get(k)==v for k,v in payload.items()),'Candidate binding mismatch')
+            receipt=receipts['script_regions']; require(receipt['state']=='COMPLETED','Region context unavailable')
+            index=load_page(pinned(self.root,receipt['artifact']))
+            require(index['run_id']==run and index['stage']=='script_regions','Region index binding mismatch')
+            matches=[r for r in index['pages'] if r['page']==item['page']]
+            require(len(matches)==1,'Page context unavailable')
+            mp=pinned(self.root,matches[0]['manifest']); region_manifest=load_page(mp)
+        source=manifest['inputs']['manuscript']
+        require(region_manifest['source_sha256']==source['sha256'] and region_manifest['dpi']==200 and region_manifest['renderer']==fitz.VersionBind,'Page rendering provenance mismatch')
+        dims=region_manifest['page_dimensions'][str(item['page'])]
+        require(len(dims)==2 and all(type(x) is int and x>0 for x in dims) and dims[0]*dims[1]<=16_000_000,'Page too large for review')
+        matches=[x for x in region_manifest['regions'] if x['id']==item['region_id'] and x['page']==item['page']]
+        require(len(matches)==1,'Region context unavailable')
+        region=matches[0]; px=region['pixel_box']
+        require(dict(path=(mp.parent.relative_to(self.root)/region['file']).as_posix(),sha256=region['sha256'])==item['crop'],'Region crop binding mismatch')
+        require(len(px)==4 and all(type(x) is int for x in px) and 0<=px[0]<px[2]<=dims[0] and 0<=px[1]<px[3]<=dims[1],'Invalid page geometry')
+        crop,box=self.crop(item)
+        with fitz.open(pinned(self.root,source)) as doc:
+            require(doc.is_pdf and not doc.needs_pass and 1<=item['page']<=len(doc),'Invalid source page')
+            page=doc[item['page']-1]
+            expected=(page.rect*fitz.Matrix(200/72,200/72)).irect
+            require(expected.width*expected.height<=16_000_000,'Page raster exceeds review limit')
+            if 'surface_policy' in region_manifest:
+                require(region_manifest['surface_policy']==surface.POLICY,'Unsupported surface policy')
+                pix,_=surface.isolate_page(page,source['sha256'])
+            else:
+                pix=page.get_pixmap(dpi=200,colorspace=fitz.csRGB,alpha=False)
+            require([pix.width,pix.height]==dims,'Page dimensions changed')
+            im=Image.frombytes('RGB',(pix.width,pix.height),pix.samples)
+        require(im.crop(px).size==crop.size and im.crop(px).tobytes()==crop.tobytes(),'Page/crop pixels differ; alignment unverified')
+        absolute=[px[0]+box[0],px[1]+box[1],px[0]+box[2],px[1]+box[3]]
+        return im,absolute
+
     def catalog(self, rel):
         # Explicit scheme IDs only, no inferred cross-convention mappings.
         if not rel: return {}

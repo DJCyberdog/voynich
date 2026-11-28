@@ -11,3 +11,5 @@ Local python -B -m unittest -v test_vrs_tray_controls: 5/5 PASS (0.001 s). Exact
 ## Increment 2 — unknown state and target safety
 
 Reviewed Jobs refresh: it already derives tray state from the same worker/ledger refresh, so no duplicate polling path is introduced. An unavailable tray snapshot now has an unknown review count, rendered as an em dash; it cannot clear the notification coalescing key. A verified empty queue still clears it. Pause/resume require a nonempty observed managed-session identity even if state reports RUNNING. Added regression cases for unknown/empty/recovered notification transitions and missing session identity; execution pending. No change to startup opt-in, scientific gates, dependency versions or native acceptance requirements.
+
+Hosted increment 2 at a37054a: PR 46132341987, baseline CPU 46132340846 and portable Windows 46132340788 all SUCCESS. Native Windows tray interaction/quiet-hours still pending; no final closure.

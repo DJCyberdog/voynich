@@ -31,6 +31,18 @@ class DesktopTests(unittest.TestCase):
         with ReadLedger(self.root)._tx() as conn:
             with self.assertRaises(Exception): conn.execute("UPDATE runs SET control='READY'")
 
+    def test_full_page_context_exact_crop_and_identity(self):
+        run=self.f.run_to_review(); item=self.api.review(run,limit=1)['items'][0]
+        db=ReadLedger(self.root).db; before=sha(db)
+        page,box=self.api.page_context(item); crop,local=self.api.crop(item)
+        self.assertEqual(page.size,(250,250))
+        self.assertEqual(page.crop(box).tobytes(),crop.crop(local).tobytes())
+        self.assertEqual(sha(db),before)
+        for changed in (dict(item,page=2),dict(item,region_id='fake'),dict(item,box=[0,0,1,1])):
+            with self.assertRaises(ValueError):self.api.page_context(changed)
+        (self.root/item['crop']['path']).write_bytes(b'bad')
+        with self.assertRaises(ValueError):self.api.page_context(item)
+
     def test_offline_draft_and_authoritative_subprocess(self):
         run=self.f.run_to_review(); q=self.api.review(run); item=q['items'][0]; path=self.api.stage_decision(item,q['snapshot'],q['inventory'],'fixture','glyph',{'Eva-':{'state':'mapped','label':'a'},'STA1':{'state':'absent','label':None}})
         self.assertEqual(self.f.app.review_items(run)['snapshot']['resolved'],0); self.assertEqual(c.load(self.root/path)['candidate_id'],item['id'])
@@ -105,7 +117,7 @@ class DesktopTests(unittest.TestCase):
             from vrs_build_portable import RELEASE_VERSION
             self.assertIn(RELEASE_VERSION,w.title());self.assertEqual(float(app.reviewprogress.cget('value')),0)
             app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
-            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only)
+            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only); app.open_page_context(); settle(); self.assertTrue(app.page_active); self.assertEqual(app.page_image.size,(250,250)); app.mode(False); self.assertFalse(app.page_active)
             app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
             app.show('Settings'); app.fields['theme'].set('light'); app.fields['language'].set('en'); app.apply(); settle(); self.assertEqual(app.cfg['theme'],'light'); self.assertEqual(app.cfg['language'],'en')
             w.geometry('1024x650'); w.update(); app.show('Review'); settle(); self.assertGreater(app.canvas.winfo_width(),150);self.assertTrue(app.kindbox.winfo_ismapped());self.assertTrue(app.review_side.winfo_ismapped())
