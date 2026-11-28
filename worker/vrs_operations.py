@@ -171,6 +171,16 @@ class Operations(Desktop):
         require(expected_session is None or s['id']==expected_session,'Managed session changed; refresh first')
         safe(self.root,f'{BASE}/stop-{s["id"]}').touch(exist_ok=True); return self.session()
 
+    def outbox_counts(self):
+        """Local read-only aggregate; not a GitHub connectivity check."""
+        result=dict(PENDING=0,SENDING=0,SENT=0)
+        if not safe(self.root,'workspace/vrs095/ledger.sqlite').exists():return result
+        with ReadLedger(self.root)._tx() as db:
+            for state,count in db.execute('SELECT state,COUNT(*) FROM outbox GROUP BY state'):
+                require(state in result and type(count) is int and count>=0,'Invalid outbox state')
+                result[state]=count
+        return result
+
     def diagnostics(self):
         r=self.resources(); worker=r.pop('worker'); r['worker']=dict(state=worker['state'],rss=worker.get('rss'),limits=worker.get('limits'))
         counts={}

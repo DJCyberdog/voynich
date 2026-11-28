@@ -27,6 +27,20 @@ class OperationsTests(unittest.TestCase):
             time.sleep(.1)
         self.fail('Condition timed out; managed session state: '+self.api.session()['state'])
 
+    def test_status_snapshot_is_readonly_and_reports_unknown_gpu(self):
+        from vrs_monitor import status_fields,status_snapshot
+        from unittest.mock import patch
+        with patch('vrs_monitor.gpu_telemetry',return_value=None):
+            rows,data,outbox=status_snapshot(self.api)
+        self.assertEqual(outbox,dict(PENDING=0,SENDING=0,SENT=0))
+        value=status_fields(rows,data,outbox)
+        self.assertEqual(value['gpu'],'—');self.assertEqual(value['phase'],'—')
+        self.assertEqual(value['review'],'0');self.assertEqual(value['outbox'],'0/0/0')
+        run=self.f.run_to_review()
+        with patch('vrs_monitor.gpu_telemetry',return_value=None):
+            rows,data,outbox=status_snapshot(self.api)
+        self.assertEqual(status_fields(rows,data,outbox)['review'],'1')
+
     def test_empty_resources_and_caps(self):
         with tempfile.TemporaryDirectory() as d:
             a=Operations(d); self.assertEqual(a.jobs(),[]); r=a.resources(); self.assertTrue(0<=r['cpu_percent']<=100); self.assertGreater(r['ram_total'],0); self.assertEqual(r['gpu'],'NOT_MEASURED'); self.assertEqual(r['worker']['state'],'NOT_MANAGED'); self.assertNotIn('pid',json.dumps(a.diagnostics())); self.assertNotIn(d,json.dumps(a.diagnostics()))
@@ -193,7 +207,13 @@ class OperationsTests(unittest.TestCase):
                 if app.future is None:return
             self.fail('GUI operation timeout')
         try:
-            settle(); app.show('Jobs'); settle(); self.assertIn(run,app.jobs_tree.get_children()); app.jobs_tree.selection_set(run); app.job_detail(); settle(); self.assertIn('REVIEW_PENDING',app.job_text.get('1.0','end')); self.assertIn('CPU',app.telemetry.get()); app.show('Evidence'); settle(); self.assertIn('UNADJUDICATED',app.ev_text.get('1.0','end')); self.assertEqual(app.ev_compared.cget('text'),'—');self.assertIsNotNone(app.ev_value);app.export(); settle(); self.assertTrue(list((self.root/'workspace/vrs101/exports').glob('*.json')))
+            settle(); app.show('Jobs'); settle()
+            self.assertIn('worker',app.status_cells)
+            deadline=time.monotonic()+10
+            while app.status_value is None and time.monotonic()<deadline:w.update();time.sleep(.02)
+            self.assertIsNotNone(app.status_value);self.assertEqual(app.status_value['review'],'1')
+            original=app.status_cells['worker'][2];app.show('Home');settle();self.assertIs(app.status_cells['worker'][2],original)
+            app.show('Jobs');settle();self.assertIn(run,app.jobs_tree.get_children()); app.jobs_tree.selection_set(run); app.job_detail(); settle(); self.assertIn('REVIEW_PENDING',app.job_text.get('1.0','end')); self.assertIn('CPU',app.telemetry.get()); app.show('Evidence'); settle(); self.assertIn('UNADJUDICATED',app.ev_text.get('1.0','end')); self.assertEqual(app.ev_compared.cget('text'),'—');self.assertIsNotNone(app.ev_value);app.export(); settle(); self.assertTrue(list((self.root/'workspace/vrs101/exports').glob('*.json')))
             w.geometry('1024x650'); w.update(); self.assertEqual(w.winfo_width(),1024); self.assertEqual(w.winfo_height(),650)
         finally:
             if app.future: settle()

@@ -1,5 +1,6 @@
 """VRS operations desktop. Explicit optional Windows tray; no startup registration."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 import queue
@@ -32,14 +33,38 @@ class Notifications:
         self.last=key; self.last_time=now; return True
 
 
+DE.update({'Outbox':'Postausgang','Stages':'Phasen','Review runs':'Review-Runs','Status unavailable':'Status nicht verfügbar','Local outbox only; no remote connection check':'Nur lokaler Postausgang; keine Remote-Verbindungsprüfung','Pending / Sending / Sent':'Offen / Versand / Gesendet','Device-wide GPU':'GPU geräteweit'})
+
+def status_snapshot(api):
+    """Read-only local status; no Tk or network access from this thread."""
+    rows=api.jobs();data=api.resources()
+    data['gpu_telemetry']=gpu_telemetry()
+    return rows,data,api.outbox_counts()
+
+
+def status_fields(rows,data,outbox):
+    """Compact truthful metrics; no active backend inferred from configuration."""
+    worker=data['worker']; active=[r for r in rows if r['locked']]
+    stage=active[0] if len(active)==1 else None
+    mode=worker.get('evidence_mode') if worker['state'] in ('RUNNING','STOP_REQUESTED') else None
+    state=worker['state']+(' · '+mode if mode else '')
+    progress=(stage['stage'] or 'DONE')+' '+str(stage['completed'])+'/'+str(stage['total'])+' · '+stage['backend'] if stage else ('MULTIPLE' if active else '—')
+    ram=(data['ram_total']-data['ram_available'])/1024**3
+    gpu=data.get('gpu_telemetry'); device=gpu[0] if gpu and len(gpu)==1 else None
+    return dict(worker=state,phase=progress,cpu=f"{data['cpu_percent']:.0f}%",ram=f"{ram:.1f}/{data['ram_total']/1024**3:.1f} GiB",
+                gpu=f"{device['util']:.0f}% · {device['used_mib']/1024:.1f}/{device['total_mib']/1024:.1f} GiB" if device else '—',
+                review=str(sum(r['control']=='BLOCKED' and r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' for r in rows)),
+                outbox=f"{outbox['PENDING']}/{outbox['SENDING']}/{outbox['SENT']}")
+
 class Monitor(App):
     def __init__(self,window,root):
         self.tray=None; self.tray_ready=False; self.events=queue.Queue(); self.notices=Notifications(); self.last_tick=0; self.last_detail=0; self.close_pending=False; self.pending_view=None
         self.tray_context=(None,'',tray_controls.Snapshot()); self.tray_muted=False; self.tray_feedback=''; self.tray_busy=False
+        self.status_pool=ThreadPoolExecutor(max_workers=1);self.status_future=None;self.status_scope=None;self.status_last=-1e9;self.status_value=None
         super().__init__(window,root); self.api=Operations(root); self.w.title('Voynich Research Studio · '+VERSION); self.w.after(250,self.tick)
 
     def build(self):
-        super().build(); self.w.title('Voynich Research Studio · '+VERSION)
+        super().build(); self.w.title('Voynich Research Studio · '+VERSION);self.build_status_bar()
         # Reuse the original shell rather than duplicate UI design.
         nav=self.nav['Home'].master
         for name in ('Jobs','Evidence'):
@@ -50,6 +75,58 @@ class Monitor(App):
         self.w.bind('<Control-j>',lambda e:self.request_view('Jobs')); self.w.bind('<Control-e>',lambda e:self.request_view('Evidence'))
         for index,name in enumerate(('Home','Review','Sources','Jobs','Evidence','Settings'),1):
             self.w.bind('<Control-'+str(index)+'>',lambda e,n=name:self.request_view(n))
+
+    def build_status_bar(self):
+        bar=ttk.Frame(self.status_shell,style='Card.TFrame');bar.pack(fill='x',side='top')
+        self.status_cells={}
+        specs=(('worker','Worker','Jobs'),('phase','Stages','Jobs'),('cpu','CPU','Jobs'),('ram','RAM','Jobs'),('gpu','GPU/VRAM','Jobs'),('review','Review runs','Review'),('outbox','Outbox',None))
+        for i,(key,label,view) in enumerate(specs):
+            value=tk.StringVar(value=self.t(label)+': —')
+            button=ttk.Button(bar,textvariable=value,command=(lambda n=view:self.request_view(n)) if view else self.show_outbox_status,width=1)
+            button.grid(row=0,column=i,sticky='ew',padx=1);bar.columnconfigure(i,weight=2 if key in ('worker','phase','gpu') else 1)
+            self.status_cells[key]=(label,value,button)
+        self.status_value=None;self.status_last=-1e9
+        bar.bind('<Configure>',lambda e:self.layout_status(e.width))
+
+    def layout_status(self,width):
+        # Prefer the primary worker/CPU/RAM/review fields at compact widths.
+        phase=self.status_cells['phase'][2]
+        if width<1200:phase.grid_remove()
+        elif not phase.winfo_manager():phase.grid()
+        phase.master.columnconfigure(1,weight=0 if width<1200 else 2)
+
+    def show_outbox_status(self):
+        value=self.status_value
+        message=self.t('Local outbox only; no remote connection check')
+        if value is not None:message+='\n'+self.t('Pending / Sending / Sent')+': '+value['outbox']
+        else:message+='\n'+self.t('Status unavailable')
+        messagebox.showinfo(self.t('Outbox'),message,parent=self.w)
+
+    def render_status(self,fields):
+        self.status_value=fields
+        for key,(label,var,_) in self.status_cells.items():
+            value='—' if fields is None else fields[key]
+            if key=='worker' and fields is not None:
+                state,sep,mode=value.partition(' · ');value=self.t(state)+sep+mode
+            display=self.t(label)+': '+value
+            if var.get()!=display:var.set(display)
+
+    def poll_status(self,now):
+        # One bounded outstanding probe, independent of foreground task queue.
+        if self.status_future is not None:
+            if not self.status_future.done():
+                if now-self.status_last>12:self.render_status(None)
+                return
+            future=self.status_future;scope=self.status_scope;self.status_future=None
+            if scope is self.api:
+                try:
+                    rows,data,outbox=future.result()
+                    self.render_status(status_fields(rows,data,outbox))
+                    if self.view=='Jobs' and self.future is None:self.jobs_loaded((rows,data,None))
+                except Exception:self.render_status(None)
+        if now-self.status_last>=5 and self.w.state()!='withdrawn':
+            self.status_last=now;self.status_scope=self.api
+            self.status_future=self.status_pool.submit(status_snapshot,self.api)
 
     def request_view(self,name):
         if self.close_pending or self.closing:return 'break'
@@ -64,7 +141,7 @@ class Monitor(App):
         super().page_home();self.tree.bind('<Return>',lambda e:self.open_selected())
 
     def switch(self):
-        super().switch(); self.api=Operations(self.api.root); self.notices=Notifications(); self.reset_tray_context()
+        super().switch(); self.api=Operations(self.api.root); self.notices=Notifications(); self.render_status(None);self.status_last=-1e9;self.reset_tray_context()
 
     def settings_done(self,value):
         changed=any(value[k]!=self.cfg.get(k) for k in ('interpreter','evidence_mode','language'))
@@ -314,7 +391,7 @@ class Monitor(App):
             self.w.after(250,self.tick);return
         if self.pending_view is not None and self.future is None:
             name=self.pending_view;self.pending_view=None;self.request_view(name)
-        now=time.monotonic()
+        now=time.monotonic();self.poll_status(now)
         if self.future is None and now-self.last_tick>=3:
             self.last_tick=now
             if self.tray_ready and (self.w.state()=='withdrawn' or self.view!='Jobs'):
@@ -323,7 +400,7 @@ class Monitor(App):
                     try:return api.tray_snapshot(configured)
                     except Exception:return tray_controls.Snapshot()
                 self.quiet_task(read_tray,self.tray_loaded)
-            elif self.view=='Jobs':self.load_jobs(automatic=True)
+            # Visible Jobs telemetry uses the shared background snapshot; manual refresh still loads detail.
         self.w.after(250,self.tick)
 
     def close(self):
@@ -335,6 +412,7 @@ class Monitor(App):
             try:self.tray.stop()
             except Exception:self.status.set('Tray stop unavailable')
             finally:self.tray=None;self.tray_ready=False
+        self.status_pool.shutdown(wait=False,cancel_futures=True)
         super().close()
 
 
