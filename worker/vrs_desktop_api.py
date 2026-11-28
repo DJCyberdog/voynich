@@ -176,6 +176,19 @@ def vector_window(image, target, components, pairs=(), alternatives=None):
     return image.crop((left,top,right,bottom)),shifted((a,b,cx,d)),paths,len(selected),layers
 
 
+def page_evidence_summary(record):
+    """Page-level counts from a validated sidecar, not candidate probabilities."""
+    evidence=record['hybrid'];group=evidence['grouping'];region=evidence['region']
+    w,h=record['native']['size'];total=w*h
+    pixels={k:group['masks'][k]['pixels'] for k in ('union','majority','intersection')}
+    require(all(type(v) is int for v in pixels.values()) and 0<=pixels['intersection']<=pixels['majority']<=pixels['union']<=total,'Invalid mask accounting')
+    material=region['material_counts'];require(set(material)=={'core','uncertain','outside'} and all(type(v) is int and v>=0 for v in material.values()) and sum(material.values())==total,'Invalid material accounting')
+    return dict(page=record['page'],total_pixels=total,method_count=group['context']['methods'],
+                union_pixels=pixels['union'],majority_pixels=pixels['majority'],intersection_pixels=pixels['intersection'],
+                disagreement_pixels=pixels['union']-pixels['intersection'],material=dict(material),
+                proposed_zones=len(region['zones']),scientific_status='UNADJUDICATED',exclusion_authorized=False)
+
+
 class Desktop:
     def __init__(self, root): self.root = Path(root).resolve(strict=True)
 
@@ -357,7 +370,9 @@ class Desktop:
         require(target is not None,'Native candidate alignment unavailable')
         grouping=record['hybrid']['grouping']; rows=grouping['masks'][mask]
         alternatives=grouping.get('alternatives',{}).get('by_mask',{}).get(mask,{})
-        return vector_window(image,target,rows['components'],rows['pairs'],alternatives)
+        preview=vector_window(image,target,rows['components'],rows['pairs'],alternatives)
+        preview[4]['page_evidence']=page_evidence_summary(record)
+        return preview
 
     def catalog(self, rel):
         # Explicit scheme IDs only, no inferred cross-convention mappings.

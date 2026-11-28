@@ -34,7 +34,7 @@ class HybridRuntimeQualification(unittest.TestCase):
                 p=root/name
                 p.write_text(json.dumps(obj,sort_keys=True),encoding='utf-8')
                 return ref(root,p)
-            # Deliberately synthetic inventories; test stops before classification.
+            # Deliberately synthetic unapproved inventories; all actual candidates must abstain.
             alphabet=file('alphabet.json',dict(convention='Eva-',labels=['a','b']))
             model=file('model.json',dict(version=g.VERSION,labels=['a','b'],
                 inventory_sha256=alphabet['sha256'],code_sha256=core.sha(g.__file__),
@@ -43,13 +43,20 @@ class HybridRuntimeQualification(unittest.TestCase):
             (root/'transcription.txt').write_text('synthetic qualification fixture\n',encoding='utf-8')
             manifest=dict(schema=1,module=c.MODULE,protocol=c.PROTOCOL,backend='cpu',seed=271126,
                 run_nonce='7'*32,inputs=dict(manuscript=source,
-                    groups=file('groups.json',{'1':'metadata','4':'f1r','127':'qualification-page-127'}),
+                    groups=file('groups.json',{'1':'metadata','4':'f1r','12':'qualification-page-12','127':'qualification-page-127','214':'qualification-page-214'}),
                     references=file('references.json',dict(schema=1,inventories=[dict(alphabet=alphabet)])),
                     model=file('models.json',dict(schema=1,models=[dict(convention='Eva-',model=model,report=report)])),
                     recognition_policy=file('policy.json',dict(schema=1,approval=None,mapping=None))),
                 transcriptions=[ref(root,root/'transcription.txt')])
+            import sys
+            from vrs_operations import Operations
+            from vrs_desktop_api import page_evidence_summary
+            ops=Operations(root);ops.save_settings(dict(ops.settings(),evidence_mode='hybrid'))
+            ops.save_ops(dict(cpu_threads=2,ram_mib=0,disk_mib=0))
+            file('run.json',manifest)
+            run=ops.command(sys.executable,'register','run.json')['run_id']
             app=Runtime(root,hybrid_evidence=True)
-            run=app.register(manifest)
+            self.assertEqual(app.register(manifest),run)
             self.assertEqual(app.sweep(),[dict(run_id=run,stage='script_regions',control='READY',reason='NONE')])
             print('script_regions completed',round(time.perf_counter()-start,2),flush=True)
             checkpoint=app.ledger.checkpoint
@@ -89,15 +96,15 @@ class HybridRuntimeQualification(unittest.TestCase):
             with patch.object(resumed,'_page',side_effect=observe):
                 result=resumed.sweep()
             self.assertEqual(result[0]['control'],'READY',result)
-            self.assertEqual(calls,[127])
+            self.assertEqual(calls,[12,127,214])
             status=resumed.ledger.status(run)
             self.assertEqual(status['next_stage'],'glyph_classification')
             self.assertIsNone(status['checkpoint'])
             data=load_page(c.artifact(root,status['receipts']['glyph_segmentation']['artifact']))
             self.assertEqual(data['pages'][:2],cp['pages'])
-            self.assertEqual([r['page'] for r in data['pages']],[1,4,127])
+            self.assertEqual([r['page'] for r in data['pages']],[1,4,12,127,214])
             for row in data['pages']:
-                t=time.perf_counter()
+                replay_started=time.perf_counter()
                 value=load_page(c.artifact(root,row['proposals']))
                 mp=c.artifact(root,value['source']); m=load_page(mp)
                 # Recompute the unchanged raster baseline from original receipt crops.
@@ -120,6 +127,10 @@ class HybridRuntimeQualification(unittest.TestCase):
                     with fitz.open(root/'source.pdf') as doc:
                         image,meta=ink.native_page(doc[row['page']-1])
                     self.assertEqual(meta,evidence['native'])
+                    summary=page_evidence_summary(evidence)
+                    self.assertEqual(summary['total_pixels'],image.width*image.height)
+                    self.assertEqual(summary['method_count'],6)
+                    self.assertFalse(summary['exclusion_authorized'])
                     targets=[]
                     for region,proposal in zip(m['regions'],legacy):
                         ox,oy,_,_=region['pixel_box']
@@ -160,7 +171,54 @@ class HybridRuntimeQualification(unittest.TestCase):
                 self.assertEqual(hybrid.qualify_ref(root,value,m,expected_source=source),expected)
                 print(json.dumps(dict(page=row['page'],legacy_candidates=row['candidates'],
                     stored_bytes=stored,decoded_bytes=decoded,comparison=comparison,
-                    replay_seconds=round(time.perf_counter()-t,2))),flush=True)
+                    replay_seconds=round(time.perf_counter()-replay_started,2))),flush=True)
+            # Continue through the actual managed portable worker and durable queue.
+            # No manual ground truth and no approved recognition model are involved.
+            expected_total=sum(r['candidates'] for r in data['pages'])
+            self.assertGreater(expected_total,0)
+            try:
+                session=ops.start(sys.executable)
+                self.assertEqual(session['evidence_mode'],'hybrid')
+                deadline=time.monotonic()+600
+                while time.monotonic()<deadline:
+                    job=next(x for x in ops.jobs() if x['id']==run)
+                    if job['control'] in ('BLOCKED','PAUSED','CANCELLED'):break
+                    self.assertEqual(ops.session()['state'],'RUNNING')
+                    time.sleep(.5)
+                self.assertEqual((job['control'],job['stage'],job['reason']),('BLOCKED','exception_review','REVIEW_PENDING'),job)
+                q=ops.review(run,limit=1)
+                self.assertEqual(q['snapshot']['pending'],expected_total)
+                self.assertEqual(q['snapshot']['resolved'],0)
+                self.assertEqual(q['snapshot']['deferred'],0)
+                counts=app.ledger.status(run)['receipts']['glyph_classification']['counts']
+                self.assertEqual(counts,dict(total=expected_total,accepted=0,abstained=expected_total,failed=0))
+                # Actual persisted queue identity + source/crop replay + native sidecar.
+                # Use predetermined sampled page offsets, not cherry-picked successful views.
+                offset=0;checked=0
+                for row in data['pages']:
+                    if row['candidates']:
+                        sample=ops.review(run,offset=offset,limit=1)['items'][0]
+                        self.assertEqual(sample['page'],row['page'])
+                        for mask in hybrid.MASKS:
+                            result=ops.vector_context(sample,mask)
+                            self.assertEqual(result[4]['page_evidence']['page'],row['page'])
+                            checked+=1
+                    offset+=row['candidates']
+                self.assertEqual(checked,3*sum(bool(row['candidates']) for row in data['pages']))
+                item=q['items'][0]
+                # A synthetic deferred disposition is a transport test, not scientific annotation.
+                draft=ops.stage_decision(item,q['snapshot'],q['inventory'],'qualification-fixture','deferred',{})
+                ack=ops.submit_draft(sys.executable,draft)
+                self.assertEqual(ack['pending'],expected_total-1)
+                self.assertEqual(ack['deferred'],1)
+                self.assertEqual(ack['resolved'],0)
+                self.assertEqual(app.ledger.outbox(),[])
+                print(json.dumps(dict(managed_review_candidates=expected_total,accepted=0,desktop_api_previews=checked,deferred_transport_test=1,scientific_status='UNADJUDICATED')),flush=True)
+            finally:
+                if ops.session()['state'] in ('RUNNING','STOP_REQUESTED'):ops.stop()
+                deadline=time.monotonic()+30
+                while ops.session()['state']=='STOP_REQUESTED' and time.monotonic()<deadline:time.sleep(.2)
+                self.assertEqual(ops.session()['state'],'STOPPED')
             print('elapsed_seconds',round(time.perf_counter()-start,2),flush=True)
             # Linux reports peak process RSS in KiB; no cross-platform assumption.
             if os.name!='nt':

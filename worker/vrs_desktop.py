@@ -38,6 +38,8 @@ DE.update({'Locate glyph':'Glyphe finden'})
 
 DE.update({'Evidence mode':'Evidenzmodus','Hybrid mode requires pinned Yale PDF; stop worker before changing. Existing runs retain their original identity.':'Hybridmodus benötigt die originale Yale-PDF. Worker vor Wechsel stoppen. Bestehende Runs behalten ihre Identität.'})
 
+DE.update({'Page evidence':'Seitenevidenz','Method disagreement':'Methodenabweichung','Material uncertain':'Material unsicher','Proposed zones':'Vorgeschlagene Zonen'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -258,6 +260,9 @@ class App:
         else:text+=' · '+self.t('Intersecting components')+': '+str(self.vector_data[3])
         clipping=layers.get('clipping',{})
         if any(clipping.values()):text+=' · '+self.t('Local clipping')+' · '+self.t('Large components')+': '+str(clipping.get('large_components',0))
+        page=layers.get('page_evidence')
+        if page:
+            text+=' · '+self.t('Page evidence')+': '+self.t('Method disagreement')+f" {100*page['disagreement_pixels']/page['total_pixels']:.1f}% · "+self.t('Material uncertain')+f" {100*page['material']['uncertain']/page['total_pixels']:.1f}% · "+self.t('Proposed zones')+f" {page['proposed_zones']}"
         self.vector_info.configure(text=text)
     def change_vector_layer(self):
         self.vector_index=0;self.update_vector_info();self.draw()

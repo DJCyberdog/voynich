@@ -87,6 +87,17 @@ class DesktopTests(unittest.TestCase):
         self.assertEqual(layers['clipping'],dict(large_components=1,clipped_paths=3,outside_nodes=1))
         self.assertEqual(len(rows[0]['graph']['nodes']),2)
 
+    def test_hybrid_page_summary_accounting(self):
+        from vrs_desktop_api import page_evidence_summary
+        record=dict(page=4,native=dict(size=[10,10]),hybrid=dict(grouping=dict(context=dict(methods=6),masks={k:dict(pixels=v) for k,v in [('union',40),('majority',25),('intersection',10)]}),region=dict(material_counts=dict(core=75,uncertain=15,outside=10),zones=[{}])))
+        info=page_evidence_summary(record)
+        self.assertEqual(info['disagreement_pixels'],30)
+        self.assertEqual(info['material']['uncertain'],15)
+        self.assertEqual(info['scientific_status'],'UNADJUDICATED')
+        self.assertFalse(info['exclusion_authorized'])
+        record['hybrid']['region']['material_counts']['outside']=11
+        with self.assertRaises(ValueError):page_evidence_summary(record)
+
     def test_declared_locus_context_has_no_reading_hints(self):
         run=self.f.run_to_review(); q=self.api.review(run,limit=100)
         first=self.f.eligible[0]['region_id']
