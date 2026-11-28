@@ -120,6 +120,39 @@ class OperationsTests(unittest.TestCase):
         index=c.load(c.artifact(self.root,self.f.status(run)['receipts']['transcription_alignment']['artifact'])); (self.root/index['reports'][0]['report']['path']).write_text('{}')
         with self.assertRaises(ValueError):self.api.evidence(run)
 
+    def test_tray_snapshot_and_expected_stop_session(self):
+        from unittest.mock import Mock
+        run=self.f.run_to_review()
+        with patch.object(self.api,'session',return_value=dict(state='RUNNING',id='a'*32)):
+            view=self.api.tray_snapshot(True)
+            self.assertEqual(view.state,'RUNNING');self.assertEqual(view.review,1)
+            self.assertEqual(view.pause,());self.assertEqual(view.resume,())
+            self.assertNotIn(run,view.review_key)
+            with self.assertRaisesRegex(ValueError,'session changed'):
+                self.api.stop(expected_session='b'*32)
+            self.assertFalse((self.root/'workspace/vrs101'/('stop-'+'a'*32)).exists())
+
+    def test_tray_dispatch_without_window_focus(self):
+        import queue
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        import vrs_tray_controls as controls
+        view=controls.Snapshot(state='RUNNING',session='a'*32,configured=True)
+        api=Mock();api.root=self.root;api.tray_snapshot.return_value=view
+        api.stop.return_value={'state':'STOP_REQUESTED'}
+        fake=SimpleNamespace(api=api,cfg={'interpreter':'python'},future=None,close_pending=False,tray_busy=False,tray_context=(str(self.root),'python',view),tray_feedback='',t=lambda x:x,update_tray=Mock(),events=queue.Queue(),w=Mock(),last_tick=1,quiet_task=lambda fn,done:done(fn()))
+        Monitor.enqueue_tray(fake,'stop')
+        request=fake.events.get_nowait();self.assertEqual(request[0],'control')
+        Monitor.tray_request(fake,*request[1:])
+        api.stop.assert_called_once_with(expected_session='a'*32)
+        self.assertEqual(fake.tray_feedback,'Request acknowledged · STOP_REQUESTED')
+        self.assertFalse(fake.tray_busy)
+        self.assertEqual(fake.w.mock_calls,[])
+        # A previous workspace's queued click must not act on the new workspace.
+        Monitor.tray_request(fake,'stop',('other','python'),('a'*32,))
+        self.assertEqual(api.stop.call_count,1)
+        self.assertIn('Request failed',fake.tray_feedback)
+
     def test_notification_coalescing_and_private_payload(self):
         n=Notifications(); self.assertTrue(n.next(1,'a',0)); self.assertFalse(n.next(1,'a',100)); self.assertFalse(n.next(2,'b',10)); self.assertTrue(n.next(2,'b',31)); self.assertFalse(n.next(0,'empty',35)); self.assertTrue(n.next(1,'a',70))
         run=self.f.run_to_review(); count,key=self.api.notice(); self.assertEqual(count,1); self.assertNotEqual(key,run); self.assertEqual(len(key),64)

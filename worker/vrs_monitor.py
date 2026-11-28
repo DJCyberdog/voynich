@@ -11,6 +11,7 @@ from tkinter import ttk, messagebox
 import vrs_desktop
 from vrs_desktop import App, DE
 from vrs_operations import Operations
+import vrs_tray_controls as tray_controls
 from vrs_build_portable import RELEASE_VERSION as VERSION
 from vrs_ui_format import human,gpu_telemetry,review_fraction,brand_icon
 
@@ -18,6 +19,8 @@ DE.update({'Jobs':'Jobs & Ressourcen','Evidence':'Evidenz','Start worker':'Worke
 
 
 DE.update({'Request pending':'Anfrage läuft','Request acknowledged':'Anfrage bestätigt','Request failed':'Anfrage fehlgeschlagen','RUNNING':'Läuft','STOP_REQUESTED':'Stopp angefordert','STOPPED':'Gestoppt','PAUSE_REQUESTED':'Pause angefordert','PAUSED':'Pausiert','CANCEL_REQUESTED':'Abbruch angefordert','CANCELLED':'Abgebrochen','READY':'Bereit','UNKNOWN':'Zustand unbekannt'})
+
+DE.update({'Pause single run':'Einzelnen Run pausieren','Resume single run':'Einzelnen Run fortsetzen','Mute notifications':'Benachrichtigungen stummschalten','Review runs':'Review-Runs','NOT_MANAGED':'Nicht verwaltet','NOT_RUNNING':'Nicht aktiv','FAILED':'Fehlgeschlagen'})
 
 class Notifications:
     """Coalesce by parked-run set; no candidate details or repeated idle alerts."""
@@ -31,6 +34,7 @@ class Notifications:
 class Monitor(App):
     def __init__(self,window,root):
         self.tray=None; self.tray_ready=False; self.events=queue.Queue(); self.notices=Notifications(); self.last_tick=0; self.last_detail=0; self.close_pending=False; self.pending_view=None
+        self.tray_context=(None,'',tray_controls.Snapshot()); self.tray_muted=False; self.tray_feedback=''; self.tray_busy=False
         super().__init__(window,root); self.api=Operations(root); self.w.title('Voynich Research Studio · '+VERSION); self.w.after(250,self.tick)
 
     def build(self):
@@ -59,7 +63,14 @@ class Monitor(App):
         super().page_home();self.tree.bind('<Return>',lambda e:self.open_selected())
 
     def switch(self):
-        super().switch(); self.api=Operations(self.api.root); self.notices=Notifications()
+        super().switch(); self.api=Operations(self.api.root); self.notices=Notifications(); self.reset_tray_context()
+
+    def settings_done(self,value):
+        super().settings_done(value); self.reset_tray_context()
+
+    def reset_tray_context(self):
+        self.tray_context=(str(self.api.root),self.cfg['interpreter'],tray_controls.Snapshot())
+        self.tray_feedback=''; self.last_tick=0; self.update_tray()
 
     def quiet_task(self,fn,done):
         if self.future is not None:return
@@ -131,7 +142,8 @@ class Monitor(App):
         if detail: self.write_text(self.job_text,detail)
         if self.tray_ready:
             from vrs_contract import digest
-            waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED'); self.notice_done((len(waiting),digest(waiting)))
+            waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED')
+            self.tray_loaded(tray_controls.snapshot(data['worker'],rows,bool(self.cfg['interpreter']),digest(waiting)))
 
     def write_text(self,widget,value):
         if widget is getattr(self,'job_text',None):
@@ -213,7 +225,9 @@ class Monitor(App):
         try:
             import pystray
             im=brand_icon(64)
-            menu=pystray.Menu(pystray.MenuItem(self.t('Open'),lambda *_:self.events.put('show'),default=True),pystray.MenuItem(self.t('Review'),lambda *_:self.events.put('review')),pystray.MenuItem(self.t('Exit desktop'),lambda *_:self.events.put('exit')))
+            def item(label,action):
+                return pystray.MenuItem(self.t(label),lambda *_:self.enqueue_tray(action),enabled=lambda _:self.tray_enabled(action))
+            menu=pystray.Menu(pystray.MenuItem(self.t('Open'),lambda *_:self.events.put('show'),default=True),pystray.MenuItem(self.t('Review'),lambda *_:self.events.put('review')),pystray.Menu.SEPARATOR,item('Start worker','start'),item('Stop worker','stop'),item('Pause single run','pause'),item('Resume single run','resume'),pystray.Menu.SEPARATOR,pystray.MenuItem(self.t('Mute notifications'),lambda *_:self.events.put('mute'),checked=lambda _:self.tray_muted),pystray.MenuItem(self.t('Exit desktop'),lambda *_:self.events.put('exit')))
             icon=pystray.Icon('VRS',im,'Voynich Research Studio',menu)
             def setup(icon):
                 try:icon.visible=True;self.events.put('ready')
@@ -222,14 +236,55 @@ class Monitor(App):
         except Exception:
             self.tray=None; messagebox.showerror('VRS','Optional Windows tray unavailable',parent=self.w)
 
+    def tray_enabled(self,action):
+        # Tray callbacks read immutable Python state only; never access Tk.
+        return not self.tray_busy and not self.close_pending and self.future is None and tray_controls.target(self.tray_context[2],action) is not None
+
+    def enqueue_tray(self,action):
+        context=self.tray_context
+        expected=tray_controls.target(context[2],action)
+        if expected is not None:self.events.put(('control',action,context[:2],expected))
+
+    def update_tray(self):
+        if not self.tray_ready or self.tray is None:return
+        v=self.tray_context[2]
+        try:
+            self.tray.title=('VRS · '+self.t(v.state)+' · '+str(v.review)+' '+self.t('Review runs')+(' · '+self.tray_feedback if self.tray_feedback else ''))[:120]
+            self.tray.update_menu()
+        except Exception:self.status.set('Notification area unavailable')
+
+    def tray_loaded(self,view):
+        self.tray_context=(str(self.api.root),self.cfg['interpreter'],view)
+        self.update_tray(); self.notice_done((view.review,view.review_key))
+
+    def tray_request(self,action,context,expected):
+        current=(str(self.api.root),self.cfg['interpreter'])
+        if self.future is not None or self.tray_busy or self.close_pending or current!=context:
+            self.tray_feedback=self.t('Request failed')+' · '+self.t('Busy');self.update_tray();return
+        api=self.api; interpreter=current[1]; self.tray_busy=True
+        self.tray_feedback=self.t('Request pending'); self.update_tray()
+        def work():
+            try:
+                result=tray_controls.execute(api,interpreter,action,expected,api.tray_snapshot(bool(interpreter)))
+                return True,result
+            except Exception:return False,{}
+        def done(result):
+            self.tray_busy=False; ok,value=result
+            state=value.get('control',value.get('state','UNKNOWN'))
+            self.tray_feedback=self.t('Request acknowledged')+' · '+self.t(state) if ok else self.t('Request failed')
+            self.tray_context=(current[0],current[1],tray_controls.Snapshot())
+            self.last_tick=0;self.update_tray()
+        # Keep hidden-window controls nonmodal. State is refreshed by tick.
+        self.quiet_task(work,done)
+
     def hide(self):
         if self.tray_ready:self.w.withdraw()
         else:self.status.set(self.t('Enable tray'))
 
     def notice_done(self,result):
         count,key=result
-        if self.tray_ready and self.notices.next(count,key,time.monotonic()) and self.tray.HAS_NOTIFICATION:
-            try:self.tray.notify(f'{count} · '+self.t('Review required'),'VRS')
+        if self.tray_ready and not self.tray_muted and self.notices.next(count,key,time.monotonic()) and self.tray.HAS_NOTIFICATION:
+            try:self.tray.notify(f'{count} · '+self.t('Review required'),'Voynich Research Studio')
             except Exception: self.status.set('Notification unavailable')
 
     def tick(self):
@@ -237,7 +292,9 @@ class Monitor(App):
         while True:
             try: action=self.events.get_nowait()
             except queue.Empty:break
-            if action=='ready':self.tray_ready=True
+            if action=='ready':self.tray_ready=True;self.last_tick=0;self.update_tray()
+            elif isinstance(action,tuple) and action[0]=='control':self.tray_request(*action[1:])
+            elif action=='mute':self.tray_muted=not self.tray_muted;self.update_tray()
             elif action=='tray_failed':
                 self.tray_ready=False;self.w.deiconify();self.status.set('Notification area unavailable')
                 if self.tray is not None:
@@ -257,7 +314,12 @@ class Monitor(App):
         now=time.monotonic()
         if self.future is None and now-self.last_tick>=3:
             self.last_tick=now
-            if self.tray_ready and (self.w.state()=='withdrawn' or self.view!='Jobs'):self.quiet_task(self.api.notice,self.notice_done)
+            if self.tray_ready and (self.w.state()=='withdrawn' or self.view!='Jobs'):
+                api=self.api; configured=bool(self.cfg['interpreter'])
+                def read_tray():
+                    try:return api.tray_snapshot(configured)
+                    except Exception:return tray_controls.Snapshot()
+                self.quiet_task(read_tray,self.tray_loaded)
             elif self.view=='Jobs':self.load_jobs(automatic=True)
         self.w.after(250,self.tick)
 

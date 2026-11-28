@@ -151,8 +151,9 @@ class Operations(Desktop):
         safe(self.root,f'{BASE}/stop-{ident}').touch(exist_ok=True)
         raise ValueError('Startup not confirmed; stop requested for this session')
 
-    def stop(self):
+    def stop(self, *, expected_session=None):
         s=self.session(); require(s['state'] in ('RUNNING','STOP_REQUESTED'),'No active managed worker')
+        require(expected_session is None or s['id']==expected_session,'Managed session changed; refresh first')
         safe(self.root,f'{BASE}/stop-{s["id"]}').touch(exist_ok=True); return self.session()
 
     def diagnostics(self):
@@ -160,6 +161,12 @@ class Operations(Desktop):
         counts={}
         for row in self.jobs(): counts[row['control']]=counts.get(row['control'],0)+1
         return dict(schema=1,version=VERSION,scope='LOCAL_AGGREGATE',resources=r,run_counts=counts)
+
+    def tray_snapshot(self, configured):
+        from vrs_tray_controls import snapshot
+        rows=self.jobs()
+        waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED')
+        return snapshot(self.session(),rows,configured,c.digest(waiting))
 
     def notice(self):
         # No glyphs, raw source paths, or reviewer identities in desktop notifications.
