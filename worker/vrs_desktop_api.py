@@ -108,33 +108,70 @@ def vector_window(image, target, components, pairs=(), alternatives=None):
             require(envelope==(min(q[0] for q in boxes),min(q[1] for q in boxes),max(q[2] for q in boxes),max(q[3] for q in boxes)),'Group envelope mismatch')
             options[kind].append((row['id'],[envelope]+boxes))
             require(len(options[kind])<=2000,'Group preview budget exceeded')
-    bounds=[(a,b,cx,d)]+[p for _,p in selected]+[p for rows in options.values() for _,boxes in rows for p in boxes]
+    # Large intersecting material components can span an entire manuscript page.
+    # Keep their identity/count, but show their exact visible geometry in a local viewport.
+    large=[row for row,q in selected if max(q[2]-q[0],q[3]-q[1])>256]
+    bounds=[(a,b,cx,d)]+[q for _,q in selected if max(q[2]-q[0],q[3]-q[1])<=256]+[q for rows in options.values() for _,boxes in rows for q in boxes]
     left=max(0,min(p[0] for p in bounds)-24); top=max(0,min(p[1] for p in bounds)-24)
     right=min(w,max(p[2] for p in bounds)+24); bottom=min(h,max(p[3] for p in bounds)+24)
     require((right-left)*(bottom-top)<=1_000_000,'Vector preview pixel budget exceeded')
-    paths=[]; skeleton=[]; nodes=[]; fallback=0
+    paths=[]; skeleton=[]; nodes=[]; fallback=0; clipped_paths=0; outside_nodes=0
     def shifted(box):return [box[0]-left,box[1]-top,box[2]-left,box[3]-top]
+    def visible(point):return 0<=point[0]<=right-left and 0<=point[1]<=bottom-top
+    def clip_segment(p,q):
+        # Liang-Barsky clipping; no artificial edge along viewport boundary.
+        x,y=p;dx=q[0]-x;dy=q[1]-y;lo,hi=0.,1.
+        for delta,dist in ((-dx,x),(dx,right-left-x),(-dy,y),(dy,bottom-top-y)):
+            if delta==0:
+                if dist<0:return None
+            elif delta<0:lo=max(lo,dist/delta)
+            else:hi=min(hi,dist/delta)
+            if lo>hi:return None
+        def at(k):return (min(right-left,max(0,x+k*dx)),min(bottom-top,max(0,y+k*dy)))
+        P,Q=at(lo),at(hi)
+        return (P,Q) if P!=Q else None
+    def append_visible(path,out):
+        nonlocal points,clipped_paths
+        if all(visible(q) for q in path):
+            fragments=[path]
+        else:
+            clipped_paths+=1;fragments=[];current=[]
+            for p,q in zip(path,path[1:]):
+                segment=clip_segment(p,q)
+                if segment is None:
+                    if current:fragments.append(current);current=[]
+                elif current and current[-1]==segment[0]:
+                    current.append(segment[1])
+                else:
+                    if current:fragments.append(current)
+                    current=list(segment)
+            if current:fragments.append(current)
+        for fragment in fragments:
+            points+=len(fragment)
+            require(points<=20000 and len(out)<2000,'Vector visible path budget exceeded')
+            out.append(fragment)
     for row,(l,t,r,bot) in selected:
         def translate(path,center=False):
-            nonlocal points
-            points+=len(path);require(points<=20000,'Vector preview vertex budget exceeded')
             result=[]; shift=.5 if center else 0
             for x,y in path:
                 require(type(x) is int and type(y) is int and 0<=x<=r-l-int(center) and 0<=y<=bot-t-int(center),'Invalid component coordinates')
                 result.append((l+x-left+shift,t+y-top+shift))
             return result
         for loop in row['contours']:
-            require(len(loop)>=4 and loop[0]==loop[-1] and len(paths)<2000,'Invalid or excessive vector loops')
-            paths.append(translate(loop))
+            require(len(loop)>=4 and loop[0]==loop[-1],'Invalid vector loop')
+            append_visible(translate(loop),paths)
         graph=row.get('graph',{})
         fallback+=int(bool(row.get('fallback',False)))
         for path in graph.get('paths',()):
-            require(len(path)>=2 and len(skeleton)<2000,'Invalid or excessive skeleton paths')
-            skeleton.append(translate(path,True))
+            require(len(path)>=2,'Invalid skeleton path')
+            append_visible(translate(path,True),skeleton)
         for node in graph.get('nodes',()):
-            degree=node['degree'];require(type(degree) is int and 0<=degree<=8 and len(nodes)<2000,'Invalid or excessive graph nodes')
-            x,y=translate([node['point']],True)[0];nodes.append((x,y,degree))
-    layers=dict(skeleton=skeleton,nodes=nodes,fallback=fallback,
+            degree=node['degree'];require(type(degree) is int and 0<=degree<=8,'Invalid graph node')
+            x,y=translate([node['point']],True)[0]
+            if not (0<=x<right-left and 0<=y<bottom-top):outside_nodes+=1;continue
+            points+=1;require(points<=20000 and len(nodes)<2000,'Vector visible node budget exceeded')
+            nodes.append((x,y,degree))
+    layers=dict(skeleton=skeleton,nodes=nodes,fallback=fallback,clipping=dict(large_components=len(large),clipped_paths=clipped_paths,outside_nodes=outside_nodes),
                 hypotheses={k:[(rid,[shifted(q) for q in boxes]) for rid,boxes in sorted(rows)] for k,rows in options.items()})
     return image.crop((left,top,right,bottom)),shifted((a,b,cx,d)),paths,len(selected),layers
 

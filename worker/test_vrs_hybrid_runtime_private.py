@@ -128,7 +128,7 @@ class HybridRuntimeQualification(unittest.TestCase):
                             if target and max(target[2]-target[0],target[3]-target[1])<=64:
                                 targets.append(target)
                     self.assertTrue(targets,'No bounded real-source candidates')
-                    checks=0;budget_refusals=0;hypotheses=0
+                    checks=0;budget_refusals=0;hypotheses=0;clipped_previews=0;refusal_reasons={}
                     group=evidence['hybrid']['grouping']
                     samples=[targets[i] for i in sorted({0,len(targets)//2,len(targets)-1})]
                     for target in samples:
@@ -139,7 +139,7 @@ class HybridRuntimeQualification(unittest.TestCase):
                             except ValueError as exc:
                                 # Bounds are explicit failure, not a pass or silent omission.
                                 if 'budget exceeded' not in str(exc):raise
-                                budget_refusals+=1;continue
+                                budget_refusals+=1;reason=str(exc);refusal_reasons[reason]=refusal_reasons.get(reason,0)+1;continue
                             self.assertEqual(preview.crop(box).tobytes(),image.crop(target).tobytes())
                             self.assertEqual(count,sum(max(q['box'][0],target[0])<min(q['box'][2],target[2]) and max(q['box'][1],target[1])<min(q['box'][3],target[3]) for q in data_mask['components']))
                             for path in paths+layers['skeleton']:
@@ -151,10 +151,11 @@ class HybridRuntimeQualification(unittest.TestCase):
                                     self.assertTrue(ident)
                                     self.assertTrue(all(0<=l<r<=preview.width and 0<=t<b<=preview.height for l,t,r,b in boxes))
                                 hypotheses+=len(options)
+                            clipped_previews+=int(any(layers.get('clipping',{}).values()))
                             checks+=1
-                    self.assertGreater(checks,0)
+                    print(json.dumps(dict(review_page=row['page'],preview_pass=checks,preview_budget_refusals=budget_refusals,refusal_reasons=refusal_reasons,clipped_previews=clipped_previews,hypotheses=hypotheses)),flush=True)
                     self.assertEqual(checks+budget_refusals,len(samples)*len(hybrid.MASKS))
-                    print(json.dumps(dict(review_page=row['page'],preview_pass=checks,preview_budget_refusals=budget_refusals,hypotheses=hypotheses)),flush=True)
+                    self.assertGreater(checks,0,'All previews refused: '+str(refusal_reasons))
                 del evidence
                 self.assertEqual(hybrid.qualify_ref(root,value,m,expected_source=source),expected)
                 print(json.dumps(dict(page=row['page'],legacy_candidates=row['candidates'],

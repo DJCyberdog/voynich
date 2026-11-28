@@ -25,6 +25,8 @@ DE.update({'Layer':'Ebene','Skeleton':'Skelett','Splits':'Trennungen','Pairs':'P
 
 DE.update({'Locus':'Textstelle','Declared locus':'Deklarierte Textstelle','No locus declared':'Keine Textstelle deklariert','Locus declaration only':'Nur deklarierte Textstelle; keine verifizierte Zeilen-/Wortgeometrie'})
 
+DE.update({'Local clipping':'Lokaler Ausschnitt','Large components':'Großkomponenten'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -242,6 +244,8 @@ class App:
             rows=layers['hypotheses'][key]
             text+=' · '+(str(self.vector_index+1)+'/'+str(len(rows))+' · '+rows[self.vector_index][0][:12] if rows else self.t('No hypotheses'))
         else:text+=' · '+self.t('Intersecting components')+': '+str(self.vector_data[3])
+        clipping=layers.get('clipping',{})
+        if any(clipping.values()):text+=' · '+self.t('Local clipping')+' · '+self.t('Large components')+': '+str(clipping.get('large_components',0))
         self.vector_info.configure(text=text)
     def change_vector_layer(self):
         self.vector_index=0;self.update_vector_info();self.draw()

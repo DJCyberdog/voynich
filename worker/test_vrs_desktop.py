@@ -71,6 +71,22 @@ class DesktopTests(unittest.TestCase):
         pairs[0]['box']=[40,40,47,44]
         with self.assertRaisesRegex(ValueError,'Group envelope mismatch'):vector_window(image,[40,40,44,44],rows,pairs,extra)
 
+    def test_large_component_is_clipped_not_discarded(self):
+        from vrs_desktop_api import vector_window
+        image=Image.new('RGB',(1600,1600),'white')
+        rows=[dict(id='large',box=[0,0,1600,1600],contours=[[[0,0],[1600,0],[1600,1600],[0,1600],[0,0]]],
+                   graph=dict(paths=[[[0,800],[1599,800]],[[0,0],[1599,1599]]],
+                              nodes=[dict(point=[0,0],degree=1),dict(point=[800,800],degree=3)]))]
+        target=[790,790,810,810]
+        preview,box,paths,count,layers=vector_window(image,target,rows)
+        self.assertEqual(preview.size,(68,68));self.assertEqual(box,[24,24,44,44])
+        self.assertEqual(preview.crop(box).tobytes(),image.crop(target).tobytes())
+        self.assertEqual(count,1);self.assertEqual(paths,[])
+        self.assertEqual(layers['skeleton'][0],[(0,34.5),(68,34.5)])
+        self.assertEqual(layers['nodes'],[(34.5,34.5,3)])
+        self.assertEqual(layers['clipping'],dict(large_components=1,clipped_paths=3,outside_nodes=1))
+        self.assertEqual(len(rows[0]['graph']['nodes']),2)
+
     def test_declared_locus_context_has_no_reading_hints(self):
         run=self.f.run_to_review(); q=self.api.review(run,limit=100)
         first=self.f.eligible[0]['region_id']
