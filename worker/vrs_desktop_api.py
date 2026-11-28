@@ -198,6 +198,39 @@ class Desktop:
             box=item['box']; require(0<=box[0]<box[2]<=source.width and 0<=box[1]<box[3]<=source.height,'Invalid glyph geometry')
             return source.convert('RGB'),box
 
+    def locus_context(self,item):
+        """Show only explicitly declared locus provenance; never expose reading hints."""
+        run=item['run_id'];c.digest_ok(run);ledger=ReadLedger(self.root)
+        with ledger._tx() as conn:
+            row=ledger._row(conn,'runs',run); manifest,receipts,_=ledger._validate(row)
+            stored=conn.execute('SELECT payload FROM vrs095_queue_items WHERE run_id=? AND id=?',(run,item['id'])).fetchone()
+            require(stored is not None,'Unknown review candidate')
+            require(all(item.get(k)==v for k,v in json.loads(stored['payload']).items()),'Candidate binding mismatch')
+        policy=load_page(pinned(self.root,manifest['inputs']['recognition_policy']))
+        c.fields(policy,('schema','approval','mapping'))
+        sources=manifest['transcriptions']; key=f"{item['page']}:{item['region_id']}"
+        result=[]
+        if policy['mapping'] is None:
+            return [dict(source_sha256=s['sha256'],status='UNDECLARED') for s in sources]
+        maps=load_page(pinned(self.root,policy['mapping']))
+        c.fields(maps,('schema','manuscript_sha256','sources'))
+        require(maps['schema']==1 and maps['manuscript_sha256']==manifest['inputs']['manuscript']['sha256'],'Mapping source mismatch')
+        require(set(maps['sources'])=={s['sha256'] for s in sources},'Mapping transcription coverage mismatch')
+        for source in sources:
+            entries=maps['sources'][source['sha256']];require(type(entries) is dict,'Invalid locus map')
+            entry=entries.get(key)
+            info=dict(source_sha256=source['sha256'],status='UNDECLARED')
+            if entry is not None:
+                c.fields(entry,('crop_sha256','locus','subtype','mapper'))
+                require(entry['crop_sha256']==item['crop']['sha256'] and all(type(entry[k]) is str and 0<len(entry[k].strip())<=512 for k in ('locus','subtype','mapper')),'Invalid physical mapping')
+                require(sum(isinstance(v,dict) and v.get('locus')==entry['locus'] for v in entries.values())==1,'Duplicate mapped locus')
+                import alignment
+                scheme,rows,_=alignment.load_source(pinned(self.root,source),source['sha256'])
+                require(entry['locus'] in rows and rows[entry['locus']]['subtype']==entry['subtype'],'Declared locus not found in transcription')
+                info.update(status='DECLARED',scheme=scheme,locus=entry['locus'],subtype=entry['subtype'],mapper=entry['mapper'])
+            result.append(info)
+        return result
+
     def page_context(self, item):
         """Opt-in full page; exact region replay or fail closed. No alignment inference."""
         from PIL import Image

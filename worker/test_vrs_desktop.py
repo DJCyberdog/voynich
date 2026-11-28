@@ -71,6 +71,17 @@ class DesktopTests(unittest.TestCase):
         pairs[0]['box']=[40,40,47,44]
         with self.assertRaisesRegex(ValueError,'Group envelope mismatch'):vector_window(image,[40,40,44,44],rows,pairs,extra)
 
+    def test_declared_locus_context_has_no_reading_hints(self):
+        run=self.f.run_to_review(); q=self.api.review(run,limit=100)
+        first=self.f.eligible[0]['region_id']
+        item=next(x for x in q['items'] if x['region_id']==first)
+        rows=self.api.locus_context(item)
+        self.assertEqual({x['scheme'] for x in rows},{'Eva-','STA1'})
+        self.assertTrue(all(x['status']=='DECLARED' and x['locus']=='f1r.1' and 'units' not in x and 'text' not in x for x in rows))
+        with self.assertRaises(ValueError):self.api.locus_context(dict(item,page=99))
+        other=next((x for x in q['items'] if x['region_id']!=first),None)
+        if other is not None:self.assertTrue(all(x['status']=='UNDECLARED' for x in self.api.locus_context(other)))
+
     def test_no_hybrid_evidence_keeps_legacy_review(self):
         run=self.f.run_to_review(); item=self.api.review(run,limit=1)['items'][0]
         with self.assertRaisesRegex(ValueError,'No hybrid evidence'):self.api.vector_context(item,'majority')

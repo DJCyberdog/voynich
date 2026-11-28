@@ -23,6 +23,8 @@ DE.update({'Vectors':'Vektoren','Overlay':'Konturen','Vector hypotheses':'Vektor
 
 DE.update({'Layer':'Ebene','Skeleton':'Skelett','Splits':'Trennungen','Pairs':'Paare','Compounds':'Gruppen','No hypotheses':'Keine Hypothesen','Fallback components':'Fallback-Komponenten','Nodes':'Knoten'})
 
+DE.update({'Locus':'Textstelle','Declared locus':'Deklarierte Textstelle','No locus declared':'Keine Textstelle deklariert','Locus declaration only':'Nur deklarierte Textstelle; keine verifizierte Zeilen-/Wortgeometrie'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -153,7 +155,9 @@ class App:
         right=ttk.Frame(self.review_side,style='Panel.TFrame',padding=(0,0,6,0));right_id=self.review_side.create_window(0,0,anchor='nw',window=right)
         right.bind('<Configure>',lambda e:self.review_side.configure(scrollregion=self.review_side.bbox('all')));self.review_side.bind('<Configure>',lambda e:self.review_side.itemconfigure(right_id,width=e.width))
         self.review_side.bind('<MouseWheel>',lambda e:self.review_side.yview_scroll(-1 if e.delta>0 else 1,'units'));self.review_side.bind('<Button-4>',lambda e:self.review_side.yview_scroll(-1,'units'));self.review_side.bind('<Button-5>',lambda e:self.review_side.yview_scroll(1,'units'))
-        self.meta=ttk.Label(left,text=self.t('No candidate'),style='Panel.TLabel',wraplength=380); self.meta.pack(anchor='w',pady=5); controls=ttk.Frame(left,style='Panel.TFrame'); controls.pack(fill='x');
+        metadata=ttk.Frame(left,style='Panel.TFrame');metadata.pack(fill='x',pady=5)
+        self.locus_button=ttk.Button(metadata,text=self.t('Locus'),command=self.open_locus);self.locus_button.pack(side='right')
+        self.meta=ttk.Label(metadata,text=self.t('No candidate'),style='Panel.TLabel',wraplength=270);self.meta.pack(side='left',fill='x',expand=True); controls=ttk.Frame(left,style='Panel.TFrame'); controls.pack(fill='x');
         self.zoom_controls=[]
         for label,fn in (('Context',lambda:self.mode(False)),('Glyph',lambda:self.mode(True)),('Fit',self.fit),('−',lambda:self.zoom(.8)),('+',lambda:self.zoom(1.25))):
             button=ttk.Button(controls,text=self.t(label),command=fn,width=0);button.pack(side='left',padx=(0,4));self.zoom_controls.append(button)
@@ -200,6 +204,17 @@ class App:
         item=self.items[self.index]; self.meta.configure(text=f"PAGE {item['page']}  ·  {self.offset+self.index+1}  ·  {self.t('Revision')} {item['revision']}\n{item['reason']}  ·  {item['region_id'][:24]}"); self.factor=1.; self.glyph_only=False; self.task(lambda:self.api.crop(item),self.crop_loaded)
 
     def crop_loaded(self,result): self.image,self.box=result; self.draw()
+    def open_locus(self):
+        if self.view!='Review' or self.future is not None or not self.items:return
+        item=self.items[self.index];self.task(lambda:self.api.locus_context(item),self.locus_loaded)
+    def locus_loaded(self,rows):
+        lines=[self.t('Locus declaration only')]
+        for row in rows:
+            label=row['source_sha256'][:12]
+            if row['status']=='DECLARED':
+                lines.append(row['scheme']+' · '+row['locus']+' · '+row['subtype']+' · '+label+' · '+row['mapper'])
+            else:lines.append(label+' · '+self.t('No locus declared'))
+        messagebox.showinfo(self.t('Locus'),'\n\n'.join(lines),parent=self.w)
     def open_page_context(self):
         if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
         if self.page_image is not None:self.page_context_loaded((self.page_image,self.page_box));return

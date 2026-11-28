@@ -111,6 +111,50 @@ class HybridRuntimeQualification(unittest.TestCase):
                 stored=c.artifact(root,value['hybrid_evidence']).stat().st_size
                 decoded=len(hybrid.canonical(evidence))+1
                 comparison=evidence['comparison']; expected=evidence['id']
+                if row['page']!=1:
+                    # Real persisted evidence, actual source pixels, same helper as desktop.
+                    # No classification or queue insertion is performed in this test.
+                    import fitz
+                    import vrs_ink as ink
+                    from vrs_desktop_api import vector_window
+                    with fitz.open(root/'source.pdf') as doc:
+                        image,meta=ink.native_page(doc[row['page']-1])
+                    self.assertEqual(meta,evidence['native'])
+                    targets=[]
+                    for region,proposal in zip(m['regions'],legacy):
+                        ox,oy,_,_=region['pixel_box']
+                        for l,t,r,b in proposal['boxes']:
+                            target=ink.native_box(meta,[ox+l,oy+t,ox+r,oy+b])
+                            if target and max(target[2]-target[0],target[3]-target[1])<=64:
+                                targets.append(target)
+                    self.assertTrue(targets,'No bounded real-source candidates')
+                    checks=0;budget_refusals=0;hypotheses=0
+                    group=evidence['hybrid']['grouping']
+                    samples=[targets[i] for i in sorted({0,len(targets)//2,len(targets)-1})]
+                    for target in samples:
+                        for mask in hybrid.MASKS:
+                            data_mask=group['masks'][mask]
+                            try:
+                                preview,box,paths,count,layers=vector_window(image,target,data_mask['components'],data_mask['pairs'],group['alternatives']['by_mask'][mask])
+                            except ValueError as exc:
+                                # Bounds are explicit failure, not a pass or silent omission.
+                                if 'budget exceeded' not in str(exc):raise
+                                budget_refusals+=1;continue
+                            self.assertEqual(preview.crop(box).tobytes(),image.crop(target).tobytes())
+                            self.assertEqual(count,sum(max(q['box'][0],target[0])<min(q['box'][2],target[2]) and max(q['box'][1],target[1])<min(q['box'][3],target[3]) for q in data_mask['components']))
+                            for path in paths+layers['skeleton']:
+                                self.assertTrue(all(0<=x<=preview.width and 0<=y<=preview.height for x,y in path))
+                            for x,y,degree in layers['nodes']:
+                                self.assertTrue(0<=x<preview.width and 0<=y<preview.height and 0<=degree<=8)
+                            for kind,options in layers['hypotheses'].items():
+                                for ident,boxes in options:
+                                    self.assertTrue(ident)
+                                    self.assertTrue(all(0<=l<r<=preview.width and 0<=t<b<=preview.height for l,t,r,b in boxes))
+                                hypotheses+=len(options)
+                            checks+=1
+                    self.assertGreater(checks,0)
+                    self.assertEqual(checks+budget_refusals,len(samples)*len(hybrid.MASKS))
+                    print(json.dumps(dict(review_page=row['page'],preview_pass=checks,preview_budget_refusals=budget_refusals,hypotheses=hypotheses)),flush=True)
                 del evidence
                 self.assertEqual(hybrid.qualify_ref(root,value,m,expected_source=source),expected)
                 print(json.dumps(dict(page=row['page'],legacy_candidates=row['candidates'],

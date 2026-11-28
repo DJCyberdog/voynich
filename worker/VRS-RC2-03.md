@@ -5,3 +5,5 @@ IN_PROGRESS. Explicit opt-in full-page view replays the existing pinned source P
 Hosted increment 1 at b470f5c: PR 46133153722, CPU 46133152901, Windows portable 46133152949 all SUCCESS. Increment 2 adds explicit native-vector preview for intersecting component contours, see VRS-RC2-02g.md. No claim of full native owner or line/word qualification.
 
 Increment 2 hosted qualification at 14760ab: PR 46137418823, CPU 46137417873 and Windows portable 46137417874 all SUCCESS. Increment 3 adds layer selection and hypothesis navigation, with native pixel centers for skeleton and native pixel edges for contours/boxes. See RC2-02g evidence. Real-source UI and line/word alignment remain open.
+
+Increment 3 at fb193e8: PR 46138350295, CPU 46138349317 and Windows portable 46138349269 all SUCCESS. Increment 4 exposes only source-bound declared locus identifiers and mapper, opt-in, no transcription text, no inferred word/line boxes. Missing map entry is UNDECLARED; wrong crop/source/locus/subtype or duplicate locus fails closed. This is declared provenance, not independently verified physical mapping. Tests added; CI pending.
