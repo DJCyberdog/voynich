@@ -11,7 +11,7 @@ class Snapshot:
     session: str | None = None
     pause: tuple = ()
     resume: tuple = ()
-    review: int = 0
+    review: int | None = None
     review_key: str = ''
     configured: bool = False
 
@@ -30,7 +30,7 @@ def target(view, action):
         return (view.state, view.session)
     if action == 'stop' and view.state == 'RUNNING' and view.session:
         return (view.session,)
-    if action in ('pause', 'resume') and view.configured and view.state == 'RUNNING':
+    if action in ('pause', 'resume') and view.configured and view.state == 'RUNNING' and view.session:
         candidates = getattr(view, action)
         if len(candidates) == 1:
             return (view.session, candidates[0])

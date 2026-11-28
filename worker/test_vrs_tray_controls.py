@@ -38,6 +38,16 @@ class TrayControlsTests(unittest.TestCase):
         t.execute(api,'python','stop',t.target(v,'stop'),v);api.stop.assert_called_once_with(expected_session='s')
         v=self.view(state='STOPPED');t.execute(api,'python','start',t.target(v,'start'),v);api.start.assert_called_once_with('python')
 
+    def test_unknown_review_count_and_missing_session(self):
+        self.assertIsNone(t.Snapshot().review)
+        self.assertEqual(self.view().review, 0)
+        v=self.view([row('a','READY'),row('b','PAUSED')],ident=None)
+        for action in t.ACTIONS:
+            self.assertIsNone(t.target(v,action))
+        api=Mock()
+        with self.assertRaises(ValueError):t.execute(api,'python','pause',(None,'a'),v)
+        self.assertEqual(api.mock_calls,[])
+
     def test_unknown_action_refused(self):
         api=Mock()
         with self.assertRaises(ValueError):t.execute(api,'python','cancel',('s',),self.view())

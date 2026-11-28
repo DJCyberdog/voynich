@@ -26,6 +26,7 @@ class Notifications:
     """Coalesce by parked-run set; no candidate details or repeated idle alerts."""
     def __init__(self): self.last=None; self.last_time=-1e9
     def next(self,count,key,now):
+        if count is None: return False  # Unknown is not an empty review queue.
         if not count: self.last=None; return False
         if key==self.last or now-self.last_time<30: return False
         self.last=key; self.last_time=now; return True
@@ -249,7 +250,7 @@ class Monitor(App):
         if not self.tray_ready or self.tray is None:return
         v=self.tray_context[2]
         try:
-            self.tray.title=('VRS · '+self.t(v.state)+' · '+str(v.review)+' '+self.t('Review runs')+(' · '+self.tray_feedback if self.tray_feedback else ''))[:120]
+            self.tray.title=('VRS · '+self.t(v.state)+' · '+('—' if v.review is None else str(v.review))+' '+self.t('Review runs')+(' · '+self.tray_feedback if self.tray_feedback else ''))[:120]
             self.tray.update_menu()
         except Exception:self.status.set('Notification area unavailable')
 

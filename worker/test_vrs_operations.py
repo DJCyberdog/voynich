@@ -153,6 +153,14 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(api.stop.call_count,1)
         self.assertIn('Request failed',fake.tray_feedback)
 
+    def test_unknown_review_snapshot_does_not_rearm_notification(self):
+        n=Notifications()
+        self.assertTrue(n.next(1,'a',0))
+        self.assertFalse(n.next(None,'',60))
+        self.assertFalse(n.next(1,'a',120))
+        self.assertFalse(n.next(0,'empty',180))
+        self.assertTrue(n.next(1,'a',240))
+
     def test_notification_coalescing_and_private_payload(self):
         n=Notifications(); self.assertTrue(n.next(1,'a',0)); self.assertFalse(n.next(1,'a',100)); self.assertFalse(n.next(2,'b',10)); self.assertTrue(n.next(2,'b',31)); self.assertFalse(n.next(0,'empty',35)); self.assertTrue(n.next(1,'a',70))
         run=self.f.run_to_review(); count,key=self.api.notice(); self.assertEqual(count,1); self.assertNotEqual(key,run); self.assertEqual(len(key),64)
