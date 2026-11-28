@@ -40,7 +40,7 @@ class NativeHarness(unittest.TestCase):
         from vrs_monitor import Monitor,App
         import queue
         app=Monitor.__new__(Monitor);app.w=Mock();app.status=Mock();app.nav={};app.events=queue.Queue();app.closing=False;app.close_pending=False;app.pending_view=None;app.future=object();app.tray=Mock();app.tray_ready=True
-        app.t=lambda text:text;app.show=Mock()
+        app.t=lambda text:text;app.show=Mock();app.poll_status=Mock();app.status_pool=Mock()
         app.events.put('review');app.tick()
         self.assertEqual(app.pending_view,'Review');app.show.assert_not_called()
         app.events.put('exit');app.tick();self.assertTrue(app.close_pending);self.assertIsNone(app.pending_view)
@@ -48,6 +48,7 @@ class NativeHarness(unittest.TestCase):
         with patch.object(App,'close') as close:
             app.tick();close.assert_called_once_with()
         self.assertIsNone(app.tray);self.assertFalse(app.tray_ready)
+        app.status_pool.shutdown.assert_called_once_with(wait=False,cancel_futures=True)
 
     def test_monitor_unchanged_job_rows(self):
         from unittest.mock import Mock
