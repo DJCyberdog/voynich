@@ -12,6 +12,7 @@ import uuid
 from pathlib import Path
 
 import vrs_contract as c
+from vrs_process import background_options, liveness, session_state
 from vrs_core import require
 from vrs_desktop_api import Desktop, ReadLedger, ReadDecisions, atomic_json, safe, pinned
 from vrs_exceptions import load_page
@@ -42,6 +43,18 @@ def write_session(path,value):
 
 
 class Operations(Desktop):
+    def runtime_mode(self):
+        mode=super().runtime_mode();session=self.session()
+        if session['state'] not in ('NOT_MANAGED','STOPPED','FAILED','NOT_RUNNING'):
+            require(session['state'] in ('RUNNING','STOP_REQUESTED') and session.get('evidence_mode')==mode,'Worker mode unknown or differs; stop/restart before continuing')
+        return mode
+
+    def save_settings(self,value):
+        checked=self._validate_settings(value)
+        if checked['evidence_mode']!=self.settings()['evidence_mode']:
+            require(self.session()['state'] in ('NOT_MANAGED','STOPPED','FAILED','NOT_RUNNING'),'Stop managed worker before changing evidence mode')
+        return super().save_settings(checked)
+
     def settings_ops(self):
         p=safe(self.root,'config/vrs-operations.json')
         return limits(c.load(p)) if p.exists() else dict(cpu_threads=0,ram_mib=0,disk_mib=0)
@@ -108,7 +121,7 @@ class Operations(Desktop):
     def control(self,interpreter,action,run):
         require(action in ('pause','resume','cancel'),'Unsupported control'); c.digest_ok(run)
         p=python_path(interpreter); script=Path(__file__).with_name('vrs_runtime.py')
-        proc=subprocess.run([str(p),str(script),str(self.root),action,run],cwd=self.root,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True,encoding='utf-8',timeout=120)
+        proc=subprocess.run([str(p),str(script),str(self.root),*self.runtime_flags(),action,run],cwd=self.root,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True,encoding='utf-8',timeout=120,**background_options())
         require(proc.returncode==0,'Worker rejected control request; inspect run status')
         value=json.loads(proc.stdout); return dict(control=value['control'],locked=value['locked'],stage=value['next_stage'])
 
@@ -117,14 +130,11 @@ class Operations(Desktop):
         p=safe(self.root,f'{BASE}/session.json')
         if not p.exists(): return dict(state='NOT_MANAGED')
         s=c.load(p); require(type(s['pid']) is int and re.fullmatch('[0-9a-f]{32}',s['id']) is not None,'Invalid session')
-        active=False; rss=None
-        try:
-            proc=psutil.Process(s['pid']); active=abs(proc.create_time()-s['created'])<.01 and proc.status()!=psutil.STATUS_ZOMBIE
-            if active: rss=proc.memory_info().rss
-        except psutil.Error: pass
-        state='RUNNING' if active else (s['state'] if s.get('state') in ('STOPPED','FAILED') else 'NOT_RUNNING')
-        if active and (s.get('state') in ('STOPPED','FAILED') or safe(self.root,f'{BASE}/stop-{s["id"]}').exists()): state='STOP_REQUESTED'
-        return dict(state=state,id=s['id'],pid=s['pid'] if active else None,rss=rss,limits=s['limits'])
+        observation,rss=liveness(s['pid'],s['created'],psutil)
+        state=session_state(s['state'],observation,safe(self.root,f'{BASE}/stop-{s["id"]}').exists())
+        mode=s.get('evidence_mode','legacy')
+        require(mode in ('legacy','hybrid'),'Invalid session evidence mode')
+        return dict(state=state,id=s['id'],pid=s['pid'] if observation=='ACTIVE' else None,rss=rss,limits=s['limits'],evidence_mode=mode)
 
     def resources(self):
         import psutil
@@ -133,33 +143,55 @@ class Operations(Desktop):
         return dict(cpu_percent=psutil.cpu_percent(interval=.1),logical=info['logical'],allowed=info['allowed'],ram_total=info['ram_total'],ram_available=info['ram_available'],disk_total=disk.total,disk_free=disk.free,worker=self.session(),gpu='NOT_MEASURED',limits=self.settings_ops())
 
     def start(self,interpreter):
-        require(self.session()['state'] not in ('RUNNING','STOP_REQUESTED'),'Managed worker already active')
-        p=python_path(interpreter); cfg=self.settings_ops(); ident=uuid.uuid4().hex; base=safe(self.root,BASE); base.mkdir(parents=True,exist_ok=True)
-        script=Path(__file__).resolve(); flags=subprocess.CREATE_NEW_PROCESS_GROUP|subprocess.DETACHED_PROCESS if os.name=='nt' else 0
+        require(self.session()['state'] in ('NOT_MANAGED','STOPPED','FAILED','NOT_RUNNING'),'Managed worker active or state unknown')
+        mode=self.runtime_mode();p=python_path(interpreter); cfg=self.settings_ops(); ident=uuid.uuid4().hex; base=safe(self.root,BASE); base.mkdir(parents=True,exist_ok=True)
+        script=Path(__file__).resolve()
         env=os.environ.copy()
         if cfg['cpu_threads']:
             for key in ('OMP_NUM_THREADS','MKL_NUM_THREADS','OPENBLAS_NUM_THREADS'): env[key]=str(cfg['cpu_threads'])
-        proc=subprocess.Popen([str(p),str(script),str(self.root),'serve',ident],cwd=self.root,stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,creationflags=flags,start_new_session=os.name!='nt',env=env)
+        proc=subprocess.Popen([str(p),str(script),str(self.root),'serve',ident,'--evidence-mode',mode],cwd=self.root,stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env=env,**background_options(managed=True))
         threading.Thread(target=proc.wait,daemon=True).start()
         deadline=time.monotonic()+15
         while time.monotonic()<deadline:
             s=self.session()
-            if s.get('id')==ident and s['state']=='RUNNING': return s
-            if proc.poll() is not None: raise ValueError('Worker failed to start or another manager owns workspace')
+            if s.get('id')==ident and s['state']=='RUNNING':
+                require(s.get('evidence_mode')==mode,'Worker evidence mode mismatch');return s
+            if proc.poll() is not None:
+                from vrs_worker_log import WorkerLog
+                error=ValueError('Worker startup failed; exit code '+str(proc.returncode))
+                WorkerLog(self.root).failed(error)
+                raise error
             time.sleep(.1)
         # No forced kill; a slow startup can still complete. Request cooperative stop.
         safe(self.root,f'{BASE}/stop-{ident}').touch(exist_ok=True)
         raise ValueError('Startup not confirmed; stop requested for this session')
 
-    def stop(self):
+    def stop(self, *, expected_session=None):
         s=self.session(); require(s['state'] in ('RUNNING','STOP_REQUESTED'),'No active managed worker')
+        require(expected_session is None or s['id']==expected_session,'Managed session changed; refresh first')
         safe(self.root,f'{BASE}/stop-{s["id"]}').touch(exist_ok=True); return self.session()
+
+    def outbox_counts(self):
+        """Local read-only aggregate; not a GitHub connectivity check."""
+        result=dict(PENDING=0,SENDING=0,SENT=0)
+        if not safe(self.root,'workspace/vrs095/ledger.sqlite').exists():return result
+        with ReadLedger(self.root)._tx() as db:
+            for state,count in db.execute('SELECT state,COUNT(*) FROM outbox GROUP BY state'):
+                require(state in result and type(count) is int and count>=0,'Invalid outbox state')
+                result[state]=count
+        return result
 
     def diagnostics(self):
         r=self.resources(); worker=r.pop('worker'); r['worker']=dict(state=worker['state'],rss=worker.get('rss'),limits=worker.get('limits'))
         counts={}
         for row in self.jobs(): counts[row['control']]=counts.get(row['control'],0)+1
         return dict(schema=1,version=VERSION,scope='LOCAL_AGGREGATE',resources=r,run_counts=counts)
+
+    def tray_snapshot(self, configured):
+        from vrs_tray_controls import snapshot
+        rows=self.jobs()
+        waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED')
+        return snapshot(self.session(),rows,configured,c.digest(waiting))
 
     def notice(self):
         # No glyphs, raw source paths, or reviewer identities in desktop notifications.
@@ -173,14 +205,16 @@ def python_path(value):
     p=Path(value); require(p.is_absolute() and p.is_file() and p.name.lower() in ('python','python3','python.exe','python3.exe','python3.13','python3.12'),'Select local compute Python explicitly'); return p
 
 
-def serve(root,ident):
+def serve(root,ident,evidence_mode='legacy'):
     import psutil
     from vrs_runtime import Runtime
     from vrs_hardware import ResourceBlocked
     require(re.fullmatch('[0-9a-f]{32}',ident) is not None,'Invalid session ID')
+    require(evidence_mode in ('legacy','hybrid'),'Invalid evidence mode')
     ops=Operations(root); root=ops.root; home=safe(root,BASE); home.mkdir(parents=True,exist_ok=True)
     with scheduler_lock(safe(root,f'{BASE}/manager.lock')):
-        cfg=ops.settings_ops(); app=Runtime(root); original=app._admit
+        require(ops.settings()['evidence_mode']==evidence_mode,'Evidence mode changed during startup')
+        cfg=ops.settings_ops(); app=Runtime(root,hybrid_evidence=evidence_mode=='hybrid'); original=app._admit
         def admit(ram,disk):
             if (cfg['ram_mib'] and ram>cfg['ram_mib']*MIB) or (cfg['disk_mib'] and disk>cfg['disk_mib']*MIB): raise ResourceBlocked('Local admission ceiling')
             return original(ram,disk)
@@ -188,7 +222,7 @@ def serve(root,ident):
         if cfg['cpu_threads']:
             import torch
             torch.set_num_threads(min(torch.get_num_threads(),cfg['cpu_threads']))
-        session=dict(id=ident,pid=os.getpid(),created=psutil.Process().create_time(),state='RUNNING',limits=cfg)
+        session=dict(id=ident,pid=os.getpid(),created=psutil.Process().create_time(),state='RUNNING',limits=cfg,evidence_mode=evidence_mode)
         path=safe(root,f'{BASE}/session.json'); stop=safe(root,f'{BASE}/stop-{ident}')
         def poll():
             while not app.stop.wait(.2):
@@ -211,7 +245,7 @@ def serve(root,ident):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__); p.add_argument('root',type=Path); p.add_argument('action',choices=('serve',)); p.add_argument('id'); a=p.parse_args(); serve(a.root,a.id)
+    p=argparse.ArgumentParser(description=__doc__); p.add_argument('root',type=Path); p.add_argument('action',choices=('serve',)); p.add_argument('id');p.add_argument('--evidence-mode',choices=('legacy','hybrid'),default='legacy'); a=p.parse_args(); serve(a.root,a.id,a.evidence_mode)
 
 
 if __name__=='__main__': main()

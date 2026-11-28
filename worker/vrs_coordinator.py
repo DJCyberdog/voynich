@@ -17,7 +17,7 @@ from vrs_ledger import Ledger
 
 VERSION = '0.9.5-alpha.1'
 SOURCE_FILES = ('vrs_coordinator.py', 'vrs_ledger.py', 'vrs_contract.py', 'vrs_core.py',
-                'vrs_hardware.py', 'regions.py', 'glyphs.py', 'worker.py')
+                'vrs_hardware.py', 'regions.py', 'vrs_surface.py', 'vrs_segmentation.py', 'glyphs.py', 'worker.py')
 
 
 class StopRequested(Exception):
@@ -120,6 +120,12 @@ class Coordinator:
             path = c.artifact(self.root,row['manifest']); m = core.read(path)
             core.require(set(m['page_dimensions'])=={str(row['page'])},'Page binding mismatch')
             core.require(len(m['regions'])==row['regions'],'Region count mismatch')
+            if m.get('surface_policy') is not None:
+                import vrs_surface as surface
+                core.require(m['surface_policy']==surface.POLICY and m['source_sha256']==surface.YALE_SHA256 and set(m['surfaces'])=={str(row['page'])},'Surface policy binding mismatch')
+                s=m['surfaces'][str(row['page'])];b=s['pixel_box']
+                core.require(s['page']==row['page'] and s['source_sha256']==m['source_sha256'] and s['policy']==surface.POLICY and s['proposals']==len(m['regions']) and s['screened']==m['screened'],'Surface accounting mismatch')
+                core.require((b is None and not m['regions'] and s['status']=='METADATA_ONLY' and row['page']==1) or (isinstance(b,list) and len(b)==4 and s['status']=='IMAGE_ENVELOPE' and all(b[0]<=r['pixel_box'][0]<r['pixel_box'][2]<=b[2] and b[1]<=r['pixel_box'][1]<r['pixel_box'][3]<=b[3] for r in m['regions'])),'Region outside approved surface')
             core.require(len({r['id'] for r in m['regions']})==len(m['regions']),'Duplicate region')
             for region in m['regions']:
                 core.require(region['page']==row['page'],'Region page mismatch')
@@ -146,6 +152,10 @@ class Coordinator:
                 value=core.read(c.artifact(self.root,row['proposals']))
                 core.require(value['source']==prior['manifest'],'Page source mismatch')
                 manifest=core.read(c.artifact(self.root,prior['manifest']))
+                import vrs_segmentation as segmentation
+                segmentation.validate(manifest,value)
+                import vrs_hybrid_page as hybrid
+                hybrid.validate_ref(self.root,value,manifest,required=getattr(self,'hybrid_evidence',False))
                 core.require([r['id'] for r in value['regions']]==[r['id'] for r in manifest['regions']],'Region coverage mismatch')
                 core.require(all(r['status']=='unreviewed' for r in value['regions']),'Unexpected review status')
                 core.require(sum(len(r['boxes']) for r in value['regions'])==row['candidates'],'Candidate count mismatch')
@@ -156,10 +166,12 @@ class Coordinator:
         import fitz
         import math
         import regions
+        import vrs_surface as surface
         pdf = c.artifact(self.root,manifest['inputs']['manuscript'])
         groups = c.artifact(self.root,manifest['inputs']['groups'])
         mapping = core.read(groups)
-        core.require(type(mapping) is dict and mapping and len(mapping)<=213,'Invalid page scope')
+        isolate=manifest['inputs']['manuscript']['sha256']==surface.YALE_SHA256
+        core.require(type(mapping) is dict and mapping and len(mapping)<=(surface.YALE_PAGES if isolate else 213),'Invalid page scope')
         pages=sorted(int(k) for k in mapping)
         core.require(set(mapping)=={str(p) for p in pages} and all(type(v) is str and v.strip() for v in mapping.values()),'Invalid page mapping')
         output=[]
@@ -177,13 +189,13 @@ class Coordinator:
                     disk+=len(regions.starts(width,bw))*len(regions.starts(height,bh))*(4*bw*bh+4096)
                 self._admit(ram,disk)
                 dest=attempt/f'page-{page:04d}'
-                h.bounded_call(regions.propose,pdf,manifest['inputs']['manuscript']['sha256'],groups,dest,pages=[page])
+                h.bounded_call(regions.propose,pdf,manifest['inputs']['manuscript']['sha256'],groups,dest,pages=[page],isolate_yale=isolate)
                 m=core.read(dest/'manifest.json')
                 output.append({'page':page,'manifest':ref(self.root,dest/'manifest.json'),'regions':len(m['regions'])})
         return {'kind':'INK_PROPOSALS_ONLY','pages':output}
 
     def _segment(self, run, receipts, attempt):
-        import glyphs
+        import vrs_segmentation as segmentation
         from PIL import Image
         source=receipts['script_regions']['artifact']
         index=core.read(c.artifact(self.root,source)); output=[]
@@ -192,14 +204,10 @@ class Coordinator:
             # A page is the unit of temporary work. Each box is only a proposal.
             n=len(m['regions']); max_width=max((r['pixel_box'][2]-r['pixel_box'][0] for r in m['regions']),default=1)
             self._admit(256*h.MIB+n*max_width*256,max(h.MIB,n*max_width*128))
-            proposals=[]
-            for region in m['regions']:
-                self._boundary(run)
-                with Image.open(path.parent/region['file']) as im:
-                    boxes=h.bounded_call(glyphs.boxes,im)
-                proposals.append({'id':region['id'],'status':'unreviewed','boxes':boxes})
+            proposals,lineage=h.bounded_call(segmentation.generate,m,
+                lambda region:Image.open(path.parent/region['file']),lambda:self._boundary(run))
             dest=attempt/f'page-{row["page"]:04d}.json'
-            write_new(dest,{'source':row['manifest'],'regions':proposals})
+            write_new(dest,{'source':row['manifest'],'regions':proposals,'dedup':lineage})
             output.append({'page':row['page'],'proposals':ref(self.root,dest),'candidates':sum(len(r['boxes']) for r in proposals)})
         return {'kind':'UNREVIEWED_BOX_PROPOSALS_ONLY','source':source,'pages':output}
 

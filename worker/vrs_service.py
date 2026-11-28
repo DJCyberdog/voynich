@@ -70,11 +70,14 @@ class ServiceLedger(CoordinatorLedger):
 
 
 class Service(Coordinator):
-    def __init__(self, root):
+    def __init__(self, root, *, hybrid_evidence=False):
         super().__init__(root)
+        core.require(type(hybrid_evidence) is bool,'Invalid hybrid qualification mode')
+        self.hybrid_evidence=hybrid_evidence
         source = Path(__file__).resolve().parent
         self.identity = c.digest(dict(version=VERSION, parent=self.identity,
-                                      sources={n:core.sha(source/n) for n in ('vrs_service.py','vrs_exceptions.py')}))
+                                      hybrid_evidence=hybrid_evidence,
+                                      sources={n:core.sha(source/n) for n in ('vrs_service.py','vrs_exceptions.py','vrs_hybrid_page.py','vrs_hybrid_grouping.py','vrs_hybrid_alternatives.py','vrs_ink.py','vrs_binarize.py','vrs_artifacts.py','vrs_region_evidence.py','vrs_vectors.py')}))
         self.ledger = ServiceLedger(self.root, self.ledger.db)
         self.queue = ExceptionQueue(self.ledger)
         self.stop = threading.Event()
@@ -92,29 +95,47 @@ class Service(Coordinator):
     def _scope(self, stage, manifest, receipts):
         if stage == 'script_regions':
             import fitz
+            import vrs_surface as surface
             groups = c.artifact(self.root, manifest['inputs']['groups'])
             pdf = c.artifact(self.root, manifest['inputs']['manuscript'])
             mapping = c.load(groups)
-            core.require(type(mapping) is dict and 1<=len(mapping)<=213,'Invalid page scope')
+            isolate=manifest['inputs']['manuscript']['sha256']==surface.YALE_SHA256
+            core.require(not self.hybrid_evidence or isolate,'Hybrid qualification requires the pinned Yale source')
+            core.require(type(mapping) is dict and 1<=len(mapping)<=(surface.YALE_PAGES if isolate else 213),'Invalid page scope')
             pages = sorted(int(k) for k in mapping)
             core.require(set(mapping)=={str(p) for p in pages} and all(type(v) is str and v.strip() for v in mapping.values()),'Invalid page mapping')
             with fitz.open(pdf) as doc:
+                core.require(not isolate or len(doc)==surface.YALE_PAGES,'Yale PDF page count mismatch')
                 core.require(all(1<=p<=len(doc) for p in pages),'Page outside PDF')
             return pages, (pdf, groups, manifest['inputs']['manuscript']['sha256'])
         self._validate_output(receipts['script_regions']['run_id'],receipts['script_regions'],receipts)
         source = core.read(c.artifact(self.root,receipts['script_regions']['artifact']))
+        if self.hybrid_evidence:
+            import vrs_surface as surface
+            core.require(manifest['inputs']['manuscript']['sha256']==surface.YALE_SHA256,'Hybrid qualification requires the pinned Yale source')
+            source=dict(source,native_source=manifest['inputs']['manuscript'])
         return [r['page'] for r in source['pages']], source
 
     def _check_prefix(self, stage, pages, expected, source):
         core.require(type(pages) is list and len(pages)<=len(expected) and [x['page'] for x in pages]==expected[:len(pages)],'Invalid checkpoint page prefix')
         if stage=='script_regions':
-            for _ in self._page_manifests({'pages':pages}): pass
+            import vrs_surface as surface
+            _,groups,expected_sha=source
+            group_sha=core.sha(groups)
+            for _,_,m in self._page_manifests({'pages':pages}):
+                core.require(m['source_sha256']==expected_sha and m['groups_sha256']==group_sha,'Checkpoint source or groups mismatch')
+                if expected_sha==surface.YALE_SHA256:
+                    core.require(m.get('surface_policy')==surface.POLICY,'Yale checkpoint missing mandatory surface isolation')
         else:
             for row,prior in zip(pages,source['pages']):
                 c.fields(row,('page','proposals','candidates'))
                 value=load_page(c.artifact(self.root,row['proposals']))
                 core.require(value['source']==prior['manifest'],'Page source mismatch')
                 m=load_page(c.artifact(self.root,prior['manifest']))
+                import vrs_segmentation as segmentation
+                segmentation.validate(m,value,required=True)
+                import vrs_hybrid_page as hybrid
+                hybrid.validate_ref(self.root,value,m,expected_source=source.get('native_source'),required=self.hybrid_evidence)
                 core.require([r['id'] for r in value['regions']]==[r['id'] for r in m['regions']],'Region coverage mismatch')
                 count=0
                 for r, original in zip(value['regions'],m['regions']):
@@ -128,6 +149,7 @@ class Service(Coordinator):
         if stage=='script_regions':
             import fitz
             import regions
+            import vrs_surface as surface
             pdf,groups,expected_sha=source
             with fitz.open(pdf) as doc:
                 rect=doc[page-1].rect
@@ -138,22 +160,30 @@ class Service(Coordinator):
                 disk+=len(regions.starts(width,bw))*len(regions.starts(height,bh))*(4*bw*bh+4096)
             self._admit(ram,disk)
             dest=attempt/f'page-{page:04d}'
-            h.bounded_call(regions.propose,pdf,expected_sha,groups,dest,pages=[page])
+            h.bounded_call(regions.propose,pdf,expected_sha,groups,dest,pages=[page],
+                           isolate_yale=expected_sha==surface.YALE_SHA256)
             path=dest/'manifest.json'; m=core.read(path)
             return dict(page=page,manifest=ref(self.root,path),regions=len(m['regions']))
-        import glyphs
+        import vrs_segmentation as segmentation
         from PIL import Image
         row=next(r for r in source['pages'] if r['page']==page)
         _,path,m=next(self._page_manifests({'pages':[row]}))
         n=len(m['regions']); width=max((r['pixel_box'][2]-r['pixel_box'][0] for r in m['regions']),default=1)
         self._admit(256*h.MIB+n*width*256,max(h.MIB,n*width*128))
-        proposals=[]
-        for region in m['regions']:
-            self._boundary(run)
-            with Image.open(path.parent/region['file']) as im: boxes=h.bounded_call(glyphs.boxes,im)
-            proposals.append(dict(id=region['id'],status='unreviewed',boxes=boxes))
+        proposals,lineage=h.bounded_call(segmentation.generate,m,
+            lambda region:Image.open(path.parent/region['file']),lambda:self._boundary(run))
         dest=attempt/f'page-{page:04d}.json'
-        write_new(dest,dict(source=row['manifest'],regions=proposals))
+        value=dict(source=row['manifest'],regions=proposals,dedup=lineage)
+        if self.hybrid_evidence:
+            import vrs_hybrid_page as hybrid
+            native_source=source['native_source']; pdf=c.artifact(self.root,native_source)
+            # Provisional conservative admission estimate, not a hard process cap.
+            self._admit(1536*h.MIB,64*h.MIB)
+            evidence=h.bounded_call(hybrid.produce,pdf,native_source,page,row['manifest'],m,proposals,lambda:self._boundary(run))
+            side=attempt/f'hybrid-{page:04d}.json.gz'; hybrid.write(side,evidence)
+            value['hybrid_evidence']=ref(self.root,side)
+            self._boundary(run)
+        write_new(dest,value)
         return dict(page=page,proposals=ref(self.root,dest),candidates=sum(len(r['boxes']) for r in proposals))
 
     def _attempt(self,run,stage,generation):
@@ -177,7 +207,7 @@ class Service(Coordinator):
             c.manifest(self.root,manifest)
             row=self._page(run,stage,page,source,attempt)
             index=len(pages)
-            page_source=source if stage=='script_regions' else {'pages':source['pages'][index:index+1]}
+            page_source=source if stage=='script_regions' else dict(source,pages=source['pages'][index:index+1])
             self._check_prefix(stage,[row],expected[index:index+1],page_source)
             pages.append(row)
             journal=attempt/f'checkpoint-{page:04d}.json'
@@ -274,6 +304,7 @@ class Service(Coordinator):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); p.add_argument('root',type=Path)
+    p.add_argument('--hybrid-evidence',action='store_true',help='Explicit pinned-Yale qualification sidecar; legacy proposals unchanged')
     sub=p.add_subparsers(dest='action',required=True)
     for name in ('register','register-plan'):
         q=sub.add_parser(name); q.add_argument('path',type=Path)
@@ -284,7 +315,7 @@ def main():
         if name=='recover': q.add_argument('generation',type=int); q.add_argument('--confirm-stopped',action='store_true')
     a=p.parse_args()
     try:
-        app=Service(a.root); action=a.action
+        app=Service(a.root,hybrid_evidence=a.hybrid_evidence); action=a.action
         if action=='register': result=dict(run_id=app.register(c.load(inside(app.root,a.path))))
         elif action=='register-plan': result=dict(run_ids=app.register_plan(c.load(inside(app.root,a.path))))
         elif action=='list': result=app.ledger.registered()

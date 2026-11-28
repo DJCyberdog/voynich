@@ -8,6 +8,7 @@ import re
 import shutil
 import stat
 import subprocess
+from vrs_process import background_options
 import sys
 import tempfile
 import time
@@ -79,6 +80,9 @@ def environment(root):
             env.pop(k)
     for k, rel in {'TEMP':'temp','TMP':'temp','TMPDIR':'temp','PIP_CACHE_DIR':'cache/pip','HF_HOME':'cache/hf','TORCH_HOME':'cache/torch','XDG_CACHE_HOME':'cache/xdg','XDG_CONFIG_HOME':'config/xdg','XDG_DATA_HOME':'data/xdg','XDG_STATE_HOME':'workspace/xdg','CUDA_CACHE_PATH':'cache/cuda','MPLCONFIGDIR':'cache/matplotlib','TRITON_CACHE_DIR':'cache/triton','TORCHINDUCTOR_CACHE_DIR':'cache/inductor','NUMBA_CACHE_DIR':'cache/numba','UV_CACHE_DIR':'cache/uv','PYTHONPYCACHEPREFIX':'cache/pyc','HOME':'data/home','USERPROFILE':'data/home','APPDATA':'config/appdata','LOCALAPPDATA':'data/localappdata'}.items():
         p=local(root,rel); p.mkdir(parents=True,exist_ok=True); env[k]=str(p)
+    # Redirected home folders expected by file dialogs. No shell registry changes.
+    for name in ('Desktop','Documents','Downloads'):
+        local(root,'data/home/'+name).mkdir(parents=True,exist_ok=True)
     env['VRS_PORTABLE_LOG_ROOT']=str(root)
     env.update(PYTHONNOUSERSITE='1', PIP_CONFIG_FILE=os.devnull, PIP_DISABLE_PIP_VERSION_CHECK='1', PIP_NO_INPUT='1', PIP_NO_INDEX='1')
     return env
@@ -97,7 +101,7 @@ def probe(root):
         ram=os.sysconf('SC_PHYS_PAGES')*os.sysconf('SC_PAGE_SIZE')
     gpu='NOT_MEASURED'
     try:
-        p=subprocess.run(['nvidia-smi','--query-gpu=name,driver_version,memory.total','--format=csv,noheader'],capture_output=True,timeout=5,text=True,check=True)
+        p=subprocess.run(['nvidia-smi','--query-gpu=name,driver_version,memory.total','--format=csv,noheader'],capture_output=True,timeout=5,text=True,check=True,**background_options())
         gpu=p.stdout.strip()[:1024]
     except (OSError,subprocess.SubprocessError): pass
     return dict(os=platform.system(),arch=platform.machine(),threads=os.cpu_count(),ram_bytes=ram,free_bytes=shutil.disk_usage(root).free,nvidia=gpu,automatic='review',native_qualification='PENDING')
@@ -166,8 +170,8 @@ def plan(root, profile, rel, approved):
         name=re.sub(r'[-_.]+','-',m[1]).lower(); need(name not in names,'Duplicate package'); names.add(name); hashes.add(m[3]); versions[name]=m[2]
     need(len(hashes)==len(wheels) and {x['sha256'] for x in wheels}==hashes and all(x['file'].endswith('.whl') for x in wheels),'Wheel lock mismatch')
     need({'pillow','psutil'}<=names and (profile=='review' and not names&{'torch','numpy','pymupdf'} or profile!='review' and {'torch','numpy','pymupdf'}<=names),'Profile mismatch')
-    pins={'pillow':'12.3.0','psutil':'7.2.2'}
-    if profile!='review':pins.update(numpy='2.3.5',pymupdf='1.26.7',torch='2.10.0+'+('cpu' if profile=='cpu' else 'cu128'))
+    pins={'pillow':'13.0.0','psutil':'7.2.2','setuptools':'84.1.0'}
+    if profile!='review':pins.update(numpy='2.3.5',pymupdf='1.26.7',torch='2.13.0+'+('cpu' if profile=='cpu' else 'cu130'))
     need(all(versions.get(k)==v for k,v in pins.items()),'Core package pin mismatch')
     return v
 

@@ -23,7 +23,7 @@ def read(root, value):
 
 def code_identity():
     root=Path(__file__).resolve().parent
-    return c.digest({'version':VERSION,'sources':{n:sha(root/n) for n in ('vrs_learning.py','glyphs.py','regions.py','alignment.py','worker.py','vrs_runtime.py','vrs_recognition.py','vrs_decisions.py','vrs_exceptions.py','vrs_operations.py','vrs_hardware.py')}})
+    return c.digest({'version':VERSION,'sources':{n:sha(root/n) for n in ('vrs_learning.py','glyphs.py','regions.py','vrs_surface.py','vrs_segmentation.py','alignment.py','worker.py','vrs_runtime.py','vrs_recognition.py','vrs_decisions.py','vrs_exceptions.py','vrs_operations.py','vrs_hardware.py')}})
 
 
 def admit(root,backend,ram,disk,vram=0):
@@ -72,6 +72,7 @@ def replay_run(root,run,backend='cpu'):
     import worker
     import glyphs as g
     import regions
+    import vrs_segmentation as segmentation
     import alignment
     import vrs_recognition as rec
     from PIL import Image
@@ -86,13 +87,17 @@ def replay_run(root,run,backend='cpu'):
         for rr,ss,pp in zip(r['pages'],s['pages'],p['pages']):
             old=read(root,rr['manifest']); prior=read(root,ss['proposals']); outcome=read(root,pp['outcomes']); dest=tmp/f'p{rr["page"]}'
             width,height=old['page_dimensions'][str(rr['page'])]; largest=max(len(x[0]) for x in inv.values()); admit(root,backend,256*h.MIB+64*width*height+64*largest*1024*8,256*h.MIB+sum(c.artifact(root,dict(path=(c.artifact(root,rr['manifest']).parent.relative_to(root)/x['file']).as_posix(),sha256=x['sha256'])).stat().st_size for x in old['regions']),64*largest*1024*8+64*h.MIB)
-            regions.propose(c.artifact(root,m['inputs']['manuscript']),m['inputs']['manuscript']['sha256'],c.artifact(root,m['inputs']['groups']),dest,pages=[rr['page']])
+            regions.propose(c.artifact(root,m['inputs']['manuscript']),m['inputs']['manuscript']['sha256'],c.artifact(root,m['inputs']['groups']),dest,pages=[rr['page']],isolate_yale='surface_policy' in old)
             fresh=load_page(dest/'manifest.json'); require(fresh==old,'Region replay mismatch'); pages+=1
+            if 'dedup' in prior:
+                replayed,lineage=segmentation.generate(fresh,lambda region:Image.open(dest/region['file']))
+                require(replayed==prior['regions'] and lineage==prior['dedup'],'Segmentation/lineage replay mismatch')
             i=0
             for region,proposal in zip(fresh['regions'],prior['regions']):
                 path=dest/region['file']; require(sha(path)==region['sha256'],'Replayed crop mismatch')
                 with Image.open(path) as im:
-                    b=g.boxes(im); require(b==proposal['boxes'],'Segmentation replay mismatch'); boxes+=len(b)
+                    b=proposal['boxes'] if 'dedup' in prior else g.boxes(im)
+                    require(b==proposal['boxes'],'Segmentation replay mismatch'); boxes+=len(b)
                     for start in range(0,len(b),64):
                         chunk=b[start:start+64]; features=torch.tensor([g.feature(im.crop(x)).tolist() for x in chunk],dtype=torch.float32,device=backend)
                         actual=[{} for _ in chunk]

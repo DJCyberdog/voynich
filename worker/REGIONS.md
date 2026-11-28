@@ -30,3 +30,7 @@ The evaluator checks source/group identity, crop hashes, page coverage, duplicat
 ## Validation
 
 `xvfb-run -a python -m unittest -v test_worker test_pipeline test_gui test_bridge test_regions`: 22/22 passed on Linux CPU with synthetic PDFs and simulated GitHub API. Four new tests check edge coverage, repeatable proposals and budget exhaustion, one-to-one matching including reassignment, and reference/metric validation. The metric fixture deliberately uses a known proposal box to test arithmetic, not manuscript accuracy. No Windows, RTX, live API, real manuscript inference, independent annotation, or full-page recognition accuracy has been accepted. The original 59/74 NOT_MET remains unchanged.
+
+## RC2-01 source-pinned wrapper isolation
+
+See [VRS-RC2-01.md](VRS-RC2-01.md) for the exact Yale image-envelope policy and full-corpus audit. The coordinator selects it for the pinned PDF; explicit `propose --isolate-yale` enables it in the legacy CLI. `audit-yale` inventories and screens every PDF page without emitting crop PNGs or guessing physical folio groups. Default historical direct proposal mode is unchanged. The source-specific image envelope is not a script classifier.

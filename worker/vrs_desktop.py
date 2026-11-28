@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+import vrs_dialogs as dialogs
 from PIL import ImageTk, Image
 from vrs_desktop_api import Desktop
 from vrs_build_portable import RELEASE_VERSION as VERSION
@@ -16,6 +17,31 @@ DE={'Home':'Start','Review':'Glyphen-Review','Sources':'Quellen','Settings':'Ein
 
 DE.update({'Total runs':'Runs gesamt','Review blocked':'Review blockiert','Review required':'Review erforderlich','Completed runs':'Abgeschlossen','Research runs':'Forschungsläufe','Select a run to inspect':'Run auswählen, um ihn zu prüfen','Status':'Status','Stage':'Phase','Use selected label':'Zeichen übernehmen','Raw JSON':'Original-JSON','No results':'Keine Ergebnisse','Review progress':'Review-Fortschritt','Select reference label':'Referenzzeichen wählen','Technical details':'Technische Details','Reference samples':'Referenzbeispiele','Visual catalog':'Visueller Katalog','Search label':'Zeichen suchen','Assignment scheme':'Zuordnungssystem','Previous sample':'Vorheriges Beispiel','Next sample':'Nächstes Beispiel','Select for review':'Für Review auswählen','No compatible reference':'Keine kompatible Referenz','Page':'Seite','Keyboard help':'Tastaturhilfe','Close':'Schließen','No pending changes':'Keine offenen Änderungen'})
 
+DE.update({'Full page':'Ganze Seite','Page context verified':'Seitenkoordinaten verifiziert','Line/word alignment unknown':'Zeilen-/Wortzuordnung unbekannt'})
+
+DE.update({'Vectors':'Vektoren','Overlay':'Konturen','Vector hypotheses':'Vektorhypothesen','Intersecting components':'Überlappende Komponenten'})
+
+DE.update({'Layer':'Ebene','Skeleton':'Skelett','Splits':'Trennungen','Pairs':'Paare','Compounds':'Gruppen','No hypotheses':'Keine Hypothesen','Fallback components':'Fallback-Komponenten','Nodes':'Knoten'})
+
+DE.update({'Locus':'Textstelle','Declared locus':'Deklarierte Textstelle','No locus declared':'Keine Textstelle deklariert','Locus declaration only':'Nur deklarierte Textstelle; keine verifizierte Zeilen-/Wortgeometrie'})
+
+DE.update({'Local clipping':'Lokaler Ausschnitt','Large components':'Großkomponenten'})
+
+def zoom_origin(anchor, geometry, viewport, scroll_extent):
+    """Return clamped scroll fractions for a normalized image point and screen anchor."""
+    ux,uy,sx,sy=anchor; x,y,iw,ih=geometry; w,h=viewport; sw,sh=scroll_extent
+    return (max(0,min(max(0,sw-w),x+ux*iw-sx))/sw,
+            max(0,min(max(0,sh-h),y+uy*ih-sy))/sh)
+
+
+DE.update({'Locate glyph':'Glyphe finden'})
+
+DE.update({'Evidence mode':'Evidenzmodus','Hybrid mode requires pinned Yale PDF; stop worker before changing. Existing runs retain their original identity.':'Hybridmodus benötigt die originale Yale-PDF. Worker vor Wechsel stoppen. Bestehende Runs behalten ihre Identität.'})
+
+DE.update({'Page evidence':'Seitenevidenz','Method disagreement':'Methodenabweichung','Material uncertain':'Material unsicher','Proposed zones':'Vorgeschlagene Zonen'})
+
+DE.update({'Page zones':'Seitenzonen','Source region':'Quellregion','Zone proposals':'Zonenhypothesen','No zone evidence':'Keine Zonenevidenz','Glyph candidate':'Glyphenkandidat','Unverified line/word geometry':'Zeilen-/Wortgeometrie unverifiziert'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -27,8 +53,7 @@ class App:
 
     def t(self,text): return DE.get(text,text) if self.cfg['language']=='de' else text
 
-    def build(self):
-        for child in self.w.winfo_children(): child.destroy()
+    def apply_palette(self):
         self.p=PALETTES[self.cfg['theme']]; p=self.p; self.w.configure(bg=p['bg']); s=ttk.Style(self.w); s.theme_use('clam')
         from tkinter import font as tkfont
         family='Segoe UI' if 'Segoe UI' in tkfont.families(self.w) else tkfont.nametofont('TkDefaultFont').actual('family')
@@ -44,11 +69,14 @@ class App:
         s.configure('Treeview',background=p['panel'],fieldbackground=p['panel'],foreground=p['fg'],rowheight=rowheight,borderwidth=0);s.map('Treeview',background=[('selected',p['line'])],foreground=[('selected',p['fg'])]);s.configure('Treeview.Heading',background=p['card'],foreground=p['fg'],font=(family,10,'bold'),padding=(6,7))
         s.configure('TCombobox',padding=4);s.map('TCombobox',fieldbackground=[('readonly',p['card'])],foreground=[('readonly',p['fg'])]);s.configure('Horizontal.TProgressbar',background=p['accent'],troughcolor=p['line'],bordercolor=p['line'])
         self.w.option_add('*TCombobox*Listbox.background',p['card']);self.w.option_add('*TCombobox*Listbox.foreground',p['fg'])
-        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); ttk.Label(top,text='VRS',font=(family,24,'bold'),foreground=p['accent']).pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=(family,12,'bold')).pack(side='left'); ttk.Button(top,text='F1',command=self.keyboard_help,width=4).pack(side='right',padx=(12,0));ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
-        ttk.Separator(self.w).pack(fill='x'); self.status=tk.StringVar(value=self.t('Ready')); ttk.Label(self.w,textvariable=self.status,style='Card.TLabel',anchor='w').pack(fill='x',side='bottom'); area=ttk.Frame(self.w); area.pack(fill='both',expand=True); nav=ttk.Frame(area,style='Panel.TFrame',padding=12); nav.pack(side='left',fill='y'); ttk.Label(nav,text=self.t('Project').upper(),style='Panel.TLabel').pack(anchor='w',pady=(4,8)); ttk.Label(nav,text=self.api.root.name[:22],style='Panel.TLabel',wraplength=145).pack(anchor='w',pady=(0,14)); ttk.Button(nav,text=self.t('Open workspace'),command=self.switch).pack(fill='x',pady=(0,20)); self.nav={}
+    def build(self):
+        for child in self.w.winfo_children(): child.destroy()
+        self.apply_palette();p=self.p;family=self.family
+        top=ttk.Frame(self.w,padding=(20,12)); top.pack(fill='x'); self.brand_label=ttk.Label(top,text='VRS',font=(family,24,'bold'),foreground=p['accent']);self.brand_label.pack(side='left'); ttk.Label(top,text='  VOYNICH RESEARCH STUDIO',font=(family,12,'bold')).pack(side='left'); ttk.Button(top,text='F1',command=self.keyboard_help,width=4).pack(side='right',padx=(12,0));ttk.Label(top,text=VERSION+'  ·  '+self.t('Local only'),style='Muted.TLabel').pack(side='right')
+        ttk.Separator(self.w).pack(fill='x'); self.status=tk.StringVar(value=self.t('Ready')); self.status_shell=ttk.Frame(self.w,style='Card.TFrame');self.status_shell.pack(fill='x',side='bottom');ttk.Label(self.status_shell,textvariable=self.status,style='Card.TLabel',anchor='w').pack(fill='x',side='bottom'); area=ttk.Frame(self.w); area.pack(fill='both',expand=True); nav=ttk.Frame(area,style='Panel.TFrame',padding=12); nav.pack(side='left',fill='y'); ttk.Label(nav,text=self.t('Project').upper(),style='Panel.TLabel').pack(anchor='w',pady=(4,8)); ttk.Label(nav,text=self.api.root.name[:22],style='Panel.TLabel',wraplength=145).pack(anchor='w',pady=(0,14)); ttk.Button(nav,text=self.t('Open workspace'),command=self.switch).pack(fill='x',pady=(0,20)); self.nav={}
         for name in ('Home','Review','Sources','Settings'):
             b=ttk.Button(nav,text=self.t(name),style='Nav.TButton',command=lambda n=name:self.show(n)); b.pack(fill='x',pady=2); self.nav[name]=b
-        ttk.Label(nav,text='PRIVATE WORKSPACE',style='Panel.TLabel',foreground=p['muted']).pack(side='bottom',pady=10)
+        self.private_label=ttk.Label(nav,text='PRIVATE WORKSPACE',style='Panel.TLabel',foreground=p['muted']);self.private_label.pack(side='bottom',pady=10)
         self.body=ttk.Frame(area,padding=(22,18)); self.body.pack(side='left',fill='both',expand=True)
 
     def task(self,fn,done):
@@ -144,13 +172,36 @@ class App:
         scrollhost=ttk.Frame(right_shell,style='Panel.TFrame');scrollhost.pack(fill='both',expand=True)
         self.review_side=tk.Canvas(scrollhost,bg=self.p['panel'],highlightthickness=0,width=300);ys=ttk.Scrollbar(scrollhost,orient='vertical',command=self.review_side.yview);ys.pack(side='right',fill='y');self.review_side.configure(yscrollcommand=ys.set);self.review_side.pack(side='left',fill='both',expand=True)
         right=ttk.Frame(self.review_side,style='Panel.TFrame',padding=(0,0,6,0));right_id=self.review_side.create_window(0,0,anchor='nw',window=right)
-        right.bind('<Configure>',lambda e:self.review_side.configure(scrollregion=self.review_side.bbox('all')));self.review_side.bind('<Configure>',lambda e:self.review_side.itemconfigure(right_id,width=e.width))
+        def scroll_layout(event=None):
+            if not self.review_side.winfo_exists():return
+            if event is not None and event.widget is self.review_side:
+                self.review_side.itemconfigure(right_id,width=event.width)
+            self.review_side.configure(scrollregion=self.review_side.bbox('all'))
+            needs=right.winfo_reqheight()>self.review_side.winfo_height()
+            if needs and not ys.winfo_manager():ys.pack(side='right',fill='y',before=self.review_side)
+            elif not needs and ys.winfo_manager():ys.pack_forget();self.review_side.yview_moveto(0)
+        self.review_scrollbar=ys
+        right.bind('<Configure>',scroll_layout);self.review_side.bind('<Configure>',scroll_layout)
         self.review_side.bind('<MouseWheel>',lambda e:self.review_side.yview_scroll(-1 if e.delta>0 else 1,'units'));self.review_side.bind('<Button-4>',lambda e:self.review_side.yview_scroll(-1,'units'));self.review_side.bind('<Button-5>',lambda e:self.review_side.yview_scroll(1,'units'))
-        self.meta=ttk.Label(left,text=self.t('No candidate'),style='Panel.TLabel',wraplength=380); self.meta.pack(anchor='w',pady=5); controls=ttk.Frame(left,style='Panel.TFrame'); controls.pack(fill='x');
+        metadata=ttk.Frame(left,style='Panel.TFrame');metadata.pack(fill='x',pady=5)
+        self.locus_button=ttk.Button(metadata,text=self.t('Locus'),command=self.open_locus);self.locus_button.pack(side='right')
+        self.meta=ttk.Label(metadata,text=self.t('No candidate'),style='Panel.TLabel',wraplength=270);self.meta.pack(side='left',fill='x',expand=True); controls=ttk.Frame(left,style='Panel.TFrame'); controls.pack(fill='x');
         self.zoom_controls=[]
         for label,fn in (('Context',lambda:self.mode(False)),('Glyph',lambda:self.mode(True)),('Fit',self.fit),('−',lambda:self.zoom(.8)),('+',lambda:self.zoom(1.25))):
             button=ttk.Button(controls,text=self.t(label),command=fn,width=0);button.pack(side='left',padx=(0,4));self.zoom_controls.append(button)
-        self.canvas=tk.Canvas(left,bg=self.p['bg'],highlightthickness=1,highlightbackground=self.p['line'],width=320,height=220); self.canvas.pack(fill='both',expand=True,pady=8); self.canvas.bind('<Configure>',lambda e:self.draw()); self.canvas.bind('<ButtonPress-1>',lambda e:self.canvas.scan_mark(e.x,e.y)); self.canvas.bind('<B1-Motion>',lambda e:self.canvas.scan_dragto(e.x,e.y,gain=1)); self.canvas.bind('<MouseWheel>',lambda e:self.zoom(1.15 if e.delta>0 else 1/1.15)); self.canvas.bind('<Button-4>',lambda e:self.zoom(1.15)); self.canvas.bind('<Button-5>',lambda e:self.zoom(1/1.15)); self.canvas.configure(takefocus=True)
+        modes=ttk.Frame(left,style='Panel.TFrame');modes.pack(fill='x',pady=(4,0))
+        self.page_button=ttk.Button(modes,text=self.t('Full page'),command=self.open_page_context);self.page_button.pack(side='left')
+        locate=ttk.Frame(left,style='Panel.TFrame');locate.pack(fill='x');self.locate_button=ttk.Button(locate,text=self.t('Locate glyph'),command=self.locate_glyph,width=0);self.locate_button.pack(side='left');self.zone_button=ttk.Button(locate,text=self.t('Page zones'),command=self.open_page_zones,width=0);self.zone_button.pack(side='left',padx=(4,0))
+        self.vector_mask=tk.StringVar(value='majority');self.vector_button=ttk.Button(modes,text=self.t('Vectors'),command=self.open_vectors);self.vector_button.pack(side='left',padx=4)
+        ttk.Combobox(modes,textvariable=self.vector_mask,values=('union','majority','intersection'),state='readonly',width=12).pack(side='left',fill='x',expand=True)
+        layers=ttk.Frame(left,style='Panel.TFrame');layers.pack(fill='x')
+        self.vector_overlay=tk.BooleanVar(value=True);ttk.Checkbutton(layers,text=self.t('Overlay'),variable=self.vector_overlay,command=self.draw).pack(side='left')
+        self.vector_layer=tk.StringVar(value=self.t('Overlay'))
+        layerbox=ttk.Combobox(layers,textvariable=self.vector_layer,values=[self.t(k) for k in ('Overlay','Skeleton','Splits','Pairs','Compounds')],state='readonly',width=11);layerbox.pack(side='left',fill='x',expand=True);layerbox.bind('<<ComboboxSelected>>',lambda e:self.change_vector_layer())
+        ttk.Button(layers,text='‹',width=2,command=lambda:self.step_hypothesis(-1)).pack(side='left')
+        ttk.Button(layers,text='›',width=2,command=lambda:self.step_hypothesis(1)).pack(side='left')
+        self.vector_info=ttk.Label(left,text='',style='Panel.TLabel',wraplength=350);self.vector_info.pack(anchor='w')
+        self.canvas=tk.Canvas(left,bg=self.p['bg'],highlightthickness=1,highlightbackground=self.p['line'],width=320,height=220); self.canvas.pack(fill='both',expand=True,pady=8); self.canvas.bind('<Configure>',lambda e:self.draw()); self.canvas.bind('<ButtonPress-1>',lambda e:self.canvas.scan_mark(e.x,e.y)); self.canvas.bind('<B1-Motion>',lambda e:self.canvas.scan_dragto(e.x,e.y,gain=1)); self.canvas.bind('<MouseWheel>',lambda e:self.zoom(1.15 if e.delta>0 else 1/1.15,(e.x,e.y))); self.canvas.bind('<Button-4>',lambda e:self.zoom(1.15,(e.x,e.y))); self.canvas.bind('<Button-5>',lambda e:self.zoom(1/1.15,(e.x,e.y))); self.canvas.configure(takefocus=True)
         ttk.Label(right,text=self.t('References'),style='Panel.TLabel',font=('TkDefaultFont',12,'bold')).pack(anchor='w'); self.refmeta=ttk.Label(right,text=self.t('No catalog'),style='Panel.TLabel',wraplength=330); self.refmeta.pack(anchor='w',pady=3); rr=ttk.Frame(right,style='Panel.TFrame'); rr.pack(fill='x'); self.scheme=tk.StringVar(); self.schemebox=ttk.Combobox(rr,textvariable=self.scheme,state='readonly',width=10); self.schemebox.pack(side='left',fill='x',expand=True); self.schemebox.bind('<<ComboboxSelected>>',lambda e:self.change_scheme()); self.search=tk.StringVar(); self.searchbox=ttk.Entry(rr,textvariable=self.search,width=8); self.searchbox.pack(side='right',padx=(4,0)); self.search.trace_add('write',lambda *_:self.filter_refs()); self.visual=tk.StringVar(); vr=ttk.Frame(right,style='Panel.TFrame'); vr.pack(fill='x'); ttk.Label(vr,text=self.t('Reference scheme'),style='Panel.TLabel').pack(side='left'); self.visualbox=ttk.Combobox(vr,textvariable=self.visual,state='readonly',width=10); self.visualbox.pack(side='right',fill='x',expand=True,padx=5); self.visualbox.bind('<<ComboboxSelected>>',lambda e:self.visual_changed()); rf=ttk.Frame(right,style='Panel.TFrame'); rf.pack(fill='x'); labelbox=ttk.Frame(rf,style='Panel.TFrame');labelbox.pack(side='left',fill='both',expand=True);self.labels=tk.Listbox(labelbox,height=5,width=10,bg=self.p['card'],fg=self.p['fg'],selectbackground=self.p['line'],selectforeground=self.p['fg'],exportselection=False,highlightthickness=1,highlightcolor=self.p['accent']);labelsbar=ttk.Scrollbar(labelbox,command=self.labels.yview);labelsbar.pack(side='right',fill='y');self.labels.configure(yscrollcommand=labelsbar.set);self.labels.pack(side='left',fill='both',expand=True); self.labels.bind('<<ListboxSelect>>',lambda e:self.sample()); self.labels.bind('<Return>',lambda e:self.assign_reference()); self.samplelabel=ttk.Label(rf,text=self.t('No visual sample'),style='Panel.TLabel',width=12,wraplength=100,anchor='center'); self.samplelabel.pack(side='right',fill='y',padx=4); self.samplemeta=ttk.Label(right,text='',style='Panel.TLabel',wraplength=330); self.samplemeta.pack(fill='x'); sampletools=ttk.Frame(right,style='Panel.TFrame');sampletools.pack(fill='x',pady=(4,0));ttk.Button(sampletools,text='‹',command=lambda:self.next_sample(-1),width=3).pack(side='left');ttk.Button(sampletools,text='›',command=self.next_sample,width=3).pack(side='left',padx=(4,0));ttk.Button(sampletools,text=self.t('Visual catalog'),command=self.visual_catalog,width=0).pack(side='right');ttk.Button(right,text=self.t('Use selected label'),command=self.assign_reference,style='Accent.TButton').pack(fill='x',pady=(4,0)); ttk.Separator(right).pack(fill='x',pady=6)
         ttk.Label(right,text=self.t('Decisions'),style='Panel.TLabel',font=('TkDefaultFont',12,'bold')).pack(anchor='w'); self.mapping_frame=ttk.Frame(right,style='Panel.TFrame');self.mapping_frame.pack(fill='x',pady=(4,8))
         self.kind=tk.StringVar(value='glyph'); self.kindbox=ttk.Combobox(fixed,textvariable=self.kind,state='readonly',values=('glyph','false_positive','compound','deferred')); self.kindbox.pack(fill='x',pady=4); self.kindbox.bind('<<ComboboxSelected>>',lambda e:self.kind_changed()); actions=ttk.Frame(fixed,style='Panel.TFrame'); actions.pack(fill='x'); self.draft_button=ttk.Button(actions,text=self.t('Save draft'),command=lambda:self.save(False),width=0);self.draft_button.pack(side='left',fill='x',expand=True);self.submit_button=ttk.Button(actions,text=self.t('Submit'),style='Accent.TButton',command=self.submit,width=0);self.submit_button.pack(side='left',fill='x',expand=True,padx=(6,0)); self.image=None; self.box=None; self.data=None; self.items=[]; self.maps={}; self.catalog={}; self.task(lambda:(self.api.runs(),self.api.catalog(self.cfg['catalog'])),self.review_init)
@@ -175,24 +226,134 @@ class App:
 
     def render_candidate(self):
         for w in self.mapping_frame.winfo_children(): w.destroy()
-        self.maps={}; self.image=None; self.box=None; self.draw(); self.kind.set('glyph'); inv=self.data['inventory'] if self.data else {}; self.schemebox.configure(values=list(inv)); self.scheme.set(next(iter(inv),'')); self.search.set(''); self.change_scheme()
+        self.maps={}; self.image=None; self.box=None; self.page_image=None; self.page_box=None; self.page_details=None; self.page_zones_visible=False; self.page_active=False; self.vector_active=False; self.vector_data=None; self.vector_index=0; self.vector_info.configure(text=''); self.draw(); self.kind.set('glyph'); inv=self.data['inventory'] if self.data else {}; self.schemebox.configure(values=list(inv)); self.scheme.set(next(iter(inv),'')); self.search.set(''); self.change_scheme()
         for name,labels in inv.items():
             row=ttk.Frame(self.mapping_frame,style='Panel.TFrame'); row.pack(fill='x',pady=3); ttk.Label(row,text=name,style='Panel.TLabel').grid(row=0,column=0,columnspan=2,sticky='w'); state=tk.StringVar(value='unreviewed'); label=tk.StringVar(); a=ttk.Combobox(row,textvariable=state,values=('unreviewed','mapped','absent','unknown'),state='readonly',width=11); a.grid(row=1,column=0,sticky='ew',padx=(0,4)); b=ttk.Combobox(row,textvariable=label,values=labels,state='readonly',width=8); b.grid(row=1,column=1,sticky='ew');row.columnconfigure(0,weight=1);row.columnconfigure(1,weight=1); b.bind('<<ComboboxSelected>>',lambda e,v=state:v.set('mapped')); self.maps[name]=(state,label,a,b)
         if not self.items: self.meta.configure(text=self.t('No candidate')); return
         item=self.items[self.index]; self.meta.configure(text=f"PAGE {item['page']}  ·  {self.offset+self.index+1}  ·  {self.t('Revision')} {item['revision']}\n{item['reason']}  ·  {item['region_id'][:24]}"); self.factor=1.; self.glyph_only=False; self.task(lambda:self.api.crop(item),self.crop_loaded)
 
     def crop_loaded(self,result): self.image,self.box=result; self.draw()
-    def fit(self): self.factor=1.; self.draw()
-    def mode(self,only): self.glyph_only=only; self.fit()
-    def zoom(self,amount):
-        if self.view=='Review' and self.image is not None: self.factor=max(.25,min(8,self.factor*amount)); self.draw()
+    def open_locus(self):
+        if self.view!='Review' or self.future is not None or not self.items:return
+        item=self.items[self.index];self.task(lambda:self.api.locus_context(item),self.locus_loaded)
+    def locus_loaded(self,rows):
+        lines=[self.t('Locus declaration only')]
+        for row in rows:
+            label=row['source_sha256'][:12]
+            if row['status']=='DECLARED':
+                lines.append(row['scheme']+' · '+row['locus']+' · '+row['subtype']+' · '+label+' · '+row['mapper'])
+            else:lines.append(label+' · '+self.t('No locus declared'))
+        messagebox.showinfo(self.t('Locus'),'\n\n'.join(lines),parent=self.w)
+    def open_page_context(self):
+        if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
+        if self.page_image is not None:
+            self.page_context_loaded((self.page_image,self.page_box,self.page_details));return
+        item=self.items[self.index]; self.task(lambda:self.api.page_context(item,details=True),self.page_context_loaded)
+    def open_page_zones(self):
+        if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
+        if self.page_details and self.page_details['zone_status']!='NOT_LOADED':
+            self.page_context_loaded((self.page_image,self.page_box,self.page_details),True);return
+        item=self.items[self.index];self.task(lambda:self.api.page_zone_context(item),lambda result:self.page_context_loaded(result,True))
+    def page_context_loaded(self,result,show_zones=False):
+        self.page_image,self.page_box,self.page_details=result
+        self.page_zones_visible=show_zones
+        self.page_active=True;self.vector_active=False;self.glyph_only=False;self.fit();self.update_vector_info()
+        self.status.set(self.t('Page context verified')+' · '+self.t('Line/word alignment unknown'))
+    def open_vectors(self):
+        if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
+        item=self.items[self.index];mask=self.vector_mask.get()
+        self.task(lambda:self.api.vector_context(item,mask),lambda result:self.vectors_loaded(result,mask))
+    def vectors_loaded(self,result,mask):
+        self.vector_data=result;self.vector_active=True;self.page_active=False;self.glyph_only=False;self.vector_loaded_mask=mask;self.vector_index=0;self.fit()
+        self.update_vector_info()
+    def vector_key(self):
+        return next((k.lower() for k in ('Skeleton','Splits','Pairs','Compounds') if self.vector_layer.get()==self.t(k)),'contours')
+    def update_vector_info(self):
+        if not getattr(self,'vector_active',False):
+            details=getattr(self,'page_details',None)
+            if getattr(self,'page_active',False) and details:
+                message=self.t('Glyph candidate')+' · '+self.t('Source region')
+                if self.page_zones_visible and details['zone_status']=='PROPOSED':
+                    message+=' · '+self.t('Zone proposals')+': '+str(len(details['zones']))+' · UNRESOLVED'
+                elif self.page_zones_visible and details['zone_status']=='UNAVAILABLE':message+=' · '+self.t('No zone evidence')
+                self.vector_info.configure(text=message+' · '+self.t('Unverified line/word geometry'))
+            else:self.vector_info.configure(text='')
+            return
+        key=self.vector_key();layers=self.vector_data[4]
+        text=self.vector_loaded_mask+' · UNADJUDICATED'
+        if key=='skeleton':
+            text+=' · '+self.t('Nodes')+': '+str(len(layers['nodes']))+' · '+self.t('Fallback components')+': '+str(layers['fallback'])
+        elif key in layers['hypotheses']:
+            rows=layers['hypotheses'][key]
+            text+=' · '+(str(self.vector_index+1)+'/'+str(len(rows))+' · '+rows[self.vector_index][0][:12] if rows else self.t('No hypotheses'))
+        else:text+=' · '+self.t('Intersecting components')+': '+str(self.vector_data[3])
+        clipping=layers.get('clipping',{})
+        if any(clipping.values()):text+=' · '+self.t('Local clipping')+' · '+self.t('Large components')+': '+str(clipping.get('large_components',0))
+        page=layers.get('page_evidence')
+        if page:
+            text+=' · '+self.t('Page evidence')+': '+self.t('Method disagreement')+f" {100*page['disagreement_pixels']/page['total_pixels']:.1f}% · "+self.t('Material uncertain')+f" {100*page['material']['uncertain']/page['total_pixels']:.1f}% · "+self.t('Proposed zones')+f" {page['proposed_zones']}"
+        self.vector_info.configure(text=text)
+    def change_vector_layer(self):
+        self.vector_index=0;self.update_vector_info();self.draw()
+    def step_hypothesis(self,delta):
+        if not getattr(self,'vector_active',False):return
+        rows=self.vector_data[4]['hypotheses'].get(self.vector_key(),[])
+        if rows:self.vector_index=(self.vector_index+delta)%len(rows);self.update_vector_info();self.draw()
+    def fit(self): self.factor=1.; self.draw(); self.canvas.xview_moveto(0); self.canvas.yview_moveto(0)
+    def mode(self,only): self.page_active=False; self.vector_active=False; self.glyph_only=only; self.fit(); self.update_vector_info()
+    def zoom(self,amount,point=None):
+        if self.view!='Review' or self.image is None:return
+        if not getattr(self,'draw_geometry',None):return
+        x,y,iw,ih=self.draw_geometry
+        sx,sy=point or (self.canvas.winfo_width()/2,self.canvas.winfo_height()/2)
+        ux=max(0,min(1,(self.canvas.canvasx(sx)-x)/iw));uy=max(0,min(1,(self.canvas.canvasy(sy)-y)/ih))
+        self.factor=max(.25,min(8,self.factor*amount));self.draw()
+        self.scroll_to_image((ux,uy,sx,sy))
+    def scroll_to_image(self,anchor):
+        if not getattr(self,'draw_geometry',None):return
+        w,h=self.canvas.winfo_width(),self.canvas.winfo_height()
+        fx,fy=zoom_origin(anchor,self.draw_geometry,(w,h),self.draw_extent)
+        self.canvas.xview_moveto(fx);self.canvas.yview_moveto(fy)
+    def locate_glyph(self):
+        if self.view!='Review' or self.image is None:return
+        if self.glyph_only:return
+        if getattr(self,'vector_active',False):im,box=self.vector_data[:2]
+        elif getattr(self,'page_active',False):im,box=self.page_image,self.page_box
+        else:im,box=self.image,self.box
+        self.factor=max(4.,self.factor);self.draw()
+        self.scroll_to_image(((box[0]+box[2])/(2*im.width),(box[1]+box[3])/(2*im.height),self.canvas.winfo_width()/2,self.canvas.winfo_height()/2))
     def draw(self):
         if not hasattr(self,'canvas') or not self.canvas.winfo_exists(): return
-        self.canvas.delete('all')
+        self.canvas.delete('all');self.draw_geometry=None
         if self.image is None: return
-        im=self.image.crop(self.box) if self.glyph_only else self.image; w=max(1,self.canvas.winfo_width()); h=max(1,self.canvas.winfo_height()); scale=min((w-20)/im.width,(h-20)/im.height)*self.factor; scale=max(.01,min(scale,4096/max(im.size))); iw,ih=max(1,round(im.width*scale)),max(1,round(im.height*scale)); x,y=max(10,(w-iw)//2),max(10,(h-ih)//2); self.photo=ImageTk.PhotoImage(im.resize((iw,ih),Image.Resampling.NEAREST)); self.canvas.create_image(x,y,anchor='nw',image=self.photo)
-        if not self.glyph_only: self.canvas.create_rectangle(x+self.box[0]*iw/im.width,y+self.box[1]*ih/im.height,x+self.box[2]*iw/im.width,y+self.box[3]*ih/im.height,outline='#00bca5',width=2)
-        self.canvas.configure(scrollregion=(0,0,max(w,x+iw+10),max(h,y+ih+10)))
+        vector=getattr(self,'vector_active',False)
+        if vector: im,box,paths,_,layers=self.vector_data
+        elif getattr(self,'page_active',False): im,box=self.page_image,self.page_box
+        else: im,box=(self.image.crop(self.box) if self.glyph_only else self.image),self.box
+        w=max(1,self.canvas.winfo_width()); h=max(1,self.canvas.winfo_height()); scale=min((w-20)/im.width,(h-20)/im.height)*self.factor; scale=max(.01,min(scale,4096/max(im.size))); iw,ih=max(1,round(im.width*scale)),max(1,round(im.height*scale)); x,y=max(10,(w-iw)//2),max(10,(h-ih)//2); self.photo=ImageTk.PhotoImage(im.resize((iw,ih),Image.Resampling.NEAREST)); self.canvas.create_image(x,y,anchor='nw',image=self.photo)
+        if vector and self.vector_overlay.get():
+            key=self.vector_key()
+            def coords(path):return [v for u,z in path for v in (x+u*iw/im.width,y+z*ih/im.height)]
+            if key in ('contours','skeleton'):
+                for path in (paths if key=='contours' else layers['skeleton']):
+                    self.canvas.create_line(*coords(path),fill='#ff9f20',width=1,tags=('vector-evidence',))
+                if key=='skeleton':
+                    for u,z,degree in layers['nodes']:
+                        X,Y=coords([(u,z)]);radius=3 if degree>2 else 2
+                        self.canvas.create_oval(X-radius,Y-radius,X+radius,Y+radius,fill='#e64f6e' if degree>2 else '#477de8',outline='',tags=('vector-node',))
+            else:
+                rows=layers['hypotheses'][key]
+                if rows:
+                    for i,(l,t,r,b) in enumerate(rows[self.vector_index][1]):
+                        self.canvas.create_rectangle(*coords([(l,t),(r,b)]),outline='#ff9f20' if i==0 else '#477de8',width=2,dash=(4,2),tags=('vector-hypothesis',))
+        if getattr(self,'page_active',False) and getattr(self,'page_details',None):
+            def page_coords(b):return (x+b[0]*iw/im.width,y+b[1]*ih/im.height,x+b[2]*iw/im.width,y+b[3]*ih/im.height)
+            for zone in self.page_details['zones'] if self.page_zones_visible else []:
+                self.canvas.create_rectangle(*page_coords(zone['box']),outline='#ff9f20',width=1,dash=(3,3),tags=('zone-proposal',))
+            self.canvas.create_rectangle(*page_coords(self.page_details['region_box']),outline='#477de8',width=2,dash=(6,3),tags=('source-region',))
+        if not self.glyph_only: self.canvas.create_rectangle(x+box[0]*iw/im.width,y+box[1]*ih/im.height,x+box[2]*iw/im.width,y+box[3]*ih/im.height,outline='#00bca5',width=2,tags=('candidate-box',))
+        self.draw_geometry=(x,y,iw,ih);self.draw_extent=(max(w,x+iw+10),max(h,y+ih+10))
+        self.canvas.configure(scrollregion=(0,0,*self.draw_extent))
     def move(self,delta):
         if self.view!='Review' or self.future is not None or not self.items: return
         n=self.index+delta
@@ -293,10 +454,10 @@ class App:
         text=tk.Text(dialog,wrap='word',bg=self.p['panel'],fg=self.p['fg'],padx=12,pady=10);bar=ttk.Scrollbar(dialog,command=text.yview);bar.pack(side='right',fill='y');text.configure(yscrollcommand=bar.set);text.pack(fill='both',expand=True);text.insert('end',json.dumps(value,indent=2,ensure_ascii=False));text.configure(state='disabled')
     def import_source(self):
         if self.future is not None:return
-        p=filedialog.askopenfilename(parent=self.w)
+        p=dialogs.choose(filedialog.askopenfilename,parent=self.w,workspace=self.api.root)
         if p: role=self.role.get(); self.task(lambda:self.api.import_source(p,role),self.result)
     def choose_relative(self,var):
-        p=filedialog.askopenfilename(parent=self.w,initialdir=self.api.root)
+        p=dialogs.choose(filedialog.askopenfilename,parent=self.w,workspace=self.api.root,current=var.get())
         if p:
             try: var.set(Path(p).resolve().relative_to(self.api.root).as_posix())
             except ValueError: messagebox.showerror('VRS','Select a file inside the workspace',parent=self.w)
@@ -341,23 +502,35 @@ class App:
 
     def page_settings(self):
         self.title('Settings',self.t('Workspace path')+' · '+str(self.api.root)); self.fields={}
-        for k,label,values in [('project','Project',None),('reviewer','Reviewer',None),('theme','Theme',('dark','light')),('language','Language',('de','en')),('interpreter','Compute Python',None),('catalog','Catalog file',None)]:
+        for k,label,values in [('project','Project',None),('reviewer','Reviewer',None),('theme','Theme',('dark','light')),('language','Language',('de','en')),('evidence_mode','Evidence mode',('legacy','hybrid')),('interpreter','Compute Python',None),('catalog','Catalog file',None)]:
             row=ttk.Frame(self.body); row.pack(fill='x',pady=7); ttk.Label(row,text=self.t(label),width=20).pack(side='left'); var=tk.StringVar(value=self.cfg[k]); self.fields[k]=var
             if values: ttk.Combobox(row,textvariable=var,values=values,state='readonly').pack(side='left')
             else: ttk.Entry(row,textvariable=var).pack(side='left',fill='x',expand=True)
             if k=='catalog': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:self.choose_relative(v)).pack(side='right')
-            if k=='interpreter': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:v.set(filedialog.askopenfilename(parent=self.w) or v.get())).pack(side='right')
+            if k=='interpreter': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:v.set(dialogs.choose(filedialog.askopenfilename,parent=self.w,workspace=self.api.root,current=v.get()) or v.get())).pack(side='right')
+        ttk.Label(self.body,text=self.t('Hybrid mode requires pinned Yale PDF; stop worker before changing. Existing runs retain their original identity.'),style='Muted.TLabel',wraplength=650).pack(anchor='w')
         ttk.Button(self.body,text=self.t('Apply'),style='Accent.TButton',command=self.apply).pack(anchor='e',pady=12)
     def apply(self):
         if self.future is not None:return
         value={**self.cfg,**{k:v.get() for k,v in self.fields.items()},'geometry':f'{self.w.winfo_width()}x{self.w.winfo_height()}'}
         def work():
-            self.api.catalog(value['catalog']); return self.api.save_settings(value)
+            if value['catalog']!=self.cfg['catalog']:self.api.catalog(value['catalog'])
+            return self.api.save_settings(value)
         self.task(work,self.settings_done)
-    def settings_done(self,value): self.cfg=value; self.build(); self.show('Settings')
+    def settings_done(self,value):
+        previous=self.cfg; self.cfg=value
+        changed={k for k in value if value[k]!=previous.get(k)}
+        if changed<= {'theme','geometry'}:
+            # Settings contains ttk widgets only. Keep window, controls and focus intact.
+            if 'theme' in changed:
+                self.apply_palette()
+                self.brand_label.configure(foreground=self.p['accent'])
+                self.private_label.configure(foreground=self.p['muted'])
+            return
+        self.build(); self.show('Settings')
     def switch(self):
         if self.future is not None:return
-        p=filedialog.askdirectory(parent=self.w)
+        p=dialogs.choose(filedialog.askdirectory,parent=self.w,workspace=self.api.root,mustexist=True)
         if p:
             try: api=Desktop(p); cfg=api.settings()
             except Exception as exc: messagebox.showerror('VRS',str(exc),parent=self.w); return

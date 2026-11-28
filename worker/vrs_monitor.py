@@ -1,5 +1,6 @@
 """VRS operations desktop. Explicit optional Windows tray; no startup registration."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 import queue
@@ -11,28 +12,59 @@ from tkinter import ttk, messagebox
 import vrs_desktop
 from vrs_desktop import App, DE
 from vrs_operations import Operations
+import vrs_tray_controls as tray_controls
 from vrs_build_portable import RELEASE_VERSION as VERSION
 from vrs_ui_format import human,gpu_telemetry,review_fraction,brand_icon
 
 DE.update({'Jobs':'Jobs & Ressourcen','Evidence':'Evidenz','Start worker':'Worker starten','Stop worker':'Worker stoppen','Pause':'Pausieren','Resume':'Fortsetzen','Cancel':'Abbrechen','Resource ceilings':'Ressourcengrenzen','Save ceilings':'Grenzen speichern','CPU threads':'CPU-Threads','RAM estimate MiB':'RAM-Schätzung MiB','Disk estimate MiB':'Speicherschätzung MiB','Export local preview':'Lokale Vorschau speichern','Enable tray':'Tray aktivieren','Hide to tray':'In Tray minimieren','Open':'Öffnen','Exit desktop':'Oberfläche beenden','No automatic accuracy claim':'Keine automatische Genauigkeitsaussage','Actual checkpoint progress':'Tatsächlicher Checkpoint-Fortschritt','Local managed worker':'Lokal verwalteter Worker','Review required':'Review erforderlich','No GPU telemetry':'Keine GPU-Messung','Ceilings apply after worker restart; 0 = default':'Grenzen gelten nach Worker-Neustart; 0 = Standard','Refresh evidence':'Evidenz aktualisieren','Diagnostics':'Diagnose','Compared regions':'Verglichene Regionen','Unresolved regions':'Ungeklärte Regionen'})
 
 
+DE.update({'Request pending':'Anfrage läuft','Request acknowledged':'Anfrage bestätigt','Request failed':'Anfrage fehlgeschlagen','RUNNING':'Läuft','STOP_REQUESTED':'Stopp angefordert','STOPPED':'Gestoppt','PAUSE_REQUESTED':'Pause angefordert','PAUSED':'Pausiert','CANCEL_REQUESTED':'Abbruch angefordert','CANCELLED':'Abgebrochen','READY':'Bereit','UNKNOWN':'Zustand unbekannt'})
+
+DE.update({'Pause single run':'Einzelnen Run pausieren','Resume single run':'Einzelnen Run fortsetzen','Mute notifications':'Benachrichtigungen stummschalten','Review runs':'Review-Runs','NOT_MANAGED':'Nicht verwaltet','NOT_RUNNING':'Nicht aktiv','FAILED':'Fehlgeschlagen'})
+
 class Notifications:
     """Coalesce by parked-run set; no candidate details or repeated idle alerts."""
     def __init__(self): self.last=None; self.last_time=-1e9
     def next(self,count,key,now):
+        if count is None: return False  # Unknown is not an empty review queue.
         if not count: self.last=None; return False
         if key==self.last or now-self.last_time<30: return False
         self.last=key; self.last_time=now; return True
 
 
+DE.update({'Outbox':'Postausgang','Stages':'Phasen','Review runs':'Review-Runs','Status unavailable':'Status nicht verfügbar','Local outbox only; no remote connection check':'Nur lokaler Postausgang; keine Remote-Verbindungsprüfung','Pending / Sending / Sent':'Offen / Versand / Gesendet','Device-wide GPU':'GPU geräteweit'})
+
+def status_snapshot(api):
+    """Read-only local status; no Tk or network access from this thread."""
+    rows=api.jobs();data=api.resources()
+    data['gpu_telemetry']=gpu_telemetry()
+    return rows,data,api.outbox_counts()
+
+
+def status_fields(rows,data,outbox):
+    """Compact truthful metrics; no active backend inferred from configuration."""
+    worker=data['worker']; active=[r for r in rows if r['locked']]
+    stage=active[0] if len(active)==1 else None
+    mode=worker.get('evidence_mode') if worker['state'] in ('RUNNING','STOP_REQUESTED') else None
+    state=worker['state']+(' · '+mode if mode else '')
+    progress=(stage['stage'] or 'DONE')+' '+str(stage['completed'])+'/'+str(stage['total'])+' · '+stage['backend'] if stage else ('MULTIPLE' if active else '—')
+    ram=(data['ram_total']-data['ram_available'])/1024**3
+    gpu=data.get('gpu_telemetry'); device=gpu[0] if gpu and len(gpu)==1 else None
+    return dict(worker=state,phase=progress,cpu=f"{data['cpu_percent']:.0f}%",ram=f"{ram:.1f}/{data['ram_total']/1024**3:.1f} GiB",
+                gpu=f"{device['util']:.0f}% · {device['used_mib']/1024:.1f}/{device['total_mib']/1024:.1f} GiB" if device else '—',
+                review=str(sum(r['control']=='BLOCKED' and r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' for r in rows)),
+                outbox=f"{outbox['PENDING']}/{outbox['SENDING']}/{outbox['SENT']}")
+
 class Monitor(App):
     def __init__(self,window,root):
         self.tray=None; self.tray_ready=False; self.events=queue.Queue(); self.notices=Notifications(); self.last_tick=0; self.last_detail=0; self.close_pending=False; self.pending_view=None
+        self.tray_context=(None,'',tray_controls.Snapshot()); self.tray_muted=False; self.tray_feedback=''; self.tray_busy=False
+        self.status_pool=ThreadPoolExecutor(max_workers=1);self.status_future=None;self.status_scope=None;self.status_last=-1e9;self.status_value=None
         super().__init__(window,root); self.api=Operations(root); self.w.title('Voynich Research Studio · '+VERSION); self.w.after(250,self.tick)
 
     def build(self):
-        super().build(); self.w.title('Voynich Research Studio · '+VERSION)
+        super().build(); self.w.title('Voynich Research Studio · '+VERSION);self.build_status_bar()
         # Reuse the original shell rather than duplicate UI design.
         nav=self.nav['Home'].master
         for name in ('Jobs','Evidence'):
@@ -43,6 +75,58 @@ class Monitor(App):
         self.w.bind('<Control-j>',lambda e:self.request_view('Jobs')); self.w.bind('<Control-e>',lambda e:self.request_view('Evidence'))
         for index,name in enumerate(('Home','Review','Sources','Jobs','Evidence','Settings'),1):
             self.w.bind('<Control-'+str(index)+'>',lambda e,n=name:self.request_view(n))
+
+    def build_status_bar(self):
+        bar=ttk.Frame(self.status_shell,style='Card.TFrame');bar.pack(fill='x',side='top')
+        self.status_cells={}
+        specs=(('worker','Worker','Jobs'),('phase','Stages','Jobs'),('cpu','CPU','Jobs'),('ram','RAM','Jobs'),('gpu','GPU/VRAM','Jobs'),('review','Review runs','Review'),('outbox','Outbox',None))
+        for i,(key,label,view) in enumerate(specs):
+            value=tk.StringVar(value=self.t(label)+': —')
+            button=ttk.Button(bar,textvariable=value,command=(lambda n=view:self.request_view(n)) if view else self.show_outbox_status,width=1)
+            button.grid(row=0,column=i,sticky='ew',padx=1);bar.columnconfigure(i,weight=2 if key in ('worker','phase','gpu') else 1)
+            self.status_cells[key]=(label,value,button)
+        self.status_value=None;self.status_last=-1e9
+        bar.bind('<Configure>',lambda e:self.layout_status(e.width))
+
+    def layout_status(self,width):
+        # Prefer the primary worker/CPU/RAM/review fields at compact widths.
+        phase=self.status_cells['phase'][2]
+        if width<1200:phase.grid_remove()
+        elif not phase.winfo_manager():phase.grid()
+        phase.master.columnconfigure(1,weight=0 if width<1200 else 2)
+
+    def show_outbox_status(self):
+        value=self.status_value
+        message=self.t('Local outbox only; no remote connection check')
+        if value is not None:message+='\n'+self.t('Pending / Sending / Sent')+': '+value['outbox']
+        else:message+='\n'+self.t('Status unavailable')
+        messagebox.showinfo(self.t('Outbox'),message,parent=self.w)
+
+    def render_status(self,fields):
+        self.status_value=fields
+        for key,(label,var,_) in self.status_cells.items():
+            value='—' if fields is None else fields[key]
+            if key=='worker' and fields is not None:
+                state,sep,mode=value.partition(' · ');value=self.t(state)+sep+mode
+            display=self.t(label)+': '+value
+            if var.get()!=display:var.set(display)
+
+    def poll_status(self,now):
+        # One bounded outstanding probe, independent of foreground task queue.
+        if self.status_future is not None:
+            if not self.status_future.done():
+                if now-self.status_last>12:self.render_status(None)
+                return
+            future=self.status_future;scope=self.status_scope;self.status_future=None
+            if scope is self.api:
+                try:
+                    rows,data,outbox=future.result()
+                    self.render_status(status_fields(rows,data,outbox))
+                    if self.view=='Jobs' and self.future is None:self.jobs_loaded((rows,data,None))
+                except Exception:self.render_status(None)
+        if now-self.status_last>=5 and self.w.state()!='withdrawn':
+            self.status_last=now;self.status_scope=self.api
+            self.status_future=self.status_pool.submit(status_snapshot,self.api)
 
     def request_view(self,name):
         if self.close_pending or self.closing:return 'break'
@@ -57,7 +141,16 @@ class Monitor(App):
         super().page_home();self.tree.bind('<Return>',lambda e:self.open_selected())
 
     def switch(self):
-        super().switch(); self.api=Operations(self.api.root); self.notices=Notifications()
+        super().switch(); self.api=Operations(self.api.root); self.notices=Notifications(); self.render_status(None);self.status_last=-1e9;self.reset_tray_context()
+
+    def settings_done(self,value):
+        changed=any(value[k]!=self.cfg.get(k) for k in ('interpreter','evidence_mode','language'))
+        super().settings_done(value)
+        if changed:self.reset_tray_context()
+
+    def reset_tray_context(self):
+        self.tray_context=(str(self.api.root),self.cfg['interpreter'],tray_controls.Snapshot())
+        self.tray_feedback=''; self.last_tick=0; self.update_tray()
 
     def quiet_task(self,fn,done):
         if self.future is not None:return
@@ -81,6 +174,7 @@ class Monitor(App):
         self.telemetry=tk.StringVar(value='—');ttk.Label(self.body,textvariable=self.telemetry,style='Muted.TLabel',wraplength=740).pack(fill='x')
         tools=ttk.Frame(self.body); tools.pack(fill='x',pady=6)
         for text,action in [('Start worker',self.start_worker),('Stop worker',self.stop_worker),('Refresh',self.load_jobs),('Diagnostics',self.diagnostics)]: ttk.Button(tools,text=self.t(text),command=action).pack(side='left',padx=(0,5))
+        self.control_feedback=tk.StringVar(value='—');ttk.Label(self.body,textvariable=self.control_feedback,style='Muted.TLabel',wraplength=740).pack(fill='x')
         self.jobs_tree=ttk.Treeview(self.body,columns=('state','stage','progress','reason'),show='tree headings',height=6)
         for key,label,width in [('#0','Run',105),('state','Status',105),('stage','Stage',150),('progress','Stages',65),('reason','Reason',150)]: self.jobs_tree.heading(key,text=label); self.jobs_tree.column(key,width=width,minwidth=45)
         self.jobs_tree.pack(fill='both',expand=True);self.job_progress=ttk.Progressbar(self.body,mode='determinate',maximum=1,value=0);self.job_progress.pack(fill='x',pady=(4,0)); self.jobs_tree.bind('<<TreeviewSelect>>',lambda e:self.job_detail()); self.jobs_tree.bind('<Return>',lambda e:self.job_detail()); self.jobs_tree.bind('<Double-1>',lambda e:self.job_detail())
@@ -119,7 +213,7 @@ class Monitor(App):
         if selected and tree.exists(selected) and tree.selection()!=(selected,): tree.selection_set(selected)
         ram=(data['ram_total']-data['ram_available'])/1024**3; total=data['ram_total']/1024**3; disk=data['disk_free']/1024**3
         rss=data['worker'].get('rss'); rss_text=f' · RSS {rss/1024**2:.0f} MiB' if rss is not None else ''
-        self.telemetry.set(f"CPU {data['cpu_percent']:.1f}% · {data['allowed']} threads | RAM {ram:.1f}/{total:.1f} GiB | Disk free {disk:.1f} GiB\nWorker: {data['worker']['state']}{rss_text} · {self.t('No GPU telemetry')}")
+        self.telemetry.set(f"CPU {data['cpu_percent']:.1f}% · {data['allowed']} threads | RAM {ram:.1f}/{total:.1f} GiB | Disk free {disk:.1f} GiB\nWorker: {data['worker']['state']}{rss_text} · {self.t('Evidence mode')}: {data['worker'].get('evidence_mode','—')} · {self.t('No GPU telemetry')}")
         if hasattr(self,'cpu_metric'):
             self.cpu_metric.configure(text=f"{data['cpu_percent']:.0f}%");self.ram_metric.configure(text=f'{ram:.1f} / {total:.1f} GiB')
             devices=data.get('gpu_telemetry');self.gpu_metric.configure(text=(f"{devices[0]['util']:.0f}% · {devices[0]['used_mib']/1024:.1f}/{devices[0]['total_mib']/1024:.1f} GiB" if devices else '—'))
@@ -128,7 +222,8 @@ class Monitor(App):
         if detail: self.write_text(self.job_text,detail)
         if self.tray_ready:
             from vrs_contract import digest
-            waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED'); self.notice_done((len(waiting),digest(waiting)))
+            waiting=sorted(r['id'] for r in rows if r['stage']=='exception_review' and r['reason']=='REVIEW_PENDING' and r['control']=='BLOCKED')
+            self.tray_loaded(tray_controls.snapshot(data['worker'],rows,bool(self.cfg['interpreter']),digest(waiting)))
 
     def write_text(self,widget,value):
         if widget is getattr(self,'job_text',None):
@@ -150,16 +245,34 @@ class Monitor(App):
         if not run or self.future is not None: return
         if not interpreter: messagebox.showinfo('VRS',self.t('Compute Python'),parent=self.w); return
         if action=='cancel' and not messagebox.askyesno('VRS',self.t('Cancel')+'?',parent=self.w):return
-        self.task(lambda:self.api.control(interpreter,action,run),lambda v:self.load_jobs())
+        self.control_request(action.capitalize(),lambda:self.api.control(interpreter,action,run))
 
     def diagnostics(self): self.task(self.api.diagnostics,lambda v:self.write_text(self.job_text,v))
 
+    def control_request(self,label,fn):
+        if self.future is not None:return
+        self.control_feedback.set(self.t(label)+' · '+self.t('Request pending'))
+        def work():
+            try:return True,fn()
+            except Exception as exc:return False,str(exc)
+        def done(result):
+            ok,value=result
+            if ok:
+                state=value.get('control',value.get('state','UNKNOWN'))
+                self.control_feedback.set(self.t(label)+' · '+self.t('Request acknowledged')+' · '+self.t(state))
+            else:
+                self.control_feedback.set(self.t(label)+' · '+self.t('Request failed'))
+                messagebox.showerror('VRS',value,parent=self.w)
+            self.load_jobs(automatic=True)
+        self.task(work,done)
+
     def start_worker(self):
+        if self.future is not None:return
         interpreter=self.cfg['interpreter']
         if not interpreter: messagebox.showinfo('VRS',self.t('Compute Python'),parent=self.w);return
-        self.task(lambda:self.api.start(interpreter),lambda v:self.load_jobs())
+        self.control_request('Start worker',lambda:self.api.start(interpreter))
 
-    def stop_worker(self): self.task(self.api.stop,lambda v:self.load_jobs())
+    def stop_worker(self): self.control_request('Stop worker',self.api.stop)
 
     def save_caps(self):
         try: value={k:int(v.get()) for k,v in self.capvars.items()}
@@ -192,7 +305,9 @@ class Monitor(App):
         try:
             import pystray
             im=brand_icon(64)
-            menu=pystray.Menu(pystray.MenuItem(self.t('Open'),lambda *_:self.events.put('show'),default=True),pystray.MenuItem(self.t('Review'),lambda *_:self.events.put('review')),pystray.MenuItem(self.t('Exit desktop'),lambda *_:self.events.put('exit')))
+            def item(label,action):
+                return pystray.MenuItem(self.t(label),lambda *_:self.enqueue_tray(action),enabled=lambda _:self.tray_enabled(action))
+            menu=pystray.Menu(pystray.MenuItem(self.t('Open'),lambda *_:self.events.put('show'),default=True),pystray.MenuItem(self.t('Review'),lambda *_:self.events.put('review')),pystray.Menu.SEPARATOR,item('Start worker','start'),item('Stop worker','stop'),item('Pause single run','pause'),item('Resume single run','resume'),pystray.Menu.SEPARATOR,pystray.MenuItem(self.t('Mute notifications'),lambda *_:self.events.put('mute'),checked=lambda _:self.tray_muted),pystray.MenuItem(self.t('Exit desktop'),lambda *_:self.events.put('exit')))
             icon=pystray.Icon('VRS',im,'Voynich Research Studio',menu)
             def setup(icon):
                 try:icon.visible=True;self.events.put('ready')
@@ -201,14 +316,55 @@ class Monitor(App):
         except Exception:
             self.tray=None; messagebox.showerror('VRS','Optional Windows tray unavailable',parent=self.w)
 
+    def tray_enabled(self,action):
+        # Tray callbacks read immutable Python state only; never access Tk.
+        return not self.tray_busy and not self.close_pending and self.future is None and tray_controls.target(self.tray_context[2],action) is not None
+
+    def enqueue_tray(self,action):
+        context=self.tray_context
+        expected=tray_controls.target(context[2],action)
+        if expected is not None:self.events.put(('control',action,context[:2],expected))
+
+    def update_tray(self):
+        if not self.tray_ready or self.tray is None:return
+        v=self.tray_context[2]
+        try:
+            self.tray.title=('VRS · '+self.t(v.state)+' · '+('—' if v.review is None else str(v.review))+' '+self.t('Review runs')+(' · '+self.tray_feedback if self.tray_feedback else ''))[:120]
+            self.tray.update_menu()
+        except Exception:self.status.set('Notification area unavailable')
+
+    def tray_loaded(self,view):
+        self.tray_context=(str(self.api.root),self.cfg['interpreter'],view)
+        self.update_tray(); self.notice_done((view.review,view.review_key))
+
+    def tray_request(self,action,context,expected):
+        current=(str(self.api.root),self.cfg['interpreter'])
+        if self.future is not None or self.tray_busy or self.close_pending or current!=context:
+            self.tray_feedback=self.t('Request failed')+' · '+self.t('Busy');self.update_tray();return
+        api=self.api; interpreter=current[1]; self.tray_busy=True
+        self.tray_feedback=self.t('Request pending'); self.update_tray()
+        def work():
+            try:
+                result=tray_controls.execute(api,interpreter,action,expected,api.tray_snapshot(bool(interpreter)))
+                return True,result
+            except Exception:return False,{}
+        def done(result):
+            self.tray_busy=False; ok,value=result
+            state=value.get('control',value.get('state','UNKNOWN'))
+            self.tray_feedback=self.t('Request acknowledged')+' · '+self.t(state) if ok else self.t('Request failed')
+            self.tray_context=(current[0],current[1],tray_controls.Snapshot())
+            self.last_tick=0;self.update_tray()
+        # Keep hidden-window controls nonmodal. State is refreshed by tick.
+        self.quiet_task(work,done)
+
     def hide(self):
         if self.tray_ready:self.w.withdraw()
         else:self.status.set(self.t('Enable tray'))
 
     def notice_done(self,result):
         count,key=result
-        if self.tray_ready and self.notices.next(count,key,time.monotonic()) and self.tray.HAS_NOTIFICATION:
-            try:self.tray.notify(f'{count} · '+self.t('Review required'),'VRS')
+        if self.tray_ready and not self.tray_muted and self.notices.next(count,key,time.monotonic()) and self.tray.HAS_NOTIFICATION:
+            try:self.tray.notify(f'{count} · '+self.t('Review required'),'Voynich Research Studio')
             except Exception: self.status.set('Notification unavailable')
 
     def tick(self):
@@ -216,7 +372,9 @@ class Monitor(App):
         while True:
             try: action=self.events.get_nowait()
             except queue.Empty:break
-            if action=='ready':self.tray_ready=True
+            if action=='ready':self.tray_ready=True;self.last_tick=0;self.update_tray()
+            elif isinstance(action,tuple) and action[0]=='control':self.tray_request(*action[1:])
+            elif action=='mute':self.tray_muted=not self.tray_muted;self.update_tray()
             elif action=='tray_failed':
                 self.tray_ready=False;self.w.deiconify();self.status.set('Notification area unavailable')
                 if self.tray is not None:
@@ -233,11 +391,16 @@ class Monitor(App):
             self.w.after(250,self.tick);return
         if self.pending_view is not None and self.future is None:
             name=self.pending_view;self.pending_view=None;self.request_view(name)
-        now=time.monotonic()
+        now=time.monotonic();self.poll_status(now)
         if self.future is None and now-self.last_tick>=3:
             self.last_tick=now
-            if self.tray_ready and (self.w.state()=='withdrawn' or self.view!='Jobs'):self.quiet_task(self.api.notice,self.notice_done)
-            elif self.view=='Jobs':self.load_jobs(automatic=True)
+            if self.tray_ready and (self.w.state()=='withdrawn' or self.view!='Jobs'):
+                api=self.api; configured=bool(self.cfg['interpreter'])
+                def read_tray():
+                    try:return api.tray_snapshot(configured)
+                    except Exception:return tray_controls.Snapshot()
+                self.quiet_task(read_tray,self.tray_loaded)
+            # Visible Jobs telemetry uses the shared background snapshot; manual refresh still loads detail.
         self.w.after(250,self.tick)
 
     def close(self):
@@ -249,6 +412,7 @@ class Monitor(App):
             try:self.tray.stop()
             except Exception:self.status.set('Tray stop unavailable')
             finally:self.tray=None;self.tray_ready=False
+        self.status_pool.shutdown(wait=False,cancel_futures=True)
         super().close()
 
 

@@ -100,6 +100,16 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(self.app.ledger.outbox(),[])
         with self.assertRaisesRegex(ValueError,'correction handoff'): self.app.ledger.resume_service(a,self.app.identity)
 
+    def test_hybrid_mode_identity_and_missing_attachment(self):
+        run=self.register('1',[1]); self.proposals(run)
+        mode=Service(self.root,hybrid_evidence=True)
+        self.assertNotEqual(mode.identity,self.app.identity)
+        source=self.stage_data(run,'script_regions'); seg=self.stage_data(run,'glyph_segmentation')
+        with self.assertRaisesRegex(ValueError,'Missing hybrid page evidence'):
+            mode._check_prefix('glyph_segmentation',seg['pages'],[1],source)
+        with self.assertRaisesRegex(ValueError,'pinned Yale source'):
+            mode._scope('script_regions',self.manifest('2',[1]),{})
+
     def test_empty_queue_not_alignment_permission(self):
         run=self.register('1',[4]); self.proposals(run)
         self.assertEqual(self.fixture_outcomes(run,'ACCEPTED')['total'],0)

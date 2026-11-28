@@ -27,6 +27,20 @@ class OperationsTests(unittest.TestCase):
             time.sleep(.1)
         self.fail('Condition timed out; managed session state: '+self.api.session()['state'])
 
+    def test_status_snapshot_is_readonly_and_reports_unknown_gpu(self):
+        from vrs_monitor import status_fields,status_snapshot
+        from unittest.mock import patch
+        with patch('vrs_monitor.gpu_telemetry',return_value=None):
+            rows,data,outbox=status_snapshot(self.api)
+        self.assertEqual(outbox,dict(PENDING=0,SENDING=0,SENT=0))
+        value=status_fields(rows,data,outbox)
+        self.assertEqual(value['gpu'],'—');self.assertEqual(value['phase'],'—')
+        self.assertEqual(value['review'],'0');self.assertEqual(value['outbox'],'0/0/0')
+        run=self.f.run_to_review()
+        with patch('vrs_monitor.gpu_telemetry',return_value=None):
+            rows,data,outbox=status_snapshot(self.api)
+        self.assertEqual(status_fields(rows,data,outbox)['review'],'1')
+
     def test_empty_resources_and_caps(self):
         with tempfile.TemporaryDirectory() as d:
             a=Operations(d); self.assertEqual(a.jobs(),[]); r=a.resources(); self.assertTrue(0<=r['cpu_percent']<=100); self.assertGreater(r['ram_total'],0); self.assertEqual(r['gpu'],'NOT_MEASURED'); self.assertEqual(r['worker']['state'],'NOT_MANAGED'); self.assertNotIn('pid',json.dumps(a.diagnostics())); self.assertNotIn(d,json.dumps(a.diagnostics()))
@@ -47,6 +61,24 @@ class OperationsTests(unittest.TestCase):
         finally:
             if self.api.session()['state'] in ('RUNNING','STOP_REQUESTED'):self.api.stop(); self.wait(lambda:self.api.session()['state']=='STOPPED')
 
+    def test_managed_hybrid_mode_identity_and_restart_guard(self):
+        # No manuscript processing; managed process really starts in explicit hybrid mode.
+        cfg=self.api.settings();self.api.save_settings(dict(cfg,evidence_mode='hybrid'))
+        try:
+            session=self.api.start(sys.executable)
+            self.assertEqual(session['state'],'RUNNING')
+            self.assertEqual(session['evidence_mode'],'hybrid')
+            self.assertEqual(self.api.runtime_flags(),['--hybrid-evidence'])
+            with self.assertRaisesRegex(ValueError,'Stop managed worker'):
+                self.api.save_settings(dict(cfg,evidence_mode='legacy'))
+            self.api.stop();self.wait(lambda:self.api.session()['state']=='STOPPED')
+            self.api.save_settings(dict(cfg,evidence_mode='legacy'))
+            self.assertEqual(self.api.runtime_flags(),[])
+            session=self.api.start(sys.executable)
+            self.assertEqual(session['evidence_mode'],'legacy')
+        finally:
+            if self.api.session()['state'] in ('RUNNING','STOP_REQUESTED'):self.api.stop();self.wait(lambda:self.api.session()['state']=='STOPPED')
+
     def test_terminal_acknowledgement_waits_for_process_exit(self):
         import psutil
         from vrs_desktop_api import atomic_json
@@ -57,6 +89,34 @@ class OperationsTests(unittest.TestCase):
         # Reused or absent PID cannot impersonate the original process.
         data=c.load(p);data['created']-=100;atomic_json(p,data)
         self.assertEqual(self.api.session()['state'],'STOPPED')
+
+    def test_unknown_process_refuses_start(self):
+        import psutil
+        from vrs_desktop_api import atomic_json
+        from vrs_operations import BASE
+        p=self.root/BASE/'session.json'
+        atomic_json(p,dict(id='b'*32,pid=os.getpid(),created=psutil.Process().create_time(),state='STOPPED',limits=self.api.settings_ops()))
+        with patch('vrs_operations.liveness',return_value=('UNKNOWN',None)),patch('vrs_operations.subprocess.Popen') as spawn:
+            self.assertEqual(self.api.session()['state'],'UNKNOWN')
+            with self.assertRaisesRegex(ValueError,'state unknown'):self.api.start(sys.executable)
+            spawn.assert_not_called()
+
+    def test_control_feedback_pending_acknowledged_and_failed(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        feedback=Mock()
+        pending=[]
+        fake=SimpleNamespace(future=None,control_feedback=feedback,t=lambda x:x,w=None,load_jobs=Mock(),task=lambda fn,done:pending.append((fn,done)))
+        Monitor.control_request(fake,'Pause',lambda:{'control':'PAUSE_REQUESTED'})
+        feedback.set.assert_called_with('Pause · Request pending')
+        fn,done=pending.pop();done(fn())
+        feedback.set.assert_called_with('Pause · Request acknowledged · PAUSE_REQUESTED')
+        fake.load_jobs.assert_called_with(automatic=True)
+        def failure():raise ValueError('fixture')
+        Monitor.control_request(fake,'Resume',failure)
+        fn,done=pending.pop()
+        with patch('vrs_monitor.messagebox.showerror') as error:done(fn());error.assert_called_once()
+        feedback.set.assert_called_with('Resume · Request failed')
 
     def test_bounded_session_write_retry(self):
         from vrs_operations import write_session
@@ -92,6 +152,47 @@ class OperationsTests(unittest.TestCase):
         index=c.load(c.artifact(self.root,self.f.status(run)['receipts']['transcription_alignment']['artifact'])); (self.root/index['reports'][0]['report']['path']).write_text('{}')
         with self.assertRaises(ValueError):self.api.evidence(run)
 
+    def test_tray_snapshot_and_expected_stop_session(self):
+        from unittest.mock import Mock
+        run=self.f.run_to_review()
+        with patch.object(self.api,'session',return_value=dict(state='RUNNING',id='a'*32)):
+            view=self.api.tray_snapshot(True)
+            self.assertEqual(view.state,'RUNNING');self.assertEqual(view.review,1)
+            self.assertEqual(view.pause,());self.assertEqual(view.resume,())
+            self.assertNotIn(run,view.review_key)
+            with self.assertRaisesRegex(ValueError,'session changed'):
+                self.api.stop(expected_session='b'*32)
+            self.assertFalse((self.root/'workspace/vrs101'/('stop-'+'a'*32)).exists())
+
+    def test_tray_dispatch_without_window_focus(self):
+        import queue
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        import vrs_tray_controls as controls
+        view=controls.Snapshot(state='RUNNING',session='a'*32,configured=True)
+        api=Mock();api.root=self.root;api.tray_snapshot.return_value=view
+        api.stop.return_value={'state':'STOP_REQUESTED'}
+        fake=SimpleNamespace(api=api,cfg={'interpreter':'python'},future=None,close_pending=False,tray_busy=False,tray_context=(str(self.root),'python',view),tray_feedback='',t=lambda x:x,update_tray=Mock(),events=queue.Queue(),w=Mock(),last_tick=1,quiet_task=lambda fn,done:done(fn()))
+        Monitor.enqueue_tray(fake,'stop')
+        request=fake.events.get_nowait();self.assertEqual(request[0],'control')
+        Monitor.tray_request(fake,*request[1:])
+        api.stop.assert_called_once_with(expected_session='a'*32)
+        self.assertEqual(fake.tray_feedback,'Request acknowledged · STOP_REQUESTED')
+        self.assertFalse(fake.tray_busy)
+        self.assertEqual(fake.w.mock_calls,[])
+        # A previous workspace's queued click must not act on the new workspace.
+        Monitor.tray_request(fake,'stop',('other','python'),('a'*32,))
+        self.assertEqual(api.stop.call_count,1)
+        self.assertIn('Request failed',fake.tray_feedback)
+
+    def test_unknown_review_snapshot_does_not_rearm_notification(self):
+        n=Notifications()
+        self.assertTrue(n.next(1,'a',0))
+        self.assertFalse(n.next(None,'',60))
+        self.assertFalse(n.next(1,'a',120))
+        self.assertFalse(n.next(0,'empty',180))
+        self.assertTrue(n.next(1,'a',240))
+
     def test_notification_coalescing_and_private_payload(self):
         n=Notifications(); self.assertTrue(n.next(1,'a',0)); self.assertFalse(n.next(1,'a',100)); self.assertFalse(n.next(2,'b',10)); self.assertTrue(n.next(2,'b',31)); self.assertFalse(n.next(0,'empty',35)); self.assertTrue(n.next(1,'a',70))
         run=self.f.run_to_review(); count,key=self.api.notice(); self.assertEqual(count,1); self.assertNotEqual(key,run); self.assertEqual(len(key),64)
@@ -106,7 +207,13 @@ class OperationsTests(unittest.TestCase):
                 if app.future is None:return
             self.fail('GUI operation timeout')
         try:
-            settle(); app.show('Jobs'); settle(); self.assertIn(run,app.jobs_tree.get_children()); app.jobs_tree.selection_set(run); app.job_detail(); settle(); self.assertIn('REVIEW_PENDING',app.job_text.get('1.0','end')); self.assertIn('CPU',app.telemetry.get()); app.show('Evidence'); settle(); self.assertIn('UNADJUDICATED',app.ev_text.get('1.0','end')); self.assertEqual(app.ev_compared.cget('text'),'—');self.assertIsNotNone(app.ev_value);app.export(); settle(); self.assertTrue(list((self.root/'workspace/vrs101/exports').glob('*.json')))
+            settle(); app.show('Jobs'); settle()
+            self.assertIn('worker',app.status_cells)
+            deadline=time.monotonic()+10
+            while app.status_value is None and time.monotonic()<deadline:w.update();time.sleep(.02)
+            self.assertIsNotNone(app.status_value);self.assertEqual(app.status_value['review'],'1')
+            original=app.status_cells['worker'][2];app.show('Home');settle();self.assertIs(app.status_cells['worker'][2],original)
+            app.show('Jobs');settle();self.assertIn(run,app.jobs_tree.get_children()); app.jobs_tree.selection_set(run); app.job_detail(); settle(); self.assertIn('REVIEW_PENDING',app.job_text.get('1.0','end')); self.assertIn('CPU',app.telemetry.get()); app.show('Evidence'); settle(); self.assertIn('UNADJUDICATED',app.ev_text.get('1.0','end')); self.assertEqual(app.ev_compared.cget('text'),'—');self.assertIsNotNone(app.ev_value);app.export(); settle(); self.assertTrue(list((self.root/'workspace/vrs101/exports').glob('*.json')))
             w.geometry('1024x650'); w.update(); self.assertEqual(w.winfo_width(),1024); self.assertEqual(w.winfo_height(),650)
         finally:
             if app.future: settle()

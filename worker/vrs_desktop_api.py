@@ -4,6 +4,7 @@ import os
 import shutil
 import sqlite3
 import subprocess
+from vrs_process import background_options
 import sys
 import uuid
 from contextlib import contextmanager
@@ -70,11 +71,152 @@ class ReadDecisions(Decisions):
     def __init__(self, ledger): self.ledger = ledger; self.root = ledger.root; self.queue = ReadQueue(ledger)
 
 
+def vector_window(image, target, components, pairs=(), alternatives=None):
+    """Bounded native preview; overlaps and group proposals are not glyph matches."""
+    from vrs_exceptions import box_key
+    w,h=image.size; a,b,cx,d=box_key(target)
+    require(cx<=w and d<=h,'Native candidate outside image')
+    def checked(box):
+        l,t,r,bot=box_key(box)
+        require(r<=w and bot<=h,'Native component outside image')
+        return l,t,r,bot
+    selected=[]; lookup={}; points=0
+    for row in components:
+        l,t,r,bot=checked(row['box'])
+        if 'id' in row:
+            require(row['id'] not in lookup,'Duplicate component identity')
+            lookup[row['id']]=(l,t,r,bot)
+        if max(l,a)>=min(r,cx) or max(t,b)>=min(bot,d):continue
+        require(len(selected)<2000,'Vector preview component budget exceeded')
+        selected.append((row,(l,t,r,bot)))
+    ids={row['id'] for row,_ in selected if 'id' in row}
+    extra=alternatives or {}
+    options={'splits':[],'pairs':[],'compounds':[]}
+    for row in extra.get('splits',()):
+        if row['parent'] not in ids:continue
+        parent=lookup[row['parent']]
+        boxes=[checked(p['box']) for p in row['parts']]
+        require(len(boxes)==2 and all(parent[0]<=q[0]<q[2]<=parent[2] and parent[1]<=q[1]<q[3]<=parent[3] for q in boxes),'Split outside parent')
+        options['splits'].append((row['id'],boxes))
+        require(len(options['splits'])<=2000,'Split preview budget exceeded')
+    for kind,rows in (('pairs',pairs),('compounds',extra.get('compounds',()))):
+        for row in rows:
+            members=row['members']
+            if not ids.intersection(members):continue
+            require(len(set(members))==len(members) and (len(members)==2 if kind=='pairs' else 3<=len(members)<=4) and all(k in lookup for k in members),'Invalid group members')
+            boxes=[lookup[k] for k in members]; envelope=checked(row['box'])
+            require(envelope==(min(q[0] for q in boxes),min(q[1] for q in boxes),max(q[2] for q in boxes),max(q[3] for q in boxes)),'Group envelope mismatch')
+            options[kind].append((row['id'],[envelope]+boxes))
+            require(len(options[kind])<=2000,'Group preview budget exceeded')
+    # Large intersecting material components can span an entire manuscript page.
+    # Keep their identity/count, but show their exact visible geometry in a local viewport.
+    large=[row for row,q in selected if max(q[2]-q[0],q[3]-q[1])>256]
+    bounds=[(a,b,cx,d)]+[q for _,q in selected if max(q[2]-q[0],q[3]-q[1])<=256]+[q for rows in options.values() for _,boxes in rows for q in boxes]
+    left=max(0,min(p[0] for p in bounds)-24); top=max(0,min(p[1] for p in bounds)-24)
+    right=min(w,max(p[2] for p in bounds)+24); bottom=min(h,max(p[3] for p in bounds)+24)
+    require((right-left)*(bottom-top)<=1_000_000,'Vector preview pixel budget exceeded')
+    paths=[]; skeleton=[]; nodes=[]; fallback=0; clipped_paths=0; outside_nodes=0
+    def shifted(box):return [box[0]-left,box[1]-top,box[2]-left,box[3]-top]
+    def visible(point):return 0<=point[0]<=right-left and 0<=point[1]<=bottom-top
+    def clip_segment(p,q):
+        # Liang-Barsky clipping; no artificial edge along viewport boundary.
+        x,y=p;dx=q[0]-x;dy=q[1]-y;lo,hi=0.,1.
+        for delta,dist in ((-dx,x),(dx,right-left-x),(-dy,y),(dy,bottom-top-y)):
+            if delta==0:
+                if dist<0:return None
+            elif delta<0:lo=max(lo,dist/delta)
+            else:hi=min(hi,dist/delta)
+            if lo>hi:return None
+        def at(k):return (min(right-left,max(0,x+k*dx)),min(bottom-top,max(0,y+k*dy)))
+        P,Q=at(lo),at(hi)
+        return (P,Q) if P!=Q else None
+    def append_visible(path,out):
+        nonlocal points,clipped_paths
+        if all(visible(q) for q in path):
+            fragments=[path]
+        else:
+            clipped_paths+=1;fragments=[];current=[]
+            for p,q in zip(path,path[1:]):
+                segment=clip_segment(p,q)
+                if segment is None:
+                    if current:fragments.append(current);current=[]
+                elif current and current[-1]==segment[0]:
+                    current.append(segment[1])
+                else:
+                    if current:fragments.append(current)
+                    current=list(segment)
+            if current:fragments.append(current)
+        for fragment in fragments:
+            points+=len(fragment)
+            require(points<=20000 and len(out)<2000,'Vector visible path budget exceeded')
+            out.append(fragment)
+    for row,(l,t,r,bot) in selected:
+        def translate(path,center=False):
+            result=[]; shift=.5 if center else 0
+            for x,y in path:
+                require(type(x) is int and type(y) is int and 0<=x<=r-l-int(center) and 0<=y<=bot-t-int(center),'Invalid component coordinates')
+                result.append((l+x-left+shift,t+y-top+shift))
+            return result
+        for loop in row['contours']:
+            require(len(loop)>=4 and loop[0]==loop[-1],'Invalid vector loop')
+            append_visible(translate(loop),paths)
+        graph=row.get('graph',{})
+        fallback+=int(bool(row.get('fallback',False)))
+        for path in graph.get('paths',()):
+            require(len(path)>=2,'Invalid skeleton path')
+            append_visible(translate(path,True),skeleton)
+        for node in graph.get('nodes',()):
+            degree=node['degree'];require(type(degree) is int and 0<=degree<=8,'Invalid graph node')
+            x,y=translate([node['point']],True)[0]
+            if not (0<=x<right-left and 0<=y<bottom-top):outside_nodes+=1;continue
+            points+=1;require(points<=20000 and len(nodes)<2000,'Vector visible node budget exceeded')
+            nodes.append((x,y,degree))
+    layers=dict(skeleton=skeleton,nodes=nodes,fallback=fallback,clipping=dict(large_components=len(large),clipped_paths=clipped_paths,outside_nodes=outside_nodes),
+                hypotheses={k:[(rid,[shifted(q) for q in boxes]) for rid,boxes in sorted(rows)] for k,rows in options.items()})
+    return image.crop((left,top,right,bottom)),shifted((a,b,cx,d)),paths,len(selected),layers
+
+
+def page_evidence_summary(record):
+    """Page-level counts from a validated sidecar, not candidate probabilities."""
+    evidence=record['hybrid'];group=evidence['grouping'];region=evidence['region']
+    w,h=record['native']['size'];total=w*h
+    pixels={k:group['masks'][k]['pixels'] for k in ('union','majority','intersection')}
+    require(all(type(v) is int for v in pixels.values()) and 0<=pixels['intersection']<=pixels['majority']<=pixels['union']<=total,'Invalid mask accounting')
+    material=region['material_counts'];require(set(material)=={'core','uncertain','outside'} and all(type(v) is int and v>=0 for v in material.values()) and sum(material.values())==total,'Invalid material accounting')
+    return dict(page=record['page'],total_pixels=total,method_count=group['context']['methods'],
+                union_pixels=pixels['union'],majority_pixels=pixels['majority'],intersection_pixels=pixels['intersection'],
+                disagreement_pixels=pixels['union']-pixels['intersection'],material=dict(material),
+                proposed_zones=len(region['zones']),scientific_status='UNADJUDICATED',exclusion_authorized=False)
+
+
+def project_page_zones(record, size):
+    """Project persisted native zone proposals into the verified 200 DPI page frame."""
+    import math
+    meta=record['native']; region=record['hybrid']['region']
+    require(meta['status']=='NATIVE_IMAGE' and region['source_sha256']==record['source']['sha256'] and region['page']==record['page']==meta['page'] and region['rgb_sha256']==meta['rgb_sha256'] and region['origin']==[0,0] and region['image_size']==meta['size'] and region['script_status']=='UNRESOLVED' and region['exclusion_authorized'] is False,'Zone evidence binding mismatch')
+    w,h=size; nw,nh=meta['size']; sx,sy,tx,ty=meta['native_px_to_pt']
+    require(all(math.isfinite(v) for v in (sx,sy,tx,ty)) and sx>0 and sy>0,'Invalid native affine')
+    zones=region['zones'];require(type(zones) is list and len(zones)<=2000,'Page zone preview budget exceeded')
+    result=[]
+    for i,row in enumerate(zones):
+        b=row['box']
+        require(row['script_status']=='UNRESOLVED' and type(b) is list and len(b)==4 and all(type(v) is int for v in b) and 0<=b[0]<b[2]<=nw and 0<=b[1]<b[3]<=nh,'Invalid zone geometry')
+        l,t,r,b=b
+        coords=[max(0,math.floor((l*sx+tx)*200/72)),max(0,math.floor((t*sy+ty)*200/72)),min(w,math.ceil((r*sx+tx)*200/72)),min(h,math.ceil((b*sy+ty)*200/72))]
+        require(0<=coords[0]<coords[2]<=w and 0<=coords[1]<coords[3]<=h,'Zone outside page')
+        result.append(dict(index=i,box=coords,status='UNRESOLVED'))
+    return result
+
+
 class Desktop:
     def __init__(self, root): self.root = Path(root).resolve(strict=True)
 
     def _validate_settings(self, v):
-        c.fields(v, ('schema','theme','language','reviewer','interpreter','catalog','geometry','project'))
+        require(type(v) is dict,'Invalid UI settings')
+        # Backward-compatible settings upgrade; old workspaces remain raster by default.
+        v={'evidence_mode':'legacy',**v}
+        c.fields(v, ('schema','theme','language','reviewer','interpreter','catalog','geometry','project','evidence_mode'))
+        require(v['evidence_mode'] in ('legacy','hybrid'),'Invalid evidence mode')
         require(type(v['schema']) is int and v['schema']==1 and v['theme'] in ('dark','light') and v['language'] in ('de','en') and all(type(v[k]) is str and len(v[k])<=512 for k in ('reviewer','interpreter','catalog','geometry','project')), 'Invalid UI settings')
         import re
         require(re.fullmatch(r'\d{3,5}x\d{3,5}',v['geometry']) is not None, 'Invalid window geometry')
@@ -83,13 +225,19 @@ class Desktop:
 
     def settings(self):
         p = safe(self.root, 'config/vrs-desktop.json')
-        if not p.exists(): return dict(schema=1, theme='dark', language='de', reviewer='', interpreter='', catalog='', geometry='1280x800', project='')
+        if not p.exists(): return dict(schema=1, theme='dark', language='de', reviewer='', interpreter='', catalog='', geometry='1280x800', project='', evidence_mode='legacy')
         return self._validate_settings(c.load(p))
 
     def save_settings(self, value):
         # No secrets or raw source bytes in settings.
-        self._validate_settings(value); p = safe(self.root, 'config/vrs-desktop.json'); atomic_json(p, value)
+        value=self._validate_settings(value); p = safe(self.root, 'config/vrs-desktop.json'); atomic_json(p, value)
         return self.settings()
+
+    def runtime_mode(self):
+        return self.settings()['evidence_mode']
+
+    def runtime_flags(self):
+        return ['--hybrid-evidence'] if self.runtime_mode()=='hybrid' else []
 
     def runs(self):
         db = safe(self.root, 'workspace/vrs095/ledger.sqlite')
@@ -128,6 +276,141 @@ class Desktop:
             require(source.width*source.height<=16_000_000,'Crop too large for review')
             box=item['box']; require(0<=box[0]<box[2]<=source.width and 0<=box[1]<box[3]<=source.height,'Invalid glyph geometry')
             return source.convert('RGB'),box
+
+    def locus_context(self,item):
+        """Show only explicitly declared locus provenance; never expose reading hints."""
+        run=item['run_id'];c.digest_ok(run);ledger=ReadLedger(self.root)
+        with ledger._tx() as conn:
+            row=ledger._row(conn,'runs',run); manifest,receipts,_=ledger._validate(row)
+            stored=conn.execute('SELECT payload FROM vrs095_queue_items WHERE run_id=? AND id=?',(run,item['id'])).fetchone()
+            require(stored is not None,'Unknown review candidate')
+            require(all(item.get(k)==v for k,v in json.loads(stored['payload']).items()),'Candidate binding mismatch')
+        policy=load_page(pinned(self.root,manifest['inputs']['recognition_policy']))
+        c.fields(policy,('schema','approval','mapping'))
+        sources=manifest['transcriptions']; key=f"{item['page']}:{item['region_id']}"
+        result=[]
+        if policy['mapping'] is None:
+            return [dict(source_sha256=s['sha256'],status='UNDECLARED') for s in sources]
+        maps=load_page(pinned(self.root,policy['mapping']))
+        c.fields(maps,('schema','manuscript_sha256','sources'))
+        require(maps['schema']==1 and maps['manuscript_sha256']==manifest['inputs']['manuscript']['sha256'],'Mapping source mismatch')
+        require(set(maps['sources'])=={s['sha256'] for s in sources},'Mapping transcription coverage mismatch')
+        for source in sources:
+            entries=maps['sources'][source['sha256']];require(type(entries) is dict,'Invalid locus map')
+            entry=entries.get(key)
+            info=dict(source_sha256=source['sha256'],status='UNDECLARED')
+            if entry is not None:
+                c.fields(entry,('crop_sha256','locus','subtype','mapper'))
+                require(entry['crop_sha256']==item['crop']['sha256'] and all(type(entry[k]) is str and 0<len(entry[k].strip())<=512 for k in ('locus','subtype','mapper')),'Invalid physical mapping')
+                require(sum(isinstance(v,dict) and v.get('locus')==entry['locus'] for v in entries.values())==1,'Duplicate mapped locus')
+                import alignment
+                scheme,rows,_=alignment.load_source(pinned(self.root,source),source['sha256'])
+                require(entry['locus'] in rows and rows[entry['locus']]['subtype']==entry['subtype'],'Declared locus not found in transcription')
+                info.update(status='DECLARED',scheme=scheme,locus=entry['locus'],subtype=entry['subtype'],mapper=entry['mapper'])
+            result.append(info)
+        return result
+
+    def page_context(self, item, *, details=False):
+        """Opt-in full page; exact region replay or fail closed. No alignment inference."""
+        from PIL import Image
+        import fitz
+        import vrs_surface as surface
+        run=item['run_id']; c.digest_ok(run)
+        ledger=ReadLedger(self.root)
+        with ledger._tx() as conn:
+            row=ledger._row(conn,'runs',run); manifest,receipts,_=ledger._validate(row)
+            stored=conn.execute('SELECT payload FROM vrs095_queue_items WHERE run_id=? AND id=?',(run,item['id'])).fetchone()
+            require(stored is not None,'Unknown review candidate')
+            payload=json.loads(stored['payload'])
+            require(all(item.get(k)==v for k,v in payload.items()),'Candidate binding mismatch')
+            receipt=receipts['script_regions']; require(receipt['state']=='COMPLETED','Region context unavailable')
+            index=load_page(pinned(self.root,receipt['artifact']))
+            require(index['run_id']==run and index['stage']=='script_regions','Region index binding mismatch')
+            matches=[r for r in index['pages'] if r['page']==item['page']]
+            require(len(matches)==1,'Page context unavailable')
+            mp=pinned(self.root,matches[0]['manifest']); region_manifest=load_page(mp)
+        source=manifest['inputs']['manuscript']
+        require(region_manifest['source_sha256']==source['sha256'] and region_manifest['dpi']==200 and region_manifest['renderer']==fitz.VersionBind,'Page rendering provenance mismatch')
+        dims=region_manifest['page_dimensions'][str(item['page'])]
+        require(len(dims)==2 and all(type(x) is int and x>0 for x in dims) and dims[0]*dims[1]<=16_000_000,'Page too large for review')
+        matches=[x for x in region_manifest['regions'] if x['id']==item['region_id'] and x['page']==item['page']]
+        require(len(matches)==1,'Region context unavailable')
+        region=matches[0]; px=region['pixel_box']
+        require(dict(path=(mp.parent.relative_to(self.root)/region['file']).as_posix(),sha256=region['sha256'])==item['crop'],'Region crop binding mismatch')
+        require(len(px)==4 and all(type(x) is int for x in px) and 0<=px[0]<px[2]<=dims[0] and 0<=px[1]<px[3]<=dims[1],'Invalid page geometry')
+        crop,box=self.crop(item)
+        with fitz.open(pinned(self.root,source)) as doc:
+            require(doc.is_pdf and not doc.needs_pass and 1<=item['page']<=len(doc),'Invalid source page')
+            page=doc[item['page']-1]
+            expected=(page.rect*fitz.Matrix(200/72,200/72)).irect
+            require(expected.width*expected.height<=16_000_000,'Page raster exceeds review limit')
+            if 'surface_policy' in region_manifest:
+                require(region_manifest['surface_policy']==surface.POLICY,'Unsupported surface policy')
+                pix,_=surface.isolate_page(page,source['sha256'])
+            else:
+                pix=page.get_pixmap(dpi=200,colorspace=fitz.csRGB,alpha=False)
+            require([pix.width,pix.height]==dims,'Page dimensions changed')
+            im=Image.frombytes('RGB',(pix.width,pix.height),pix.samples)
+        require(im.crop(px).size==crop.size and im.crop(px).tobytes()==crop.tobytes(),'Page/crop pixels differ; alignment unverified')
+        absolute=[px[0]+box[0],px[1]+box[1],px[0]+box[2],px[1]+box[3]]
+        if details:
+            return im,absolute,dict(region_box=list(px),page=item['page'],source_sha256=source['sha256'],
+                                    line_alignment='UNKNOWN',word_alignment='UNKNOWN',zones=[],zone_status='NOT_LOADED')
+        return im,absolute
+
+    def page_zone_context(self,item):
+        """Verified raster page, source region and optional unresolved zone proposals."""
+        im,absolute,details=self.page_context(item,details=True)
+        record,_=self._hybrid_record(item,required=False)
+        if record is None:
+            details['zone_status']='UNAVAILABLE'
+        else:
+            require(record['hybrid'] is not None,'No native image evidence')
+            details['zones']=project_page_zones(record,im.size)
+            details['zone_status']='PROPOSED'
+        return im,absolute,details
+
+    def _hybrid_record(self,item,*,required=True):
+        # Caller first authenticates queue identity, source, crop and coordinates via page_context.
+        import vrs_hybrid_page as hybrid
+        ledger=ReadLedger(self.root); run=item['run_id']
+        with ledger._tx() as conn:
+            row=ledger._row(conn,'runs',run); manifest,receipts,_=ledger._validate(row)
+            region_receipt=receipts['script_regions']; seg_receipt=receipts['glyph_segmentation']
+            require(seg_receipt['state']=='COMPLETED','Hybrid segmentation not completed')
+            ri=load_page(pinned(self.root,region_receipt['artifact']))
+            si=load_page(pinned(self.root,seg_receipt['artifact']))
+            require(si['run_id']==run and si['stage']=='glyph_segmentation' and si['source']==region_receipt['artifact'],'Segmentation binding mismatch')
+            rr=[x for x in ri['pages'] if x['page']==item['page']]
+            ss=[x for x in si['pages'] if x['page']==item['page']]
+            require(len(rr)==len(ss)==1,'Missing hybrid page')
+            m=load_page(pinned(self.root,rr[0]['manifest']))
+            value=load_page(pinned(self.root,ss[0]['proposals']))
+            require(value['source']==rr[0]['manifest'],'Hybrid region binding mismatch')
+            if 'hybrid_evidence' in value:pinned(self.root,value['hybrid_evidence'])
+            else:require(not required,'No hybrid evidence for this run')
+        source=manifest['inputs']['manuscript']
+        record=hybrid.validate_ref(self.root,value,m,expected_source=source,required=required)
+        return record,source
+
+    def vector_context(self, item, mask):
+        """Explicit read-only native overlay of persisted hybrid evidence."""
+        require(mask in ('union','majority','intersection'),'Invalid evidence mask')
+        page_image,absolute=self.page_context(item);del page_image
+        import fitz
+        import vrs_ink as ink
+        record,source=self._hybrid_record(item)
+        require(record['hybrid'] is not None,'No native image evidence')
+        with fitz.open(pinned(self.root,source)) as doc:
+            image,meta=ink.native_page(doc[item['page']-1])
+        require(meta==record['native'] and image is not None,'Native source mismatch')
+        target=ink.native_box(meta,absolute)
+        require(target is not None,'Native candidate alignment unavailable')
+        grouping=record['hybrid']['grouping']; rows=grouping['masks'][mask]
+        alternatives=grouping.get('alternatives',{}).get('by_mask',{}).get(mask,{})
+        preview=vector_window(image,target,rows['components'],rows['pairs'],alternatives)
+        preview[4]['page_evidence']=page_evidence_summary(record)
+        return preview
 
     def catalog(self, rel):
         # Explicit scheme IDs only, no inferred cross-convention mappings.
@@ -194,7 +477,10 @@ class Desktop:
         vrs_recognition.inputs(self.root,manifest)
         # Validate the local page scope and supported transcription syntax before recording.
         groups=c.load(pinned(self.root,manifest['inputs']['groups']))
-        require(type(groups) is dict and 1<=len(groups)<=213 and all(type(k) is str and k.isdecimal() and str(int(k))==k and int(k)>0 and type(v) is str and v.strip() for k,v in groups.items()),'Invalid page scope')
+        from vrs_surface import YALE_SHA256, YALE_PAGES
+        yale=manifest['inputs']['manuscript']['sha256']==YALE_SHA256
+        require(self.runtime_mode()!='hybrid' or yale,'Hybrid mode requires the pinned Yale PDF')
+        require(type(groups) is dict and 1<=len(groups)<=(YALE_PAGES if yale else 213) and all(type(k) is str and k.isdecimal() and str(int(k))==k and int(k)>0 and type(v) is str and v.strip() for k,v in groups.items()),'Invalid page scope')
         import fitz, alignment
         with fitz.open(pinned(self.root,manifest['inputs']['manuscript'])) as doc:
             require(doc.is_pdf and not doc.needs_pass and all(int(k)<=len(doc) for k in groups),'Invalid manuscript or page scope')
@@ -218,8 +504,13 @@ class Desktop:
         require(action in ('decide','register'),'Unapproved command')
         p=Path(interpreter)
         require(p.is_absolute() and p.is_file() and p.name.lower() in ('python','python3','python.exe','python3.exe','python3.13','python3.12'),'Select local compute Python explicitly')
-        script=Path(__file__).with_name('vrs_runtime.py').resolve(strict=True); safe(self.root,arg)
-        result=subprocess.run([str(p),str(script),str(self.root),action,arg],cwd=self.root,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120,shell=False)
+        script=Path(__file__).with_name('vrs_runtime.py').resolve(strict=True); path=safe(self.root,arg)
+        flags=self.runtime_flags()
+        if action=='register' and flags:
+            from vrs_surface import YALE_SHA256
+            value=c.load(path);c.manifest(self.root,value)
+            require(value['inputs']['manuscript']['sha256']==YALE_SHA256,'Hybrid mode requires the pinned Yale PDF')
+        result=subprocess.run([str(p),str(script),str(self.root),*flags,action,arg],cwd=self.root,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120,**background_options())
         require(result.returncode==0, 'Worker rejected request: '+(result.stdout or result.stderr)[-800:])
         return json.loads(result.stdout)
 

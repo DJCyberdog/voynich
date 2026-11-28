@@ -1,0 +1,40 @@
+name: VRS RC2 patch transaction
+on:
+  push:
+    branches: [development/vrs-0.14.1-rc1]
+    paths:
+      - 'worker/vrs_source_update.py'
+      - 'worker/test_vrs_source_update.py'
+      - 'worker/vrs_rc2_patch_acceptance.py'
+      - '.github/workflows/vrs-rc2-patch.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  transaction:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - name: Preserve Git blob line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 8121427f4612eee3d95de58c685015de84bb3491
+          path: immutable-rc1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Transaction regression and negative tests
+        working-directory: worker
+        run: python -B -m unittest -v test_vrs_source_update
+      - name: Exact source update and rollback, no owner patch
+        working-directory: worker
+        run: python -B vrs_rc2_patch_acceptance.py --old-source ../immutable-rc1/worker

@@ -45,10 +45,10 @@ def fetch_wheels(profile, folder, root):
     env=environment(root); env.pop('PIP_NO_INDEX',None)
     base=[sys.executable,'-m','pip','--isolated','download','--only-binary=:all:','--dest',str(folder)]
     def get(args):subprocess.run(base+args,cwd=root,env=env,check=True,timeout=1800)
-    req=['Pillow==12.3.0','psutil==7.2.2','pystray==0.19.5']
+    req=['Pillow==13.0.0','psutil==7.2.2','pystray==0.19.5','setuptools==84.1.0']
     if profile!='review':
-        backend='cpu' if profile=='cpu' else 'cu128'
-        get(['--no-deps','--index-url','https://download.pytorch.org/whl/'+backend,'torch==2.10.0+'+backend]); torch=list(folder.glob('torch-*.whl')); need(len(torch)==1,'Torch wheel cardinality')
+        backend='cpu' if profile=='cpu' else 'cu130'
+        get(['--no-deps','--index-url','https://download.pytorch.org/whl/'+backend,'torch==2.13.0+'+backend]); torch=list(folder.glob('torch-*.whl')); need(len(torch)==1,'Torch wheel cardinality')
         req+=['numpy==2.3.5','PyMuPDF==1.26.7',str(torch[0])]
     get(['--index-url','https://pypi.org/simple',*req])
 
@@ -222,9 +222,9 @@ with patch.object(Monitor,'__init__',init),patch.object(tk.Tk,'mainloop',exercis
             env=environment(root);env.pop('VRS_NATIVE_CUDA_TEST',None)
             if profile=='cuda':env['VRS_NATIVE_CUDA_TEST']='1'
             subprocess.run([str(exe(root,profile)),'-s','-m','unittest','-v',*names],cwd=root,env=env,check=True,timeout=1200)
-        step('portable_regression',lambda:test(['test_vrs_portable','test_vrs_prepare_plan','test_vrs_worker_log','test_vrs_native_acceptance','test_vrs_source_update','test_vrs_license_inventory','test_vrs_ui_format']))
+        step('portable_regression',lambda:test(['test_vrs_portable','test_vrs_prepare_plan','test_vrs_worker_log','test_vrs_native_acceptance','test_vrs_source_update','test_vrs_license_inventory','test_vrs_ui_format','test_vrs_dialogs','test_vrs_process','test_vrs_tray_controls']))
         if profile=='cuda':step('native_cuda_candidate',lambda:test(['test_vrs_runtime.RuntimeTests.test_native_cuda_candidate','test_vrs_runtime.RuntimeTests.test_native_cuda_checkpoint_resume','test_vrs_learning.LearningTests.test_native_cuda_training_and_cpu_replay']))
-        if profile=='cpu':step('cpu_integration',lambda:test(['test_vrs_runtime','test_vrs_desktop','test_vrs_operations','test_vrs_learning','test_vrs_repository','test_vrs_coordinator','test_vrs_service','test_vrs_exceptions','test_vrs_modules','test_vrs_rc_preflight','test_vrs_rc_snapshot']))
+        if profile=='cpu':step('cpu_integration',lambda:test(['test_vrs_runtime','test_vrs_desktop','test_vrs_operations','test_vrs_learning','test_vrs_repository','test_vrs_coordinator','test_vrs_service','test_vrs_exceptions','test_vrs_modules','test_vrs_rc_preflight','test_vrs_rc_snapshot','test_vrs_rc1_intake']))
         if profile=='cpu' and compat_source is not None:
             def cross_version():
                 result=subprocess.run([str(exe(root,profile)),'-B','-s',str(local(root,'vrs_rc_cross_version.py')),'--old-source',str(compat_source)],cwd=root,env=environment(root),capture_output=True,text=True,check=True,timeout=1200)

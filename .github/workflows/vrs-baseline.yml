@@ -1,7 +1,7 @@
 name: VRS baseline CPU regression
 on:
   push:
-    branches: [development/gpu-worker-v0.1.0, development/vrs-0.13.0, development/vrs-0.13.1, development/vrs-0.14.0, development/vrs-0.14.1]
+    branches: [development/gpu-worker-v0.1.0, development/vrs-0.13.0, development/vrs-0.13.1, development/vrs-0.14.0, development/vrs-0.14.1, development/vrs-0.14.1-rc1]
     paths:
       - 'worker/**'
       - '.github/workflows/vrs-baseline.yml'
@@ -35,8 +35,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth
       - name: CPU dependencies
         run: |
-          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
-          python -m pip install Pillow==12.3.0 PyMuPDF==1.26.7 numpy==2.3.5
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.13.0+cpu
+          python -m pip install Pillow==13.0.0 PyMuPDF==1.26.7 numpy==2.3.5
           python -m pip install -r requirements-hardware.txt
           python -c "import tkinter, torch, psutil; print(torch.__version__, psutil.__version__)"
       - name: Verify pinned baseline
@@ -64,4 +64,16 @@ jobs:
           name: vrs-ui-gallery-synthetic
           path: ${{ runner.temp }}/vrs-ui-gallery/*.png
           if-no-files-found: warn
+          retention-days: 14
+      - name: Build exact source-only RC1 candidate (no data or runtime assets)
+        if: github.ref == 'refs/heads/development/vrs-0.14.1-rc1'
+        run: |
+          python -B vrs_build_portable.py
+          sha256sum dist/VRS-0.14.1-rc.1-source.zip
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/development/vrs-0.14.1-rc1'
+        with:
+          name: vrs-rc1-source-candidate-unfrozen
+          path: worker/dist/VRS-0.14.1-rc.1-source.zip
+          if-no-files-found: error
           retention-days: 14

@@ -1,2 +1,6 @@
+# SECURITY BLOCKED: the historical DirectML wheel requires an older vulnerable Torch.
+# Keep the minimum patched Torch constraint; an incompatible resolver must fail.
+# Do not bypass with --no-deps or ship this experimental profile.
 # Probe only; separate Python 3.12 local environment, never install into CUDA/CPU environment.
 torch-directml==0.2.5.dev240914
+torch>=2.13.0

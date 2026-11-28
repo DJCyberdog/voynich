@@ -1,11 +1,11 @@
-"""v0.5.0 local glyph proposals, corrected-box consensus and prototype classifier."""
+"""v0.5.1 local glyph proposals, corrected-box consensus and prototype classifier."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 import worker as w
 
-VERSION = '0.5.0'
+VERSION = '0.5.1'
 UNKNOWN = 'unknown'
 
 
@@ -60,10 +60,19 @@ def checked_review(path, manifest, sizes, labels, alphabet_sha):
 
 
 def feature(im):
-    from PIL import ImageOps
+    from PIL import Image, ImageOps
     import numpy as np
-    # Preserve aspect ratio and padding. No inferred stroke or glyph normalization.
-    return (1-np.asarray(ImageOps.pad(im.convert('L'),(32,32),color=255),dtype=np.float32)/255).reshape(-1)
+    # Preserve the existing feature bytes for all ordinary crops. Pillow contain
+    # may round the minor dimension to zero for an extreme aspect ratio.
+    gray=im.convert('L'); width,height=gray.size
+    w.require(width>0 and height>0,'Empty glyph crop')
+    if round(32*min(width,height)/max(width,height))==0:
+        size=(32,1) if width>height else (1,32)
+        resized=gray.resize(size,Image.Resampling.BICUBIC)
+        padded=Image.new('L',(32,32),255)
+        padded.paste(resized,(round((32-size[0])/2),round((32-size[1])/2)))
+    else:padded=ImageOps.pad(gray,(32,32),color=255)
+    return (1-np.asarray(padded,dtype=np.float32)/255).reshape(-1)
 
 
 def cohorts(manifest,left,right,alphabet,split):

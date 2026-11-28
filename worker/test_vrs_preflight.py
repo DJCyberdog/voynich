@@ -44,9 +44,26 @@ class PreflightTests(unittest.TestCase):
             return '0.0'
         with patch.object(p.md,'version',side_effect=version):
             r=p.dependencies('review')
-        self.assertEqual(set(r),{'Pillow','psutil'})
+        self.assertEqual(set(r),{'Pillow','psutil','setuptools'})
         self.assertIsNone(r['psutil']['actual'])
         self.assertTrue(all(x['status']=='NOT_MET' for x in r.values()))
+
+    def test_security_dependency_pins(self):
+        for profile,torch in [('review',None),('cpu','2.13.0+cpu'),('cuda','2.13.0+cu130')]:
+            installed={'Pillow':'13.0.0','psutil':'7.2.2','setuptools':'84.1.0','numpy':'2.3.5','PyMuPDF':'1.26.7','torch':torch}
+            with patch.object(p.md,'version',side_effect=lambda name:installed[name]):
+                result=p.dependencies(profile)
+            self.assertTrue(all(x['status']=='PASS' for x in result.values()))
+            if torch:
+                self.assertEqual(result['torch']['expected'],torch)
+            else:
+                self.assertNotIn('torch',result)
+            installed['Pillow']='12.3.0'
+            installed['torch']='2.10.0+cpu'
+            with patch.object(p.md,'version',side_effect=lambda name:installed[name]):
+                result=p.dependencies(profile)
+            self.assertEqual(result['Pillow']['status'],'NOT_MET')
+            if torch:self.assertEqual(result['torch']['status'],'NOT_MET')
 
     def test_actual_cpu_features(self):
         self.assertIn(p.avx2('Linux'),(True,False,None))

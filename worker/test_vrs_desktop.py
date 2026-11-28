@@ -31,6 +31,105 @@ class DesktopTests(unittest.TestCase):
         with ReadLedger(self.root)._tx() as conn:
             with self.assertRaises(Exception): conn.execute("UPDATE runs SET control='READY'")
 
+    def test_full_page_context_exact_crop_and_identity(self):
+        run=self.f.run_to_review(); item=self.api.review(run,limit=1)['items'][0]
+        db=ReadLedger(self.root).db; before=sha(db)
+        page,box=self.api.page_context(item); crop,local=self.api.crop(item)
+        self.assertEqual(page.size,(250,250))
+        self.assertEqual(page.crop(box).tobytes(),crop.crop(local).tobytes())
+        detailed,absolute,context=self.api.page_context(item,details=True)
+        self.assertEqual(detailed.tobytes(),page.tobytes());self.assertEqual(absolute,box)
+        self.assertEqual(detailed.crop(context['region_box']).tobytes(),crop.tobytes())
+        self.assertEqual((context['line_alignment'],context['word_alignment']),('UNKNOWN','UNKNOWN'))
+        _,_,legacy=self.api.page_zone_context(item)
+        self.assertEqual((legacy['zone_status'],legacy['zones']),('UNAVAILABLE',[]))
+        self.assertEqual(sha(db),before)
+        for changed in (dict(item,page=2),dict(item,region_id='fake'),dict(item,box=[0,0,1,1])):
+            with self.assertRaises(ValueError):self.api.page_context(changed)
+        (self.root/item['crop']['path']).write_bytes(b'bad')
+        with self.assertRaises(ValueError):self.api.page_context(item)
+
+    def test_page_zone_projection_is_bound_and_not_alignment(self):
+        from vrs_desktop_api import project_page_zones
+        meta=dict(status='NATIVE_IMAGE',size=[100,100],page=4,rgb_sha256='a'*64,native_px_to_pt=[.5,.5,4,4])
+        region=dict(source_sha256='b'*64,page=4,rgb_sha256='a'*64,origin=[0,0],image_size=[100,100],script_status='UNRESOLVED',exclusion_authorized=False,zones=[dict(box=[10,10,20,20],script_status='UNRESOLVED')])
+        record=dict(source=dict(sha256='b'*64),page=4,native=meta,hybrid=dict(region=region))
+        result=project_page_zones(record,(200,200))
+        self.assertEqual(result,[dict(index=0,box=[25,25,39,39],status='UNRESOLVED')])
+        region['zones'][0]['script_status']='VERIFIED'
+        with self.assertRaises(ValueError):project_page_zones(record,(200,200))
+
+    def test_vector_window_native_coordinates_and_bounds(self):
+        from vrs_desktop_api import vector_window
+        image=Image.new('RGB',(100,100),'white')
+        rows=[dict(box=[40,41,44,45],contours=[[[0,0],[4,0],[4,4],[0,4],[0,0]]]),
+              dict(box=[80,80,82,82],contours=[])]
+        preview,box,paths,count,layers=vector_window(image,[42,42,46,46],rows)
+        self.assertEqual(count,1);self.assertEqual(preview.size,(54,53))
+        self.assertEqual(box,[26,25,30,29]);self.assertEqual(paths[0][0],(24,24))
+        self.assertEqual(vector_window(image,[1,1,2,2],rows)[3],0)
+        rows[0]['contours'][0][1]=[9,0]
+        with self.assertRaises(ValueError):vector_window(image,[42,42,46,46],rows)
+
+    def test_hybrid_review_layers_and_group_extent(self):
+        from vrs_desktop_api import vector_window
+        image=Image.new('RGB',(120,120),'white')
+        rows=[dict(id='a',box=[40,40,44,44],contours=[],fallback=True,graph=dict(paths=[[[0,0],[3,3]]],nodes=[dict(point=[0,0],degree=1),dict(point=[3,3],degree=3)])),
+              dict(id='b',box=[45,40,48,44],contours=[]),dict(id='c',box=[49,40,52,44],contours=[])]
+        pairs=[dict(id='p',members=['a','b'],box=[40,40,48,44])]
+        extra=dict(splits=[dict(id='s',parent='a',parts=[dict(box=[40,40,42,44]),dict(box=[42,40,44,44])])],compounds=[dict(id='g',members=['a','b','c'],box=[40,40,52,44])])
+        im,box,_,count,layers=vector_window(image,[40,40,44,44],rows,pairs,extra)
+        self.assertEqual((im.size,box,count),((60,52),[24,24,28,28],1))
+        self.assertEqual(layers['skeleton'],[[(24.5,24.5),(27.5,27.5)]])
+        self.assertEqual(layers['nodes'][1],(27.5,27.5,3));self.assertEqual(layers['fallback'],1)
+        self.assertEqual(layers['hypotheses']['compounds'],[('g',[[24,24,36,28],[24,24,28,28],[29,24,32,28],[33,24,36,28]])])
+        self.assertEqual(len(layers['hypotheses']['splits']),1)
+        pairs[0]['box']=[40,40,47,44]
+        with self.assertRaisesRegex(ValueError,'Group envelope mismatch'):vector_window(image,[40,40,44,44],rows,pairs,extra)
+
+    def test_large_component_is_clipped_not_discarded(self):
+        from vrs_desktop_api import vector_window
+        image=Image.new('RGB',(1600,1600),'white')
+        rows=[dict(id='large',box=[0,0,1600,1600],contours=[[[0,0],[1600,0],[1600,1600],[0,1600],[0,0]]],
+                   graph=dict(paths=[[[0,800],[1599,800]],[[0,0],[1599,1599]]],
+                              nodes=[dict(point=[0,0],degree=1),dict(point=[800,800],degree=3)]))]
+        target=[790,790,810,810]
+        preview,box,paths,count,layers=vector_window(image,target,rows)
+        self.assertEqual(preview.size,(68,68));self.assertEqual(box,[24,24,44,44])
+        self.assertEqual(preview.crop(box).tobytes(),image.crop(target).tobytes())
+        self.assertEqual(count,1);self.assertEqual(paths,[])
+        self.assertEqual(layers['skeleton'][0],[(0,34.5),(68,34.5)])
+        self.assertEqual(layers['nodes'],[(34.5,34.5,3)])
+        self.assertEqual(layers['clipping'],dict(large_components=1,clipped_paths=3,outside_nodes=1))
+        self.assertEqual(len(rows[0]['graph']['nodes']),2)
+
+    def test_hybrid_page_summary_accounting(self):
+        from vrs_desktop_api import page_evidence_summary
+        record=dict(page=4,native=dict(size=[10,10]),hybrid=dict(grouping=dict(context=dict(methods=6),masks={k:dict(pixels=v) for k,v in [('union',40),('majority',25),('intersection',10)]}),region=dict(material_counts=dict(core=75,uncertain=15,outside=10),zones=[{}])))
+        info=page_evidence_summary(record)
+        self.assertEqual(info['disagreement_pixels'],30)
+        self.assertEqual(info['material']['uncertain'],15)
+        self.assertEqual(info['scientific_status'],'UNADJUDICATED')
+        self.assertFalse(info['exclusion_authorized'])
+        record['hybrid']['region']['material_counts']['outside']=11
+        with self.assertRaises(ValueError):page_evidence_summary(record)
+
+    def test_declared_locus_context_has_no_reading_hints(self):
+        run=self.f.run_to_review(); q=self.api.review(run,limit=100)
+        first=self.f.eligible[0]['region_id']
+        item=next(x for x in q['items'] if x['region_id']==first)
+        rows=self.api.locus_context(item)
+        self.assertEqual({x['scheme'] for x in rows},{'Eva-','STA1'})
+        self.assertTrue(all(x['status']=='DECLARED' and x['locus']=='f1r.1' and 'units' not in x and 'text' not in x for x in rows))
+        with self.assertRaises(ValueError):self.api.locus_context(dict(item,page=99))
+        other=next((x for x in q['items'] if x['region_id']!=first),None)
+        if other is not None:self.assertTrue(all(x['status']=='UNDECLARED' for x in self.api.locus_context(other)))
+
+    def test_no_hybrid_evidence_keeps_legacy_review(self):
+        run=self.f.run_to_review(); item=self.api.review(run,limit=1)['items'][0]
+        with self.assertRaisesRegex(ValueError,'No hybrid evidence'):self.api.vector_context(item,'majority')
+        self.assertIsNotNone(self.api.crop(item)[0])
+
     def test_offline_draft_and_authoritative_subprocess(self):
         run=self.f.run_to_review(); q=self.api.review(run); item=q['items'][0]; path=self.api.stage_decision(item,q['snapshot'],q['inventory'],'fixture','glyph',{'Eva-':{'state':'mapped','label':'a'},'STA1':{'state':'absent','label':None}})
         self.assertEqual(self.f.app.review_items(run)['snapshot']['resolved'],0); self.assertEqual(c.load(self.root/path)['candidate_id'],item['id'])
@@ -54,6 +153,25 @@ class DesktopTests(unittest.TestCase):
         image.write_bytes(b'changed')
         with self.assertRaises(ValueError): self.api.catalog(r['path'])
         with self.assertRaises(ValueError): safe(self.root,'../outside')
+
+    def test_evidence_mode_upgrade_and_non_yale_registration_guard(self):
+        from vrs_desktop_api import atomic_json
+        from unittest.mock import patch
+        cfg=self.api.settings();self.assertEqual(cfg.pop('evidence_mode'),'legacy')
+        atomic_json(self.root/'config/vrs-desktop.json',cfg)
+        self.assertEqual(self.api.settings()['evidence_mode'],'legacy')
+        self.assertEqual(self.api.runtime_flags(),[])
+        self.api.save_settings(dict(cfg,evidence_mode='hybrid'))
+        self.assertEqual(self.api.runtime_flags(),['--hybrid-evidence'])
+        with self.assertRaises(ValueError):self.api.save_settings(dict(cfg,evidence_mode='invalid'))
+        p=self.f.file('manifest-legacy-source.json',self.f.m)['path']
+        with patch('vrs_desktop_api.subprocess.run') as launch:
+            with self.assertRaisesRegex(ValueError,'pinned Yale'):self.api.command(sys.executable,'register',p)
+            launch.assert_not_called()
+        with patch('vrs_desktop_api.subprocess.run') as launch:
+            launch.return_value.returncode=0;launch.return_value.stdout='{}'
+            self.api.command(sys.executable,'decide',p)
+            self.assertEqual(launch.call_args.args[0][3:5],['--hybrid-evidence','decide'])
 
     def test_manifest_verification_without_ml_import(self):
         p=self.f.file('manifest.json',self.f.m)['path']; code='import sys; from vrs_desktop_api import Desktop; a=Desktop(sys.argv[1]); a.manifest_info(sys.argv[2]); assert not any(x in sys.modules for x in ("torch","numpy","fitz"))'
@@ -88,6 +206,13 @@ class DesktopTests(unittest.TestCase):
             code="import sys; sys.path.insert(0,sys.argv[1]); import tkinter as tk; from vrs_desktop_api import Desktop; from PIL import ImageTk; a=Desktop(sys.argv[2]); q=a.review(sys.argv[3]); im,_=a.crop(q['items'][0]); w=tk.Tk(); p=ImageTk.PhotoImage(im); w.destroy(); assert not any(x in sys.modules for x in ('torch','numpy','fitz')); print('ISOLATED_REVIEW_PASS')"
             proc=subprocess.run([sys.executable,'-S','-c',code,d,str(self.root),run],capture_output=True,text=True,timeout=30); self.assertEqual(proc.returncode,0,proc.stderr); self.assertIn('ISOLATED_REVIEW_PASS',proc.stdout)
 
+    def test_zoom_anchor_geometry(self):
+        from vrs_desktop import zoom_origin
+        self.assertEqual(zoom_origin((.5,.5,100,100),(10,10,1000,800),(200,200),(1020,820)),(410/1020,310/820))
+        self.assertEqual(zoom_origin((0,0,100,100),(10,10,1000,800),(200,200),(1020,820)),(0,0))
+        self.assertEqual(zoom_origin((1,1,0,0),(10,10,1000,800),(200,200),(1020,820)),(820/1020,620/820))
+        self.assertEqual(zoom_origin((.5,.5,50,50),(25,25,50,50),(100,100),(100,100)),(0,0))
+
     def test_actual_gui(self):
         import tkinter as tk
         from vrs_desktop import App
@@ -105,9 +230,18 @@ class DesktopTests(unittest.TestCase):
             from vrs_build_portable import RELEASE_VERSION
             self.assertIn(RELEASE_VERSION,w.title());self.assertEqual(float(app.reviewprogress.cget('value')),0)
             app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
-            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only)
+            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only); app.open_page_context(); settle(); self.assertTrue(app.page_active); self.assertEqual(app.page_image.size,(250,250)); self.assertEqual(len(app.canvas.find_withtag('source-region')),1); self.assertEqual(len(app.canvas.find_withtag('candidate-box')),1); app.open_page_zones();settle();self.assertEqual(app.page_details['zone_status'],'UNAVAILABLE');self.assertIn(app.t('No zone evidence'),app.vector_info.cget('text'));app.locate_glyph(); self.assertGreaterEqual(app.factor,4); app.zoom(1.25); self.assertGreaterEqual(app.factor,5); app.fit(); self.assertEqual(app.factor,1); app.mode(False); self.assertFalse(app.page_active); app.vectors_loaded((Image.new('RGB',(30,30),'white'),[1,1,5,5],[],1,dict(skeleton=[[(1.5,1.5),(2.5,2.5)]],nodes=[(2.5,2.5,3)],fallback=0,hypotheses={'splits':[('s1',[[1,1,3,5],[3,1,5,5]]),('s2',[[1,1,5,3],[1,3,5,5]])],'pairs':[],'compounds':[]})),'majority'); app.vector_layer.set(app.t('Skeleton')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-node')),1); app.vector_layer.set(app.t('Splits')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-hypothesis')),2); app.step_hypothesis(1); self.assertEqual(app.vector_index,1); app.mode(False); self.assertFalse(app.vector_active)
             app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
-            app.show('Settings'); app.fields['theme'].set('light'); app.fields['language'].set('en'); app.apply(); settle(); self.assertEqual(app.cfg['theme'],'light'); self.assertEqual(app.cfg['language'],'en')
+            app.show('Settings'); original_body=app.body; original_theme=app.fields['theme']
+            from unittest.mock import patch
+            with patch.object(app.api,'catalog',side_effect=AssertionError('Unchanged catalog must not reload')):
+                timings=[]
+                for theme in ('light','dark','light','dark','light'):
+                    started=time.perf_counter();app.fields['theme'].set(theme);app.apply();settle();timings.append((time.perf_counter()-started)*1000)
+                    self.assertIs(app.body,original_body);self.assertIs(app.fields['theme'],original_theme);self.assertEqual(app.cfg['theme'],theme)
+                ordered=sorted(timings)
+                print('RC2-04 theme save + repaint hosted fixture n=5 p50_ms=%.2f p95_ms=%.2f'%(ordered[2],ordered[-1]),flush=True)
+            app.fields['language'].set('en');app.apply();settle();self.assertEqual(app.cfg['language'],'en')
             w.geometry('1024x650'); w.update(); app.show('Review'); settle(); self.assertGreater(app.canvas.winfo_width(),150);self.assertTrue(app.kindbox.winfo_ismapped());self.assertTrue(app.review_side.winfo_ismapped())
             for widget in [app.draft_button,app.submit_button,*app.zoom_controls]:
                 self.assertTrue(widget.winfo_ismapped());self.assertGreaterEqual(widget.winfo_width(),widget.winfo_reqwidth());self.assertGreaterEqual(widget.winfo_height(),widget.winfo_reqheight())

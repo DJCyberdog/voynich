@@ -1,0 +1,9 @@
+# Original Voynich transliterations
+
+Owner-authorized public source mirror, 2026-11-27. The transliterations collected and linked in the source tables of [voynich.nu](https://www.voynich.nu/transcr.html) are made available under CC0 according to René Zandbergen's [licences and copyright statement](https://www.voynich.nu/roadmap.html). See [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). Acknowledge Zandbergen and the original contributors named in SOURCES.json. The software license does not supersede these source terms.
+
+Each of the ten original uploads is preserved byte-for-byte, including line endings and legacy v101 encoding. File names retain owner-uploaded spellings; original upstream name is recorded separately when known. SHA-256, Git blob ID and size are pinned in SOURCES.json. Fresh download equality has not been established. The two ZL3b editions, the two RF1b editions, v101 and its IVTFF conversion, and Takahashi-derived editions must not be treated as independent witnesses. These are sources, not ground truth or validated recognition models.
+
+Manuscript PDF is already referenced by the root Git LFS pointer. This commit adds no duplicate manuscript. Reference PDFs, Stolfi ZIP, XLSX and DOCX are not mirrored here: exact public redistribution terms and/or binary transfer remain unresolved. No private workspace, reviewer decisions, blind keys, credentials, derived crops or model files are included. Public Git availability is distinct from explicit local execution approval and scientific qualification. Original corpus is outside the portable software source manifest. Do not normalize, overwrite or silently convert these files.
+
+For RC1 local intake, copy originals into the private intake directory data/rc1/ and use the existing starter/audit/approval flow. Public source rights do not approve any specific run or automatically certify mappings.

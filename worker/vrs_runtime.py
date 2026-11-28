@@ -18,8 +18,8 @@ VERSION='0.13.1-cuda-candidate.3'
 
 
 class Runtime(Service):
-    def __init__(self,root):
-        super().__init__(root)
+    def __init__(self,root,*,hybrid_evidence=False):
+        super().__init__(root,hybrid_evidence=hybrid_evidence)
         path=Path(__file__).resolve().parent
         self.identity=c.digest(dict(parent=self.identity,version=VERSION,torch=importlib.metadata.version('torch'),sources={n:core.sha(path/n) for n in ('vrs_runtime.py','vrs_recognition.py','vrs_decisions.py','alignment.py')}))
         self.decisions=Decisions(self.ledger)
@@ -270,7 +270,7 @@ class Runtime(Service):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__); p.add_argument('root',type=Path); sub=p.add_subparsers(dest='action',required=True)
+    p=argparse.ArgumentParser(description=__doc__); p.add_argument('root',type=Path); p.add_argument('--hybrid-evidence',action='store_true',help='Explicit pinned-Yale qualification sidecar'); sub=p.add_subparsers(dest='action',required=True)
     for name in ('register','register-plan','decide'):
         q=sub.add_parser(name); q.add_argument('path',type=Path)
     sub.add_parser('list'); sub.add_parser('once'); q=sub.add_parser('watch'); q.add_argument('--interval',type=int,default=5); q.add_argument('--plan',type=Path)
@@ -280,7 +280,7 @@ def main():
         if name=='recover': q.add_argument('generation',type=int); q.add_argument('--confirm-stopped',action='store_true')
     args=p.parse_args()
     try:
-        app=Runtime(args.root); action=args.action
+        app=Runtime(args.root,hybrid_evidence=args.hybrid_evidence); action=args.action
         if action in ('register','register-plan','decide'):
             value=c.load(inside(app.root,args.path)); result={'run_id':app.register(value)} if action=='register' else {'run_ids':app.register_plan(value)} if action=='register-plan' else app.submit(value)
         elif action=='list': result=app.ledger.registered()

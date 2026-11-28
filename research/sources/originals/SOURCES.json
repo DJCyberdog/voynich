@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "scope": "ORIGINAL_TRANSCRIPTIONS",
+  "license": "CC0-1.0",
+  "rights_basis": "https://www.voynich.nu/roadmap.html#licences",
+  "rights_page": "https://www.voynich.nu/roadmap.html",
+  "source_page": "https://www.voynich.nu/transcr.html",
+  "verification": "Owner-supplied bytes matched local SHA-256, byte length and Git blob identity; fresh upstream byte equality not established.",
+  "scientific_status": "UNADJUDICATED",
+  "sources": [
+    {
+      "path": "research/sources/originals/ZL3b-n(1).txt",
+      "upstream_name": "ZL3b-n.txt",
+      "scheme": "Eva-",
+      "git_blob": "2a4533ab9bdfa85db9bad602d590978953055df1",
+      "sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+      "bytes": 411671,
+      "edition_family": "ZL3b",
+      "attribution": "Zandbergen–Landini",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/ZL3b.txt",
+      "upstream_name": "ZL3b.txt",
+      "scheme": "STA1",
+      "git_blob": "972691f051f6293e5fa0374e957bfc6c5d4a50e3",
+      "sha256": "8438ba1c45f47fe1d06b5262cbcdf60ce69158a0edbd4dd802612896f3217e2a",
+      "bytes": 472861,
+      "edition_family": "ZL3b",
+      "attribution": "Zandbergen–Landini",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/RF1b-e.txt",
+      "upstream_name": "RF1b-e.txt",
+      "scheme": "Eva-",
+      "git_blob": "c36d87683de5fcd24b4bb9ed56ddc4da475d8e99",
+      "sha256": "e7d3238e35743e06c63367a933909ec37b1e2de7ada3a1b449447eafa1918782",
+      "bytes": 362373,
+      "edition_family": "RF1b",
+      "attribution": "Reference transliteration; derived from ZL and GC",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/RF1b-er.txt",
+      "upstream_name": "RF1b-er.txt",
+      "scheme": "Eva-",
+      "git_blob": "85e5d4bcfe270dd4fb54cc477b1b5900020fa3f2",
+      "sha256": "eb857a1f353b18983fbc25b954e1bbce227a26d99cefabfda9206ff9b57644d2",
+      "bytes": 343891,
+      "edition_family": "RF1b",
+      "attribution": "Reference transliteration; derived from ZL and GC",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/IT2a-n.txt",
+      "upstream_name": "IT2a-n.txt",
+      "scheme": "EvaT",
+      "git_blob": "4d6d3f2537b1f507a257529b49c94af7d6e03446",
+      "sha256": "7f27a8b0feed8f6de0a99900df6bf912dd1d295c38e5f830bac8b41c3f536fb5",
+      "bytes": 342104,
+      "edition_family": "IT2a",
+      "attribution": "Takeshi Takahashi; LSI extraction",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/VT0e-n.txt",
+      "upstream_name": "VT0e-n.txt",
+      "scheme": "EvaT",
+      "git_blob": "c0d52c36cbb5dbb763851b2f674aefdbf9443693",
+      "sha256": "e13ba5e073cae54722bc095db8eb9a1aa9c7105f45a70f66a0aad236077f2426",
+      "bytes": 335205,
+      "edition_family": "VT0e",
+      "attribution": "Voynichese.com; mainly Takahashi, derived from LSI",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/GC2a-n.txt",
+      "upstream_name": "GC2a-n.txt",
+      "scheme": "v101",
+      "git_blob": "8417a644fbd9c11cdaf85224f29cafee9ba1bdb0",
+      "sha256": "b09570cb6c993bc2d87134d115e60a978650a8a6495483ddbb1f6005a586096f",
+      "bytes": 314916,
+      "edition_family": "GC",
+      "attribution": "Glen Claston",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/voyn_101.txt",
+      "upstream_name": "voyn_101.txt",
+      "scheme": "v101-legacy",
+      "git_blob": "a9c646841de5a704bc72b8afd690020465d24efa",
+      "sha256": "f278a451d873c520f7ab509c4af12152698a1d3efd2353924e177a565c17ba7e",
+      "bytes": 248567,
+      "edition_family": "GC",
+      "attribution": "Glen Claston; legacy format",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/FG2a-n.txt",
+      "upstream_name": "FG2a-n.txt",
+      "scheme": "FSG-",
+      "git_blob": "e2cd5d70f82aea2c85c29d5ef470aa35d42084c8",
+      "sha256": "a1460a05ff610a406e62b4095a8f8e88c04653c1ef4aa5ad6428ddb1ac01fe06",
+      "bytes": 264787,
+      "edition_family": "FG",
+      "attribution": "Friedman First Study Group; Reeds/Guy format",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "research/sources/originals/CD2a-n.txt",
+      "upstream_name": "CD2a-n.txt",
+      "scheme": "Curr",
+      "git_blob": "03e09b417c45c084d7a6b0a0d88a321c261a030f",
+      "sha256": "edc18e6de699c50d575925d4f469685ccbbe22c9755b9b8a3b002f83253cbde5",
+      "bytes": 132833,
+      "edition_family": "CD",
+      "attribution": "Prescott Currier / Mary D'Imperio",
+      "license": "CC0-1.0"
+    }
+  ]
+}

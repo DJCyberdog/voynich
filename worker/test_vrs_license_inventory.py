@@ -12,7 +12,7 @@ class LicenseInventory(unittest.TestCase):
             z.writestr('python.exe',b'fixture')
             z.writestr('LICENSE.txt',b'runtime notice')
             z.writestr('Lib/ensurepip/_bundled/pip.whl',b'embedded fixture')
-        for name,version in [('pillow','12.3.0'),('psutil','7.2.2')]:
+        for name,version in [('pillow','13.0.0'),('psutil','7.2.2'),('setuptools','84.1.0')]:
             prefix=f'{name}-{version}.dist-info/'
             with zipfile.ZipFile(w/f'{name}-{version}-cp313-cp313-win_amd64.whl','w') as z:
                 meta=f'Name: {name}\nVersion: {version}\n'
@@ -26,7 +26,7 @@ class LicenseInventory(unittest.TestCase):
             root=Path(d).resolve();p=self.fixture(root)
             r=inventory(root,'review',p['plan'],p['sha256'])
             self.assertFalse(r['redistribution_approved']);self.assertEqual(r['status'],'REVIEW_REQUIRED')
-            self.assertEqual(len(r['wheels']),2)
+            self.assertEqual(len(r['wheels']),3)
             self.assertEqual(r['wheels'][0]['declared_license_expression'],['MIT'])
             self.assertTrue(r['wheels'][0]['notice_files'])
             self.assertEqual(r['wheels'][0]['unresolved_declared_license_files'],[])
