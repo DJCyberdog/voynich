@@ -4,6 +4,7 @@ import copy
 from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+import vrs_dialogs as dialogs
 from PIL import Image, ImageTk, ImageDraw
 import active_review as ar
 import review_groups
@@ -244,7 +245,7 @@ def launch(manifest=None,predictions=None,references=None,output=None,reviewer=N
                 ttk.Label(root,text=label).grid(row=i,column=0,padx=10,pady=7,sticky='w'); var=tk.StringVar(value=initial[k] or ''); fields[k]=var; ttk.Entry(root,textvariable=var,width=55).grid(row=i,column=1,sticky='ew')
                 if k!='reviewer':
                     def choose(key=k):
-                        f=(filedialog.asksaveasfilename if key=='output' else filedialog.askopenfilename)(parent=root,filetypes=[('JSON','*.json')]); fields[key].set(f) if f else None
+                        f=dialogs.choose(filedialog.asksaveasfilename if key=='output' else filedialog.askopenfilename,parent=root,workspace=dialogs.portable_workspace(Path.cwd()),current=fields[key].get(),filetypes=[('JSON','*.json')]); fields[key].set(f) if f else None
                     ttk.Button(root,text='…',command=choose).grid(row=i,column=2,padx=8)
             def start():
                 try: s=Session(**{k:v.get() for k,v in fields.items()})

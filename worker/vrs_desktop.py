@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+import vrs_dialogs as dialogs
 from PIL import ImageTk, Image
 from vrs_desktop_api import Desktop
 from vrs_build_portable import RELEASE_VERSION as VERSION
@@ -293,10 +294,10 @@ class App:
         text=tk.Text(dialog,wrap='word',bg=self.p['panel'],fg=self.p['fg'],padx=12,pady=10);bar=ttk.Scrollbar(dialog,command=text.yview);bar.pack(side='right',fill='y');text.configure(yscrollcommand=bar.set);text.pack(fill='both',expand=True);text.insert('end',json.dumps(value,indent=2,ensure_ascii=False));text.configure(state='disabled')
     def import_source(self):
         if self.future is not None:return
-        p=filedialog.askopenfilename(parent=self.w)
+        p=dialogs.choose(filedialog.askopenfilename,parent=self.w,workspace=self.api.root)
         if p: role=self.role.get(); self.task(lambda:self.api.import_source(p,role),self.result)
     def choose_relative(self,var):
-        p=filedialog.askopenfilename(parent=self.w,initialdir=self.api.root)
+        p=dialogs.choose(filedialog.askopenfilename,parent=self.w,workspace=self.api.root,current=var.get())
         if p:
             try: var.set(Path(p).resolve().relative_to(self.api.root).as_posix())
             except ValueError: messagebox.showerror('VRS','Select a file inside the workspace',parent=self.w)
@@ -346,7 +347,7 @@ class App:
             if values: ttk.Combobox(row,textvariable=var,values=values,state='readonly').pack(side='left')
             else: ttk.Entry(row,textvariable=var).pack(side='left',fill='x',expand=True)
             if k=='catalog': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:self.choose_relative(v)).pack(side='right')
-            if k=='interpreter': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:v.set(filedialog.askopenfilename(parent=self.w) or v.get())).pack(side='right')
+            if k=='interpreter': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:v.set(dialogs.choose(filedialog.askopenfilename,parent=self.w,workspace=self.api.root,current=v.get()) or v.get())).pack(side='right')
         ttk.Button(self.body,text=self.t('Apply'),style='Accent.TButton',command=self.apply).pack(anchor='e',pady=12)
     def apply(self):
         if self.future is not None:return
@@ -357,7 +358,7 @@ class App:
     def settings_done(self,value): self.cfg=value; self.build(); self.show('Settings')
     def switch(self):
         if self.future is not None:return
-        p=filedialog.askdirectory(parent=self.w)
+        p=dialogs.choose(filedialog.askdirectory,parent=self.w,workspace=self.api.root,mustexist=True)
         if p:
             try: api=Desktop(p); cfg=api.settings()
             except Exception as exc: messagebox.showerror('VRS',str(exc),parent=self.w); return

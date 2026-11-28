@@ -79,6 +79,9 @@ def environment(root):
             env.pop(k)
     for k, rel in {'TEMP':'temp','TMP':'temp','TMPDIR':'temp','PIP_CACHE_DIR':'cache/pip','HF_HOME':'cache/hf','TORCH_HOME':'cache/torch','XDG_CACHE_HOME':'cache/xdg','XDG_CONFIG_HOME':'config/xdg','XDG_DATA_HOME':'data/xdg','XDG_STATE_HOME':'workspace/xdg','CUDA_CACHE_PATH':'cache/cuda','MPLCONFIGDIR':'cache/matplotlib','TRITON_CACHE_DIR':'cache/triton','TORCHINDUCTOR_CACHE_DIR':'cache/inductor','NUMBA_CACHE_DIR':'cache/numba','UV_CACHE_DIR':'cache/uv','PYTHONPYCACHEPREFIX':'cache/pyc','HOME':'data/home','USERPROFILE':'data/home','APPDATA':'config/appdata','LOCALAPPDATA':'data/localappdata'}.items():
         p=local(root,rel); p.mkdir(parents=True,exist_ok=True); env[k]=str(p)
+    # Redirected home folders expected by file dialogs. No shell registry changes.
+    for name in ('Desktop','Documents','Downloads'):
+        local(root,'data/home/'+name).mkdir(parents=True,exist_ok=True)
     env['VRS_PORTABLE_LOG_ROOT']=str(root)
     env.update(PYTHONNOUSERSITE='1', PIP_CONFIG_FILE=os.devnull, PIP_DISABLE_PIP_VERSION_CHECK='1', PIP_NO_INPUT='1', PIP_NO_INDEX='1')
     return env

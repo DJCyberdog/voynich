@@ -25,6 +25,8 @@ class TestPortable(unittest.TestCase):
     def test_paths_environment(self):
         with patch.dict(os.environ,{'PYTHONPATH':'outside','VRS_GITHUB_TOKEN_TEST':'SECRET','PIP_INDEX_URL':'evil'}):e=p.environment(self.root)
         for k in ('TEMP','HF_HOME','TORCH_HOME','CUDA_CACHE_PATH','PYTHONPYCACHEPREFIX','HOME'):self.assertTrue(Path(e[k]).is_relative_to(self.root))
+        for folder in ('Desktop','Documents','Downloads'):
+            self.assertTrue((Path(e['USERPROFILE'])/folder).is_dir())
         self.assertNotIn('VRS_GITHUB_TOKEN_TEST',e);self.assertNotIn('PYTHONPATH',e);self.assertNotIn('PIP_INDEX_URL',e)
         for name in ('../evil','/evil','a\\b','C:/a','a/../b','NUL.txt','file:stream','a/.. ','a//b'):
             with self.assertRaises(ValueError):p.local(self.root,name)
