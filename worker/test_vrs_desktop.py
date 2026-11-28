@@ -43,6 +43,23 @@ class DesktopTests(unittest.TestCase):
         (self.root/item['crop']['path']).write_bytes(b'bad')
         with self.assertRaises(ValueError):self.api.page_context(item)
 
+    def test_vector_window_native_coordinates_and_bounds(self):
+        from vrs_desktop_api import vector_window
+        image=Image.new('RGB',(100,100),'white')
+        rows=[dict(box=[40,41,44,45],contours=[[[0,0],[4,0],[4,4],[0,4],[0,0]]]),
+              dict(box=[80,80,82,82],contours=[])]
+        preview,box,paths,count=vector_window(image,[42,42,46,46],rows)
+        self.assertEqual(count,1);self.assertEqual(preview.size,(54,53))
+        self.assertEqual(box,[26,25,30,29]);self.assertEqual(paths[0][0],(24,24))
+        self.assertEqual(vector_window(image,[1,1,2,2],rows)[3],0)
+        rows[0]['contours'][0][1]=[9,0]
+        with self.assertRaises(ValueError):vector_window(image,[42,42,46,46],rows)
+
+    def test_no_hybrid_evidence_keeps_legacy_review(self):
+        run=self.f.run_to_review(); item=self.api.review(run,limit=1)['items'][0]
+        with self.assertRaisesRegex(ValueError,'No hybrid evidence'):self.api.vector_context(item,'majority')
+        self.assertIsNotNone(self.api.crop(item)[0])
+
     def test_offline_draft_and_authoritative_subprocess(self):
         run=self.f.run_to_review(); q=self.api.review(run); item=q['items'][0]; path=self.api.stage_decision(item,q['snapshot'],q['inventory'],'fixture','glyph',{'Eva-':{'state':'mapped','label':'a'},'STA1':{'state':'absent','label':None}})
         self.assertEqual(self.f.app.review_items(run)['snapshot']['resolved'],0); self.assertEqual(c.load(self.root/path)['candidate_id'],item['id'])

@@ -71,6 +71,36 @@ class ReadDecisions(Decisions):
     def __init__(self, ledger): self.ledger = ledger; self.root = ledger.root; self.queue = ReadQueue(ledger)
 
 
+def vector_window(image, target, components):
+    """Native-pixel preview of intersecting component contours, not glyph matches."""
+    from vrs_exceptions import box_key
+    w,h=image.size; a,b,cx,d=box_key(target)
+    require(cx<=w and d<=h,'Native candidate outside image')
+    selected=[]; points=0
+    for row in components:
+        l,t,r,bot=box_key(row['box'])
+        require(r<=w and bot<=h,'Native component outside image')
+        if max(l,a)>=min(r,cx) or max(t,b)>=min(bot,d):continue
+        require(len(selected)<2000,'Vector preview component budget exceeded')
+        selected.append((row,(l,t,r,bot)))
+    left=max(0,min([a]+[p[0] for _,p in selected])-24)
+    top=max(0,min([b]+[p[1] for _,p in selected])-24)
+    right=min(w,max([cx]+[p[2] for _,p in selected])+24)
+    bottom=min(h,max([d]+[p[3] for _,p in selected])+24)
+    require((right-left)*(bottom-top)<=1_000_000,'Vector preview pixel budget exceeded')
+    paths=[]
+    for row,(l,t,r,bot) in selected:
+        for loop in row['contours']:
+            require(len(loop)>=4 and loop[0]==loop[-1],'Invalid vector loop')
+            points+=len(loop);require(points<=20000 and len(paths)<2000,'Vector preview path budget exceeded')
+            path=[]
+            for x,y in loop:
+                require(type(x) is int and type(y) is int and 0<=x<=r-l and 0<=y<=bot-t,'Invalid component contour coordinates')
+                path.append((l+x-left,t+y-top))
+            paths.append(path)
+    return image.crop((left,top,right,bottom)),[a-left,b-top,cx-left,d-top],paths,len(selected)
+
+
 class Desktop:
     def __init__(self, root): self.root = Path(root).resolve(strict=True)
 
@@ -174,6 +204,41 @@ class Desktop:
         require(im.crop(px).size==crop.size and im.crop(px).tobytes()==crop.tobytes(),'Page/crop pixels differ; alignment unverified')
         absolute=[px[0]+box[0],px[1]+box[1],px[0]+box[2],px[1]+box[3]]
         return im,absolute
+
+    def vector_context(self, item, mask):
+        """Explicit read-only native overlay of persisted hybrid evidence."""
+        require(mask in ('union','majority','intersection'),'Invalid evidence mask')
+        # page_context authenticates queue identity, source, crop and absolute coordinates.
+        page_image,absolute=self.page_context(item); del page_image
+        import fitz
+        import vrs_ink as ink
+        import vrs_hybrid_page as hybrid
+        ledger=ReadLedger(self.root); run=item['run_id']
+        with ledger._tx() as conn:
+            row=ledger._row(conn,'runs',run); manifest,receipts,_=ledger._validate(row)
+            region_receipt=receipts['script_regions']; seg_receipt=receipts['glyph_segmentation']
+            require(seg_receipt['state']=='COMPLETED','Hybrid segmentation not completed')
+            ri=load_page(pinned(self.root,region_receipt['artifact']))
+            si=load_page(pinned(self.root,seg_receipt['artifact']))
+            require(si['run_id']==run and si['stage']=='glyph_segmentation' and si['source']==region_receipt['artifact'],'Segmentation binding mismatch')
+            rr=[x for x in ri['pages'] if x['page']==item['page']]
+            ss=[x for x in si['pages'] if x['page']==item['page']]
+            require(len(rr)==len(ss)==1,'Missing hybrid page')
+            m=load_page(pinned(self.root,rr[0]['manifest']))
+            value=load_page(pinned(self.root,ss[0]['proposals']))
+            require(value['source']==rr[0]['manifest'],'Hybrid region binding mismatch')
+            require('hybrid_evidence' in value,'No hybrid evidence for this run')
+            pinned(self.root,value['hybrid_evidence'])
+        source=manifest['inputs']['manuscript']
+        record=hybrid.validate_ref(self.root,value,m,expected_source=source,required=True)
+        require(record['hybrid'] is not None,'No native image evidence')
+        with fitz.open(pinned(self.root,source)) as doc:
+            image,meta=ink.native_page(doc[item['page']-1])
+        require(meta==record['native'] and image is not None,'Native source mismatch')
+        target=ink.native_box(meta,absolute)
+        require(target is not None,'Native candidate alignment unavailable')
+        components=record['hybrid']['grouping']['masks'][mask]['components']
+        return vector_window(image,target,components)
 
     def catalog(self, rel):
         # Explicit scheme IDs only, no inferred cross-convention mappings.
