@@ -238,7 +238,7 @@ These eight subpackages are internal remediation of the existing RC2-02 package,
 |---|---|---|
 | Portable update baseline | RC2-00 | Preserve historical TECH_PASS; native migration at RC2-10. |
 | Manuscript surface | RC2-01 | Preserve technical evidence; independent scientific gate remains. |
-| Hybrid engine | RC2-02a–h / RC2-02 | Complete remaining engineering and real-source coverage; independent 02h remains binding. |
+| Hybrid engine | RC2-02a–h / RC2-02 | Active priority alongside desktop: explicit 02a–h completion checklist below; finish engineering, real-source coverage and independent 02h evidence separately. |
 | Source-bound context | RC2-03 | Integrate remaining work during RC2-04; independent geometry checks. |
 | Adaptive research desktop | RC2-04 + RC2-12 | One redesign/profiling cycle: baseline, adaptive layout and status, asynchronous operations/cache, integrated UI and latency tests. |
 | Runtime performance | RC2-05 | CPU/CUDA measurement, parity and resource qualification; reuse same compatible runtime as security. |
@@ -246,6 +246,23 @@ These eight subpackages are internal remediation of the existing RC2-02 package,
 | GitHub trust and workflow | RC2-11 | Independent authorization and end-to-end qualification; integrate status UI into RC2-04 without simulating authorized writes. |
 | Security and migration | RC2-13 | Shared dependency/runtime regression with RC2-05; independent security and rollback gates. |
 | Integrated delivery | RC2-10 | Single cumulative patch, final regression and owner acceptance plan. |
+
+#### Active RC2-02 completion track — not absorbed or deferred by the UI consolidation
+
+The experimental passes in RC2-02a–f establish selected technical capabilities, not closure of their complete scopes. Retain all eight subpackage IDs and explicit remaining obligations below. The following is an execution checklist, not a new acceptance policy or a new release sequence.
+
+| Scope | Current qualification | Remaining engineering and acceptance work | Execute with |
+|---|---|---|---|
+| RC2-02a | PARTIAL — native decoding/background controls pass | Verify native channel/background and scale alternatives across representative source geometries; retain source identities and independent quality checks. | RC2-02g / 02h |
+| RC2-02b | PARTIAL — experimental comparison pass | Finish production qualification of selected methods/parameters; compare pixel retention, fragmentation, clipping and generalization against independent reference evidence. Preserve discarded-method rationale. | RC2-02g / 02h |
+| RC2-02c | PARTIAL — ensemble experiment pass | Verify disagreement/weak-stroke preservation and uncertainty evidence in integrated Runtime and review; no calibrated confidence claim without calibration. | RC2-02g / 04 / 02h |
+| RC2-02d | PARTIAL — material envelope baseline pass | Complete material/script-zone evidence integration and review access; independent physical boundary, script/non-script and registration tests remain in 02h. No unvalidated exclusions. | RC2-02g / 04 / 02h |
+| RC2-02e | PARTIAL — vector fidelity experiments pass | Audit which contour alternatives are actually integrated and portable; close remaining durable geometry/roundtrip and review qualification or document evidence-based rejection of alternatives. | RC2-02g / 04 |
+| RC2-02f | PARTIAL — topology experiments pass | Audit actual skeleton/graph/width alternatives, fallback visibility, portability and source-bound replay; qualify remaining topology controls on representative pages. | RC2-02g / 04 / 05 |
+| RC2-02g | IN_PROGRESS — real-source replay 19/19, preview 18/18 at 8942ac0 | Expand representative page coverage including difficult layouts; verify supported portable runtime/review path from actual persisted artifacts, explicit opt-in mode and lifecycle identity; retain candidate IDs, alternatives, budgets, stop/resume and parity. Native owner acceptance remains separate. | RC2-02 engineering + RC2-03/04 + RC2-05 |
+| RC2-02h | BLOCKED / scientific acceptance NOT_MET | Freeze methods, inventory usable independent annotations and permissions, prepare holdout protocol and metrics; execute available independent tests, report missing registration/negative and other-script references explicitly. No substituted developer labels or tuning samples. | Independent scientific track, not a UI or release shortcut |
+
+**Dependency order:** RC2-02a–f remaining technical gaps and RC2-02g integration/coverage form one coordinated engineering batch with the RC2-03/04 review-facing changes. RC2-02g must not be marked closed merely because a UI renders successfully. Start the RC2-02h reference/evidence inventory and protocol preparation alongside that batch; run the independent comparison only on frozen methods and eligible evidence. RC2-05 profiles the integrated engine; RC2-10 must explicitly account for every 02a–h obligation, including any genuinely blocked independent or native gates, under the existing release and owner-test rules. No partial gate may be reported as complete; no additional intermediate ZIP. Progress is measured by evidence, not by fewer roadmap rows.
 
 **Immediate RC2-04 implementation order:** (a) measure baseline and identify UI-thread stalls with worker idle/active; (b) adaptive shell, review layout and reference interactions with stable focus/selection; (c) shared worker/review/outbox status and compact controls, reuse existing Windows lifecycle adapters; (d) asynchronous IO, bounded refresh, preview caches and preference-only updates; (e) integrated hosted GUI geometry, accessibility and performance evidence with exact p50/p95 denominators, native owner DPI and latency qualification separately. Measure during each increment; no deferral of performance to a second redesign. No change to scientific decisions or worker contracts solely for cosmetic preferences.
 
