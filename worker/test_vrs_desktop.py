@@ -127,6 +127,25 @@ class DesktopTests(unittest.TestCase):
         with self.assertRaises(ValueError): self.api.catalog(r['path'])
         with self.assertRaises(ValueError): safe(self.root,'../outside')
 
+    def test_evidence_mode_upgrade_and_non_yale_registration_guard(self):
+        from vrs_desktop_api import atomic_json
+        from unittest.mock import patch
+        cfg=self.api.settings();self.assertEqual(cfg.pop('evidence_mode'),'legacy')
+        atomic_json(self.root/'config/vrs-desktop.json',cfg)
+        self.assertEqual(self.api.settings()['evidence_mode'],'legacy')
+        self.assertEqual(self.api.runtime_flags(),[])
+        self.api.save_settings(dict(cfg,evidence_mode='hybrid'))
+        self.assertEqual(self.api.runtime_flags(),['--hybrid-evidence'])
+        with self.assertRaises(ValueError):self.api.save_settings(dict(cfg,evidence_mode='invalid'))
+        p=self.f.file('manifest-legacy-source.json',self.f.m)['path']
+        with patch('vrs_desktop_api.subprocess.run') as launch:
+            with self.assertRaisesRegex(ValueError,'pinned Yale'):self.api.command(sys.executable,'register',p)
+            launch.assert_not_called()
+        with patch('vrs_desktop_api.subprocess.run') as launch:
+            launch.return_value.returncode=0;launch.return_value.stdout='{}'
+            self.api.command(sys.executable,'decide',p)
+            self.assertEqual(launch.call_args.args[0][3:5],['--hybrid-evidence','decide'])
+
     def test_manifest_verification_without_ml_import(self):
         p=self.f.file('manifest.json',self.f.m)['path']; code='import sys; from vrs_desktop_api import Desktop; a=Desktop(sys.argv[1]); a.manifest_info(sys.argv[2]); assert not any(x in sys.modules for x in ("torch","numpy","fitz"))'
         proc=subprocess.run([sys.executable,'-S','-c',code,str(self.root),p],capture_output=True,text=True,timeout=30); self.assertEqual(proc.returncode,0,proc.stderr)

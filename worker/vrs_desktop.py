@@ -36,6 +36,8 @@ def zoom_origin(anchor, geometry, viewport, scroll_extent):
 
 DE.update({'Locate glyph':'Glyphe finden'})
 
+DE.update({'Evidence mode':'Evidenzmodus','Hybrid mode requires pinned Yale PDF; stop worker before changing. Existing runs retain their original identity.':'Hybridmodus benötigt die originale Yale-PDF. Worker vor Wechsel stoppen. Bestehende Runs behalten ihre Identität.'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -461,18 +463,20 @@ class App:
 
     def page_settings(self):
         self.title('Settings',self.t('Workspace path')+' · '+str(self.api.root)); self.fields={}
-        for k,label,values in [('project','Project',None),('reviewer','Reviewer',None),('theme','Theme',('dark','light')),('language','Language',('de','en')),('interpreter','Compute Python',None),('catalog','Catalog file',None)]:
+        for k,label,values in [('project','Project',None),('reviewer','Reviewer',None),('theme','Theme',('dark','light')),('language','Language',('de','en')),('evidence_mode','Evidence mode',('legacy','hybrid')),('interpreter','Compute Python',None),('catalog','Catalog file',None)]:
             row=ttk.Frame(self.body); row.pack(fill='x',pady=7); ttk.Label(row,text=self.t(label),width=20).pack(side='left'); var=tk.StringVar(value=self.cfg[k]); self.fields[k]=var
             if values: ttk.Combobox(row,textvariable=var,values=values,state='readonly').pack(side='left')
             else: ttk.Entry(row,textvariable=var).pack(side='left',fill='x',expand=True)
             if k=='catalog': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:self.choose_relative(v)).pack(side='right')
             if k=='interpreter': ttk.Button(row,text=self.t('Browse'),command=lambda v=var:v.set(dialogs.choose(filedialog.askopenfilename,parent=self.w,workspace=self.api.root,current=v.get()) or v.get())).pack(side='right')
+        ttk.Label(self.body,text=self.t('Hybrid mode requires pinned Yale PDF; stop worker before changing. Existing runs retain their original identity.'),style='Muted.TLabel',wraplength=650).pack(anchor='w')
         ttk.Button(self.body,text=self.t('Apply'),style='Accent.TButton',command=self.apply).pack(anchor='e',pady=12)
     def apply(self):
         if self.future is not None:return
         value={**self.cfg,**{k:v.get() for k,v in self.fields.items()},'geometry':f'{self.w.winfo_width()}x{self.w.winfo_height()}'}
         def work():
-            self.api.catalog(value['catalog']); return self.api.save_settings(value)
+            if value['catalog']!=self.cfg['catalog']:self.api.catalog(value['catalog'])
+            return self.api.save_settings(value)
         self.task(work,self.settings_done)
     def settings_done(self,value): self.cfg=value; self.build(); self.show('Settings')
     def switch(self):

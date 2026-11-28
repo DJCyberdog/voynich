@@ -180,7 +180,11 @@ class Desktop:
     def __init__(self, root): self.root = Path(root).resolve(strict=True)
 
     def _validate_settings(self, v):
-        c.fields(v, ('schema','theme','language','reviewer','interpreter','catalog','geometry','project'))
+        require(type(v) is dict,'Invalid UI settings')
+        # Backward-compatible settings upgrade; old workspaces remain raster by default.
+        v={'evidence_mode':'legacy',**v}
+        c.fields(v, ('schema','theme','language','reviewer','interpreter','catalog','geometry','project','evidence_mode'))
+        require(v['evidence_mode'] in ('legacy','hybrid'),'Invalid evidence mode')
         require(type(v['schema']) is int and v['schema']==1 and v['theme'] in ('dark','light') and v['language'] in ('de','en') and all(type(v[k]) is str and len(v[k])<=512 for k in ('reviewer','interpreter','catalog','geometry','project')), 'Invalid UI settings')
         import re
         require(re.fullmatch(r'\d{3,5}x\d{3,5}',v['geometry']) is not None, 'Invalid window geometry')
@@ -189,13 +193,19 @@ class Desktop:
 
     def settings(self):
         p = safe(self.root, 'config/vrs-desktop.json')
-        if not p.exists(): return dict(schema=1, theme='dark', language='de', reviewer='', interpreter='', catalog='', geometry='1280x800', project='')
+        if not p.exists(): return dict(schema=1, theme='dark', language='de', reviewer='', interpreter='', catalog='', geometry='1280x800', project='', evidence_mode='legacy')
         return self._validate_settings(c.load(p))
 
     def save_settings(self, value):
         # No secrets or raw source bytes in settings.
-        self._validate_settings(value); p = safe(self.root, 'config/vrs-desktop.json'); atomic_json(p, value)
+        value=self._validate_settings(value); p = safe(self.root, 'config/vrs-desktop.json'); atomic_json(p, value)
         return self.settings()
+
+    def runtime_mode(self):
+        return self.settings()['evidence_mode']
+
+    def runtime_flags(self):
+        return ['--hybrid-evidence'] if self.runtime_mode()=='hybrid' else []
 
     def runs(self):
         db = safe(self.root, 'workspace/vrs095/ledger.sqlite')
@@ -414,7 +424,10 @@ class Desktop:
         vrs_recognition.inputs(self.root,manifest)
         # Validate the local page scope and supported transcription syntax before recording.
         groups=c.load(pinned(self.root,manifest['inputs']['groups']))
-        require(type(groups) is dict and 1<=len(groups)<=213 and all(type(k) is str and k.isdecimal() and str(int(k))==k and int(k)>0 and type(v) is str and v.strip() for k,v in groups.items()),'Invalid page scope')
+        from vrs_surface import YALE_SHA256, YALE_PAGES
+        yale=manifest['inputs']['manuscript']['sha256']==YALE_SHA256
+        require(self.runtime_mode()!='hybrid' or yale,'Hybrid mode requires the pinned Yale PDF')
+        require(type(groups) is dict and 1<=len(groups)<=(YALE_PAGES if yale else 213) and all(type(k) is str and k.isdecimal() and str(int(k))==k and int(k)>0 and type(v) is str and v.strip() for k,v in groups.items()),'Invalid page scope')
         import fitz, alignment
         with fitz.open(pinned(self.root,manifest['inputs']['manuscript'])) as doc:
             require(doc.is_pdf and not doc.needs_pass and all(int(k)<=len(doc) for k in groups),'Invalid manuscript or page scope')
@@ -438,8 +451,13 @@ class Desktop:
         require(action in ('decide','register'),'Unapproved command')
         p=Path(interpreter)
         require(p.is_absolute() and p.is_file() and p.name.lower() in ('python','python3','python.exe','python3.exe','python3.13','python3.12'),'Select local compute Python explicitly')
-        script=Path(__file__).with_name('vrs_runtime.py').resolve(strict=True); safe(self.root,arg)
-        result=subprocess.run([str(p),str(script),str(self.root),action,arg],cwd=self.root,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120,**background_options())
+        script=Path(__file__).with_name('vrs_runtime.py').resolve(strict=True); path=safe(self.root,arg)
+        flags=self.runtime_flags()
+        if action=='register' and flags:
+            from vrs_surface import YALE_SHA256
+            value=c.load(path);c.manifest(self.root,value)
+            require(value['inputs']['manuscript']['sha256']==YALE_SHA256,'Hybrid mode requires the pinned Yale PDF')
+        result=subprocess.run([str(p),str(script),str(self.root),*flags,action,arg],cwd=self.root,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120,**background_options())
         require(result.returncode==0, 'Worker rejected request: '+(result.stdout or result.stderr)[-800:])
         return json.loads(result.stdout)
 

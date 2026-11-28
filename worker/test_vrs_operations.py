@@ -47,6 +47,24 @@ class OperationsTests(unittest.TestCase):
         finally:
             if self.api.session()['state'] in ('RUNNING','STOP_REQUESTED'):self.api.stop(); self.wait(lambda:self.api.session()['state']=='STOPPED')
 
+    def test_managed_hybrid_mode_identity_and_restart_guard(self):
+        # No manuscript processing; managed process really starts in explicit hybrid mode.
+        cfg=self.api.settings();self.api.save_settings(dict(cfg,evidence_mode='hybrid'))
+        try:
+            session=self.api.start(sys.executable)
+            self.assertEqual(session['state'],'RUNNING')
+            self.assertEqual(session['evidence_mode'],'hybrid')
+            self.assertEqual(self.api.runtime_flags(),['--hybrid-evidence'])
+            with self.assertRaisesRegex(ValueError,'Stop managed worker'):
+                self.api.save_settings(dict(cfg,evidence_mode='legacy'))
+            self.api.stop();self.wait(lambda:self.api.session()['state']=='STOPPED')
+            self.api.save_settings(dict(cfg,evidence_mode='legacy'))
+            self.assertEqual(self.api.runtime_flags(),[])
+            session=self.api.start(sys.executable)
+            self.assertEqual(session['evidence_mode'],'legacy')
+        finally:
+            if self.api.session()['state'] in ('RUNNING','STOP_REQUESTED'):self.api.stop();self.wait(lambda:self.api.session()['state']=='STOPPED')
+
     def test_terminal_acknowledgement_waits_for_process_exit(self):
         import psutil
         from vrs_desktop_api import atomic_json

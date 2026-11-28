@@ -134,7 +134,7 @@ class Monitor(App):
         if selected and tree.exists(selected) and tree.selection()!=(selected,): tree.selection_set(selected)
         ram=(data['ram_total']-data['ram_available'])/1024**3; total=data['ram_total']/1024**3; disk=data['disk_free']/1024**3
         rss=data['worker'].get('rss'); rss_text=f' · RSS {rss/1024**2:.0f} MiB' if rss is not None else ''
-        self.telemetry.set(f"CPU {data['cpu_percent']:.1f}% · {data['allowed']} threads | RAM {ram:.1f}/{total:.1f} GiB | Disk free {disk:.1f} GiB\nWorker: {data['worker']['state']}{rss_text} · {self.t('No GPU telemetry')}")
+        self.telemetry.set(f"CPU {data['cpu_percent']:.1f}% · {data['allowed']} threads | RAM {ram:.1f}/{total:.1f} GiB | Disk free {disk:.1f} GiB\nWorker: {data['worker']['state']}{rss_text} · {self.t('Evidence mode')}: {data['worker'].get('evidence_mode','—')} · {self.t('No GPU telemetry')}")
         if hasattr(self,'cpu_metric'):
             self.cpu_metric.configure(text=f"{data['cpu_percent']:.0f}%");self.ram_metric.configure(text=f'{ram:.1f} / {total:.1f} GiB')
             devices=data.get('gpu_telemetry');self.gpu_metric.configure(text=(f"{devices[0]['util']:.0f}% · {devices[0]['used_mib']/1024:.1f}/{devices[0]['total_mib']/1024:.1f} GiB" if devices else '—'))
