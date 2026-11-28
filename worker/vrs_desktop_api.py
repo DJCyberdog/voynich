@@ -4,6 +4,7 @@ import os
 import shutil
 import sqlite3
 import subprocess
+from vrs_process import background_options
 import sys
 import uuid
 from contextlib import contextmanager
@@ -219,7 +220,7 @@ class Desktop:
         p=Path(interpreter)
         require(p.is_absolute() and p.is_file() and p.name.lower() in ('python','python3','python.exe','python3.exe','python3.13','python3.12'),'Select local compute Python explicitly')
         script=Path(__file__).with_name('vrs_runtime.py').resolve(strict=True); safe(self.root,arg)
-        result=subprocess.run([str(p),str(script),str(self.root),action,arg],cwd=self.root,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120,shell=False)
+        result=subprocess.run([str(p),str(script),str(self.root),action,arg],cwd=self.root,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120,**background_options())
         require(result.returncode==0, 'Worker rejected request: '+(result.stdout or result.stderr)[-800:])
         return json.loads(result.stdout)
 

@@ -58,6 +58,34 @@ class OperationsTests(unittest.TestCase):
         data=c.load(p);data['created']-=100;atomic_json(p,data)
         self.assertEqual(self.api.session()['state'],'STOPPED')
 
+    def test_unknown_process_refuses_start(self):
+        import psutil
+        from vrs_desktop_api import atomic_json
+        from vrs_operations import BASE
+        p=self.root/BASE/'session.json'
+        atomic_json(p,dict(id='b'*32,pid=os.getpid(),created=psutil.Process().create_time(),state='STOPPED',limits=self.api.settings_ops()))
+        with patch('vrs_operations.liveness',return_value=('UNKNOWN',None)),patch('vrs_operations.subprocess.Popen') as spawn:
+            self.assertEqual(self.api.session()['state'],'UNKNOWN')
+            with self.assertRaisesRegex(ValueError,'state unknown'):self.api.start(sys.executable)
+            spawn.assert_not_called()
+
+    def test_control_feedback_pending_acknowledged_and_failed(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        feedback=Mock()
+        pending=[]
+        fake=SimpleNamespace(future=None,control_feedback=feedback,t=lambda x:x,w=None,load_jobs=Mock(),task=lambda fn,done:pending.append((fn,done)))
+        Monitor.control_request(fake,'Pause',lambda:{'control':'PAUSE_REQUESTED'})
+        feedback.set.assert_called_with('Pause · Request pending')
+        fn,done=pending.pop();done(fn())
+        feedback.set.assert_called_with('Pause · Request acknowledged · PAUSE_REQUESTED')
+        fake.load_jobs.assert_called_with(automatic=True)
+        def failure():raise ValueError('fixture')
+        Monitor.control_request(fake,'Resume',failure)
+        fn,done=pending.pop()
+        with patch('vrs_monitor.messagebox.showerror') as error:done(fn());error.assert_called_once()
+        feedback.set.assert_called_with('Resume · Request failed')
+
     def test_bounded_session_write_retry(self):
         from vrs_operations import write_session
         p=self.root/'session-fixture.json';value={'state':'STOPPED'}

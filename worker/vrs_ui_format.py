@@ -3,6 +3,7 @@ import json
 import math
 import os
 import subprocess
+from vrs_process import background_options
 from pathlib import Path
 
 def human(value):
@@ -41,7 +42,7 @@ def gpu_telemetry():
     exe=next((p for p in paths if p.is_file() and not p.is_symlink()),None)
     if exe is None:return None
     try:
-        out=subprocess.run([str(exe),'--query-gpu=index,utilization.gpu,memory.used,memory.total','--format=csv,noheader,nounits'],capture_output=True,text=True,encoding='utf-8',errors='strict',check=True,timeout=2,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0) if os.name=='nt' else 0)
+        out=subprocess.run([str(exe),'--query-gpu=index,utilization.gpu,memory.used,memory.total','--format=csv,noheader,nounits'],capture_output=True,text=True,encoding='utf-8',errors='strict',check=True,timeout=2,**background_options())
         return parse_gpu(out.stdout)
     except (OSError,ValueError,subprocess.SubprocessError):return None
 

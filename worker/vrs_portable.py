@@ -8,6 +8,7 @@ import re
 import shutil
 import stat
 import subprocess
+from vrs_process import background_options
 import sys
 import tempfile
 import time
@@ -100,7 +101,7 @@ def probe(root):
         ram=os.sysconf('SC_PHYS_PAGES')*os.sysconf('SC_PAGE_SIZE')
     gpu='NOT_MEASURED'
     try:
-        p=subprocess.run(['nvidia-smi','--query-gpu=name,driver_version,memory.total','--format=csv,noheader'],capture_output=True,timeout=5,text=True,check=True)
+        p=subprocess.run(['nvidia-smi','--query-gpu=name,driver_version,memory.total','--format=csv,noheader'],capture_output=True,timeout=5,text=True,check=True,**background_options())
         gpu=p.stdout.strip()[:1024]
     except (OSError,subprocess.SubprocessError): pass
     return dict(os=platform.system(),arch=platform.machine(),threads=os.cpu_count(),ram_bytes=ram,free_bytes=shutil.disk_usage(root).free,nvidia=gpu,automatic='review',native_qualification='PENDING')

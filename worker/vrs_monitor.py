@@ -17,6 +17,8 @@ from vrs_ui_format import human,gpu_telemetry,review_fraction,brand_icon
 DE.update({'Jobs':'Jobs & Ressourcen','Evidence':'Evidenz','Start worker':'Worker starten','Stop worker':'Worker stoppen','Pause':'Pausieren','Resume':'Fortsetzen','Cancel':'Abbrechen','Resource ceilings':'Ressourcengrenzen','Save ceilings':'Grenzen speichern','CPU threads':'CPU-Threads','RAM estimate MiB':'RAM-Schätzung MiB','Disk estimate MiB':'Speicherschätzung MiB','Export local preview':'Lokale Vorschau speichern','Enable tray':'Tray aktivieren','Hide to tray':'In Tray minimieren','Open':'Öffnen','Exit desktop':'Oberfläche beenden','No automatic accuracy claim':'Keine automatische Genauigkeitsaussage','Actual checkpoint progress':'Tatsächlicher Checkpoint-Fortschritt','Local managed worker':'Lokal verwalteter Worker','Review required':'Review erforderlich','No GPU telemetry':'Keine GPU-Messung','Ceilings apply after worker restart; 0 = default':'Grenzen gelten nach Worker-Neustart; 0 = Standard','Refresh evidence':'Evidenz aktualisieren','Diagnostics':'Diagnose','Compared regions':'Verglichene Regionen','Unresolved regions':'Ungeklärte Regionen'})
 
 
+DE.update({'Request pending':'Anfrage läuft','Request acknowledged':'Anfrage bestätigt','Request failed':'Anfrage fehlgeschlagen','RUNNING':'Läuft','STOP_REQUESTED':'Stopp angefordert','STOPPED':'Gestoppt','PAUSE_REQUESTED':'Pause angefordert','PAUSED':'Pausiert','CANCEL_REQUESTED':'Abbruch angefordert','CANCELLED':'Abgebrochen','READY':'Bereit','UNKNOWN':'Zustand unbekannt'})
+
 class Notifications:
     """Coalesce by parked-run set; no candidate details or repeated idle alerts."""
     def __init__(self): self.last=None; self.last_time=-1e9
@@ -81,6 +83,7 @@ class Monitor(App):
         self.telemetry=tk.StringVar(value='—');ttk.Label(self.body,textvariable=self.telemetry,style='Muted.TLabel',wraplength=740).pack(fill='x')
         tools=ttk.Frame(self.body); tools.pack(fill='x',pady=6)
         for text,action in [('Start worker',self.start_worker),('Stop worker',self.stop_worker),('Refresh',self.load_jobs),('Diagnostics',self.diagnostics)]: ttk.Button(tools,text=self.t(text),command=action).pack(side='left',padx=(0,5))
+        self.control_feedback=tk.StringVar(value='—');ttk.Label(self.body,textvariable=self.control_feedback,style='Muted.TLabel',wraplength=740).pack(fill='x')
         self.jobs_tree=ttk.Treeview(self.body,columns=('state','stage','progress','reason'),show='tree headings',height=6)
         for key,label,width in [('#0','Run',105),('state','Status',105),('stage','Stage',150),('progress','Stages',65),('reason','Reason',150)]: self.jobs_tree.heading(key,text=label); self.jobs_tree.column(key,width=width,minwidth=45)
         self.jobs_tree.pack(fill='both',expand=True);self.job_progress=ttk.Progressbar(self.body,mode='determinate',maximum=1,value=0);self.job_progress.pack(fill='x',pady=(4,0)); self.jobs_tree.bind('<<TreeviewSelect>>',lambda e:self.job_detail()); self.jobs_tree.bind('<Return>',lambda e:self.job_detail()); self.jobs_tree.bind('<Double-1>',lambda e:self.job_detail())
@@ -150,16 +153,34 @@ class Monitor(App):
         if not run or self.future is not None: return
         if not interpreter: messagebox.showinfo('VRS',self.t('Compute Python'),parent=self.w); return
         if action=='cancel' and not messagebox.askyesno('VRS',self.t('Cancel')+'?',parent=self.w):return
-        self.task(lambda:self.api.control(interpreter,action,run),lambda v:self.load_jobs())
+        self.control_request(action.capitalize(),lambda:self.api.control(interpreter,action,run))
 
     def diagnostics(self): self.task(self.api.diagnostics,lambda v:self.write_text(self.job_text,v))
 
+    def control_request(self,label,fn):
+        if self.future is not None:return
+        self.control_feedback.set(self.t(label)+' · '+self.t('Request pending'))
+        def work():
+            try:return True,fn()
+            except Exception as exc:return False,str(exc)
+        def done(result):
+            ok,value=result
+            if ok:
+                state=value.get('control',value.get('state','UNKNOWN'))
+                self.control_feedback.set(self.t(label)+' · '+self.t('Request acknowledged')+' · '+self.t(state))
+            else:
+                self.control_feedback.set(self.t(label)+' · '+self.t('Request failed'))
+                messagebox.showerror('VRS',value,parent=self.w)
+            self.load_jobs(automatic=True)
+        self.task(work,done)
+
     def start_worker(self):
+        if self.future is not None:return
         interpreter=self.cfg['interpreter']
         if not interpreter: messagebox.showinfo('VRS',self.t('Compute Python'),parent=self.w);return
-        self.task(lambda:self.api.start(interpreter),lambda v:self.load_jobs())
+        self.control_request('Start worker',lambda:self.api.start(interpreter))
 
-    def stop_worker(self): self.task(self.api.stop,lambda v:self.load_jobs())
+    def stop_worker(self): self.control_request('Stop worker',self.api.stop)
 
     def save_caps(self):
         try: value={k:int(v.get()) for k,v in self.capvars.items()}
