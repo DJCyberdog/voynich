@@ -9,3 +9,5 @@ Increment 2 hosted qualification at 14760ab: PR 46137418823, CPU 46137417873 and
 Increment 3 at fb193e8: PR 46138350295, CPU 46138349317 and Windows portable 46138349269 all SUCCESS. Increment 4 exposes only source-bound declared locus identifiers and mapper, opt-in, no transcription text, no inferred word/line boxes. Missing map entry is UNDECLARED; wrong crop/source/locus/subtype or duplicate locus fails closed. This is declared provenance, not independently verified physical mapping. Tests added; CI pending.
 
 67e582e PR/CPU/Windows portable PASS, real-source preview FAIL (see RC2-02g). Corrective local viewport clipping keeps original evidence, adds explicit clipped-view marker; exact CI pending.
+
+8942ac0: all four workflows PASS; 18/18 real persisted-sidecar previews. Added pointer/viewport-centered zoom using actual rounded image geometry and clamped canvas scroll extent; locate-glyph zooms and centers the candidate in the current context, without new raster or coordinate inference. Fit resets the view. Synthetic anchor/clamp and actual Tk smoke assertions added; exact current CI pending. No line/word alignment inferred.

@@ -27,6 +27,15 @@ DE.update({'Locus':'Textstelle','Declared locus':'Deklarierte Textstelle','No lo
 
 DE.update({'Local clipping':'Lokaler Ausschnitt','Large components':'Großkomponenten'})
 
+def zoom_origin(anchor, geometry, viewport, scroll_extent):
+    """Return clamped scroll fractions for a normalized image point and screen anchor."""
+    ux,uy,sx,sy=anchor; x,y,iw,ih=geometry; w,h=viewport; sw,sh=scroll_extent
+    return (max(0,min(max(0,sw-w),x+ux*iw-sx))/sw,
+            max(0,min(max(0,sh-h),y+uy*ih-sy))/sh)
+
+
+DE.update({'Locate glyph':'Glyphe finden'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -165,6 +174,7 @@ class App:
             button=ttk.Button(controls,text=self.t(label),command=fn,width=0);button.pack(side='left',padx=(0,4));self.zoom_controls.append(button)
         modes=ttk.Frame(left,style='Panel.TFrame');modes.pack(fill='x',pady=(4,0))
         self.page_button=ttk.Button(modes,text=self.t('Full page'),command=self.open_page_context);self.page_button.pack(side='left')
+        self.locate_button=ttk.Button(controls,text=self.t('Locate glyph'),command=self.locate_glyph,width=0);self.locate_button.pack(side='left',padx=(0,4))
         self.vector_mask=tk.StringVar(value='majority');self.vector_button=ttk.Button(modes,text=self.t('Vectors'),command=self.open_vectors);self.vector_button.pack(side='left',padx=4)
         ttk.Combobox(modes,textvariable=self.vector_mask,values=('union','majority','intersection'),state='readonly',width=12).pack(side='left',fill='x',expand=True)
         layers=ttk.Frame(left,style='Panel.TFrame');layers.pack(fill='x')
@@ -174,7 +184,7 @@ class App:
         ttk.Button(layers,text='‹',width=2,command=lambda:self.step_hypothesis(-1)).pack(side='left')
         ttk.Button(layers,text='›',width=2,command=lambda:self.step_hypothesis(1)).pack(side='left')
         self.vector_info=ttk.Label(left,text='',style='Panel.TLabel',wraplength=350);self.vector_info.pack(anchor='w')
-        self.canvas=tk.Canvas(left,bg=self.p['bg'],highlightthickness=1,highlightbackground=self.p['line'],width=320,height=220); self.canvas.pack(fill='both',expand=True,pady=8); self.canvas.bind('<Configure>',lambda e:self.draw()); self.canvas.bind('<ButtonPress-1>',lambda e:self.canvas.scan_mark(e.x,e.y)); self.canvas.bind('<B1-Motion>',lambda e:self.canvas.scan_dragto(e.x,e.y,gain=1)); self.canvas.bind('<MouseWheel>',lambda e:self.zoom(1.15 if e.delta>0 else 1/1.15)); self.canvas.bind('<Button-4>',lambda e:self.zoom(1.15)); self.canvas.bind('<Button-5>',lambda e:self.zoom(1/1.15)); self.canvas.configure(takefocus=True)
+        self.canvas=tk.Canvas(left,bg=self.p['bg'],highlightthickness=1,highlightbackground=self.p['line'],width=320,height=220); self.canvas.pack(fill='both',expand=True,pady=8); self.canvas.bind('<Configure>',lambda e:self.draw()); self.canvas.bind('<ButtonPress-1>',lambda e:self.canvas.scan_mark(e.x,e.y)); self.canvas.bind('<B1-Motion>',lambda e:self.canvas.scan_dragto(e.x,e.y,gain=1)); self.canvas.bind('<MouseWheel>',lambda e:self.zoom(1.15 if e.delta>0 else 1/1.15,(e.x,e.y))); self.canvas.bind('<Button-4>',lambda e:self.zoom(1.15,(e.x,e.y))); self.canvas.bind('<Button-5>',lambda e:self.zoom(1/1.15,(e.x,e.y))); self.canvas.configure(takefocus=True)
         ttk.Label(right,text=self.t('References'),style='Panel.TLabel',font=('TkDefaultFont',12,'bold')).pack(anchor='w'); self.refmeta=ttk.Label(right,text=self.t('No catalog'),style='Panel.TLabel',wraplength=330); self.refmeta.pack(anchor='w',pady=3); rr=ttk.Frame(right,style='Panel.TFrame'); rr.pack(fill='x'); self.scheme=tk.StringVar(); self.schemebox=ttk.Combobox(rr,textvariable=self.scheme,state='readonly',width=10); self.schemebox.pack(side='left',fill='x',expand=True); self.schemebox.bind('<<ComboboxSelected>>',lambda e:self.change_scheme()); self.search=tk.StringVar(); self.searchbox=ttk.Entry(rr,textvariable=self.search,width=8); self.searchbox.pack(side='right',padx=(4,0)); self.search.trace_add('write',lambda *_:self.filter_refs()); self.visual=tk.StringVar(); vr=ttk.Frame(right,style='Panel.TFrame'); vr.pack(fill='x'); ttk.Label(vr,text=self.t('Reference scheme'),style='Panel.TLabel').pack(side='left'); self.visualbox=ttk.Combobox(vr,textvariable=self.visual,state='readonly',width=10); self.visualbox.pack(side='right',fill='x',expand=True,padx=5); self.visualbox.bind('<<ComboboxSelected>>',lambda e:self.visual_changed()); rf=ttk.Frame(right,style='Panel.TFrame'); rf.pack(fill='x'); labelbox=ttk.Frame(rf,style='Panel.TFrame');labelbox.pack(side='left',fill='both',expand=True);self.labels=tk.Listbox(labelbox,height=5,width=10,bg=self.p['card'],fg=self.p['fg'],selectbackground=self.p['line'],selectforeground=self.p['fg'],exportselection=False,highlightthickness=1,highlightcolor=self.p['accent']);labelsbar=ttk.Scrollbar(labelbox,command=self.labels.yview);labelsbar.pack(side='right',fill='y');self.labels.configure(yscrollcommand=labelsbar.set);self.labels.pack(side='left',fill='both',expand=True); self.labels.bind('<<ListboxSelect>>',lambda e:self.sample()); self.labels.bind('<Return>',lambda e:self.assign_reference()); self.samplelabel=ttk.Label(rf,text=self.t('No visual sample'),style='Panel.TLabel',width=12,wraplength=100,anchor='center'); self.samplelabel.pack(side='right',fill='y',padx=4); self.samplemeta=ttk.Label(right,text='',style='Panel.TLabel',wraplength=330); self.samplemeta.pack(fill='x'); sampletools=ttk.Frame(right,style='Panel.TFrame');sampletools.pack(fill='x',pady=(4,0));ttk.Button(sampletools,text='‹',command=lambda:self.next_sample(-1),width=3).pack(side='left');ttk.Button(sampletools,text='›',command=self.next_sample,width=3).pack(side='left',padx=(4,0));ttk.Button(sampletools,text=self.t('Visual catalog'),command=self.visual_catalog,width=0).pack(side='right');ttk.Button(right,text=self.t('Use selected label'),command=self.assign_reference,style='Accent.TButton').pack(fill='x',pady=(4,0)); ttk.Separator(right).pack(fill='x',pady=6)
         ttk.Label(right,text=self.t('Decisions'),style='Panel.TLabel',font=('TkDefaultFont',12,'bold')).pack(anchor='w'); self.mapping_frame=ttk.Frame(right,style='Panel.TFrame');self.mapping_frame.pack(fill='x',pady=(4,8))
         self.kind=tk.StringVar(value='glyph'); self.kindbox=ttk.Combobox(fixed,textvariable=self.kind,state='readonly',values=('glyph','false_positive','compound','deferred')); self.kindbox.pack(fill='x',pady=4); self.kindbox.bind('<<ComboboxSelected>>',lambda e:self.kind_changed()); actions=ttk.Frame(fixed,style='Panel.TFrame'); actions.pack(fill='x'); self.draft_button=ttk.Button(actions,text=self.t('Save draft'),command=lambda:self.save(False),width=0);self.draft_button.pack(side='left',fill='x',expand=True);self.submit_button=ttk.Button(actions,text=self.t('Submit'),style='Accent.TButton',command=self.submit,width=0);self.submit_button.pack(side='left',fill='x',expand=True,padx=(6,0)); self.image=None; self.box=None; self.data=None; self.items=[]; self.maps={}; self.catalog={}; self.task(lambda:(self.api.runs(),self.api.catalog(self.cfg['catalog'])),self.review_init)
@@ -255,11 +265,30 @@ class App:
         if rows:self.vector_index=(self.vector_index+delta)%len(rows);self.update_vector_info();self.draw()
     def fit(self): self.factor=1.; self.draw(); self.canvas.xview_moveto(0); self.canvas.yview_moveto(0)
     def mode(self,only): self.page_active=False; self.vector_active=False; self.glyph_only=only; self.fit(); self.update_vector_info()
-    def zoom(self,amount):
-        if self.view=='Review' and self.image is not None: self.factor=max(.25,min(8,self.factor*amount)); self.draw()
+    def zoom(self,amount,point=None):
+        if self.view!='Review' or self.image is None:return
+        if not getattr(self,'draw_geometry',None):return
+        x,y,iw,ih=self.draw_geometry
+        sx,sy=point or (self.canvas.winfo_width()/2,self.canvas.winfo_height()/2)
+        ux=max(0,min(1,(self.canvas.canvasx(sx)-x)/iw));uy=max(0,min(1,(self.canvas.canvasy(sy)-y)/ih))
+        self.factor=max(.25,min(8,self.factor*amount));self.draw()
+        self.scroll_to_image((ux,uy,sx,sy))
+    def scroll_to_image(self,anchor):
+        if not getattr(self,'draw_geometry',None):return
+        w,h=self.canvas.winfo_width(),self.canvas.winfo_height()
+        fx,fy=zoom_origin(anchor,self.draw_geometry,(w,h),self.draw_extent)
+        self.canvas.xview_moveto(fx);self.canvas.yview_moveto(fy)
+    def locate_glyph(self):
+        if self.view!='Review' or self.image is None:return
+        if self.glyph_only:return
+        if getattr(self,'vector_active',False):im,box=self.vector_data[:2]
+        elif getattr(self,'page_active',False):im,box=self.page_image,self.page_box
+        else:im,box=self.image,self.box
+        self.factor=max(4.,self.factor);self.draw()
+        self.scroll_to_image(((box[0]+box[2])/(2*im.width),(box[1]+box[3])/(2*im.height),self.canvas.winfo_width()/2,self.canvas.winfo_height()/2))
     def draw(self):
         if not hasattr(self,'canvas') or not self.canvas.winfo_exists(): return
-        self.canvas.delete('all')
+        self.canvas.delete('all');self.draw_geometry=None
         if self.image is None: return
         vector=getattr(self,'vector_active',False)
         if vector: im,box,paths,_,layers=self.vector_data
@@ -282,7 +311,8 @@ class App:
                     for i,(l,t,r,b) in enumerate(rows[self.vector_index][1]):
                         self.canvas.create_rectangle(*coords([(l,t),(r,b)]),outline='#ff9f20' if i==0 else '#477de8',width=2,dash=(4,2),tags=('vector-hypothesis',))
         if not self.glyph_only: self.canvas.create_rectangle(x+box[0]*iw/im.width,y+box[1]*ih/im.height,x+box[2]*iw/im.width,y+box[3]*ih/im.height,outline='#00bca5',width=2)
-        self.canvas.configure(scrollregion=(0,0,max(w,x+iw+10),max(h,y+ih+10)))
+        self.draw_geometry=(x,y,iw,ih);self.draw_extent=(max(w,x+iw+10),max(h,y+ih+10))
+        self.canvas.configure(scrollregion=(0,0,*self.draw_extent))
     def move(self,delta):
         if self.view!='Review' or self.future is not None or not self.items: return
         n=self.index+delta
