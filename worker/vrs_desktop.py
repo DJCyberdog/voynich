@@ -21,6 +21,8 @@ DE.update({'Full page':'Ganze Seite','Page context verified':'Seitenkoordinaten 
 
 DE.update({'Vectors':'Vektoren','Overlay':'Konturen','Vector hypotheses':'Vektorhypothesen','Intersecting components':'Überlappende Komponenten'})
 
+DE.update({'Layer':'Ebene','Skeleton':'Skelett','Splits':'Trennungen','Pairs':'Paare','Compounds':'Gruppen','No hypotheses':'Keine Hypothesen','Fallback components':'Fallback-Komponenten','Nodes':'Knoten'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -159,7 +161,13 @@ class App:
         self.page_button=ttk.Button(modes,text=self.t('Full page'),command=self.open_page_context);self.page_button.pack(side='left')
         self.vector_mask=tk.StringVar(value='majority');self.vector_button=ttk.Button(modes,text=self.t('Vectors'),command=self.open_vectors);self.vector_button.pack(side='left',padx=4)
         ttk.Combobox(modes,textvariable=self.vector_mask,values=('union','majority','intersection'),state='readonly',width=12).pack(side='left',fill='x',expand=True)
-        self.vector_overlay=tk.BooleanVar(value=True);ttk.Checkbutton(left,text=self.t('Overlay'),variable=self.vector_overlay,command=self.draw).pack(anchor='w')
+        layers=ttk.Frame(left,style='Panel.TFrame');layers.pack(fill='x')
+        self.vector_overlay=tk.BooleanVar(value=True);ttk.Checkbutton(layers,text=self.t('Overlay'),variable=self.vector_overlay,command=self.draw).pack(side='left')
+        self.vector_layer=tk.StringVar(value=self.t('Overlay'))
+        layerbox=ttk.Combobox(layers,textvariable=self.vector_layer,values=[self.t(k) for k in ('Overlay','Skeleton','Splits','Pairs','Compounds')],state='readonly',width=11);layerbox.pack(side='left',fill='x',expand=True);layerbox.bind('<<ComboboxSelected>>',lambda e:self.change_vector_layer())
+        ttk.Button(layers,text='‹',width=2,command=lambda:self.step_hypothesis(-1)).pack(side='left')
+        ttk.Button(layers,text='›',width=2,command=lambda:self.step_hypothesis(1)).pack(side='left')
+        self.vector_info=ttk.Label(left,text='',style='Panel.TLabel',wraplength=350);self.vector_info.pack(anchor='w')
         self.canvas=tk.Canvas(left,bg=self.p['bg'],highlightthickness=1,highlightbackground=self.p['line'],width=320,height=220); self.canvas.pack(fill='both',expand=True,pady=8); self.canvas.bind('<Configure>',lambda e:self.draw()); self.canvas.bind('<ButtonPress-1>',lambda e:self.canvas.scan_mark(e.x,e.y)); self.canvas.bind('<B1-Motion>',lambda e:self.canvas.scan_dragto(e.x,e.y,gain=1)); self.canvas.bind('<MouseWheel>',lambda e:self.zoom(1.15 if e.delta>0 else 1/1.15)); self.canvas.bind('<Button-4>',lambda e:self.zoom(1.15)); self.canvas.bind('<Button-5>',lambda e:self.zoom(1/1.15)); self.canvas.configure(takefocus=True)
         ttk.Label(right,text=self.t('References'),style='Panel.TLabel',font=('TkDefaultFont',12,'bold')).pack(anchor='w'); self.refmeta=ttk.Label(right,text=self.t('No catalog'),style='Panel.TLabel',wraplength=330); self.refmeta.pack(anchor='w',pady=3); rr=ttk.Frame(right,style='Panel.TFrame'); rr.pack(fill='x'); self.scheme=tk.StringVar(); self.schemebox=ttk.Combobox(rr,textvariable=self.scheme,state='readonly',width=10); self.schemebox.pack(side='left',fill='x',expand=True); self.schemebox.bind('<<ComboboxSelected>>',lambda e:self.change_scheme()); self.search=tk.StringVar(); self.searchbox=ttk.Entry(rr,textvariable=self.search,width=8); self.searchbox.pack(side='right',padx=(4,0)); self.search.trace_add('write',lambda *_:self.filter_refs()); self.visual=tk.StringVar(); vr=ttk.Frame(right,style='Panel.TFrame'); vr.pack(fill='x'); ttk.Label(vr,text=self.t('Reference scheme'),style='Panel.TLabel').pack(side='left'); self.visualbox=ttk.Combobox(vr,textvariable=self.visual,state='readonly',width=10); self.visualbox.pack(side='right',fill='x',expand=True,padx=5); self.visualbox.bind('<<ComboboxSelected>>',lambda e:self.visual_changed()); rf=ttk.Frame(right,style='Panel.TFrame'); rf.pack(fill='x'); labelbox=ttk.Frame(rf,style='Panel.TFrame');labelbox.pack(side='left',fill='both',expand=True);self.labels=tk.Listbox(labelbox,height=5,width=10,bg=self.p['card'],fg=self.p['fg'],selectbackground=self.p['line'],selectforeground=self.p['fg'],exportselection=False,highlightthickness=1,highlightcolor=self.p['accent']);labelsbar=ttk.Scrollbar(labelbox,command=self.labels.yview);labelsbar.pack(side='right',fill='y');self.labels.configure(yscrollcommand=labelsbar.set);self.labels.pack(side='left',fill='both',expand=True); self.labels.bind('<<ListboxSelect>>',lambda e:self.sample()); self.labels.bind('<Return>',lambda e:self.assign_reference()); self.samplelabel=ttk.Label(rf,text=self.t('No visual sample'),style='Panel.TLabel',width=12,wraplength=100,anchor='center'); self.samplelabel.pack(side='right',fill='y',padx=4); self.samplemeta=ttk.Label(right,text='',style='Panel.TLabel',wraplength=330); self.samplemeta.pack(fill='x'); sampletools=ttk.Frame(right,style='Panel.TFrame');sampletools.pack(fill='x',pady=(4,0));ttk.Button(sampletools,text='‹',command=lambda:self.next_sample(-1),width=3).pack(side='left');ttk.Button(sampletools,text='›',command=self.next_sample,width=3).pack(side='left',padx=(4,0));ttk.Button(sampletools,text=self.t('Visual catalog'),command=self.visual_catalog,width=0).pack(side='right');ttk.Button(right,text=self.t('Use selected label'),command=self.assign_reference,style='Accent.TButton').pack(fill='x',pady=(4,0)); ttk.Separator(right).pack(fill='x',pady=6)
         ttk.Label(right,text=self.t('Decisions'),style='Panel.TLabel',font=('TkDefaultFont',12,'bold')).pack(anchor='w'); self.mapping_frame=ttk.Frame(right,style='Panel.TFrame');self.mapping_frame.pack(fill='x',pady=(4,8))
@@ -185,7 +193,7 @@ class App:
 
     def render_candidate(self):
         for w in self.mapping_frame.winfo_children(): w.destroy()
-        self.maps={}; self.image=None; self.box=None; self.page_image=None; self.page_box=None; self.page_active=False; self.vector_active=False; self.vector_data=None; self.draw(); self.kind.set('glyph'); inv=self.data['inventory'] if self.data else {}; self.schemebox.configure(values=list(inv)); self.scheme.set(next(iter(inv),'')); self.search.set(''); self.change_scheme()
+        self.maps={}; self.image=None; self.box=None; self.page_image=None; self.page_box=None; self.page_active=False; self.vector_active=False; self.vector_data=None; self.vector_index=0; self.vector_info.configure(text=''); self.draw(); self.kind.set('glyph'); inv=self.data['inventory'] if self.data else {}; self.schemebox.configure(values=list(inv)); self.scheme.set(next(iter(inv),'')); self.search.set(''); self.change_scheme()
         for name,labels in inv.items():
             row=ttk.Frame(self.mapping_frame,style='Panel.TFrame'); row.pack(fill='x',pady=3); ttk.Label(row,text=name,style='Panel.TLabel').grid(row=0,column=0,columnspan=2,sticky='w'); state=tk.StringVar(value='unreviewed'); label=tk.StringVar(); a=ttk.Combobox(row,textvariable=state,values=('unreviewed','mapped','absent','unknown'),state='readonly',width=11); a.grid(row=1,column=0,sticky='ew',padx=(0,4)); b=ttk.Combobox(row,textvariable=label,values=labels,state='readonly',width=8); b.grid(row=1,column=1,sticky='ew');row.columnconfigure(0,weight=1);row.columnconfigure(1,weight=1); b.bind('<<ComboboxSelected>>',lambda e,v=state:v.set('mapped')); self.maps[name]=(state,label,a,b)
         if not self.items: self.meta.configure(text=self.t('No candidate')); return
@@ -197,17 +205,37 @@ class App:
         if self.page_image is not None:self.page_context_loaded((self.page_image,self.page_box));return
         item=self.items[self.index]; self.task(lambda:self.api.page_context(item),self.page_context_loaded)
     def page_context_loaded(self,result):
-        self.page_image,self.page_box=result;self.page_active=True;self.vector_active=False;self.glyph_only=False;self.fit()
+        self.page_image,self.page_box=result;self.page_active=True;self.vector_active=False;self.glyph_only=False;self.fit();self.update_vector_info()
         self.status.set(self.t('Page context verified')+' · '+self.t('Line/word alignment unknown'))
     def open_vectors(self):
         if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
         item=self.items[self.index];mask=self.vector_mask.get()
         self.task(lambda:self.api.vector_context(item,mask),lambda result:self.vectors_loaded(result,mask))
     def vectors_loaded(self,result,mask):
-        self.vector_data=result;self.vector_active=True;self.page_active=False;self.glyph_only=False;self.fit()
-        self.status.set(self.t('Vector hypotheses')+' · '+mask+' · '+self.t('Intersecting components')+': '+str(result[3])+' · UNADJUDICATED')
+        self.vector_data=result;self.vector_active=True;self.page_active=False;self.glyph_only=False;self.vector_loaded_mask=mask;self.vector_index=0;self.fit()
+        self.update_vector_info()
+    def vector_key(self):
+        return next((k.lower() for k in ('Skeleton','Splits','Pairs','Compounds') if self.vector_layer.get()==self.t(k)),'contours')
+    def update_vector_info(self):
+        if not getattr(self,'vector_active',False):
+            self.vector_info.configure(text='');return
+        key=self.vector_key();layers=self.vector_data[4]
+        text=self.vector_loaded_mask+' · UNADJUDICATED'
+        if key=='skeleton':
+            text+=' · '+self.t('Nodes')+': '+str(len(layers['nodes']))+' · '+self.t('Fallback components')+': '+str(layers['fallback'])
+        elif key in layers['hypotheses']:
+            rows=layers['hypotheses'][key]
+            text+=' · '+(str(self.vector_index+1)+'/'+str(len(rows))+' · '+rows[self.vector_index][0][:12] if rows else self.t('No hypotheses'))
+        else:text+=' · '+self.t('Intersecting components')+': '+str(self.vector_data[3])
+        self.vector_info.configure(text=text)
+    def change_vector_layer(self):
+        self.vector_index=0;self.update_vector_info();self.draw()
+    def step_hypothesis(self,delta):
+        if not getattr(self,'vector_active',False):return
+        rows=self.vector_data[4]['hypotheses'].get(self.vector_key(),[])
+        if rows:self.vector_index=(self.vector_index+delta)%len(rows);self.update_vector_info();self.draw()
     def fit(self): self.factor=1.; self.draw(); self.canvas.xview_moveto(0); self.canvas.yview_moveto(0)
-    def mode(self,only): self.page_active=False; self.vector_active=False; self.glyph_only=only; self.fit()
+    def mode(self,only): self.page_active=False; self.vector_active=False; self.glyph_only=only; self.fit(); self.update_vector_info()
     def zoom(self,amount):
         if self.view=='Review' and self.image is not None: self.factor=max(.25,min(8,self.factor*amount)); self.draw()
     def draw(self):
@@ -215,14 +243,25 @@ class App:
         self.canvas.delete('all')
         if self.image is None: return
         vector=getattr(self,'vector_active',False)
-        if vector: im,box,paths,_=self.vector_data
+        if vector: im,box,paths,_,layers=self.vector_data
         elif getattr(self,'page_active',False): im,box=self.page_image,self.page_box
         else: im,box=(self.image.crop(self.box) if self.glyph_only else self.image),self.box
         w=max(1,self.canvas.winfo_width()); h=max(1,self.canvas.winfo_height()); scale=min((w-20)/im.width,(h-20)/im.height)*self.factor; scale=max(.01,min(scale,4096/max(im.size))); iw,ih=max(1,round(im.width*scale)),max(1,round(im.height*scale)); x,y=max(10,(w-iw)//2),max(10,(h-ih)//2); self.photo=ImageTk.PhotoImage(im.resize((iw,ih),Image.Resampling.NEAREST)); self.canvas.create_image(x,y,anchor='nw',image=self.photo)
         if vector and self.vector_overlay.get():
-            for path in paths:
-                coords=[v for u,z in path for v in (x+u*iw/im.width,y+z*ih/im.height)]
-                self.canvas.create_line(*coords,fill='#ff9f20',width=1)
+            key=self.vector_key()
+            def coords(path):return [v for u,z in path for v in (x+u*iw/im.width,y+z*ih/im.height)]
+            if key in ('contours','skeleton'):
+                for path in (paths if key=='contours' else layers['skeleton']):
+                    self.canvas.create_line(*coords(path),fill='#ff9f20',width=1,tags=('vector-evidence',))
+                if key=='skeleton':
+                    for u,z,degree in layers['nodes']:
+                        X,Y=coords([(u,z)]);radius=3 if degree>2 else 2
+                        self.canvas.create_oval(X-radius,Y-radius,X+radius,Y+radius,fill='#e64f6e' if degree>2 else '#477de8',outline='',tags=('vector-node',))
+            else:
+                rows=layers['hypotheses'][key]
+                if rows:
+                    for i,(l,t,r,b) in enumerate(rows[self.vector_index][1]):
+                        self.canvas.create_rectangle(*coords([(l,t),(r,b)]),outline='#ff9f20' if i==0 else '#477de8',width=2,dash=(4,2),tags=('vector-hypothesis',))
         if not self.glyph_only: self.canvas.create_rectangle(x+box[0]*iw/im.width,y+box[1]*ih/im.height,x+box[2]*iw/im.width,y+box[3]*ih/im.height,outline='#00bca5',width=2)
         self.canvas.configure(scrollregion=(0,0,max(w,x+iw+10),max(h,y+ih+10)))
     def move(self,delta):

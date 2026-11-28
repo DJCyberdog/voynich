@@ -71,34 +71,72 @@ class ReadDecisions(Decisions):
     def __init__(self, ledger): self.ledger = ledger; self.root = ledger.root; self.queue = ReadQueue(ledger)
 
 
-def vector_window(image, target, components):
-    """Native-pixel preview of intersecting component contours, not glyph matches."""
+def vector_window(image, target, components, pairs=(), alternatives=None):
+    """Bounded native preview; overlaps and group proposals are not glyph matches."""
     from vrs_exceptions import box_key
     w,h=image.size; a,b,cx,d=box_key(target)
     require(cx<=w and d<=h,'Native candidate outside image')
-    selected=[]; points=0
-    for row in components:
-        l,t,r,bot=box_key(row['box'])
+    def checked(box):
+        l,t,r,bot=box_key(box)
         require(r<=w and bot<=h,'Native component outside image')
+        return l,t,r,bot
+    selected=[]; lookup={}; points=0
+    for row in components:
+        l,t,r,bot=checked(row['box'])
+        if 'id' in row:
+            require(row['id'] not in lookup,'Duplicate component identity')
+            lookup[row['id']]=(l,t,r,bot)
         if max(l,a)>=min(r,cx) or max(t,b)>=min(bot,d):continue
         require(len(selected)<2000,'Vector preview component budget exceeded')
         selected.append((row,(l,t,r,bot)))
-    left=max(0,min([a]+[p[0] for _,p in selected])-24)
-    top=max(0,min([b]+[p[1] for _,p in selected])-24)
-    right=min(w,max([cx]+[p[2] for _,p in selected])+24)
-    bottom=min(h,max([d]+[p[3] for _,p in selected])+24)
+    ids={row['id'] for row,_ in selected if 'id' in row}
+    extra=alternatives or {}
+    options={'splits':[],'pairs':[],'compounds':[]}
+    for row in extra.get('splits',()):
+        if row['parent'] not in ids:continue
+        parent=lookup[row['parent']]
+        boxes=[checked(p['box']) for p in row['parts']]
+        require(len(boxes)==2 and all(parent[0]<=q[0]<q[2]<=parent[2] and parent[1]<=q[1]<q[3]<=parent[3] for q in boxes),'Split outside parent')
+        options['splits'].append((row['id'],boxes))
+        require(len(options['splits'])<=2000,'Split preview budget exceeded')
+    for kind,rows in (('pairs',pairs),('compounds',extra.get('compounds',()))):
+        for row in rows:
+            members=row['members']
+            if not ids.intersection(members):continue
+            require(len(set(members))==len(members) and (len(members)==2 if kind=='pairs' else 3<=len(members)<=4) and all(k in lookup for k in members),'Invalid group members')
+            boxes=[lookup[k] for k in members]; envelope=checked(row['box'])
+            require(envelope==(min(q[0] for q in boxes),min(q[1] for q in boxes),max(q[2] for q in boxes),max(q[3] for q in boxes)),'Group envelope mismatch')
+            options[kind].append((row['id'],[envelope]+boxes))
+            require(len(options[kind])<=2000,'Group preview budget exceeded')
+    bounds=[(a,b,cx,d)]+[p for _,p in selected]+[p for rows in options.values() for _,boxes in rows for p in boxes]
+    left=max(0,min(p[0] for p in bounds)-24); top=max(0,min(p[1] for p in bounds)-24)
+    right=min(w,max(p[2] for p in bounds)+24); bottom=min(h,max(p[3] for p in bounds)+24)
     require((right-left)*(bottom-top)<=1_000_000,'Vector preview pixel budget exceeded')
-    paths=[]
+    paths=[]; skeleton=[]; nodes=[]; fallback=0
+    def shifted(box):return [box[0]-left,box[1]-top,box[2]-left,box[3]-top]
     for row,(l,t,r,bot) in selected:
+        def translate(path,center=False):
+            nonlocal points
+            points+=len(path);require(points<=20000,'Vector preview vertex budget exceeded')
+            result=[]; shift=.5 if center else 0
+            for x,y in path:
+                require(type(x) is int and type(y) is int and 0<=x<=r-l-int(center) and 0<=y<=bot-t-int(center),'Invalid component coordinates')
+                result.append((l+x-left+shift,t+y-top+shift))
+            return result
         for loop in row['contours']:
-            require(len(loop)>=4 and loop[0]==loop[-1],'Invalid vector loop')
-            points+=len(loop);require(points<=20000 and len(paths)<2000,'Vector preview path budget exceeded')
-            path=[]
-            for x,y in loop:
-                require(type(x) is int and type(y) is int and 0<=x<=r-l and 0<=y<=bot-t,'Invalid component contour coordinates')
-                path.append((l+x-left,t+y-top))
-            paths.append(path)
-    return image.crop((left,top,right,bottom)),[a-left,b-top,cx-left,d-top],paths,len(selected)
+            require(len(loop)>=4 and loop[0]==loop[-1] and len(paths)<2000,'Invalid or excessive vector loops')
+            paths.append(translate(loop))
+        graph=row.get('graph',{})
+        fallback+=int(bool(row.get('fallback',False)))
+        for path in graph.get('paths',()):
+            require(len(path)>=2 and len(skeleton)<2000,'Invalid or excessive skeleton paths')
+            skeleton.append(translate(path,True))
+        for node in graph.get('nodes',()):
+            degree=node['degree'];require(type(degree) is int and 0<=degree<=8 and len(nodes)<2000,'Invalid or excessive graph nodes')
+            x,y=translate([node['point']],True)[0];nodes.append((x,y,degree))
+    layers=dict(skeleton=skeleton,nodes=nodes,fallback=fallback,
+                hypotheses={k:[(rid,[shifted(q) for q in boxes]) for rid,boxes in sorted(rows)] for k,rows in options.items()})
+    return image.crop((left,top,right,bottom)),shifted((a,b,cx,d)),paths,len(selected),layers
 
 
 class Desktop:
@@ -237,8 +275,9 @@ class Desktop:
         require(meta==record['native'] and image is not None,'Native source mismatch')
         target=ink.native_box(meta,absolute)
         require(target is not None,'Native candidate alignment unavailable')
-        components=record['hybrid']['grouping']['masks'][mask]['components']
-        return vector_window(image,target,components)
+        grouping=record['hybrid']['grouping']; rows=grouping['masks'][mask]
+        alternatives=grouping.get('alternatives',{}).get('by_mask',{}).get(mask,{})
+        return vector_window(image,target,rows['components'],rows['pairs'],alternatives)
 
     def catalog(self, rel):
         # Explicit scheme IDs only, no inferred cross-convention mappings.

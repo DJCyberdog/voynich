@@ -48,12 +48,28 @@ class DesktopTests(unittest.TestCase):
         image=Image.new('RGB',(100,100),'white')
         rows=[dict(box=[40,41,44,45],contours=[[[0,0],[4,0],[4,4],[0,4],[0,0]]]),
               dict(box=[80,80,82,82],contours=[])]
-        preview,box,paths,count=vector_window(image,[42,42,46,46],rows)
+        preview,box,paths,count,layers=vector_window(image,[42,42,46,46],rows)
         self.assertEqual(count,1);self.assertEqual(preview.size,(54,53))
         self.assertEqual(box,[26,25,30,29]);self.assertEqual(paths[0][0],(24,24))
         self.assertEqual(vector_window(image,[1,1,2,2],rows)[3],0)
         rows[0]['contours'][0][1]=[9,0]
         with self.assertRaises(ValueError):vector_window(image,[42,42,46,46],rows)
+
+    def test_hybrid_review_layers_and_group_extent(self):
+        from vrs_desktop_api import vector_window
+        image=Image.new('RGB',(120,120),'white')
+        rows=[dict(id='a',box=[40,40,44,44],contours=[],fallback=True,graph=dict(paths=[[[0,0],[3,3]]],nodes=[dict(point=[0,0],degree=1),dict(point=[3,3],degree=3)])),
+              dict(id='b',box=[45,40,48,44],contours=[]),dict(id='c',box=[49,40,52,44],contours=[])]
+        pairs=[dict(id='p',members=['a','b'],box=[40,40,48,44])]
+        extra=dict(splits=[dict(id='s',parent='a',parts=[dict(box=[40,40,42,44]),dict(box=[42,40,44,44])])],compounds=[dict(id='g',members=['a','b','c'],box=[40,40,52,44])])
+        im,box,_,count,layers=vector_window(image,[40,40,44,44],rows,pairs,extra)
+        self.assertEqual((im.size,box,count),((60,52),[24,24,28,28],1))
+        self.assertEqual(layers['skeleton'],[[(24.5,24.5),(27.5,27.5)]])
+        self.assertEqual(layers['nodes'][1],(27.5,27.5,3));self.assertEqual(layers['fallback'],1)
+        self.assertEqual(layers['hypotheses']['compounds'],[('g',[[24,24,36,28],[24,24,28,28],[29,24,32,28],[33,24,36,28]])])
+        self.assertEqual(len(layers['hypotheses']['splits']),1)
+        pairs[0]['box']=[40,40,47,44]
+        with self.assertRaisesRegex(ValueError,'Group envelope mismatch'):vector_window(image,[40,40,44,44],rows,pairs,extra)
 
     def test_no_hybrid_evidence_keeps_legacy_review(self):
         run=self.f.run_to_review(); item=self.api.review(run,limit=1)['items'][0]
@@ -134,7 +150,7 @@ class DesktopTests(unittest.TestCase):
             from vrs_build_portable import RELEASE_VERSION
             self.assertIn(RELEASE_VERSION,w.title());self.assertEqual(float(app.reviewprogress.cget('value')),0)
             app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
-            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only); app.open_page_context(); settle(); self.assertTrue(app.page_active); self.assertEqual(app.page_image.size,(250,250)); app.mode(False); self.assertFalse(app.page_active)
+            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only); app.open_page_context(); settle(); self.assertTrue(app.page_active); self.assertEqual(app.page_image.size,(250,250)); app.mode(False); self.assertFalse(app.page_active); app.vectors_loaded((Image.new('RGB',(30,30),'white'),[1,1,5,5],[],1,dict(skeleton=[[(1.5,1.5),(2.5,2.5)]],nodes=[(2.5,2.5,3)],fallback=0,hypotheses={'splits':[('s1',[[1,1,3,5],[3,1,5,5]]),('s2',[[1,1,5,3],[1,3,5,5]])],'pairs':[],'compounds':[]})),'majority'); app.vector_layer.set(app.t('Skeleton')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-node')),1); app.vector_layer.set(app.t('Splits')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-hypothesis')),2); app.step_hypothesis(1); self.assertEqual(app.vector_index,1); app.mode(False); self.assertFalse(app.vector_active)
             app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
             app.show('Settings'); app.fields['theme'].set('light'); app.fields['language'].set('en'); app.apply(); settle(); self.assertEqual(app.cfg['theme'],'light'); self.assertEqual(app.cfg['language'],'en')
             w.geometry('1024x650'); w.update(); app.show('Review'); settle(); self.assertGreater(app.canvas.winfo_width(),150);self.assertTrue(app.kindbox.winfo_ismapped());self.assertTrue(app.review_side.winfo_ismapped())
