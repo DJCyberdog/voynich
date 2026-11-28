@@ -189,6 +189,25 @@ def page_evidence_summary(record):
                 proposed_zones=len(region['zones']),scientific_status='UNADJUDICATED',exclusion_authorized=False)
 
 
+def project_page_zones(record, size):
+    """Project persisted native zone proposals into the verified 200 DPI page frame."""
+    import math
+    meta=record['native']; region=record['hybrid']['region']
+    require(meta['status']=='NATIVE_IMAGE' and region['source_sha256']==record['source']['sha256'] and region['page']==record['page']==meta['page'] and region['rgb_sha256']==meta['rgb_sha256'] and region['origin']==[0,0] and region['image_size']==meta['size'] and region['script_status']=='UNRESOLVED' and region['exclusion_authorized'] is False,'Zone evidence binding mismatch')
+    w,h=size; nw,nh=meta['size']; sx,sy,tx,ty=meta['native_px_to_pt']
+    require(all(math.isfinite(v) for v in (sx,sy,tx,ty)) and sx>0 and sy>0,'Invalid native affine')
+    zones=region['zones'];require(type(zones) is list and len(zones)<=2000,'Page zone preview budget exceeded')
+    result=[]
+    for i,row in enumerate(zones):
+        b=row['box']
+        require(row['script_status']=='UNRESOLVED' and type(b) is list and len(b)==4 and all(type(v) is int for v in b) and 0<=b[0]<b[2]<=nw and 0<=b[1]<b[3]<=nh,'Invalid zone geometry')
+        l,t,r,b=b
+        coords=[max(0,math.floor((l*sx+tx)*200/72)),max(0,math.floor((t*sy+ty)*200/72)),min(w,math.ceil((r*sx+tx)*200/72)),min(h,math.ceil((b*sy+ty)*200/72))]
+        require(0<=coords[0]<coords[2]<=w and 0<=coords[1]<coords[3]<=h,'Zone outside page')
+        result.append(dict(index=i,box=coords,status='UNRESOLVED'))
+    return result
+
+
 class Desktop:
     def __init__(self, root): self.root = Path(root).resolve(strict=True)
 
@@ -291,7 +310,7 @@ class Desktop:
             result.append(info)
         return result
 
-    def page_context(self, item):
+    def page_context(self, item, *, details=False):
         """Opt-in full page; exact region replay or fail closed. No alignment inference."""
         from PIL import Image
         import fitz
@@ -334,15 +353,25 @@ class Desktop:
             im=Image.frombytes('RGB',(pix.width,pix.height),pix.samples)
         require(im.crop(px).size==crop.size and im.crop(px).tobytes()==crop.tobytes(),'Page/crop pixels differ; alignment unverified')
         absolute=[px[0]+box[0],px[1]+box[1],px[0]+box[2],px[1]+box[3]]
+        if details:
+            return im,absolute,dict(region_box=list(px),page=item['page'],source_sha256=source['sha256'],
+                                    line_alignment='UNKNOWN',word_alignment='UNKNOWN',zones=[],zone_status='NOT_LOADED')
         return im,absolute
 
-    def vector_context(self, item, mask):
-        """Explicit read-only native overlay of persisted hybrid evidence."""
-        require(mask in ('union','majority','intersection'),'Invalid evidence mask')
-        # page_context authenticates queue identity, source, crop and absolute coordinates.
-        page_image,absolute=self.page_context(item); del page_image
-        import fitz
-        import vrs_ink as ink
+    def page_zone_context(self,item):
+        """Verified raster page, source region and optional unresolved zone proposals."""
+        im,absolute,details=self.page_context(item,details=True)
+        record,_=self._hybrid_record(item,required=False)
+        if record is None:
+            details['zone_status']='UNAVAILABLE'
+        else:
+            require(record['hybrid'] is not None,'No native image evidence')
+            details['zones']=project_page_zones(record,im.size)
+            details['zone_status']='PROPOSED'
+        return im,absolute,details
+
+    def _hybrid_record(self,item,*,required=True):
+        # Caller first authenticates queue identity, source, crop and coordinates via page_context.
         import vrs_hybrid_page as hybrid
         ledger=ReadLedger(self.root); run=item['run_id']
         with ledger._tx() as conn:
@@ -358,10 +387,19 @@ class Desktop:
             m=load_page(pinned(self.root,rr[0]['manifest']))
             value=load_page(pinned(self.root,ss[0]['proposals']))
             require(value['source']==rr[0]['manifest'],'Hybrid region binding mismatch')
-            require('hybrid_evidence' in value,'No hybrid evidence for this run')
-            pinned(self.root,value['hybrid_evidence'])
+            if 'hybrid_evidence' in value:pinned(self.root,value['hybrid_evidence'])
+            else:require(not required,'No hybrid evidence for this run')
         source=manifest['inputs']['manuscript']
-        record=hybrid.validate_ref(self.root,value,m,expected_source=source,required=True)
+        record=hybrid.validate_ref(self.root,value,m,expected_source=source,required=required)
+        return record,source
+
+    def vector_context(self, item, mask):
+        """Explicit read-only native overlay of persisted hybrid evidence."""
+        require(mask in ('union','majority','intersection'),'Invalid evidence mask')
+        page_image,absolute=self.page_context(item);del page_image
+        import fitz
+        import vrs_ink as ink
+        record,source=self._hybrid_record(item)
         require(record['hybrid'] is not None,'No native image evidence')
         with fitz.open(pinned(self.root,source)) as doc:
             image,meta=ink.native_page(doc[item['page']-1])

@@ -194,17 +194,28 @@ class HybridRuntimeQualification(unittest.TestCase):
                 self.assertEqual(counts,dict(total=expected_total,accepted=0,abstained=expected_total,failed=0))
                 # Actual persisted queue identity + source/crop replay + native sidecar.
                 # Use predetermined sampled page offsets, not cherry-picked successful views.
-                offset=0;checked=0
+                offset=0;checked=0;zone_checked=0
                 for row in data['pages']:
                     if row['candidates']:
                         sample=ops.review(run,offset=offset,limit=1)['items'][0]
                         self.assertEqual(sample['page'],row['page'])
+                        page,absolute,context=ops.page_zone_context(sample)
+                        crop,local=ops.crop(sample)
+                        self.assertEqual(page.crop(context['region_box']).tobytes(),crop.tobytes())
+                        self.assertEqual(page.crop(absolute).tobytes(),crop.crop(local).tobytes())
+                        self.assertEqual(context['zone_status'],'PROPOSED')
+                        self.assertEqual((context['line_alignment'],context['word_alignment']),('UNKNOWN','UNKNOWN'))
+                        self.assertTrue(all(z['status']=='UNRESOLVED' and 0<=z['box'][0]<z['box'][2]<=page.width and 0<=z['box'][1]<z['box'][3]<=page.height for z in context['zones']))
+                        print(json.dumps(dict(context_page=row['page'],source_region_replay='PASS',zone_proposals=len(context['zones']),alignment='UNKNOWN')),flush=True)
+                        zone_checked+=1
+                        del page,crop
                         for mask in hybrid.MASKS:
                             result=ops.vector_context(sample,mask)
                             self.assertEqual(result[4]['page_evidence']['page'],row['page'])
                             checked+=1
                     offset+=row['candidates']
                 self.assertEqual(checked,3*sum(bool(row['candidates']) for row in data['pages']))
+                self.assertEqual(zone_checked,sum(bool(row['candidates']) for row in data['pages']))
                 item=q['items'][0]
                 # A synthetic deferred disposition is a transport test, not scientific annotation.
                 draft=ops.stage_decision(item,q['snapshot'],q['inventory'],'qualification-fixture','deferred',{})

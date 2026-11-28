@@ -40,6 +40,8 @@ DE.update({'Evidence mode':'Evidenzmodus','Hybrid mode requires pinned Yale PDF;
 
 DE.update({'Page evidence':'Seitenevidenz','Method disagreement':'Methodenabweichung','Material uncertain':'Material unsicher','Proposed zones':'Vorgeschlagene Zonen'})
 
+DE.update({'Page zones':'Seitenzonen','Source region':'Quellregion','Zone proposals':'Zonenhypothesen','No zone evidence':'Keine Zonenevidenz','Glyph candidate':'Glyphenkandidat','Unverified line/word geometry':'Zeilen-/Wortgeometrie unverifiziert'})
+
 class App:
     def __init__(self, window, root):
         self.w=window; self.api=Desktop(root); self.cfg=self.api.settings(); self.pool=ThreadPoolExecutor(max_workers=1); self.future=None; self.closing=False
@@ -189,7 +191,7 @@ class App:
             button=ttk.Button(controls,text=self.t(label),command=fn,width=0);button.pack(side='left',padx=(0,4));self.zoom_controls.append(button)
         modes=ttk.Frame(left,style='Panel.TFrame');modes.pack(fill='x',pady=(4,0))
         self.page_button=ttk.Button(modes,text=self.t('Full page'),command=self.open_page_context);self.page_button.pack(side='left')
-        locate=ttk.Frame(left,style='Panel.TFrame');locate.pack(fill='x');self.locate_button=ttk.Button(locate,text=self.t('Locate glyph'),command=self.locate_glyph,width=0);self.locate_button.pack(side='left')
+        locate=ttk.Frame(left,style='Panel.TFrame');locate.pack(fill='x');self.locate_button=ttk.Button(locate,text=self.t('Locate glyph'),command=self.locate_glyph,width=0);self.locate_button.pack(side='left');self.zone_button=ttk.Button(locate,text=self.t('Page zones'),command=self.open_page_zones,width=0);self.zone_button.pack(side='left',padx=(4,0))
         self.vector_mask=tk.StringVar(value='majority');self.vector_button=ttk.Button(modes,text=self.t('Vectors'),command=self.open_vectors);self.vector_button.pack(side='left',padx=4)
         ttk.Combobox(modes,textvariable=self.vector_mask,values=('union','majority','intersection'),state='readonly',width=12).pack(side='left',fill='x',expand=True)
         layers=ttk.Frame(left,style='Panel.TFrame');layers.pack(fill='x')
@@ -224,7 +226,7 @@ class App:
 
     def render_candidate(self):
         for w in self.mapping_frame.winfo_children(): w.destroy()
-        self.maps={}; self.image=None; self.box=None; self.page_image=None; self.page_box=None; self.page_active=False; self.vector_active=False; self.vector_data=None; self.vector_index=0; self.vector_info.configure(text=''); self.draw(); self.kind.set('glyph'); inv=self.data['inventory'] if self.data else {}; self.schemebox.configure(values=list(inv)); self.scheme.set(next(iter(inv),'')); self.search.set(''); self.change_scheme()
+        self.maps={}; self.image=None; self.box=None; self.page_image=None; self.page_box=None; self.page_details=None; self.page_zones_visible=False; self.page_active=False; self.vector_active=False; self.vector_data=None; self.vector_index=0; self.vector_info.configure(text=''); self.draw(); self.kind.set('glyph'); inv=self.data['inventory'] if self.data else {}; self.schemebox.configure(values=list(inv)); self.scheme.set(next(iter(inv),'')); self.search.set(''); self.change_scheme()
         for name,labels in inv.items():
             row=ttk.Frame(self.mapping_frame,style='Panel.TFrame'); row.pack(fill='x',pady=3); ttk.Label(row,text=name,style='Panel.TLabel').grid(row=0,column=0,columnspan=2,sticky='w'); state=tk.StringVar(value='unreviewed'); label=tk.StringVar(); a=ttk.Combobox(row,textvariable=state,values=('unreviewed','mapped','absent','unknown'),state='readonly',width=11); a.grid(row=1,column=0,sticky='ew',padx=(0,4)); b=ttk.Combobox(row,textvariable=label,values=labels,state='readonly',width=8); b.grid(row=1,column=1,sticky='ew');row.columnconfigure(0,weight=1);row.columnconfigure(1,weight=1); b.bind('<<ComboboxSelected>>',lambda e,v=state:v.set('mapped')); self.maps[name]=(state,label,a,b)
         if not self.items: self.meta.configure(text=self.t('No candidate')); return
@@ -244,10 +246,18 @@ class App:
         messagebox.showinfo(self.t('Locus'),'\n\n'.join(lines),parent=self.w)
     def open_page_context(self):
         if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
-        if self.page_image is not None:self.page_context_loaded((self.page_image,self.page_box));return
-        item=self.items[self.index]; self.task(lambda:self.api.page_context(item),self.page_context_loaded)
-    def page_context_loaded(self,result):
-        self.page_image,self.page_box=result;self.page_active=True;self.vector_active=False;self.glyph_only=False;self.fit();self.update_vector_info()
+        if self.page_image is not None:
+            self.page_context_loaded((self.page_image,self.page_box,self.page_details));return
+        item=self.items[self.index]; self.task(lambda:self.api.page_context(item,details=True),self.page_context_loaded)
+    def open_page_zones(self):
+        if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
+        if self.page_details and self.page_details['zone_status']!='NOT_LOADED':
+            self.page_context_loaded((self.page_image,self.page_box,self.page_details),True);return
+        item=self.items[self.index];self.task(lambda:self.api.page_zone_context(item),lambda result:self.page_context_loaded(result,True))
+    def page_context_loaded(self,result,show_zones=False):
+        self.page_image,self.page_box,self.page_details=result
+        self.page_zones_visible=show_zones
+        self.page_active=True;self.vector_active=False;self.glyph_only=False;self.fit();self.update_vector_info()
         self.status.set(self.t('Page context verified')+' · '+self.t('Line/word alignment unknown'))
     def open_vectors(self):
         if self.view!='Review' or self.future is not None or not self.items or self.image is None:return
@@ -260,7 +270,15 @@ class App:
         return next((k.lower() for k in ('Skeleton','Splits','Pairs','Compounds') if self.vector_layer.get()==self.t(k)),'contours')
     def update_vector_info(self):
         if not getattr(self,'vector_active',False):
-            self.vector_info.configure(text='');return
+            details=getattr(self,'page_details',None)
+            if getattr(self,'page_active',False) and details:
+                message=self.t('Glyph candidate')+' · '+self.t('Source region')
+                if self.page_zones_visible and details['zone_status']=='PROPOSED':
+                    message+=' · '+self.t('Zone proposals')+': '+str(len(details['zones']))+' · UNRESOLVED'
+                elif self.page_zones_visible and details['zone_status']=='UNAVAILABLE':message+=' · '+self.t('No zone evidence')
+                self.vector_info.configure(text=message+' · '+self.t('Unverified line/word geometry'))
+            else:self.vector_info.configure(text='')
+            return
         key=self.vector_key();layers=self.vector_data[4]
         text=self.vector_loaded_mask+' · UNADJUDICATED'
         if key=='skeleton':
@@ -328,7 +346,12 @@ class App:
                 if rows:
                     for i,(l,t,r,b) in enumerate(rows[self.vector_index][1]):
                         self.canvas.create_rectangle(*coords([(l,t),(r,b)]),outline='#ff9f20' if i==0 else '#477de8',width=2,dash=(4,2),tags=('vector-hypothesis',))
-        if not self.glyph_only: self.canvas.create_rectangle(x+box[0]*iw/im.width,y+box[1]*ih/im.height,x+box[2]*iw/im.width,y+box[3]*ih/im.height,outline='#00bca5',width=2)
+        if getattr(self,'page_active',False) and getattr(self,'page_details',None):
+            def page_coords(b):return (x+b[0]*iw/im.width,y+b[1]*ih/im.height,x+b[2]*iw/im.width,y+b[3]*ih/im.height)
+            for zone in self.page_details['zones'] if self.page_zones_visible else []:
+                self.canvas.create_rectangle(*page_coords(zone['box']),outline='#ff9f20',width=1,dash=(3,3),tags=('zone-proposal',))
+            self.canvas.create_rectangle(*page_coords(self.page_details['region_box']),outline='#477de8',width=2,dash=(6,3),tags=('source-region',))
+        if not self.glyph_only: self.canvas.create_rectangle(x+box[0]*iw/im.width,y+box[1]*ih/im.height,x+box[2]*iw/im.width,y+box[3]*ih/im.height,outline='#00bca5',width=2,tags=('candidate-box',))
         self.draw_geometry=(x,y,iw,ih);self.draw_extent=(max(w,x+iw+10),max(h,y+ih+10))
         self.canvas.configure(scrollregion=(0,0,*self.draw_extent))
     def move(self,delta):

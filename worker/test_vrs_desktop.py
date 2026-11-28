@@ -37,11 +37,27 @@ class DesktopTests(unittest.TestCase):
         page,box=self.api.page_context(item); crop,local=self.api.crop(item)
         self.assertEqual(page.size,(250,250))
         self.assertEqual(page.crop(box).tobytes(),crop.crop(local).tobytes())
+        detailed,absolute,context=self.api.page_context(item,details=True)
+        self.assertEqual(detailed.tobytes(),page.tobytes());self.assertEqual(absolute,box)
+        self.assertEqual(detailed.crop(context['region_box']).tobytes(),crop.tobytes())
+        self.assertEqual((context['line_alignment'],context['word_alignment']),('UNKNOWN','UNKNOWN'))
+        _,_,legacy=self.api.page_zone_context(item)
+        self.assertEqual((legacy['zone_status'],legacy['zones']),('UNAVAILABLE',[]))
         self.assertEqual(sha(db),before)
         for changed in (dict(item,page=2),dict(item,region_id='fake'),dict(item,box=[0,0,1,1])):
             with self.assertRaises(ValueError):self.api.page_context(changed)
         (self.root/item['crop']['path']).write_bytes(b'bad')
         with self.assertRaises(ValueError):self.api.page_context(item)
+
+    def test_page_zone_projection_is_bound_and_not_alignment(self):
+        from vrs_desktop_api import project_page_zones
+        meta=dict(status='NATIVE_IMAGE',size=[100,100],page=4,rgb_sha256='a'*64,native_px_to_pt=[.5,.5,4,4])
+        region=dict(source_sha256='b'*64,page=4,rgb_sha256='a'*64,origin=[0,0],image_size=[100,100],script_status='UNRESOLVED',exclusion_authorized=False,zones=[dict(box=[10,10,20,20],script_status='UNRESOLVED')])
+        record=dict(source=dict(sha256='b'*64),page=4,native=meta,hybrid=dict(region=region))
+        result=project_page_zones(record,(200,200))
+        self.assertEqual(result,[dict(index=0,box=[25,25,39,39],status='UNRESOLVED')])
+        region['zones'][0]['script_status']='VERIFIED'
+        with self.assertRaises(ValueError):project_page_zones(record,(200,200))
 
     def test_vector_window_native_coordinates_and_bounds(self):
         from vrs_desktop_api import vector_window
@@ -214,7 +230,7 @@ class DesktopTests(unittest.TestCase):
             from vrs_build_portable import RELEASE_VERSION
             self.assertIn(RELEASE_VERSION,w.title());self.assertEqual(float(app.reviewprogress.cget('value')),0)
             app.labels.selection_set(0);app.sample();settle();self.assertEqual(app.maps['Eva-'][0].get(),'unreviewed');app.assign_reference();self.assertEqual(app.maps['Eva-'][0].get(),'mapped')
-            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only); app.open_page_context(); settle(); self.assertTrue(app.page_active); self.assertEqual(app.page_image.size,(250,250)); app.locate_glyph(); self.assertGreaterEqual(app.factor,4); app.zoom(1.25); self.assertGreaterEqual(app.factor,5); app.fit(); self.assertEqual(app.factor,1); app.mode(False); self.assertFalse(app.page_active); app.vectors_loaded((Image.new('RGB',(30,30),'white'),[1,1,5,5],[],1,dict(skeleton=[[(1.5,1.5),(2.5,2.5)]],nodes=[(2.5,2.5,3)],fallback=0,hypotheses={'splits':[('s1',[[1,1,3,5],[3,1,5,5]]),('s2',[[1,1,5,3],[1,3,5,5]])],'pairs':[],'compounds':[]})),'majority'); app.vector_layer.set(app.t('Skeleton')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-node')),1); app.vector_layer.set(app.t('Splits')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-hypothesis')),2); app.step_hypothesis(1); self.assertEqual(app.vector_index,1); app.mode(False); self.assertFalse(app.vector_active)
+            app.visual_catalog();settle();modal=next(x for x in w.winfo_children() if isinstance(x,tk.Toplevel));self.assertIn('Eva-',modal.title());modal.destroy();self.assertEqual(set(app.maps),{'Eva-','STA1'}); app.zoom(1.25); self.assertGreater(app.factor,1); app.mode(True); self.assertTrue(app.glyph_only); app.open_page_context(); settle(); self.assertTrue(app.page_active); self.assertEqual(app.page_image.size,(250,250)); self.assertEqual(len(app.canvas.find_withtag('source-region')),1); self.assertEqual(len(app.canvas.find_withtag('candidate-box')),1); app.open_page_zones();settle();self.assertEqual(app.page_details['zone_status'],'UNAVAILABLE');self.assertIn(app.t('No zone evidence'),app.vector_info.cget('text'));app.locate_glyph(); self.assertGreaterEqual(app.factor,4); app.zoom(1.25); self.assertGreaterEqual(app.factor,5); app.fit(); self.assertEqual(app.factor,1); app.mode(False); self.assertFalse(app.page_active); app.vectors_loaded((Image.new('RGB',(30,30),'white'),[1,1,5,5],[],1,dict(skeleton=[[(1.5,1.5),(2.5,2.5)]],nodes=[(2.5,2.5,3)],fallback=0,hypotheses={'splits':[('s1',[[1,1,3,5],[3,1,5,5]]),('s2',[[1,1,5,3],[1,3,5,5]])],'pairs':[],'compounds':[]})),'majority'); app.vector_layer.set(app.t('Skeleton')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-node')),1); app.vector_layer.set(app.t('Splits')); app.change_vector_layer(); self.assertEqual(len(app.canvas.find_withtag('vector-hypothesis')),2); app.step_hypothesis(1); self.assertEqual(app.vector_index,1); app.mode(False); self.assertFalse(app.vector_active)
             app.kind.set('false_positive'); app.kind_changed(); app.submit(); settle(); self.assertEqual(self.api.review(run)['snapshot']['resolved'],1)
             app.show('Settings'); original_body=app.body; original_theme=app.fields['theme']
             from unittest.mock import patch
