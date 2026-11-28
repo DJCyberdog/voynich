@@ -44,13 +44,13 @@ class PreflightTests(unittest.TestCase):
             return '0.0'
         with patch.object(p.md,'version',side_effect=version):
             r=p.dependencies('review')
-        self.assertEqual(set(r),{'Pillow','psutil'})
+        self.assertEqual(set(r),{'Pillow','psutil','setuptools'})
         self.assertIsNone(r['psutil']['actual'])
         self.assertTrue(all(x['status']=='NOT_MET' for x in r.values()))
 
     def test_security_dependency_pins(self):
         for profile,torch in [('review',None),('cpu','2.13.0+cpu'),('cuda','2.13.0+cu130')]:
-            installed={'Pillow':'13.0.0','psutil':'7.2.2','numpy':'2.3.5','PyMuPDF':'1.26.7','torch':torch}
+            installed={'Pillow':'13.0.0','psutil':'7.2.2','setuptools':'84.1.0','numpy':'2.3.5','PyMuPDF':'1.26.7','torch':torch}
             with patch.object(p.md,'version',side_effect=lambda name:installed[name]):
                 result=p.dependencies(profile)
             self.assertTrue(all(x['status']=='PASS' for x in result.values()))

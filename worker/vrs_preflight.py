@@ -71,7 +71,7 @@ def display():
 
 
 def dependencies(profile):
-    expected = {'Pillow': '13.0.0', 'psutil': '7.2.2'}
+    expected = {'Pillow': '13.0.0', 'psutil': '7.2.2', 'setuptools': '84.1.0'}
     if profile != 'review':
         expected.update({'numpy': '2.3.5', 'PyMuPDF': '1.26.7',
                          'torch': '2.13.0+cpu' if profile == 'cpu' else '2.13.0+cu130'})

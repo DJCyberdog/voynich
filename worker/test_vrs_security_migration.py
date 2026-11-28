@@ -5,11 +5,11 @@ import vrs_rc2_migration as migration
 
 class AuditTests(unittest.TestCase):
     def test_exact_projection(self):
-        rows=[('Torch','2.13.0+cpu'),('Pillow','13.0.0'),('psutil','7.2.2')]
+        rows=[('Torch','2.13.0+cpu'),('Pillow','13.0.0'),('psutil','7.2.2'),('setuptools','84.1.0')]
         r=audit.project(rows);self.assertEqual(r['exact']['torch'],'2.13.0+cpu');self.assertEqual(r['advisory_versions']['torch'],'2.13.0');self.assertEqual(set(r['exact']),set(r['advisory_versions']));self.assertFalse(r['binary_audit'])
     def test_fail_closed(self):
-        good=[('torch','2.13.0+cpu'),('pillow','13.0.0')]
-        for rows in [good+[('TORCH','2.13.0+cpu')],good+[('other','1+custom')],good+[('a\n','1')],[('torch','2.10.0+cpu'),good[1]],[good[0],('pillow','12.3.0')]]:
+        good=[('torch','2.13.0+cpu'),('pillow','13.0.0'),('setuptools','84.1.0')]
+        for rows in [good+[('TORCH','2.13.0+cpu')],good+[('other','1+custom')],good+[('a\n','1')],[('torch','2.10.0+cpu'),good[1]],[good[0],('pillow','12.3.0'),good[2]],[good[0],good[1],('setuptools','78.1.0')]]:
             with self.assertRaises(ValueError):audit.project(rows)
 
 

@@ -14,7 +14,7 @@ def project(rows):
         key=re.sub(r'[-_.]+','-',name).lower()
         if key in exact:raise ValueError('duplicate installed distribution')
         exact[key]=version
-    if exact.get('torch')!='2.13.0+cpu' or exact.get('pillow')!='13.0.0':
+    if exact.get('torch')!='2.13.0+cpu' or exact.get('pillow')!='13.0.0' or exact.get('setuptools')!='84.1.0':
         raise ValueError('unexpected installed security pins')
     projected=dict(exact);projected['torch']='2.13.0'
     if any('+' in v for v in projected.values()):raise ValueError('unqualified local version tag')
